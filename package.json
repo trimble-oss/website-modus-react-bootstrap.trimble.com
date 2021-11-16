@@ -53,7 +53,7 @@
     "react-helmet": "^6.1.0",
     "react-live": "^2.3.0",
     "sass": "^1.42.1",
-    "styled-components": "^5.3.1"
+    "styled-components": "^5.3.3"
   },
   "devDependencies": {
     "@netlify/plugin-gatsby": "^1.0.3",
