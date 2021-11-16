@@ -1,0 +1,10 @@
+// sets background color on Status bar table
+article table.status-table thead th {
+  background-color: rgba(245, 245, 245, 0.9);
+  backdrop-filter: blur(6px);
+  box-shadow: 0 1px 0 0 #aaa;
+}
+
+table.status-table a [href$="status/"] {
+  font-weight: bold !important;
+}

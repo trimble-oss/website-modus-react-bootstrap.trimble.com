@@ -1,0 +1,29 @@
+.label {
+  font-size: 12px;
+}
+
+.code-sample {
+  font-weight: 700;
+  font-size: 12px !important;
+}
+
+.list:empty::before {
+  display: block;
+  width: 100%;
+  padding: 100px 2rem;
+  margin-right: 15px;
+  margin-left: 15px;
+  color: #444;
+  text-align: center;
+  content: "Nothing found, try searching again.";
+  background-color: #eee;
+  border-radius: 0.5rem;
+}
+
+#icons-list {
+  min-height: 300px;
+}
+
+#icons-list i {
+  font-size: 48px;
+}

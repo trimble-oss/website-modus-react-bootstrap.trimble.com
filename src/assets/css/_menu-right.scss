@@ -1,0 +1,39 @@
+#TableOfContents ul,
+#TableOfContents li {
+  list-style: none;
+  margin-left: 0;
+}
+
+// right menu
+#TableOfContents li a {
+  color: #6a6976;
+  padding-top: 0.3rem;
+  padding-bottom: 0.3rem;
+  font-size: 0.9rem;
+  border-left: 1px solid transparent;
+}
+
+#TableOfContents li a:hover {
+  color: #00437b;
+}
+
+// sub-menu identing
+.menu-right #TableOfContents li li a {
+  color: #888 !important;
+  text-indent: 5px;
+}
+
+.menu-right #TableOfContents li.active,
+.menu-right #TableOfContents li a:hover {
+  border-left: 1px solid #d3d3d3;
+}
+
+// scrollspy color
+.menu-right #TableOfContents li .active {
+  color: black !important;
+  border-left: 1px solid #0d6aa8 !important;
+}
+
+.menu-right a[href^="http"]::after {
+  filter: saturate(0%);
+}
