@@ -153,7 +153,7 @@ const listExample = `
   <li className="list-group-item">List Item</li>
   <li className="list-group-item">List Item</li>
   <li className="list-group-item py-0">
-    <Accordion className="borderless">
+    <Accordion className="borderless" style={{width:"100%"}}>
       <Card>
         <Accordion.Toggle as={Card.Header} eventKey="0">
           <h6 className="mb-0" id="collapsible-group-item-1">
