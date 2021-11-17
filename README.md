@@ -1,7 +1,9 @@
 # Modus React Bootstrap Developer Guide Site
+
 This site was created using Gatsby CLI with a default starter https://github.com/gatsbyjs/gatsby-starter-default. Its purpose is to document and demo the Modus React Bootstrap Component library.
 
 ## Getting Started
+
 To run the site locally, start with `npm install` to install all the dependencies followed by `npm start` and the site will be running at `http://localhost:8000`.
 
 _Note: You'll also see a second link: _`http://localhost:8000/___graphql`_. This is a tool you can use to experiment with querying your data. Learn more about using this tool in the [Gatsby tutorial](https://www.gatsbyjs.com/tutorial/part-five/#introducing-graphiql)._
@@ -13,7 +15,7 @@ A quick look at the top-level files and directories.
     .
     ├── node_modules
     ├── src
-      ├── pages
+    │   └── pages
     ├── .gitignore
     ├── .prettierrc
     ├── gatsby-browser.js
