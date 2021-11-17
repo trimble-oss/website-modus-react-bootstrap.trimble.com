@@ -6,6 +6,7 @@ import MainLayout from "../../layouts/MainLayout"
 import ComponentApi from "../../api-docs/ComponentApi"
 import { graphql } from "gatsby"
 import LinkedHeading from "../../common/LinkedHeading"
+import Helmet from "react-helmet"
 
 const scope = { Accordion, Card, Container }
 const basicExample = `
@@ -176,6 +177,13 @@ const listExample = `
 `
 const AccordionPage = props => (
   <MainLayout {...props}>
+    <Helmet>
+      <title>Accordion</title>
+      <meta
+        name="description"
+        content="The accordion component delivers large amounts of content in a small space through progressive disclosure. That is, the user gets key details about the underlying content and can choose to expand that content within the constraints of the accordion. Accordions work especially well on mobile interfaces or whenever vertical space is at a premium."
+      ></meta>
+    </Helmet>
     <Overview guidelink="https://modus.trimble.com/components/accordions/">
       Accordions use <code>Card</code> components to provide styling of the
       <code> Accordion</code> components. Use <code>Accordion.Toggle</code> to
