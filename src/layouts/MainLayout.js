@@ -14,7 +14,7 @@ const propTypes = {
   location: PropTypes.object.isRequired,
 }
 
-function GetMenuContext(routeInfo: string): NavigationInfo {
+function GetMenuContext(routeInfo) {
   const routeItems = routeInfo.split("/")?.filter(item => item)
   const parent =
     routeItems && menuList.find(x => x.path.endsWith(routeItems[0]))
