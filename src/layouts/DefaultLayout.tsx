@@ -8,7 +8,7 @@ const propTypes = {
   location: PropTypes.object.isRequired,
 }
 
-function DefaultLayout({ children, location, grayscale = true }) {
+function DefaultLayout({ children, location }) {
   return (
     <div>
       <Header activePage={location.pathname} />

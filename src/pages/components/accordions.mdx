@@ -1,0 +1,91 @@
+---
+title: Accordions
+description: The accordion component delivers large amounts of content in a small space through progressive disclosure. That is, the user gets key details about the underlying content and can choose to expand that content within the constraints of the accordion. Accordions work especially well on mobile interfaces or whenever vertical space is at a premium.
+---
+
+import { graphql } from "gatsby"
+import { Accordion, Card, Container } from "@trimbleinc/modus-react-bootstrap"
+import CodeBlock from "../../common/CodeBlock"
+import Overview from "../../common/Overview"
+import ComponentApi from "../../api-docs/ComponentApi"
+import LinkedHeading from "../../common/LinkedHeading"
+import {
+  basicExample,
+  borderlessExample,
+  listExample,
+  smallExample,
+} from "../../examples/Accordions"
+
+<Overview guidelink="https://modus.trimble.com/components/accordions/">
+  Accordions use <code>Card</code> components to provide styling of the
+  <code> Accordion</code> components. Use <code>Accordion.Toggle</code> to provide
+  a button that switches between each <code>Accordion.Collapse</code> component.
+</Overview>
+
+<CodeBlock bigtitle="Examples">
+  If you want your Accordion to start in a fully-collapsed state, then simply
+  don't pass in a <code>defaultActiveKey</code> prop to <code>Accordion</code>.
+</CodeBlock>
+
+<CodeBlock
+  title="Collapsible Cards"
+  code={basicExample}
+  scope={{ Accordion, Card }}
+></CodeBlock>
+
+<CodeBlock
+  title="Borderless Variant"
+  code={borderlessExample}
+  scope={{ Accordion, Card }}
+>
+  Add the <code>.borderless </code>class to the Accordion component to create a
+  borderless variant.
+</CodeBlock>
+
+<CodeBlock
+  title="Small Variant"
+  code={smallExample}
+  scope={{ Accordion, Card }}
+>
+  Add the <code>.accordion-sm</code> class to the Accordion component to create
+  a smaller variant.
+</CodeBlock>
+
+<CodeBlock
+  title="Collapsible Lists"
+  code={listExample}
+  scope={{ Accordion, Card }}
+>
+  You can use Accordion combination with other UI Elements to create collapsible
+  content.
+</CodeBlock>
+
+<LinkedHeading h="2" className="h1" id="accordions-api">
+  API
+</LinkedHeading>
+
+<ComponentApi metadata={props.data.Accordion} />
+<ComponentApi
+  metadata={props.data.AccordionToggle}
+  exportedBy={props.data.Accordion}
+/>
+<ComponentApi
+  metadata={props.data.AccordionCollapse}
+  exportedBy={props.data.Accordion}
+/>
+
+export const query = graphql`
+  query AccordionQuery {
+    Accordion: componentMetadata(displayName: { eq: "Accordion" }) {
+      ...ComponentApi_metadata
+    }
+    AccordionToggle: componentMetadata(displayName: { eq: "AccordionToggle" }) {
+      ...ComponentApi_metadata
+    }
+    AccordionCollapse: componentMetadata(
+      displayName: { eq: "AccordionCollapse" }
+    ) {
+      ...ComponentApi_metadata
+    }
+  }
+`
