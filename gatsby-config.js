@@ -42,6 +42,32 @@ module.exports = {
         path: `${__dirname}/src/pages`,
       },
     },
+    {
+      resolve: "gatsby-plugin-lunr",
+      options: {
+        languages: [
+          {
+            // ISO 639-1 language codes. See https://lunrjs.com/guides/language_support.html for details
+            name: "en",
+            // A function for filtering nodes. () => true by default
+            filterNodes: node => node.frontmatter && node.frontmatter.title,
+          },
+        ],
+        fields: [
+          { name: "title", store: true, attributes: { boost: 20 } },
+          { name: "description", store: true, attributes: { boost: 5 } },
+          { name: "content" },
+        ],
+        resolvers: {
+          Mdx: {
+            title: node => node.frontmatter.title,
+            description: node => node.frontmatter.description,
+            content: node => node.rawBody,
+          },
+        },
+        filename: "search_index.json",
+      },
+    },
     `gatsby-transformer-sharp`,
     `gatsby-plugin-sharp`,
     {

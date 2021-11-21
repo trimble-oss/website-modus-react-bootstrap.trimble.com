@@ -8,6 +8,7 @@ import {
   Container,
 } from "@trimbleinc/modus-react-bootstrap"
 import logo from "../assets/img/trimble-logo.svg"
+import SearchBar from "./SearchBar"
 
 const propTypes = { activePage: PropTypes.string }
 
@@ -76,9 +77,7 @@ function Header({ activePage }) {
               )
             })}
           </Nav>
-          <Form inline>
-            <FormControl type="text" placeholder="Search" className="mr-sm-2" />
-          </Form>
+          <SearchBar />
         </div>
       </Navbar>
     </Container>
