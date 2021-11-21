@@ -6,7 +6,7 @@ import { Helmet } from "react-helmet"
 export const ModusIcons = () => {
   return (
     <div>
-      <Helmet htmlAttributes={true}>
+      <Helmet>
         <link
           rel="stylesheet"
           href="https://fonts.googleapis.com/icon?family=Material+Icons"
@@ -22,7 +22,7 @@ export const ModusIcons = () => {
 export const ModusLayout = () => {
   return (
     <div>
-      <Helmet htmlAttributes={true}>
+      <Helmet>
         <link
           rel="stylesheet"
           href="https://modus.trimble.com/css/modus-layout.min-1.3.0.css"

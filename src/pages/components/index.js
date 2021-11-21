@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useState } from "react"
 import {
   Form,
   FormControl,
@@ -13,6 +13,13 @@ import DefaultLayout from "../../layouts/DefaultLayout"
 
 const ComponentsDashboard = props => {
   const { title, subtitle, path: parentMenu, children: menu } = componentsMenu
+  const [components, setComponents] = useState(menu)
+  const handleSearch = event => {
+    let searchText = event.target.value.toLowerCase()
+    setComponents(
+      menu.filter(item => item.title.toLowerCase().includes(searchText))
+    )
+  }
 
   return (
     <DefaultLayout location={props.location}>
@@ -28,12 +35,13 @@ const ComponentsDashboard = props => {
                   placeholder="Start typing to filter..."
                   className="w-100 search"
                   size="lg"
+                  onChange={handleSearch}
                 />
               </Form>
             </Col>
           </Row>
           <Row className="list">
-            {menu.map(item => (
+            {components.map(item => (
               <div className="col-12 col-lg-6 col-xl-4 my-3" key={item.key}>
                 <ComponentCard title={item.title} image={item.key}>
                   <p className="px-2 ml-n2">

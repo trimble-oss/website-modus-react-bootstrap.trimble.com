@@ -226,25 +226,25 @@ const ModusIconItem = ({ icon, tags, ...props }) => {
 
 const ModusIconsListing = props => {
   const [iconList, setIconList] = useState(ModusIcons)
-  const handleFilter = event => {
+  const handleSearch = event => {
+    let searchText = event.target.value.toLowerCase()
     setIconList(
-      ModusIcons.filter(item => item.icon.includes(event.target.value))
+      ModusIcons.filter(item => item.icon.toLowerCase().includes(searchText))
     )
   }
-
+  console.log("Render Icons")
   return (
     <Form className="ml-0 mb-2">
       <Form.Group controlId="iconSearch">
         <Form.Label className="sr-only">Search for icons</Form.Label>
         <Form.Control
           className="form-control search"
-          id="search"
           placeholder="Start typing to filter..."
           type="search"
           title=""
           required
           onKeyPress={event => event.keyCode != 13}
-          onChange={handleFilter}
+          onChange={handleSearch}
         />
       </Form.Group>
       <ul
