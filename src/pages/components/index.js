@@ -34,12 +34,8 @@ const ComponentsDashboard = props => {
           </Row>
           <Row className="list">
             {menu.map(item => (
-              <div className="col-12 col-lg-6 col-xl-4 my-3">
-                <ComponentCard
-                  key={item.key}
-                  title={item.title}
-                  image={item.key}
-                >
+              <div className="col-12 col-lg-6 col-xl-4 my-3" key={item.key}>
+                <ComponentCard title={item.title} image={item.key}>
                   <p className="px-2 ml-n2">
                     <a
                       href={`${parentMenu}/${item.key}`}

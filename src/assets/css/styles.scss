@@ -1,6 +1,6 @@
 @import "styleguide";
 @import "anatomy-css";
-// @import "autocomplete"; // search autocomplete dropdown
+@import "autocomplete"; // search autocomplete dropdown
 @import "article";
 @import "cards";
 @import "codefences"; // code syntax highlighting
@@ -13,7 +13,7 @@
 @import "print";
 @import "ribbon-coming-soon";
 @import "rfs";
-// @import "icons-page";
+@import "icons-page";
 @import "status";
 @import "skippy"; // 'skip to content' accessibility
 @import "footer";

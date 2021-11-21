@@ -252,7 +252,7 @@ const ModusIconsListing = props => {
         id="icons-list"
       >
         {iconList.map(item => (
-          <ModusIconItem icon={item.icon} tags={item.tags} />
+          <ModusIconItem icon={item.icon} key={item.icon} tags={item.tags} />
         ))}
       </ul>
     </Form>
