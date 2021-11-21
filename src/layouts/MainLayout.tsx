@@ -1,11 +1,18 @@
 import PropTypes from "prop-types"
 import React from "react"
+import { MDXProvider } from "@mdx-js/react"
 
 import MainContent from "../common/MainContent"
 import { menuList } from "../common/MenuConfiguration"
 import Banner from "../common/Banner"
 import { MenuContext, NavigationInfo } from "../common/MenuContext"
+
 import Default from "./DefaultLayout"
+
+import CodeBlock from "../common/CodeBlock"
+import Overview from "../common/Overview"
+import LinkedHeading from "../common/LinkedHeading"
+import ComponentApi from "../api-docs/ComponentApi"
 
 //Modus Icon scripts not required for Home page
 import { ModusIcons } from "../common/ExternalReferences"
@@ -13,6 +20,8 @@ import { ModusIcons } from "../common/ExternalReferences"
 const propTypes = {
   location: PropTypes.object.isRequired,
 }
+
+const components = { CodeBlock, Overview, LinkedHeading, ComponentApi }
 
 function GetMenuContext(routeInfo) {
   const routeItems = routeInfo.split("/")?.filter(item => item)
@@ -39,7 +48,9 @@ function MainLayout({ children, ...props }) {
       <ModusIcons />
       <Banner title={title} subtitle={subtitle} />
       <MenuContext.Provider value={context}>
-        <MainContent>{children}</MainContent>
+        <MainContent>
+          <MDXProvider components={components}>{children}</MDXProvider>
+        </MainContent>
       </MenuContext.Provider>
     </Default>
   )
