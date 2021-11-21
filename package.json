@@ -19,7 +19,7 @@
   "scripts": {
     "build": "gatsby build",
     "clean": "gatsby clean",
-    "develop": "gatsby develop",
+    "develop": "gatsby build && gatsby develop",
     "format": "prettier --write \"**/*.{js,jsx,ts,tsx,json,md}\"",
     "lint-css": "stylelint \"src/assets/css/*.scss\"",
     "serve": "gatsby serve",

@@ -56,12 +56,14 @@ module.exports = {
         fields: [
           { name: "title", store: true, attributes: { boost: 20 } },
           { name: "description", store: true, attributes: { boost: 5 } },
+          { name: "url", store: true },
           { name: "content" },
         ],
         resolvers: {
           Mdx: {
             title: node => node.frontmatter.title,
             description: node => node.frontmatter.description,
+            url: node => node.fields.slug,
             content: node => node.rawBody,
           },
         },

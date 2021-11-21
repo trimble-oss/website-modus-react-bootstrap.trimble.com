@@ -232,7 +232,6 @@ const ModusIconsListing = props => {
       ModusIcons.filter(item => item.icon.toLowerCase().includes(searchText))
     )
   }
-  console.log("Render Icons")
   return (
     <Form className="ml-0 mb-2">
       <Form.Group controlId="iconSearch">

@@ -1,11 +1,10 @@
-import React, { useState, useEffect, useRef } from "react"
+import React, { useState, useRef } from "react"
 import {
-  Dropdown,
   Form,
   FormControl,
+  Nav,
   Overlay,
 } from "@trimbleinc/modus-react-bootstrap"
-import classNames from "classnames"
 
 const SearchBar = props => {
   const [results, setResults] = useState([])
@@ -62,9 +61,13 @@ const SearchBar = props => {
                 as="div"
               >
                 {results.map(({ title, url, description }) => (
-                  <div key={title} className="autocomplete-suggestion">
+                  <Nav.Link
+                    key={title}
+                    className="autocomplete-suggestion"
+                    href={url}
+                  >
                     » {title}
-                  </div>
+                  </Nav.Link>
                 ))}
               </div>
             )}
