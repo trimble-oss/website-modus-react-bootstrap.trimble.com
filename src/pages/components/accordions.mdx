@@ -4,17 +4,12 @@ description: The accordion component delivers large amounts of content in a smal
 ---
 
 import { graphql } from "gatsby"
-import { Accordion, Card, Container } from "@trimbleinc/modus-react-bootstrap"
-import CodeBlock from "../../common/CodeBlock"
-import Overview from "../../common/Overview"
-import ComponentApi from "../../api-docs/ComponentApi"
-import LinkedHeading from "../../common/LinkedHeading"
 import {
   AccordionsBasic,
   AccordionsBorderless,
   AccordionsList,
   AccordionsSmall,
-} from "../../examples/Accordions"
+} from "../../examples/components/Accordions"
 
 <Overview guidelink="https://modus.trimble.com/components/accordions/">
   Accordions use <code>Card</code> components to provide styling of the
@@ -27,35 +22,19 @@ import {
   don't pass in a <code>defaultActiveKey</code> prop to <code>Accordion</code>.
 </CodeBlock>
 
-<CodeBlock
-  title="Collapsible Cards"
-  code={AccordionsBasic}
-  scope={{ Accordion, Card }}
-></CodeBlock>
+<CodeBlock title="Collapsible Cards" code={AccordionsBasic}></CodeBlock>
 
-<CodeBlock
-  title="Borderless Variant"
-  code={AccordionsBorderless}
-  scope={{ Accordion, Card }}
->
+<CodeBlock title="Borderless Variant" code={AccordionsBorderless}>
   Add the <code>.borderless </code>class to the Accordion component to create a
   borderless variant.
 </CodeBlock>
 
-<CodeBlock
-  title="Small Variant"
-  code={AccordionsSmall}
-  scope={{ Accordion, Card }}
->
+<CodeBlock title="Small Variant" code={AccordionsSmall}>
   Add the <code>.accordion-sm</code> class to the Accordion component to create
   a smaller variant.
 </CodeBlock>
 
-<CodeBlock
-  title="Collapsible Lists"
-  code={AccordionsList}
-  scope={{ Accordion, Card }}
->
+<CodeBlock title="Collapsible Lists" code={AccordionsList}>
   You can use Accordion combination with other UI Elements to create collapsible
   content.
 </CodeBlock>
