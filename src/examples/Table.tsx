@@ -1,31 +1,4 @@
-import {
-  FormCheck,
-  Dropdown,
-  Table,
-  Form,
-  Button,
-} from "@trimbleinc/modus-react-bootstrap"
-import React from "react"
-import CodeBlock from "../../common/CodeBlock"
-import Overview from "../../common/Overview"
-import MainLayout from "../../layouts/MainLayout"
-import { graphql } from "gatsby"
-import ComponentApi from "../../api-docs/ComponentApi"
-import LinkedHeading from "../../common/LinkedHeading"
-
-const TablesPage = props => (
-  <MainLayout {...props}>
-    <Overview guidelink="https://modus.trimble.com/components/tables/">
-      Due to the widespread use of tables across third-party widgets like
-      calendars and date pickers, we’ve designed our tables to be opt-in. Use{" "}
-      <code>&lt;Table&gt;</code>, and extend with custom styles or our various
-      included modifier classes.
-    </Overview>
-
-    <CodeBlock
-      title="Basic Table"
-      scope={{ Table }}
-      code={`
+export const TableBasic = `
 <Table>
   <thead>
     <tr>
@@ -56,13 +29,9 @@ const TablesPage = props => (
     </tr>
   </tbody>
 </Table>
-`}
-    ></CodeBlock>
+`
 
-    <CodeBlock
-      title="Dark Table"
-      scope={{ Table }}
-      code={`
+export const TableDark = `
 <Table variant="dark">
   <thead>
     <tr>
@@ -93,17 +62,9 @@ const TablesPage = props => (
     </tr>
   </tbody>
 </Table>
-`}
-    >
-      You can modify tables to use a dark background with light text by setting
-      the
-      <code>variant</code> prop to <code>dark</code>.
-    </CodeBlock>
+`
 
-    <CodeBlock
-      title="Table Head Options"
-      scope={{ Table }}
-      code={`
+export const TableHeadOptions = `
 <div>
   <Table>
     <thead className="thead-light">
@@ -166,17 +127,9 @@ const TablesPage = props => (
     </tbody>
   </Table>
 </div>
-`}
-    >
-      Similar to tables and dark tables, use the modifier classes
-      <code>.thead-light</code> or <code>.thead-light</code> to make
-      <code>&lt;thead&gt;</code> appear light or dark.
-    </CodeBlock>
+`
 
-    <CodeBlock
-      title="Bordered Table"
-      scope={{ Table }}
-      code={`
+export const TableBordered = `
 <div>
   <Table bordered>
     <thead>
@@ -239,15 +192,9 @@ const TablesPage = props => (
     </tbody>
   </Table>
 </div>
-`}
-    >
-      Add prop <code>bordered</code> to add borders to your table.
-    </CodeBlock>
+`
 
-    <CodeBlock
-      title="Borderless Table"
-      scope={{ Table }}
-      code={`
+export const TableBorderless = `
 <div>
   <Table borderless>
     <thead>
@@ -310,15 +257,9 @@ const TablesPage = props => (
     </tbody>
   </Table>
 </div>
-`}
-    >
-      Add prop <code>borderless </code> to remove borders to your table.
-    </CodeBlock>
+`
 
-    <CodeBlock
-      title="Hoverable Rows"
-      scope={{ Table }}
-      code={`
+export const TableHoverable = `
 <div>
   <Table hover>
     <thead>
@@ -381,16 +322,9 @@ const TablesPage = props => (
     </tbody>
   </Table>
 </div>
-`}
-    >
-      Add prop <code>hover </code> to enable a hover state on table rows within
-      <code>&lt;tbody&gt;</code>.
-    </CodeBlock>
+`
 
-    <CodeBlock
-      title="Tables with Icons and Controls"
-      scope={{ Table, Button, FormCheck, Form, Dropdown }}
-      code={`
+export const TableIconsControls = `
 <div>
   <Table striped bordered>
     <thead>
@@ -637,13 +571,9 @@ const TablesPage = props => (
     </tbody>
   </Table>
 </div>
-`}
-    ></CodeBlock>
+`
 
-    <CodeBlock
-      title="Small Variants"
-      scope={{ Table, Button, FormCheck, Form, Dropdown }}
-      code={`
+export const TableSmall = `
 <div>
   <Table striped bordered hover size="sm">
     <thead className="thead-light">
@@ -926,30 +856,4 @@ const TablesPage = props => (
     </tbody>
   </Table>
 </div>
-`}
-    >
-      <p>
-        All previous table styles are also available in a smaller variant, set
-        prop <code>size</code> to <code>sm</code>
-      </p>
-      <p>
-        When using small variants of tables with icons and controls, don’t
-        forget to use the smaller variants of those icons and controls too!
-      </p>
-    </CodeBlock>
-
-    <LinkedHeading h="2" className="h1" id="table-api">
-      API
-    </LinkedHeading>
-    <ComponentApi metadata={props.data.Table} />
-  </MainLayout>
-)
-
-export default TablesPage
-export const query = graphql`
-  query TableQuery {
-    Table: componentMetadata(displayName: { eq: "Table" }) {
-      ...ComponentApi_metadata
-    }
-  }
 `

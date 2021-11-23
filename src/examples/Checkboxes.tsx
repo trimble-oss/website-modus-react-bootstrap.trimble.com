@@ -1,4 +1,4 @@
-export const DefaultCheckbox = `
+export const CheckboxesBasic = `
 <Form>
   <div key="custom-checkbox">
     <Form.Check custom type="checkbox" id="custom-checkbox" label="Checkbox" />
@@ -20,7 +20,7 @@ export const DefaultCheckbox = `
 </Form>
 `
 
-export const Inline = `
+export const CheckboxesInline = `
 <Form>
   <div key="custom-inline-checkbox">
     <Form.Check

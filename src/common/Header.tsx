@@ -35,7 +35,7 @@ const NAV_LINKS = [
   },
 ]
 
-function Header({ activePage }) {
+function Header({ location }) {
   return (
     <Container fluid className="bg-white">
       <Navbar
@@ -69,7 +69,7 @@ function Header({ activePage }) {
                 <Nav.Link
                   key={link}
                   href={link}
-                  active={activePage.startsWith(link)}
+                  active={location.pathname.startsWith(link)}
                   className="justify-content-end  mx-0 mx-lg-1 mx-xl-2"
                 >
                   {title}
@@ -77,7 +77,7 @@ function Header({ activePage }) {
               )
             })}
           </Nav>
-          <SearchBar />
+          <SearchBar location={location} />
         </div>
       </Navbar>
     </Container>

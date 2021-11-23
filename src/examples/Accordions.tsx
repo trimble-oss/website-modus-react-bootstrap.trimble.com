@@ -1,4 +1,4 @@
-export const basicExample = `
+export const AccordionsBasic = `
 <Accordion defaultActiveKey="0">
   <Card>
     <Accordion.Toggle as={Card.Header} eventKey="0">
@@ -45,7 +45,7 @@ export const basicExample = `
 </Accordion>
 `
 
-export const borderlessExample = `
+export const AccordionsBorderless = `
 <Accordion defaultActiveKey="0" className="borderless">
   <Card>
     <Accordion.Toggle as={Card.Header} eventKey="0">
@@ -92,7 +92,7 @@ export const borderlessExample = `
 </Accordion>
 `
 
-export const smallExample = `
+export const AccordionsSmall = `
 <Accordion defaultActiveKey="0" className="accordion-sm">
   <Card>
     <Accordion.Toggle as={Card.Header} eventKey="0">
@@ -139,7 +139,7 @@ export const smallExample = `
 </Accordion>
 `
 
-export const listExample = `
+export const AccordionsList = `
 <ul className="list-group">
   <li className="list-group-item">List Item</li>
   <li className="list-group-item">List Item</li>

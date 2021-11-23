@@ -1,4 +1,4 @@
-export const DefaultBC = `
+export const BreadcrumbsBasic = `
 <Breadcrumb>
   <Breadcrumb.Item href="#">Home</Breadcrumb.Item>
   <Breadcrumb.Item href="https://getbootstrap.com/docs/4.0/components/breadcrumb/">
@@ -7,7 +7,7 @@ export const DefaultBC = `
   <Breadcrumb.Item active>Data</Breadcrumb.Item>
 </Breadcrumb>`
 
-export const BCWithIcons = `
+export const BreadcrumbsWithIcons = `
 <Breadcrumb>
   <Breadcrumb.Item href="#">
     <i className="modus-icons">dashboard</i>Home
@@ -20,7 +20,7 @@ export const BCWithIcons = `
   </Breadcrumb.Item>
 </Breadcrumb>`
 
-export const AccessibleOptions = `
+export const BreadcrumbsAccessibleOptions = `
 <Breadcrumb className="breadcrumb-underline">
   <Breadcrumb.Item href="#">Home</Breadcrumb.Item>
   <Breadcrumb.Item href="https://getbootstrap.com/docs/4.0/components/breadcrumb/">
@@ -29,8 +29,7 @@ export const AccessibleOptions = `
   <Breadcrumb.Item active>Data</Breadcrumb.Item>
 </Breadcrumb>`
 
-export const Behaviours = `
-
+export const BreadcrumbsBehaviours = `
 <Breadcrumb className="breadcrumb-underline">
   <Breadcrumb.Item href="#">Home</Breadcrumb.Item>
   <Breadcrumb.Item>

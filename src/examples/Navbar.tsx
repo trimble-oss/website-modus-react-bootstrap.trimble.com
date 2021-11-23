@@ -1,27 +1,4 @@
-import {
-  Button,
-  Nav,
-  Navbar,
-  NavDropdown,
-  OverlayTrigger,
-  Tooltip,
-} from "@trimbleinc/modus-react-bootstrap"
-import React from "react"
-import CodeBlock from "../../common/CodeBlock"
-import MainLayout from "../../layouts/MainLayout"
-import { graphql } from "gatsby"
-import ComponentApi from "../../api-docs/ComponentApi"
-import LinkedHeading from "../../common/LinkedHeading"
-
-const NavbarPage = props => (
-  <MainLayout {...props}>
-    <h2 className="h1 font-weight-bold" id="Overview">
-      Overview
-    </h2>
-    <CodeBlock
-      scope={{ Nav, NavDropdown, Navbar, Button, OverlayTrigger, Tooltip }}
-      style={{ padding: "0px" }}
-      code={`
+export const NavbarBasic = `
 <Navbar collapseOnSelect expand="sm" bg="white">
   <Button
     variant="text-dark"
@@ -121,48 +98,4 @@ const NavbarPage = props => (
     </Nav>
   </Navbar.Collapse>
 </Navbar>
-`}
-    >
-      The navbar or the app header provides context through globally accessible
-      menu options and positions a consistent component to connect various
-      Trimble applications and contains the main navigation for your
-      application.
-    </CodeBlock>
-
-    <LinkedHeading h="2" className="h1" id="navbar-api">
-      API
-    </LinkedHeading>
-
-    <ComponentApi metadata={props.data.Navbar} />
-    <ComponentApi
-      metadata={props.data.NavbarBrand}
-      exportedBy={props.data.Navbar}
-    />
-    <ComponentApi
-      metadata={props.data.NavbarToggle}
-      exportedBy={props.data.Navbar}
-    />
-    <ComponentApi
-      metadata={props.data.NavbarCollapse}
-      exportedBy={props.data.Navbar}
-    />
-  </MainLayout>
-)
-
-export default NavbarPage
-export const query = graphql`
-  query NavbarQuery {
-    Navbar: componentMetadata(displayName: { eq: "Navbar" }) {
-      ...ComponentApi_metadata
-    }
-    NavbarBrand: componentMetadata(displayName: { eq: "NavbarBrand" }) {
-      ...ComponentApi_metadata
-    }
-    NavbarToggle: componentMetadata(displayName: { eq: "NavbarToggle" }) {
-      ...ComponentApi_metadata
-    }
-    NavbarCollapse: componentMetadata(displayName: { eq: "NavbarCollapse" }) {
-      ...ComponentApi_metadata
-    }
-  }
 `

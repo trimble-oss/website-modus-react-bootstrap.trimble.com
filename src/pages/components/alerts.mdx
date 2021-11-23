@@ -5,10 +5,10 @@ description: Alerts provide contextual information adjacent to items on the visi
 
 import { graphql } from "gatsby"
 import {
-  basicAlert,
-  alertWithLink,
-  alertWithButton,
-  dismissibleAlert,
+  AlertsBasic,
+  AlertsWithLink,
+  AlertsWithButton,
+  AlertsDismissible,
 } from "../../examples/Alerts"
 
 <Overview guidelink="https://modus.trimble.com/components/alerts/">
@@ -16,16 +16,16 @@ import {
   button. For proper styling, use one of the eight variants.
 </Overview>
 
-<CodeBlock title="Basic Alerts" code={basicAlert}></CodeBlock>
+<CodeBlock title="Basic Alerts" code={AlertsBasic}></CodeBlock>
 
-<CodeBlock title="Alerts with Links" code={alertWithLink}>
+<CodeBlock title="Alerts with Links" code={AlertsWithLink}>
   For links, use the <code>&lt;Alert.Link&gt;</code> component to provide
   matching colored links within any alert.
 </CodeBlock>
 
-<CodeBlock title="Alerts with Buttons" code={alertWithButton}></CodeBlock>
+<CodeBlock title="Alerts with Buttons" code={AlertsWithButton}></CodeBlock>
 
-<CodeBlock title="Dismissible Alerts" code={dismissibleAlert}>
+<CodeBlock title="Dismissible Alerts" code={AlertsDismissible}>
   Use the custom react component <code>AlertDismissible</code>.
 </CodeBlock>
 

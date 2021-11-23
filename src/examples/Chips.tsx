@@ -1,4 +1,4 @@
-export const InputChips = `
+export const ChipsInput = `
 <div>
   <Chip
     avatar={<img src={chipImage} alt="" />}
@@ -18,7 +18,7 @@ export const InputChips = `
 </div>
 `
 
-export const LiveExample = `function Example() {
+export const ChipsLiveExample = `function Example() {
   const [showSolid, setShowSolid] = useState(true);
   const [showOutline, setShowOutline] = useState(true);
 
@@ -50,7 +50,7 @@ export const LiveExample = `function Example() {
 
 render(<Example />);`
 
-export const FilterChips = `
+export const ChipsFilter = `
 <div>
   <Chip
     icon={<i className="material-icons">check</i>}
@@ -63,7 +63,7 @@ export const FilterChips = `
 </div>
 `
 
-export const SmallChips = `
+export const ChipsSmall = `
 <div>
   <Chip
     avatar={<img src={chipImage} alt="" />}

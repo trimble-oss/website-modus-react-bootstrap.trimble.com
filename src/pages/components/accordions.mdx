@@ -10,10 +10,10 @@ import Overview from "../../common/Overview"
 import ComponentApi from "../../api-docs/ComponentApi"
 import LinkedHeading from "../../common/LinkedHeading"
 import {
-  basicExample,
-  borderlessExample,
-  listExample,
-  smallExample,
+  AccordionsBasic,
+  AccordionsBorderless,
+  AccordionsList,
+  AccordionsSmall,
 } from "../../examples/Accordions"
 
 <Overview guidelink="https://modus.trimble.com/components/accordions/">
@@ -29,13 +29,13 @@ import {
 
 <CodeBlock
   title="Collapsible Cards"
-  code={basicExample}
+  code={AccordionsBasic}
   scope={{ Accordion, Card }}
 ></CodeBlock>
 
 <CodeBlock
   title="Borderless Variant"
-  code={borderlessExample}
+  code={AccordionsBorderless}
   scope={{ Accordion, Card }}
 >
   Add the <code>.borderless </code>class to the Accordion component to create a
@@ -44,7 +44,7 @@ import {
 
 <CodeBlock
   title="Small Variant"
-  code={smallExample}
+  code={AccordionsSmall}
   scope={{ Accordion, Card }}
 >
   Add the <code>.accordion-sm</code> class to the Accordion component to create
@@ -53,7 +53,7 @@ import {
 
 <CodeBlock
   title="Collapsible Lists"
-  code={listExample}
+  code={AccordionsList}
   scope={{ Accordion, Card }}
 >
   You can use Accordion combination with other UI Elements to create collapsible

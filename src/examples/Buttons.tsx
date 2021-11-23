@@ -1,4 +1,4 @@
-export const SolidButtons = `
+export const ButtonsSolid = `
 <div>
   <Button variant="primary" className="mr-2">
     Primary
@@ -9,7 +9,7 @@ export const SolidButtons = `
   <Button variant="tertiary">Tertiary</Button>
 </div>`
 
-export const OutlineButtons = `
+export const ButtonsOutline = `
 <div>
   <Button variant="outline-primary" className="mr-2">
     Primary
@@ -17,14 +17,14 @@ export const OutlineButtons = `
   <Button variant="outline-dark">Dark</Button>
 </div>`
 
-export const TextButtons = `<Button variant="text-primary">Primary</Button>`
+export const ButtonsText = `<Button variant="text-primary">Primary</Button>`
 
-export const TextAndIcons = `
+export const ButtonsTextAndIcons = `
 <Button variant="primary">
   <i className="modus-icon material-icons left-icon">settings</i>Button
 </Button>`
 
-export const IconsOnlyButtons = `
+export const ButtonsIconsOnly = `
 <div>
   <Button variant="icon-only" className="btn-text-dark">
     <i className="modus-icon material-icons">settings</i>
@@ -34,7 +34,7 @@ export const IconsOnlyButtons = `
   </Button>
 </div>`
 
-export const SmallButtons = `
+export const ButtonsSmall = `
 <div>
   <Button variant="primary" size="sm" className="mr-2">
     Button
@@ -65,7 +65,7 @@ export const SmallButtons = `
   </Button>
 </div>`
 
-export const LargeButtons = `
+export const ButtonsLarge = `
 
 <div className="bd-example">
   <Button variant="primary" size="lg" className="mr-2">
@@ -97,7 +97,7 @@ export const LargeButtons = `
   </Button>
 </div>`
 
-export const FullWidthButtons = `
+export const ButtonsFullWidth = `
 <div className="d-grid gap-2">
   <Button variant="primary" block>
     Button
@@ -110,7 +110,7 @@ export const FullWidthButtons = `
   </Button>
 </div>`
 
-export const DarkBackgrounds = `
+export const ButtonsDarkBackgrounds = `
 <div>
   <Button variant="tertiary" className="mr-2">
     Button
@@ -123,7 +123,7 @@ export const DarkBackgrounds = `
   </Button>
 </div>`
 
-export const LightButtons = `
+export const ButtonsLight = `
 <div className="bd-example">
   <div className="row">
     <div className="col">
@@ -164,7 +164,7 @@ export const LightButtons = `
   </div>
 </div>`
 
-export const DangerButtons = `
+export const ButtonsDanger = `
 <div>
   <Button variant="danger" className="mr-2">
     Delete
@@ -180,7 +180,7 @@ export const DangerButtons = `
   </Button>
 </div>`
 
-export const YellowButtons = `
+export const ButtonsYellow = `
 <div>
   <Button variant="yellow" size="sm" className="mr-2">
     Trimble Button

@@ -5,18 +5,18 @@ description: Buttons express what action will occur when the user clicks or touc
 
 import { graphql } from "gatsby"
 import {
-  DangerButtons,
-  DarkBackgrounds,
-  FullWidthButtons,
-  IconsOnlyButtons,
-  LargeButtons,
-  LightButtons,
-  OutlineButtons,
-  SmallButtons,
-  SolidButtons,
-  TextAndIcons,
-  TextButtons,
-  YellowButtons,
+  ButtonsDanger,
+  ButtonsDarkBackgrounds,
+  ButtonsFullWidth,
+  ButtonsIconsOnly,
+  ButtonsLarge,
+  ButtonsLight,
+  ButtonsOutline,
+  ButtonsSmall,
+  ButtonsSolid,
+  ButtonsTextAndIcons,
+  ButtonsText,
+  ButtonsYellow,
 } from "../../examples/Buttons"
 
 <Overview guidelink="https://modus.trimble.com/components/buttons/">
@@ -30,20 +30,20 @@ import {
   Modify the <code>variant</code> prop to style the button.
 </CodeBlock>
 
-<CodeBlock title="Solid Buttons" code={SolidButtons}>
+<CodeBlock title="Solid Buttons" code={ButtonsSolid}>
   Solid buttons should only be used with the Primary, Secondary, and Tertiary
   theme colors.
 </CodeBlock>
 
-<CodeBlock title="Outline Buttons" code={OutlineButtons}>
+<CodeBlock title="Outline Buttons" code={ButtonsOutline}>
   Outline buttons should only be used with the Primary, and Dark theme colors.
 </CodeBlock>
 
-<CodeBlock title="Text Buttons" code={TextButtons}>
+<CodeBlock title="Text Buttons" code={ButtonsText}>
   Text buttons should only be used with the Primary theme color.
 </CodeBlock>
 
-<CodeBlock title="Text and Icons" code={TextAndIcons}>
+<CodeBlock title="Text and Icons" code={ButtonsTextAndIcons}>
   Icons can be used within buttons by giving the icon a class of{" "}
   <code>.modus-icon </code>
   in addition to a class of either <code>.left-icon</code> or <code>
@@ -51,7 +51,7 @@ import {
   </code>, depending on the desired position.
 </CodeBlock>
 
-<CodeBlock title="Icon Only Buttons " code={IconsOnlyButtons}>
+<CodeBlock title="Icon Only Buttons " code={ButtonsIconsOnly}>
   When using Icon Only Buttons, DO NOT add any additional text inside the
   button. Give the variant <code>icon-only</code> and give the icon a class of{" "}
   <code>.modus-icon</code>. <code>icon-only </code>buttons can be used with the
@@ -63,29 +63,29 @@ import {
   Buttons default to “medium” size but there are also large and small options
   available.
 </p>
-<CodeBlock title="Small Buttons" code={SmallButtons}></CodeBlock>
+<CodeBlock title="Small Buttons" code={ButtonsSmall}></CodeBlock>
 
-<CodeBlock title="Large Buttons" code={LargeButtons}></CodeBlock>
+<CodeBlock title="Large Buttons" code={ButtonsLarge}></CodeBlock>
 
-<CodeBlock title="Full-width (Block) Buttons" code={FullWidthButtons}>
+<CodeBlock title="Full-width (Block) Buttons" code={ButtonsFullWidth}>
   Create block level buttons—those that span the full width of a parent—by
   adding <code>block</code>.
 </CodeBlock>
 
 <h2>Special Use Cases</h2>
-<CodeBlock title="Dark Backgrounds" code={DarkBackgrounds}>
+<CodeBlock title="Dark Backgrounds" code={ButtonsDarkBackgrounds}>
   For specific use cases where a light colored button is needed against a dark
   background use a tertiary solid, outline, or text button.
 </CodeBlock>
 
 <p>Use case examples for light buttons.</p>
-<CodeBlock code={LightButtons}></CodeBlock>
+<CodeBlock code={ButtonsLight}></CodeBlock>
 
-<CodeBlock title="Danger Button" code={DangerButtons}>
+<CodeBlock title="Danger Button" code={ButtonsDanger}>
   A danger button should be used for permanent, destructive actions like delete.
 </CodeBlock>
 
-<CodeBlock title="Yellow button" code={YellowButtons}>
+<CodeBlock title="Yellow button" code={ButtonsYellow}>
   A yellow button for the Trimble brand color is provided for special use cases.
 </CodeBlock>
 

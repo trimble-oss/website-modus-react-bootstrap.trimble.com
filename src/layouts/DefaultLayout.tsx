@@ -11,7 +11,7 @@ const propTypes = {
 function DefaultLayout({ children, location }) {
   return (
     <div>
-      <Header activePage={location.pathname} />
+      <Header location={location} />
       {children}
       <Footer />
     </div>

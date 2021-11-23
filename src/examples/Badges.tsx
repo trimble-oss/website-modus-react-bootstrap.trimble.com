@@ -1,4 +1,4 @@
-export const regularBadge = `
+export const BadgesRegular = `
 <div>
   <Badge variant="primary" className="mr-2">
     Primary
@@ -23,7 +23,7 @@ export const regularBadge = `
   </Badge>
   <Badge variant="danger">Dark</Badge>
 </div>`
-export const textBadge = `
+export const BadgesText = `
 <div>
   <Badge variant="text-primary">Primary</Badge>
   <Badge variant="text-secondary">Secondary</Badge>
@@ -31,7 +31,7 @@ export const textBadge = `
   <Badge variant="text-success">Success</Badge>
   <Badge variant="text-danger">Danger</Badge>
 </div>`
-export const counterBadge = `
+export const BadgesCounter = `
 <div>
   <Badge pill variant="primary" className="mr-2">
     1
@@ -55,7 +55,7 @@ export const counterBadge = `
     7
   </Badge>
 </div>`
-export const badgeInOtherElements = `
+export const BadgesInOtherElements = `
 <div className="bd-example">
   <Button variant="outline-primary">
     Button <Badge variant="primary">9</Badge>
@@ -83,7 +83,7 @@ export const badgeInOtherElements = `
     </li>
   </ul>
 </div>`
-export const badgeSizes = `
+export const BadgesSizes = `
 <div>
   <Badge className="badge-sm mr-2" variant="primary">
     Small

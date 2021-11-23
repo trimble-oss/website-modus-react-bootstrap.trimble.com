@@ -1,23 +1,23 @@
-import React, { useContext } from 'react';
-import PropTypes from 'prop-types';
-import SelectableContext from './SelectableContext';
-import AccordionContext from './AccordionContext';
+import React, { useContext } from "react"
+import PropTypes from "prop-types"
+import SelectableContext from "./SelectableContext"
+import AccordionContext from "./AccordionContext"
 import {
   BsPrefixPropsWithChildren,
   BsPrefixRefForwardingComponent,
-} from './helpers';
+} from "./helpers"
 
-type EventHandler = React.EventHandler<React.SyntheticEvent>;
+type EventHandler = React.EventHandler<React.SyntheticEvent>
 
 export interface AccordionToggleProps extends BsPrefixPropsWithChildren {
-  eventKey: string;
-  onClick?: EventHandler;
+  eventKey: string
+  onClick?: EventHandler
 }
 
 type AccordionToggle = BsPrefixRefForwardingComponent<
-  'div',
+  "div",
   AccordionToggleProps
->;
+>
 
 const propTypes = {
   /** Set a custom element for this component */
@@ -31,54 +31,52 @@ const propTypes = {
 
   /** A callback function for when this component is clicked */
   onClick: PropTypes.func,
-};
+}
 
 export function useAccordionToggle(
   eventKey: string,
-  onClick?: EventHandler,
+  onClick?: EventHandler
 ): EventHandler {
-  const contextEventKey = useContext(AccordionContext);
-  const onSelect = useContext(SelectableContext);
-  debugger;
-  return (e) => {
+  const contextEventKey = useContext(AccordionContext)
+  const onSelect = useContext(SelectableContext)
+  return e => {
     /*
       Compare the event key in context with the given event key.
       If they are the same, then collapse the component.
     */
-    debugger;
-    const eventKeyPassed = eventKey === contextEventKey ? null : eventKey;
+    const eventKeyPassed = eventKey === contextEventKey ? null : eventKey
 
-    if (onSelect) onSelect(eventKeyPassed, e);
-    if (onClick) onClick(e);
-  };
+    if (onSelect) onSelect(eventKeyPassed, e)
+    if (onClick) onClick(e)
+  }
 }
 
 const AccordionToggle: AccordionToggle = React.forwardRef(
   (
     {
       // Need to define the default "as" during prop destructuring to be compatible with styled-components github.com/react-bootstrap/react-bootstrap/issues/3595
-      as: Component = 'button',
+      as: Component = "button",
       children,
       eventKey,
       onClick,
       ...props
     }: AccordionToggleProps,
-    ref,
+    ref
   ) => {
-    const accordionOnClick = useAccordionToggle(eventKey, onClick);
+    const accordionOnClick = useAccordionToggle(eventKey, onClick)
 
-    if (Component === 'button') {
-      (props as React.ButtonHTMLAttributes<HTMLButtonElement>).type = 'button';
+    if (Component === "button") {
+      ;(props as React.ButtonHTMLAttributes<HTMLButtonElement>).type = "button"
     }
 
     return (
       <Component ref={ref} onClick={accordionOnClick} {...props}>
         {children}
       </Component>
-    );
-  },
-);
+    )
+  }
+)
 
-AccordionToggle.propTypes = propTypes;
+AccordionToggle.propTypes = propTypes
 
-export default AccordionToggle;
+export default AccordionToggle

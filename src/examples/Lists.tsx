@@ -1,29 +1,4 @@
-import {
-  Badge,
-  Form,
-  FormCheck,
-  ListGroup,
-} from "@trimbleinc/modus-react-bootstrap"
-import CodeBlock from "../../common/CodeBlock"
-import Overview from "../../common/Overview"
-import React from "react"
-import MainLayout from "../../layouts/MainLayout"
-import { graphql } from "gatsby"
-import ComponentApi from "../../api-docs/ComponentApi"
-import LinkedHeading from "../../common/LinkedHeading"
-
-const ListsPage = props => (
-  <MainLayout {...props}>
-    <Overview guidelink="https://modus.trimble.com/components/lists/">
-      Basic code structure involves using <code>&lt;ListGroup&gt;</code> and{" "}
-      <code>&lt;ListGroup.Item&gt;</code>. Set the <code>active</code> prop to
-      indicate the list groups current active selection.
-    </Overview>
-
-    <CodeBlock
-      title="Basic List"
-      scope={{ ListGroup }}
-      code={`
+export const ListsBasic = `
 <div>
   <h6>List Items</h6>
   <ListGroup style={{ maxWidth: "400px" }}>
@@ -34,13 +9,9 @@ const ListsPage = props => (
     <ListGroup.Item>Vestibulum at eros</ListGroup.Item>
   </ListGroup>
 </div>
-`}
-    ></CodeBlock>
+`
 
-    <CodeBlock
-      title="List Items"
-      scope={{ Form, ListGroup, FormCheck, Badge }}
-      code={`
+export const ListsItems = `
 <div>
   <h6>List Items</h6>
   <ListGroup style={{ maxWidth: "400px" }}>
@@ -87,26 +58,9 @@ const ListsPage = props => (
     </ListGroup.Item>
   </ListGroup>
 </div>
-`}
-    >
-      <p>
-        The most basic list group is an unordered list with list items and the
-        proper classes. Build upon it with the options that follow, or with your
-        own CSS as needed.
-      </p>
-      <p>
-        Use <code>.list-item-left-control</code>,
-        <code>.list-item-right-control</code>, and
-        <code>.list-item-leftright-control</code> to add custom controls,
-        buttons, or icons to list items. Be sure to include{" "}
-        <code>.modus-icon</code> for 3rd party icons.
-      </p>
-    </CodeBlock>
+`
 
-    <CodeBlock
-      title="Borderless Lists "
-      scope={{ Form, ListGroup, FormCheck, Badge }}
-      code={`
+export const ListsBorderless = `
 <div>
   <h6>List Items</h6>
   <ListGroup className="list-group-borderless" style={{ maxWidth: "400px" }}>
@@ -153,16 +107,9 @@ const ListsPage = props => (
     </ListGroup.Item>
   </ListGroup>
 </div>
-`}
-    >
-      Add a class of <code>.list-group-borderless</code> to your List Group for
-      a borderless variant.
-    </CodeBlock>
+`
 
-    <CodeBlock
-      title="Condensed Lists "
-      scope={{ Form, ListGroup, FormCheck, Badge }}
-      code={`
+export const ListsCondensed = `
 <div>
   <h6>List Items</h6>
   <ListGroup className="list-group-condensed" style={{ maxWidth: "400px" }}>
@@ -209,37 +156,4 @@ const ListsPage = props => (
     </ListGroup.Item>
   </ListGroup>
 </div>
-`}
-    >
-      Add a class of <code>.list-group-condensed </code> to your List Group for
-      a smaller variant.
-    </CodeBlock>
-
-    <LinkedHeading h="2" className="h1" id="lists-api">
-      API
-    </LinkedHeading>
-    <ComponentApi metadata={props.data.ListGroup} />
-    <ComponentApi
-      metadata={props.data.ListGroupItem}
-      exportedBy={props.data.ListGroup}
-    />
-  </MainLayout>
-)
-
-export default ListsPage
-
-export const query = graphql`
-  query ListGroupQuery {
-    ListGroup: componentMetadata(displayName: { eq: "ListGroup" }) {
-      ...ComponentApi_metadata
-    }
-    ListGroupItem: componentMetadata(displayName: { eq: "ListGroupItem" }) {
-      ...ComponentApi_metadata
-    }
-    ListGroupItemAction: componentMetadata(
-      displayName: { eq: "ListGroupItemAction" }
-    ) {
-      ...ComponentApi_metadata
-    }
-  }
 `

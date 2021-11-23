@@ -1,4 +1,4 @@
-export const basicAlert = `
+export const AlertsBasic = `
 <div>
   <Alert key="a1" variant="primary">
     <i className="modus-icon material-icons alert-icon">info</i>A basic Primary
@@ -29,13 +29,13 @@ export const basicAlert = `
   </AlertDismissible>
 </div>
 `
-export const alertWithLink = `
+export const AlertsWithLink = `
 <Alert key="a1" variant="primary">
   This is a primary alert with <Alert.Link href="#">an example link</Alert.Link>
   . Give it a click if you like.
 </Alert>
 `
-export const alertWithButton = `
+export const AlertsWithButton = `
 <Alert key="a2" variant="primary">
   <i className="modus-icon material-icons alert-icon">info</i>A basic primary
   alert with a button
@@ -44,7 +44,7 @@ export const alertWithButton = `
   </a>
 </Alert>
 `
-export const dismissibleAlert = `
+export const AlertsDismissible = `
 <AlertDismissible key="a2" variant="primary">
   A basic primary alert with a dismiss icon
 </AlertDismissible>

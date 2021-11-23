@@ -1,26 +1,4 @@
-import { Toast } from "@trimbleinc/modus-react-bootstrap"
-import CodeBlock from "../../common/CodeBlock"
-import Overview from "../../common/Overview"
-import React from "react"
-import MainLayout from "../../layouts/MainLayout"
-import { graphql } from "gatsby"
-import ComponentApi from "../../api-docs/ComponentApi"
-import LinkedHeading from "../../common/LinkedHeading"
-
-const ToastsPage = props => (
-  <MainLayout {...props}>
-    <Overview guidelink="https://modus.trimble.com/components/toasts/">
-      Toasts are available for any length of text, as well as an optional
-      dismiss button. For proper styling, use one of the eight required
-      contextual classes (e.g., .<code>toast-success</code>). For inline
-      dismissal, use the prop <code>show</code> to set the visibility of the
-      toast.
-    </Overview>
-
-    <CodeBlock
-      title="Toasts"
-      scope={{ Toast }}
-      code={`
+export const ToastsBasic = `
 <div>
   <Toast>
     Aww yeah, you read a toast.
@@ -71,29 +49,4 @@ const ToastsPage = props => (
     </button>
   </Toast>
 </div>
-`}
-    ></CodeBlock>
-
-    <LinkedHeading h="2" id="toasts-api" className="h1">
-      API
-    </LinkedHeading>
-    <ComponentApi metadata={props.data.Toast} />
-    <ComponentApi metadata={props.data.ToastHeader} />
-    <ComponentApi metadata={props.data.ToastBody} />
-  </MainLayout>
-)
-
-export default ToastsPage
-export const query = graphql`
-  query ToastQuery {
-    Toast: componentMetadata(displayName: { eq: "Toast" }) {
-      ...ComponentApi_metadata
-    }
-    ToastHeader: componentMetadata(displayName: { eq: "ToastHeader" }) {
-      ...ComponentApi_metadata
-    }
-    ToastBody: componentMetadata(displayName: { eq: "ToastBody" }) {
-      ...ComponentApi_metadata
-    }
-  }
 `

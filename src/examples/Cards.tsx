@@ -1,4 +1,4 @@
-export const CardExample = `
+export const CardsBasic = `
 <Card style={{ width: "18rem" }}>
   <Card.Body>
     <Card.Title as="h4">Card title</Card.Title>
@@ -14,7 +14,7 @@ export const CardExample = `
 </Card>
 `
 
-export const CardWithImage = `
+export const CardsWithImage = `
 <Card style={{ width: "18rem" }}>
   <Card.Img variant="top" src="https://fakeimg.pl/286x150/" />
   <Card.Body>
@@ -27,7 +27,7 @@ export const CardWithImage = `
   </Card.Body>
 </Card>
 `
-export const HeaderAndFooter = `
+export const CardsHeaderAndFooter = `
 <Card style={{ width: "18rem" }}>
   <Card.Header>Card Header</Card.Header>
   <Card.Body>
@@ -42,7 +42,7 @@ export const HeaderAndFooter = `
 </Card>
 `
 
-export const CustomizingCards = `
+export const CardsCustomize = `
 <Card style={{ width: "18rem" }} border="dark" className="shadow">
   <Card.Img variant="top" src="https://fakeimg.pl/286x150/" />
   <Card.Body>
