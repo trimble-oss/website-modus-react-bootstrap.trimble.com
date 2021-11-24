@@ -157,6 +157,15 @@ article a:not(.stretched-link)[href^="http"]::after,
   background-color: #fafafa !important;
 }
 
-.autocomplete-suggestions {
-  display: unset;
+// .autocomplete-suggestions {
+//   display: unset;
+// }
+
+.autocomplete-suggestion:focus {
+  background: #444;
+  color: #fff;
+}
+
+.autocomplete-suggestions.dropdown-menu {
+  padding: 0px;
 }
