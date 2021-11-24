@@ -2,7 +2,7 @@ export const CardsBasic = `
 <Card style={{ width: "18rem" }}>
   <Card.Body>
     <Card.Title as="h4">Card title</Card.Title>
-    <Card.Title as="h5">Card subtitle</Card.Title>
+    <Card.Title as="h5" className="mb-2 text-muted">Card subtitle</Card.Title>
     <Card.Text>
       Some quick example text to build on the card title and make up the bulk of
       the card's content.

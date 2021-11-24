@@ -43,6 +43,11 @@ import {
   Text buttons should only be used with the Primary theme color.
 </CodeBlock>
 
+<CodeBlock bigtitle="Icon Buttons">
+  Modus has built in support for both icon only buttons and buttons with both
+  icons and text.
+</CodeBlock>
+
 <CodeBlock title="Text and Icons" code={ButtonsTextAndIcons}>
   Icons can be used within buttons by giving the icon a class of{" "}
   <code>.modus-icon </code>
@@ -58,11 +63,11 @@ import {
   Primary or Dark theme color.
 </CodeBlock>
 
-<h2>Button Sizes</h2>
-<p>
+<CodeBlock bigtitle="Button Sizes">
   Buttons default to “medium” size but there are also large and small options
   available.
-</p>
+</CodeBlock>
+
 <CodeBlock title="Small Buttons" code={ButtonsSmall}></CodeBlock>
 
 <CodeBlock title="Large Buttons" code={ButtonsLarge}></CodeBlock>
@@ -72,21 +77,12 @@ import {
   adding <code>block</code>.
 </CodeBlock>
 
-<h2>Special Use Cases</h2>
-<CodeBlock title="Dark Backgrounds" code={ButtonsDarkBackgrounds}>
-  For specific use cases where a light colored button is needed against a dark
-  background use a tertiary solid, outline, or text button.
-</CodeBlock>
-
-<p>Use case examples for light buttons.</p>
-<CodeBlock code={ButtonsLight}></CodeBlock>
+<LinkedHeading id="specialUseCase" h="2" className="h1">
+  Special Use Cases
+</LinkedHeading>
 
 <CodeBlock title="Danger Button" code={ButtonsDanger}>
   A danger button should be used for permanent, destructive actions like delete.
-</CodeBlock>
-
-<CodeBlock title="Yellow button" code={ButtonsYellow}>
-  A yellow button for the Trimble brand color is provided for special use cases.
 </CodeBlock>
 
 <LinkedHeading h="2" className="h1" id="buttons-api">
