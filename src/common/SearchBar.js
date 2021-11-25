@@ -47,19 +47,6 @@ const SearchBar = ({ location }) => {
     } else setShow(false)
   }
 
-  const handleKeyDown = e => {
-    // if (e.keyCode === 38 || e.keyCode === 40) dropdownRef.current.focus()
-    // arrow up/down button should select next/previous list element
-    // if (e.keyCode === 38 && cursor > 0) {
-    //   setCursor(prevState => prevState - 1)
-    // } else if (e.keyCode === 40 && cursor < results.length - 1) {
-    //   setCursor(prevState => prevState + 1)
-    // } else if (e.keyCode === 13 && cursor > -1 && results[cursor].itemRef) {
-    //   results[cursor].itemRef.focus()
-    //   results[cursor].itemRef.click()
-    // }
-  }
-
   const CustomToggle = React.forwardRef(({ children, onClick }, ref) => (
     <FormControl
       type="text"
@@ -88,7 +75,6 @@ const SearchBar = ({ location }) => {
               as={CustomToggle}
               id="dropdown-custom-components"
             ></Dropdown.Toggle>
-
             <Dropdown.Menu
               show={show}
               ref={dropdownRef}
