@@ -24,7 +24,12 @@ const SearchBar = ({ location }) => {
       setShow(false)
   }
 
-  document.addEventListener("mousedown", handleClickOutside)
+  //https://www.gatsbyjs.com/docs/using-client-side-only-packages/
+  //Gatsby is a server side rendering framework, some apis, like window and document are not present during the build process,
+  //so needed some additional checks
+  if (!(typeof window === "undefined" || !window.document)) {
+    window.document.addEventListener("mousedown", handleClickOutside)
+  }
 
   const handleChange = e => {
     let userInput = e.target.value
