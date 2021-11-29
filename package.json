@@ -60,7 +60,7 @@
     "@types/styled-components": "^5.1.14",
     "ast-types": "^0.14.2",
     "lodash": "^4.17.21",
-    "prettier": "2.4.1",
+    "prettier": "2.5.0",
     "react-docgen": "^5.4.0",
     "stylelint": "13.13.1",
     "stylelint-config-prettier": "9.0.3",
