@@ -52,7 +52,7 @@
     "react-dom": "^17.0.1",
     "react-helmet": "^6.1.0",
     "react-live": "^2.3.0",
-    "sass": "^1.42.1",
+    "sass": "^1.43.5",
     "styled-components": "^5.3.1"
   },
   "devDependencies": {
