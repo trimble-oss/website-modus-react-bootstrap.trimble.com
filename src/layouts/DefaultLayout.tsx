@@ -3,19 +3,42 @@ import * as PropTypes from "prop-types"
 import Footer from "../common/Footer"
 import Header from "../common/Header"
 import "../assets/css/main.scss"
+import { MenuContext, NavigationInfo } from "../common/MenuContext"
+import GetNavigationMenu from "../common/MenuConfiguration"
 
 const propTypes = {
   location: PropTypes.object.isRequired,
 }
 
+function CreateMenuContext(routeInfo: string): NavigationInfo {
+  const allMenus = GetNavigationMenu()
+  const routeItems = routeInfo.split("/")?.filter(item => item)
+
+  if (!routeItems || !routeItems.length)
+    return { current: null, menu: null, all: allMenus }
+
+  let parent = allMenus.find(menu => menu.key == routeItems[0])
+  let activeMenu = parent
+  if (routeItems.length > 1 && parent.children) {
+    activeMenu = parent.children.find(function (x) {
+      return x.key == routeItems[1]
+    })
+  }
+  return { current: activeMenu, menu: parent.children, all: allMenus }
+}
+
 function DefaultLayout({ children, location }) {
+  const context = CreateMenuContext(location.pathname)
+
   return (
-    <div>
-      <Header location={location} />
+    <MenuContext.Provider value={context}>
+      <Header />
       {children}
       <Footer />
-    </div>
+    </MenuContext.Provider>
   )
 }
+
+DefaultLayout.propTypes = propTypes
 
 export default DefaultLayout

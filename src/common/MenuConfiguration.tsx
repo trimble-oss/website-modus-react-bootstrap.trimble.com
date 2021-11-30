@@ -6,41 +6,35 @@ export interface Menu {
   children?: Menu[]
 }
 
-export const foundationsMenu: Menu = {
+const foundationsMenu: Menu = {
   key: "foundations",
-  path: "/foundations",
   title: "Foundations",
   children: [
     {
       key: "typography",
-      path: "/foundations/typography",
       title: "Typography",
       subtitle:
         "Typography can help create clear hierarchies, organize information, and guide users through a product or experience.",
     },
     {
       key: "color-palette",
-      path: "/foundations/color-palette",
       title: "Color Palette",
       subtitle: "The Modus palette is based on the Trimble brand colors.",
     },
     {
       key: "shadows-and-depth",
-      path: "/foundations/shadows-and-depth",
       title: "Shadows & Depth",
       subtitle:
         "Depth is defined through a combination of z-index, overlays, and drop shadows. Use it to focus the user’s attention on a task, provide temporary supplementary information, or define spatial relationships between content.",
     },
     {
       key: "grid-and-spacing",
-      path: "/foundations/grid-and-spacing",
       title: "Grid & Spacing",
       subtitle:
         "Space helps organize content, permitting consistent density and visual order that telegraphs our brand. Space is a way to unify the padding, margins, and heights.",
     },
     {
       key: "icons",
-      path: "/foundations/icons",
       title: "Icons",
       subtitle:
         "Guidance and suggestions for using external Modus icon library.",
@@ -48,9 +42,8 @@ export const foundationsMenu: Menu = {
   ],
 }
 
-export const gettingStartedMenu: Menu = {
+const gettingStartedMenu: Menu = {
   key: "getting-started",
-  path: "/getting-started",
   title: "Getting Started",
   subtitle: `The Modus React Bootstrap is a React-based component library extended
         from react-bootstrap component library developed as a common, open
@@ -59,7 +52,6 @@ export const gettingStartedMenu: Menu = {
   children: [
     {
       key: "getting-started",
-      path: "/getting-started",
       title: "Getting Started",
       subtitle: `The Modus React Bootstrap is a React-based component library extended
         from react-bootstrap component library developed as a common, open
@@ -68,7 +60,6 @@ export const gettingStartedMenu: Menu = {
     },
     {
       key: "usage",
-      path: "/getting-started/usage",
       title: "Usage",
       subtitle:
         "Demonstrate how to import and use the Modus React Bootstrap components.",
@@ -76,30 +67,26 @@ export const gettingStartedMenu: Menu = {
 
     {
       key: "status",
-      path: "/getting-started/status",
       title: "Status",
       subtitle: "Status of each Modus React Bootstrap component.",
     },
 
     {
       key: "changelog",
-      path: "/getting-started/changelog",
       title: "Changelog",
       subtitle: "View list of changes of releases.",
     },
   ],
 }
 
-export const layoutMenu: Menu = {
+const layoutMenu: Menu = {
   key: "layout",
-  path: "/layout",
   title: "Layout",
   subtitle:
     "Besides the aesthetics and UI elements, the Modus Framework has an optional layout you can use for your web applications.",
   children: [
     {
       key: "layout",
-      path: "/layout",
       title: "Layout",
       subtitle:
         "Besides the aesthetics and UI elements, the Modus Framework has an optional layout you can use for your web applications.",
@@ -107,119 +94,102 @@ export const layoutMenu: Menu = {
   ],
 }
 
-export const utilitiesMenu: Menu = {
+const utilitiesMenu: Menu = {
   key: "utilities",
-  path: "/utilities",
   title: "Utilities",
   children: [
     {
       key: "borders",
-      path: "/utilities/borders",
       title: "Borders",
       subtitle:
         "Use border utilities to quickly style the border and border-radius of an element. Great for images, buttons, or any other element.",
     },
     {
       key: "clearfix",
-      path: "/utilities/clearfix",
       title: "Clearfix",
       subtitle:
         "Quickly and easily clear floated content within a container by adding a clearfix utility.",
     },
     {
       key: "close-icon",
-      path: "/utilities/close-icon",
       title: "Close Icon",
       subtitle:
         "Use a generic close icon for dismissing content like modals and alerts.",
     },
     {
       key: "display",
-      path: "/utilities/display",
       title: "Display",
       subtitle:
         "Quickly and responsively toggle the display value of components and more with our display utilities. Includes support for some of the more common values, as well as some extras for controlling display when printing.",
     },
     {
       key: "embed",
-      path: "/utilities/embed",
       title: "Embed",
       subtitle:
         "Create responsive video or slideshow embeds based on the width of the parent by creating an intrinsic ratio that scales on any device.",
     },
     {
       key: "flex",
-      path: "/utilities/flex",
       title: "Flex",
       subtitle:
         "Quickly manage the layout, alignment, and sizing of grid columns, navigation, components, and more with a full suite of responsive flexbox utilities. For more complex implementations, custom CSS may be necessary.",
     },
     {
       key: "float",
-      path: "/utilities/float",
       title: "Float",
       subtitle:
         "Toggle floats on any element, across any breakpoint, using these responsive float utilities.",
     },
     {
       key: "interactions",
-      path: "/utilities/interactions",
       title: "Interactions",
       subtitle:
         "Utility classes that change how users interact with contents of a website.",
     },
     {
       key: "overflow",
-      path: "/utilities/overflow",
       title: "Overflow",
       subtitle:
         "Use these shorthand utilities for quickly configuring how content overflows an element.",
     },
     {
       key: "padding-and-margin",
-      path: "/utilities/padding-and-margin",
       title: "Padding and Margins",
       subtitle:
         "Bootstrap includes a wide range of shorthand responsive margin and padding utility classes to modify an element’s appearance.",
     },
     {
       key: "position",
-      path: "/utilities/position",
       title: "Position",
       subtitle:
         "Use these shorthand utilities for quickly configuring the position of an element.",
     },
     {
       key: "screen-readers",
-      path: "/utilities/screen-readers",
       title: "Screen Readers",
       subtitle:
         "Use screen reader utilities to hide elements on all devices except screen readers.",
     },
     {
       key: "sizing",
-      path: "/utilities/sizing",
       title: "Sizing",
       subtitle:
         "Easily make an element as wide or as tall with our width and height utilities.",
     },
     {
       key: "text",
-      path: "/utilities/text",
       title: "Text",
       subtitle:
         "Documentation and examples for common text utilities to control alignment, wrapping, weight, and more.",
     },
     {
       key: "vertical-alignment",
-      path: "/utilities/vertical-alignment",
       title: "Vertical Alignment",
       subtitle:
         "Easily change the vertical alignment of inline, inline-block, inline-table, and table cell elements.",
     },
     {
       key: "visibility",
-      path: "/utilities/visibility",
       title: "Visibility",
       subtitle:
         "Control the visibility, without modifying the display, of elements with visibility utilities.",
@@ -227,9 +197,8 @@ export const utilitiesMenu: Menu = {
   ],
 }
 
-export const componentsMenu: Menu = {
+const componentsMenu: Menu = {
   key: "components",
-  path: "/components",
   title: "Components",
   subtitle:
     "Components are the building blocks of the design system designed with users in mind.",
@@ -237,164 +206,140 @@ export const componentsMenu: Menu = {
   children: [
     {
       key: "accordions",
-      path: "/components/accordions",
       title: "Accordions",
       subtitle:
         "The accordion component delivers large amounts of content in a small space through progressive disclosure. That is, the user gets key details about the underlying content and can choose to expand that content within the constraints of the accordion. Accordions work especially well on mobile interfaces or whenever vertical space is at a premium.",
     },
     {
       key: "alerts",
-      path: "/components/alerts",
       title: "Alerts",
       subtitle:
         "Alerts provide contextual information adjacent to items on the visible page. There are four types: error, warning, success, or informational.",
     },
     {
       key: "badges",
-      path: "/components/badges",
       title: "Badges",
       subtitle: "Badges are labels which hold small amounts of information.",
     },
     {
       key: "breadcrumbs",
-      path: "/components/breadcrumbs",
       title: "Breadcrumbs",
       subtitle:
         "The breadcrumb component is a secondary navigation pattern that shows hierarchy among content or traces a user’s path.",
     },
     {
       key: "buttons",
-      path: "/components/buttons",
       title: "Buttons",
       subtitle:
         "Buttons express what action will occur when the user clicks or touches it. Buttons are used to initialize an action, either in the background or foreground of an experience.",
     },
     {
       key: "cards",
-      path: "/components/cards",
       title: "Cards",
       subtitle:
         "Cards provide a set of content which acts as an entry point to more detailed information.",
     },
     {
       key: "checkboxes",
-      path: "/components/checkboxes",
       title: "Checkboxes",
       subtitle:
         "Checkboxes are used for a list of options where the user may select multiple options, including all or none.",
     },
     {
       key: "chips",
-      path: "/components/chips",
       title: "Chips",
       subtitle:
         "Chips are compact elements that represent an input, attribute, or action. Chips should appear dynamically as a group of multiple interactive elements. Unlike buttons, which should be a consistent and familiar call to action, one that a user expects to appear as the same action in the same general area.",
     },
     {
       key: "dropdowns",
-      path: "/components/dropdowns",
       title: "Dropdowns",
       subtitle:
         "Dropdowns present a list of options that can be used to filter or sort existing content. They can also be used as menus. Their use as menus can be seen in tabs. At a smaller screen size, the tabs collapse into a dropdown.",
     },
     {
       key: "inputs",
-      path: "/components/inputs",
       title: "Inputs",
       subtitle:
         "Input boxes gather information from users. Labels sit atop these elements.",
     },
     {
       key: "lists",
-      path: "/components/lists",
       title: "Lists",
       subtitle:
         "A list can be used to display content related to a single subject.",
     },
     {
       key: "messages",
-      path: "/components/messages",
       title: "Messages",
       subtitle:
         "Messages provide the user with contextual static information. They have a lower priority than an alert.",
     },
     {
       key: "modals",
-      path: "/components/modals",
       title: "Modals",
       subtitle:
         "Modals gather information, complete a subtask, or provide additional information without losing the context of an underlying page.",
     },
     {
       key: "navbar",
-      path: "/components/navbar",
       title: "Navbar",
       subtitle:
         "The navbar provides context through globally accessible menu options.",
     },
     {
       key: "pagination",
-      path: "/components/pagination",
       title: "Pagination",
       subtitle:
         "Pagination affords navigation between pages of content, and it highlights which page is currently in view.",
     },
     {
       key: "progress-bar",
-      path: "/components/progress-bar",
       title: "Progress Bars",
       subtitle:
         "Progress indicators express an unspecified wait time or display the length of a process.",
     },
     {
       key: "radio-buttons",
-      path: "/components/radio-buttons",
       title: "Radio Buttons",
       subtitle:
         "Radio buttons are used when a list of two or more options are mutually exclusive, meaning the user must select only one option.",
     },
     {
       key: "sliders",
-      path: "/components/sliders",
       title: "Sliders",
       subtitle:
         "Range Sliders select a numeric value, or range of values, by moving a handle, or set of handles, along a bar. The slider in its basic form should be accompanied by a label and a number input that doubles as a display for the slider’s current value.",
     },
     {
       key: "spinners",
-      path: "/components/spinners",
       title: "Spinners",
       subtitle: "Spinners indicate progress by showing users a loading state.",
     },
     {
       key: "switches",
-      path: "/components/switches",
       title: "Switches",
       subtitle: "Switches are used to toggle functionality.",
     },
     {
       key: "tables",
-      path: "/components/tables",
       title: "Tables",
       subtitle:
         "Tables display information in a grid-like format of rows and columns. They organize information in a way that’s easy to scan, so that users can look for patterns and insights.",
     },
     {
       key: "tabs",
-      path: "/components/tabs",
       title: "Tabs",
       subtitle:
         "Tabs are used to quickly navigate between views within the same context. They serve as a form of navigation between related content.",
     },
     {
       key: "toasts",
-      path: "/components/toasts",
       title: "Toasts",
       subtitle: "Toasts are types of alerts.",
     },
     {
       key: "tooltips",
-      path: "/components/tooltips",
       title: "Tooltips",
       subtitle:
         "Tooltips provide a short description of a page element or control.",
@@ -402,10 +347,36 @@ export const componentsMenu: Menu = {
   ],
 }
 
-export const menuList = [
-  gettingStartedMenu,
-  layoutMenu,
-  foundationsMenu,
-  componentsMenu,
-  utilitiesMenu,
-]
+const GetNavigationMenu = function (includeOnly?: string): Menu[] {
+  let menusWithNoIndexPage = [foundationsMenu.key, utilitiesMenu.key]
+  return [
+    gettingStartedMenu,
+    layoutMenu,
+    foundationsMenu,
+    componentsMenu,
+    utilitiesMenu,
+  ]
+    .filter(parent => !includeOnly || parent.key == includeOnly)
+    .map(parent => {
+      return {
+        path: `/${parent.key}/${
+          menusWithNoIndexPage.includes(parent.key)
+            ? parent.children[0].key
+            : ""
+        }`,
+        children: parent.children.map(child => {
+          return {
+            path: `/${parent.key}/${child.key}`,
+            key: child.key,
+            title: child.title,
+            subtitle: child.subtitle,
+          }
+        }),
+        key: parent.key,
+        title: parent.title,
+        subtitle: parent.subtitle,
+      }
+    })
+}
+
+export default GetNavigationMenu

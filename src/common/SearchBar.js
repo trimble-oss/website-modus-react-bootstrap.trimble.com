@@ -8,7 +8,7 @@ import {
   Overlay,
 } from "@trimbleinc/modus-react-bootstrap"
 
-const SearchBar = ({ location }) => {
+const SearchBar = () => {
   const [results, setResults] = useState([])
   const [searchQuery, setSearchQuery] = useState()
   const [cursor, setCursor] = useState(-1)
@@ -36,10 +36,21 @@ const SearchBar = ({ location }) => {
     setSearchQuery(userInput)
     if (userInput && userInput.length > 2 && window.__LUNR__) {
       window.__LUNR__.__loaded.then(lunr => {
-        const refs = lunr.en.index.search(`*${userInput}*`)
-        const pages = refs.map(({ ref }) => {
-          return { itemRef: null, ...lunr.en.store[ref] }
-        })
+        const refs = lunr.en.index.search(
+          userInput +
+            "^100" +
+            " " +
+            userInput +
+            "*^10" +
+            " " +
+            "*" +
+            userInput +
+            "^10" +
+            " " +
+            userInput +
+            "~2^1"
+        )
+        const pages = refs.map(({ ref }) => lunr.en.store[ref])
         setResults(pages)
 
         if (pages.length > 0) {

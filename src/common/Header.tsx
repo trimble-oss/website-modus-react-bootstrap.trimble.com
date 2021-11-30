@@ -1,41 +1,13 @@
 import * as PropTypes from "prop-types"
-import React from "react"
-import {
-  Form,
-  FormControl,
-  Navbar,
-  Nav,
-  Container,
-} from "@trimbleinc/modus-react-bootstrap"
+import React, { useContext } from "react"
+import { Navbar, Nav, Container } from "@trimbleinc/modus-react-bootstrap"
 import logo from "../assets/img/trimble-logo.svg"
 import SearchBar from "./SearchBar"
+import { MenuContext } from "./MenuContext"
 
-const propTypes = { activePage: PropTypes.string }
+function Header() {
+  const { current, all: navigationMenu } = useContext(MenuContext)
 
-const NAV_LINKS = [
-  {
-    link: "/getting-started",
-    title: "Getting Started",
-  },
-  {
-    link: "/layout",
-    title: "Layout",
-  },
-  {
-    link: "/foundations/typography",
-    title: "Foundations",
-  },
-  {
-    link: "/components",
-    title: "Components",
-  },
-  {
-    link: "/utilities/borders/",
-    title: "Utilities",
-  },
-]
-
-function Header({ location }) {
   return (
     <Container fluid className="bg-white">
       <Navbar
@@ -64,12 +36,12 @@ function Header({ location }) {
             id="top"
             className="d-none d-md-flex"
           >
-            {NAV_LINKS.map(({ link, title }) => {
+            {navigationMenu.map(({ key, path, title }) => {
               return (
                 <Nav.Link
-                  key={link}
-                  href={link}
-                  active={location.pathname.startsWith(link)}
+                  key={key}
+                  href={path}
+                  active={current && current.path.startsWith(`/${key}`)}
                   className="justify-content-end  mx-0 mx-lg-1 mx-xl-2"
                 >
                   {title}
@@ -77,13 +49,11 @@ function Header({ location }) {
               )
             })}
           </Nav>
-          <SearchBar location={location} />
+          <SearchBar />
         </div>
       </Navbar>
     </Container>
   )
 }
-
-Header.propTypes = propTypes
 
 export default Header

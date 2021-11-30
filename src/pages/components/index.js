@@ -6,18 +6,23 @@ import {
   Col,
   Container,
 } from "@trimbleinc/modus-react-bootstrap"
-import { componentsMenu } from "../../common/MenuConfiguration"
 import ComponentCard from "../../common/ComponentCard"
 import Banner from "../../common/Banner"
 import DefaultLayout from "../../layouts/DefaultLayout"
+import GetNavigationMenu from "../../common/MenuConfiguration"
 
 const ComponentsDashboard = props => {
-  const { title, subtitle, path: parentMenu, children: menu } = componentsMenu
-  const [components, setComponents] = useState(menu)
+  const {
+    title,
+    subtitle,
+    children: childMenu,
+  } = GetNavigationMenu("components")[0]
+
+  const [components, setComponents] = useState(childMenu)
   const handleSearch = event => {
     let searchText = event.target.value.toLowerCase()
     setComponents(
-      menu.filter(item => item.title.toLowerCase().includes(searchText))
+      childMenu.filter(item => item.title.toLowerCase().includes(searchText))
     )
   }
 
@@ -46,7 +51,7 @@ const ComponentsDashboard = props => {
                 <ComponentCard title={item.title} image={item.key}>
                   <p className="px-2 ml-n2">
                     <a
-                      href={`${parentMenu}/${item.key}`}
+                      href={item.path}
                       className="stretched-link text-decoration-none text-muted"
                     >
                       {item.subtitle}

@@ -4,7 +4,7 @@ const path = require("path")
 const defaultDescriptions = require("./src/api-docs/defaultPropDescriptions")
 module.exports = {
   siteMetadata: {
-    title: `Trimble Modus Bootstrap Developer Guide`,
+    title: `Trimble Modus React Bootstrap Developer Guide`,
     description: `The Modus React Bootstrap is a React-based component library extended from react-bootstrap`,
     author: `Trimble Inc.`,
     siteUrl: `https://modus-react-bootstrap.trimble.com/`,

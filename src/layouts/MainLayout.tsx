@@ -3,9 +3,7 @@ import React from "react"
 import { MDXProvider } from "@mdx-js/react"
 
 import MainContent from "../common/MainContent"
-import { menuList } from "../common/MenuConfiguration"
 import Banner from "../common/Banner"
-import { MenuContext, NavigationInfo } from "../common/MenuContext"
 
 import Default from "./DefaultLayout"
 
@@ -23,35 +21,14 @@ const propTypes = {
 
 const components = { CodeBlock, Overview, LinkedHeading, ComponentApi }
 
-function GetMenuContext(routeInfo) {
-  const routeItems = routeInfo.split("/")?.filter(item => item)
-  const parent =
-    routeItems && menuList.find(x => x.path.endsWith(routeItems[0]))
-  if (!parent) return null
-
-  let activeMenu = parent
-  if (routeItems.length > 1 && parent.children) {
-    activeMenu = parent.children.find(function (x) {
-      return x.path.endsWith(routeItems[1])
-    })
-  }
-
-  return { current: activeMenu, menu: parent.children }
-}
-
 function MainLayout({ children, ...props }) {
-  const context = GetMenuContext(props.location.pathname)
-  const { title, subtitle } = context.current
-
   return (
-    <Default location={props.location} grayscale={false}>
+    <Default location={props.location}>
       <ModusIcons />
-      <Banner title={title} subtitle={subtitle} />
-      <MenuContext.Provider value={context}>
-        <MainContent>
-          <MDXProvider components={components}>{children}</MDXProvider>
-        </MainContent>
-      </MenuContext.Provider>
+      <Banner />
+      <MainContent>
+        <MDXProvider components={components}>{children}</MDXProvider>
+      </MainContent>
     </Default>
   )
 }
