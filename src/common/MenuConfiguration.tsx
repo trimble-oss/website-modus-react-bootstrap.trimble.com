@@ -294,7 +294,7 @@ const componentsMenu: Menu = {
         "Pagination affords navigation between pages of content, and it highlights which page is currently in view.",
     },
     {
-      key: "progress-bar",
+      key: "progress-bars",
       title: "Progress Bars",
       subtitle:
         "Progress indicators express an unspecified wait time or display the length of a process.",
