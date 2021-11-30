@@ -13,7 +13,7 @@ import LinkedHeading from "../common/LinkedHeading"
 import ComponentApi from "../api-docs/ComponentApi"
 
 //Modus Icon scripts not required for Home page
-import { ModusIcons } from "../common/ExternalReferences"
+import { ModusIconsReferences } from "../common/ExternalReferences"
 
 const propTypes = {
   location: PropTypes.object.isRequired,
@@ -32,7 +32,7 @@ function MainLayout({ children, ...props }) {
   } else {
     return (
       <Default location={props.location}>
-        <ModusIcons />
+        <ModusIconsReferences />
         <Banner />
         <MainContent>
           <MDXProvider components={components}>{children}</MDXProvider>

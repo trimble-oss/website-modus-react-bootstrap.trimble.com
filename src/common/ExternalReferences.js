@@ -3,7 +3,7 @@ import React from "react"
 // React Helmet manages changes to document head
 import { Helmet } from "react-helmet"
 
-export const ModusIcons = () => {
+export const ModusIconsReferences = () => {
   return (
     <div>
       <Helmet>
@@ -19,7 +19,7 @@ export const ModusIcons = () => {
     </div>
   )
 }
-export const ModusLayout = () => {
+export const ModusLayoutReferences = () => {
   return (
     <div>
       <Helmet>
