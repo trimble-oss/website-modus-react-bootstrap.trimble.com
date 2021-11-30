@@ -13,11 +13,13 @@ const propTypes = {
 function CreateMenuContext(routeInfo: string): NavigationInfo {
   const allMenus = GetNavigationMenu()
   const routeItems = routeInfo.split("/")?.filter(item => item)
+  const defaultContext = { current: null, menu: null, all: allMenus }
 
-  if (!routeItems || !routeItems.length)
-    return { current: null, menu: null, all: allMenus }
+  if (!routeItems || !routeItems.length) return defaultContext
 
   let parent = allMenus.find(menu => menu.key == routeItems[0])
+  if (!parent) return defaultContext
+
   let activeMenu = parent
   if (routeItems.length > 1 && parent.children) {
     activeMenu = parent.children.find(function (x) {
