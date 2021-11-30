@@ -22,15 +22,24 @@ const propTypes = {
 const components = { CodeBlock, Overview, LinkedHeading, ComponentApi }
 
 function MainLayout({ children, ...props }) {
-  return (
-    <Default location={props.location}>
-      <ModusIcons />
-      <Banner />
-      <MainContent>
-        <MDXProvider components={components}>{children}</MDXProvider>
-      </MainContent>
-    </Default>
-  )
+  if (props.location.pathname.endsWith("/components/")) {
+    return (
+      <Default location={props.location}>
+        <Banner />
+        {children}
+      </Default>
+    )
+  } else {
+    return (
+      <Default location={props.location}>
+        <ModusIcons />
+        <Banner />
+        <MainContent>
+          <MDXProvider components={components}>{children}</MDXProvider>
+        </MainContent>
+      </Default>
+    )
+  }
 }
 
 MainLayout.propTypes = propTypes
