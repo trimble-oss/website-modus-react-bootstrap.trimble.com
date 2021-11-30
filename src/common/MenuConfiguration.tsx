@@ -4,6 +4,7 @@ export interface Menu {
   subtitle?: string
   path?: string
   children?: Menu[]
+  styleguideUrl?: string
 }
 
 const foundationsMenu: Menu = {
@@ -13,6 +14,7 @@ const foundationsMenu: Menu = {
     {
       key: "typography",
       title: "Typography",
+      styleguideUrl: "https://modus.trimble.com/foundations/typography/",
       subtitle:
         "Typography can help create clear hierarchies, organize information, and guide users through a product or experience.",
     },
@@ -20,16 +22,19 @@ const foundationsMenu: Menu = {
       key: "color-palette",
       title: "Color Palette",
       subtitle: "The Modus palette is based on the Trimble brand colors.",
+      styleguideUrl: "https://modus.trimble.com/foundations/color-palette/",
     },
     {
       key: "shadows-and-depth",
       title: "Shadows & Depth",
+      styleguideUrl: "https://modus.trimble.com/foundations/shadows-and-depth/",
       subtitle:
         "Depth is defined through a combination of z-index, overlays, and drop shadows. Use it to focus the user’s attention on a task, provide temporary supplementary information, or define spatial relationships between content.",
     },
     {
       key: "grid-and-spacing",
       title: "Grid & Spacing",
+      styleguideUrl: "https://modus.trimble.com/foundations/grid-and-spacing/",
       subtitle:
         "Space helps organize content, permitting consistent density and visual order that telegraphs our brand. Space is a way to unify the padding, margins, and heights.",
     },
@@ -202,145 +207,168 @@ const componentsMenu: Menu = {
   title: "Components",
   subtitle:
     "Components are the building blocks of the design system designed with users in mind.",
-
   children: [
     {
       key: "accordions",
       title: "Accordions",
+      styleguideUrl: "https://modus.trimble.com/components/accordions/",
       subtitle:
         "The accordion component delivers large amounts of content in a small space through progressive disclosure. That is, the user gets key details about the underlying content and can choose to expand that content within the constraints of the accordion. Accordions work especially well on mobile interfaces or whenever vertical space is at a premium.",
     },
     {
       key: "alerts",
       title: "Alerts",
+      styleguideUrl: "https://modus.trimble.com/components/alerts/",
       subtitle:
         "Alerts provide contextual information adjacent to items on the visible page. There are four types: error, warning, success, or informational.",
     },
     {
       key: "badges",
       title: "Badges",
+      styleguideUrl: "https://modus.trimble.com/components/badges/",
       subtitle: "Badges are labels which hold small amounts of information.",
     },
     {
       key: "breadcrumbs",
       title: "Breadcrumbs",
+      styleguideUrl: "https://modus.trimble.com/components/breadcrumbs/",
       subtitle:
         "The breadcrumb component is a secondary navigation pattern that shows hierarchy among content or traces a user’s path.",
     },
     {
       key: "buttons",
       title: "Buttons",
+      styleguideUrl: "https://modus.trimble.com/components/buttons/",
       subtitle:
         "Buttons express what action will occur when the user clicks or touches it. Buttons are used to initialize an action, either in the background or foreground of an experience.",
     },
     {
       key: "cards",
       title: "Cards",
+      styleguideUrl: "https://modus.trimble.com/components/cards/",
       subtitle:
         "Cards provide a set of content which acts as an entry point to more detailed information.",
     },
     {
       key: "checkboxes",
       title: "Checkboxes",
+      styleguideUrl: "https://modus.trimble.com/components/checkboxes/",
       subtitle:
         "Checkboxes are used for a list of options where the user may select multiple options, including all or none.",
     },
     {
       key: "chips",
       title: "Chips",
+      styleguideUrl: "https://modus.trimble.com/components/chips/",
       subtitle:
         "Chips are compact elements that represent an input, attribute, or action. Chips should appear dynamically as a group of multiple interactive elements. Unlike buttons, which should be a consistent and familiar call to action, one that a user expects to appear as the same action in the same general area.",
     },
     {
       key: "dropdowns",
       title: "Dropdowns",
+      styleguideUrl: "https://modus.trimble.com/components/dropdowns/",
       subtitle:
         "Dropdowns present a list of options that can be used to filter or sort existing content. They can also be used as menus. Their use as menus can be seen in tabs. At a smaller screen size, the tabs collapse into a dropdown.",
     },
     {
       key: "inputs",
       title: "Inputs",
+      styleguideUrl: "https://modus.trimble.com/components/inputs/",
       subtitle:
         "Input boxes gather information from users. Labels sit atop these elements.",
     },
     {
       key: "lists",
       title: "Lists",
+      styleguideUrl: "https://modus.trimble.com/components/lists/",
       subtitle:
         "A list can be used to display content related to a single subject.",
     },
     {
       key: "messages",
       title: "Messages",
+      styleguideUrl: "https://modus.trimble.com/components/messages/",
       subtitle:
         "Messages provide the user with contextual static information. They have a lower priority than an alert.",
     },
     {
       key: "modals",
       title: "Modals",
+      styleguideUrl: "https://modus.trimble.com/components/modals/",
       subtitle:
         "Modals gather information, complete a subtask, or provide additional information without losing the context of an underlying page.",
     },
     {
       key: "navbar",
       title: "Navbar",
+      styleguideUrl: "https://modus.trimble.com/components/navbar/",
       subtitle:
         "The navbar provides context through globally accessible menu options.",
     },
     {
       key: "pagination",
       title: "Pagination",
+      styleguideUrl: "https://modus.trimble.com/components/pagination/",
       subtitle:
         "Pagination affords navigation between pages of content, and it highlights which page is currently in view.",
     },
     {
       key: "progress-bars",
       title: "Progress Bars",
+      styleguideUrl: "https://modus.trimble.com/components/progress-bars/",
       subtitle:
         "Progress indicators express an unspecified wait time or display the length of a process.",
     },
     {
       key: "radio-buttons",
       title: "Radio Buttons",
+      styleguideUrl: "https://modus.trimble.com/components/radio-buttons/",
       subtitle:
         "Radio buttons are used when a list of two or more options are mutually exclusive, meaning the user must select only one option.",
     },
     {
       key: "sliders",
       title: "Sliders",
+      styleguideUrl: "https://modus.trimble.com/components/sliders/",
       subtitle:
         "Range Sliders select a numeric value, or range of values, by moving a handle, or set of handles, along a bar. The slider in its basic form should be accompanied by a label and a number input that doubles as a display for the slider’s current value.",
     },
     {
       key: "spinners",
       title: "Spinners",
+      styleguideUrl: "https://modus.trimble.com/components/spinners/",
       subtitle: "Spinners indicate progress by showing users a loading state.",
     },
     {
       key: "switches",
       title: "Switches",
+      styleguideUrl: "https://modus.trimble.com/components/switches/",
       subtitle: "Switches are used to toggle functionality.",
     },
     {
       key: "tables",
       title: "Tables",
+      styleguideUrl: "https://modus.trimble.com/components/tables/",
       subtitle:
         "Tables display information in a grid-like format of rows and columns. They organize information in a way that’s easy to scan, so that users can look for patterns and insights.",
     },
     {
       key: "tabs",
       title: "Tabs",
+      styleguideUrl: "https://modus.trimble.com/components/tabs/",
       subtitle:
         "Tabs are used to quickly navigate between views within the same context. They serve as a form of navigation between related content.",
     },
     {
       key: "toasts",
       title: "Toasts",
+      styleguideUrl: "https://modus.trimble.com/components/toasts/",
       subtitle: "Toasts are types of alerts.",
     },
     {
       key: "tooltips",
       title: "Tooltips",
+      styleguideUrl: "https://modus.trimble.com/components/tooltips/",
       subtitle:
         "Tooltips provide a short description of a page element or control.",
     },
@@ -370,6 +398,7 @@ const GetNavigationMenu = function (includeOnly?: string): Menu[] {
             key: child.key,
             title: child.title,
             subtitle: child.subtitle,
+            styleguideUrl: child.styleguideUrl,
           }
         }),
         key: parent.key,

@@ -162,19 +162,23 @@ const TableOfContents = props => {
         <nav id="TableOfContents" aria-label="Table of contents">
           <Headings headings={nestedHeadings} activeId={activeId} />
         </nav>
-        <h5 className="pt-2 ml-3">More Information</h5>
-        <ul className="list-unstyled pl-0 ml-0">
-          <li>
-            <a
-              href={`https://modus.trimble.com${current.path}/`}
-              className="nav-link text-dark text-decoration-none filter-desaturate"
-              target="_blank"
-              rel="noopener"
-            >
-              Modus Style Guide
-            </a>
-          </li>
-        </ul>
+        {current.styleguideUrl && (
+          <div>
+            <h5 className="pt-2 ml-3">More Information</h5>
+            <ul className="list-unstyled pl-0 ml-0">
+              <li>
+                <a
+                  href={current.styleguideUrl}
+                  className="nav-link text-dark text-decoration-none filter-desaturate"
+                  target="_blank"
+                  rel="noopener"
+                >
+                  Modus Style Guide
+                </a>
+              </li>
+            </ul>
+          </div>
+        )}
       </div>
     )
 
