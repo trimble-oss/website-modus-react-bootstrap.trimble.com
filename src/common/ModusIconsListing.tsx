@@ -1,10 +1,8 @@
 import React from "react"
 import { useState } from "react"
 import { Form } from "@trimbleinc/modus-react-bootstrap"
-import iconGuideGridImage from "../assets/img/icon-guide-grid.png"
-import iconGuideStyleImage from "../assets/img/icon-guide-style.png"
 
-export const ModusIcons = [
+const ModusIcons = [
   { icon: "3d_buildings" },
   { icon: "add" },
   { icon: "add_new_road" },
@@ -204,7 +202,7 @@ export const ModusIcons = [
   { icon: "zoom_out" },
 ]
 
-export const ModusIconItem = ({ icon, tags, ...props }) => {
+const ModusIconItem = ({ icon, tags, ...props }) => {
   return (
     <li
       id={icon}
