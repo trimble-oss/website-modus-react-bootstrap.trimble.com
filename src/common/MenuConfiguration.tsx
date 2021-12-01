@@ -38,12 +38,12 @@ const foundationsMenu: Menu = {
       subtitle:
         "Space helps organize content, permitting consistent density and visual order that telegraphs our brand. Space is a way to unify the padding, margins, and heights.",
     },
-    {
-      key: "icons",
-      title: "Icons",
-      subtitle:
-        "Guidance and suggestions for using external Modus icon library.",
-    },
+    // {
+    //   key: "icons",
+    //   title: "Icons",
+    //   subtitle:
+    //     "Guidance and suggestions for using external Modus icon library.",
+    // },
   ],
 }
 
