@@ -2,11 +2,6 @@ import * as PropTypes from "prop-types"
 import React, { useContext } from "react"
 import { MenuContext } from "./MenuContext"
 
-const propTypes = {
-  title: PropTypes.string.isRequired,
-  subtitle: PropTypes.string,
-}
-
 const Banner = () => {
   const context = useContext(MenuContext)
   const { title, subtitle } = context.current
@@ -28,6 +23,5 @@ const Banner = () => {
     </header>
   )
 }
-Banner.propTypes = propTypes
 
 export default Banner
