@@ -12,8 +12,8 @@ export const AlertsBasic = `
     </a>
   </Alert>
   <Alert key="a3" variant="dark">
-    <i className="modus-icon material-icons alert-icon">info</i>A basic{" "}
-    <u>dark alert</u> with <em>text formatting</em>
+    <i className="modus-icon material-icons alert-icon">info</i>
+    <div>A basic <u>dark alert</u> with <em>text formatting</em></div>
   </Alert>
   <AlertDismissible key="a4" variant="success">
     <i className="material-icons alert-icon">check_circle</i>Success! A basic
@@ -31,8 +31,11 @@ export const AlertsBasic = `
 `
 export const AlertsWithLink = `
 <Alert key="a1" variant="primary">
-  This is a primary alert with <Alert.Link href="#"> an example link</Alert.Link>
-  . Give it a click if you like.
+  <div>
+    This is a primary alert with{" "}
+    <Alert.Link href="#"> an example link</Alert.Link>. Give it a click if
+    you like.
+  </div>
 </Alert>
 `
 export const AlertsWithButton = `
