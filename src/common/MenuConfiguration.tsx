@@ -394,7 +394,10 @@ const GetNavigationMenu = function (includeOnly?: string): Menu[] {
         }`,
         children: parent.children.map(child => {
           return {
-            path: `/${parent.key}/${child.key}`,
+            path:
+              parent.key === child.key
+                ? `/${child.key}`
+                : `/${parent.key}/${child.key}`,
             key: child.key,
             title: child.title,
             subtitle: child.subtitle,
