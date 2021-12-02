@@ -3,10 +3,10 @@ import React from "react"
 // React Helmet manages changes to document head
 import { Helmet } from "react-helmet"
 
-export const ModusIcons = () => {
+export const ModusIconsReferences = () => {
   return (
     <div>
-      <Helmet htmlAttributes={true}>
+      <Helmet>
         <link
           rel="stylesheet"
           href="https://fonts.googleapis.com/icon?family=Material+Icons"
@@ -19,10 +19,10 @@ export const ModusIcons = () => {
     </div>
   )
 }
-export const ModusLayout = () => {
+export const ModusLayoutReferences = () => {
   return (
     <div>
-      <Helmet htmlAttributes={true}>
+      <Helmet>
         <link
           rel="stylesheet"
           href="https://modus.trimble.com/css/modus-layout.min-1.3.0.css"

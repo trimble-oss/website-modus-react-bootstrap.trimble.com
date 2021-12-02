@@ -1,5 +1,6 @@
-import { useState, useEffect, useRef } from "react"
+import { useState, useEffect, useRef, useContext } from "react"
 import React from "react"
+import { MenuContext } from "./MenuContext"
 
 /**
  * This renders an item in the table of contents list.
@@ -141,6 +142,7 @@ const useIntersectionObserver = setActiveId => {
 const TableOfContents = props => {
   const [activeId, setActiveId] = useState()
   const [nestedHeadings, setNestedHeadings] = useState([])
+  const { current } = useContext(MenuContext)
   useIntersectionObserver(setActiveId)
 
   useEffect(() => {
@@ -160,6 +162,23 @@ const TableOfContents = props => {
         <nav id="TableOfContents" aria-label="Table of contents">
           <Headings headings={nestedHeadings} activeId={activeId} />
         </nav>
+        {current.styleguideUrl && (
+          <div>
+            <h5 className="pt-2 ml-3">More Information</h5>
+            <ul className="list-unstyled pl-0 ml-0">
+              <li>
+                <a
+                  href={current.styleguideUrl}
+                  className="nav-link text-dark text-decoration-none filter-desaturate"
+                  target="_blank"
+                  rel="noopener"
+                >
+                  Modus Style Guide
+                </a>
+              </li>
+            </ul>
+          </div>
+        )}
       </div>
     )
 

@@ -4,7 +4,7 @@ const path = require("path")
 const defaultDescriptions = require("./src/api-docs/defaultPropDescriptions")
 module.exports = {
   siteMetadata: {
-    title: `Trimble Modus Bootstrap Developer Guide`,
+    title: `Trimble Modus React Bootstrap Developer Guide`,
     description: `The Modus React Bootstrap is a React-based component library extended from react-bootstrap`,
     author: `Trimble Inc.`,
     siteUrl: `https://modus-react-bootstrap.trimble.com/`,
@@ -17,7 +17,57 @@ module.exports = {
       resolve: `gatsby-source-filesystem`,
       options: {
         path: `${__dirname}/src/api-docs/react-bootstrap-1.6.4/`,
-        name: "source",
+        name: "api-docs",
+      },
+    },
+    {
+      resolve: `gatsby-plugin-mdx`,
+      options: {
+        extensions: [`.mdx`, `.md`],
+        defaultLayouts: {
+          default: require.resolve("./src/layouts/MainLayout.tsx"),
+        },
+      },
+    },
+    {
+      resolve: `gatsby-source-filesystem`,
+      options: {
+        path: `${__dirname}/src/pages/`,
+        name: `pages`,
+      },
+    },
+    {
+      resolve: "gatsby-plugin-page-creator",
+      options: {
+        path: `${__dirname}/src/pages`,
+      },
+    },
+    {
+      resolve: "gatsby-plugin-lunr",
+      options: {
+        languages: [
+          {
+            // ISO 639-1 language codes. See https://lunrjs.com/guides/language_support.html for details
+            name: "en",
+            // A function for filtering nodes. () => true by default
+            filterNodes: node => node.frontmatter && node.frontmatter.title,
+          },
+        ],
+        fields: [
+          { name: "title", store: true, attributes: { boost: 20 } },
+          { name: "description", store: true, attributes: { boost: 5 } },
+          { name: "url", store: true },
+          { name: "content" },
+        ],
+        resolvers: {
+          Mdx: {
+            title: node => node.frontmatter.title,
+            description: node => node.frontmatter.description,
+            url: node => node.fields.slug,
+            content: node => node.rawBody,
+          },
+        },
+        filename: "search_index.json",
       },
     },
     `gatsby-transformer-sharp`,

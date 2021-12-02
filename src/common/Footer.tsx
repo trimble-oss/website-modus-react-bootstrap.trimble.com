@@ -1,4 +1,5 @@
 import * as React from "react"
+import config from "../../config"
 import logo from "../assets/img/trimble-logo-rev.svg"
 
 const Footer = () => (
@@ -81,7 +82,7 @@ const Footer = () => (
           >
             Terms of Use
           </a>
-          - Modus React Bootstrap Version: 0.9.3
+          - Modus React Bootstrap Version: {config.reactBootstrapVersion}
         </div>
       </div>
     </div>

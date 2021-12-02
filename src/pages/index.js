@@ -95,10 +95,8 @@ const HomePage = props => (
                     </p>
                   </div>
                   <a
-                    href="https://modus-bootstrap.trimble.com/layout/"
+                    href="/layout/"
                     className="btn btn-primary rounded text-center"
-                    target="_blank"
-                    rel="noreferrer"
                   >
                     Layout »
                   </a>
@@ -126,10 +124,8 @@ const HomePage = props => (
                     </p>
                   </div>
                   <a
-                    href="https://modus-bootstrap.trimble.com/foundations/typography/"
+                    href="/foundations/typography/"
                     className="btn btn-primary rounded text-center"
-                    target="_blank"
-                    rel="noreferrer"
                   >
                     Foundations »
                   </a>
@@ -152,8 +148,8 @@ const HomePage = props => (
                 <div className="px-4">
                   <div className="card-home">
                     <p className="card-text px-xl-3">
-                      Modus-Bootstrap includes dozens of prebuilt components to
-                      kick-start your project.
+                      Modus React Bootstrap includes dozens of prebuilt
+                      components to kick-start your project.
                     </p>
                   </div>
                   <div className="text-center w-100">
@@ -188,10 +184,8 @@ const HomePage = props => (
                     </p>
                   </div>
                   <a
-                    href="https://modus-bootstrap.trimble.com/utilities/borders/"
+                    href="/utilities/borders/"
                     className="btn btn-primary rounded text-center"
-                    target="_blank"
-                    rel="noreferrer"
                   >
                     Utilities »
                   </a>

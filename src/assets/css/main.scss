@@ -156,3 +156,12 @@ article a:not(.stretched-link)[href^="http"]::after,
 .highlight > pre {
   background-color: #fafafa !important;
 }
+
+.autocomplete-suggestion:focus {
+  background: #444;
+  color: #fff;
+}
+
+.autocomplete-suggestions.dropdown-menu {
+  padding: 0px;
+}

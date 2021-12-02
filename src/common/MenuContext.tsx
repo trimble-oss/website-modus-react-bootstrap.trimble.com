@@ -6,4 +6,5 @@ export const MenuContext = createContext<NavigationInfo | null>(null)
 export interface NavigationInfo {
   current: Menu
   menu: Menu[]
+  all: Menu[]
 }

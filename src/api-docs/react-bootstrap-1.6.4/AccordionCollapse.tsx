@@ -1,20 +1,20 @@
-import React, { useContext } from 'react';
-import PropTypes from 'prop-types';
+import React, { useContext } from "react"
+import PropTypes from "prop-types"
 
-import Collapse, { CollapseProps } from './Collapse';
-import AccordionContext from './AccordionContext';
-import SelectableContext from './SelectableContext';
-import { BsPrefixRefForwardingComponent } from './helpers';
+import Collapse, { CollapseProps } from "./Collapse"
+import AccordionContext from "./AccordionContext"
+import SelectableContext from "./SelectableContext"
+import { BsPrefixRefForwardingComponent } from "./helpers"
 
 export interface AccordionCollapseProps
   extends React.PropsWithChildren<CollapseProps> {
-  eventKey: string;
+  eventKey: string
 }
 
 type AccordionCollapse = BsPrefixRefForwardingComponent<
-  'div',
+  "div",
   AccordionCollapseProps
->;
+>
 
 const propTypes = {
   /**
@@ -24,12 +24,11 @@ const propTypes = {
 
   /** Children prop should only contain a single child, and is enforced as such */
   children: PropTypes.element.isRequired,
-};
+}
 
 const AccordionCollapse: AccordionCollapse = React.forwardRef<typeof Collapse>(
   ({ children, eventKey, ...props }: AccordionCollapseProps, ref) => {
-    const contextEventKey = useContext(AccordionContext);
-    debugger;
+    const contextEventKey = useContext(AccordionContext)
     // Empty SelectableContext is to prevent elements in the collapse
     // from collapsing the accordion when clicked.
     return (
@@ -38,11 +37,11 @@ const AccordionCollapse: AccordionCollapse = React.forwardRef<typeof Collapse>(
           <div>{React.Children.only(children)}</div>
         </Collapse>
       </SelectableContext.Provider>
-    );
-  },
-) as any;
+    )
+  }
+) as any
 
-AccordionCollapse.propTypes = propTypes;
-AccordionCollapse.displayName = 'AccordionCollapse';
+AccordionCollapse.propTypes = propTypes
+AccordionCollapse.displayName = "AccordionCollapse"
 
-export default AccordionCollapse;
+export default AccordionCollapse
