@@ -23,7 +23,7 @@ export const AlertsBasic = `
     <i className="material-icons alert-icon">error</i>Error! A basic error alert
     with a dismiss icon
   </AlertDismissible>
-  <AlertDismissible key="a6" variant="dark">
+  <AlertDismissible key="a6" variant="warning" className="text-dark">
     <i className="modus-icon material-icons alert-icon">warning</i>Warning! A
     basic warning alert with dark text and a dismiss icon
   </AlertDismissible>
