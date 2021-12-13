@@ -13,15 +13,6 @@ const query = graphql`
         siteUrl: url
       }
     }
-    allMdx {
-      nodes {
-        frontmatter {
-          description
-          title
-        }
-        slug
-      }
-    }
   }
 `
 
