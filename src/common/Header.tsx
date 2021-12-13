@@ -3,11 +3,9 @@ import React, { useContext } from "react"
 import { Navbar, Nav, Container } from "@trimbleinc/modus-react-bootstrap"
 import logo from "../assets/img/trimble-logo.svg"
 import SearchBar from "./SearchBar"
-import { MenuContext } from "./MenuContext"
+// import { MenuContext } from "./MenuContext"
 
-function Header() {
-  const { current, all: navigationMenu } = useContext(MenuContext)
-
+function Header({ activePage, navigationMenu }) {
   return (
     <Container fluid className="bg-white">
       <Navbar
@@ -41,7 +39,7 @@ function Header() {
                 <Nav.Link
                   key={key}
                   href={path}
-                  active={current && current.path.startsWith(`/${key}`)}
+                  active={activePage && activePage.path.startsWith(`/${key}`)}
                   className="justify-content-end  mx-0 mx-lg-1 mx-xl-2"
                 >
                   {title}

@@ -1,10 +1,12 @@
 import React from "react"
 import * as PropTypes from "prop-types"
+
 import Footer from "../common/Footer"
 import Header from "../common/Header"
-import "../assets/css/main.scss"
 import { MenuContext, NavigationInfo } from "../common/MenuContext"
 import GetNavigationMenu from "../common/MenuConfiguration"
+import "../assets/css/main.scss"
+import SEO from "../seo"
 
 const propTypes = {
   location: PropTypes.object.isRequired,
@@ -29,12 +31,22 @@ function CreateMenuContext(routeInfo: string): NavigationInfo {
   return { current: activeMenu, menu: parent.children, all: allMenus }
 }
 
-function DefaultLayout({ children, location }) {
+const DefaultLayout = ({ children, location }) => {
   const context = CreateMenuContext(location.pathname)
+  const navigationMenu = context.all.map(({ key, path, title }) => ({
+    key,
+    path,
+    title,
+  }))
 
   return (
     <MenuContext.Provider value={context}>
-      <Header />
+      <SEO
+        title={context.current ? context.current.title : null}
+        description={context.current ? context.current.subtitle : null}
+        pathname={location.pathname}
+      />
+      <Header activePage={context.current} navigationMenu={navigationMenu} />
       {children}
       <Footer />
     </MenuContext.Provider>

@@ -5,9 +5,10 @@ const defaultDescriptions = require("./src/api-docs/defaultPropDescriptions")
 module.exports = {
   siteMetadata: {
     title: `Trimble Modus React Bootstrap Developer Guide`,
+    titleTemplate: "%s",
     description: `The Modus React Bootstrap is a React-based component library extended from react-bootstrap`,
     author: `Trimble Inc.`,
-    siteUrl: `https://modus-react-bootstrap.trimble.com/`,
+    url: `https://modus-react-bootstrap.trimble.com/`,
   },
   plugins: [
     `gatsby-plugin-sass`,
