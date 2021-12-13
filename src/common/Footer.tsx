@@ -82,7 +82,7 @@ const Footer = () => (
           >
             Terms of Use
           </a>
-          - Modus React Bootstrap Version: {config.reactBootstrapVersion}
+          - Modus React Bootstrap Version: {config.modusReactBootstrapVersion}
         </div>
       </div>
     </div>

@@ -1,10 +1,10 @@
-const reactBootstrapVersion =
+const modusReactBootstrapVersion =
   require("@trimbleinc/modus-react-bootstrap/package.json").version
 
-const shortVersion = reactBootstrapVersion.split(".").slice(0, 2).join(".")
+const shortVersion = modusReactBootstrapVersion.split(".").slice(0, 2).join(".")
 
 const config = {
-  reactBootstrapVersion,
+  modusReactBootstrapVersion,
   version: require("./package.json").version,
 }
 
