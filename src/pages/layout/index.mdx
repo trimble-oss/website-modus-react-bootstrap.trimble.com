@@ -5,6 +5,8 @@ description: Besides the aesthetics and UI elements, the Modus Framework has an 
 
 import { ModusLayoutReferences } from "../../common/ExternalReferences"
 import { LayoutModus } from "../../examples/layout/Layout"
+import routeImage from "../../assets/img/route.svg"
+import checkMarkOrangeImage from "../../assets/img/check-mark-orange.png"
 
 <article id="main" className="pr-3">
   <ModusLayoutReferences />
@@ -382,7 +384,7 @@ import { LayoutModus } from "../../examples/layout/Layout"
               <li>
                 <a className="nav-link" href="#modus-sidebar">
                   <span className="left-nav-icon">
-                    <img src="/img/route.svg" height="24" width="24" alt="" />
+                    <img src={routeImage} height="24" width="24" alt="" />
                   </span>
                   Nav Item (SVG Image)
                 </a>
@@ -391,7 +393,7 @@ import { LayoutModus } from "../../examples/layout/Layout"
                 <a className="nav-link" href="#modus-sidebar">
                   <span className="left-nav-icon">
                     <img
-                      src="/img/check-mark-orange.png"
+                      src={checkMarkOrangeImage}
                       height="24"
                       width="24"
                       style={{ minWidth: "24px" }}
