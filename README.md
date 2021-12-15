@@ -4,7 +4,7 @@ This site was created using Gatsby CLI with a default starter https://github.com
 
 ## Getting Started
 
-To run the site locally, start with `npm install` to install all the dependencies followed by `npm start` and the site will be running at `http://localhost:8000`.
+To run the site locally, install the Gatsby CLI ([install instructions](https://www.gatsbyjs.com/docs/tutorial/part-0/#gatsby-cli)) globally and then do `npm install` to install all the dependencies followed by `npm start` and the site will be running at `http://localhost:8000`.
 
 _Note: You'll also see a second link: _`http://localhost:8000/___graphql`_. This is a tool you can use to experiment with querying your data. Learn more about using this tool in the [Gatsby tutorial](https://www.gatsbyjs.com/tutorial/part-five/#introducing-graphiql)._
 
