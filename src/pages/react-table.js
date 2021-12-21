@@ -491,7 +491,7 @@ const ReactTable = props => {
                   h="2"
                   className="h1"
                 >
-                  React Table with client side controlled pagination
+                  React Table with server side controlled pagination
                 </LinkedHeading>
                 <ReactTableWithControlledPagination />
               </Col>
