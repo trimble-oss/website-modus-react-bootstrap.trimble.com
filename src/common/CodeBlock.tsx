@@ -45,22 +45,22 @@ const CodeBlock = ({
   return (
     <div>
       {bigtitle && (
-        <LinkedHeading h="2" className="h1" id={bigtitle.replace(" ", "")}>
+        <LinkedHeading h="2" className="h1" id={bigtitle.replace(/ /g, "")}>
           {bigtitle}
         </LinkedHeading>
       )}
       {title && (
-        <LinkedHeading h="3" id={title.replace(" ", "")}>
+        <LinkedHeading h="3" id={title.replace(/ /g, "")}>
           {title}
         </LinkedHeading>
       )}
       {subtitle1 && (
-        <LinkedHeading h="4" id={subtitle1.replace(" ", "")}>
+        <LinkedHeading h="4" id={subtitle1.replace(/ /g, "")}>
           {subtitle1}
         </LinkedHeading>
       )}
       {subtitle2 && (
-        <LinkedHeading h="5" id={subtitle2.replace(" ", "")}>
+        <LinkedHeading h="5" id={subtitle2.replace(/ /g, "")}>
           {subtitle2}
         </LinkedHeading>
       )}
