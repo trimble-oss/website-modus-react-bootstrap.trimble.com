@@ -13,7 +13,9 @@ import {
   TableHoverable,
   TableIconsControls,
   TableSmall,
+  TableSorting,
 } from "../../examples/components/Table"
+import CustomTable from "../../common/Table/Table"
 
 <Overview>
   Due to the widespread use of tables across third-party widgets like calendars
@@ -61,6 +63,31 @@ import {
   <p>
     When using small variants of tables with icons and controls, don’t forget to
     use the smaller variants of those icons and controls too!
+  </p>
+</CodeBlock>
+
+<CodeBlock
+  title="Table with Sorting"
+  scope={{
+    CustomTable,
+  }}
+  code={TableSorting}
+  noInline={true}
+>
+  <p>
+    To trigger sorting, Table component needs values for the props{" "}
+    <code> columns </code> and
+    <code> data</code>. Table headers are defined with the <code>columns</code> prop
+    which is an array of objects.
+    <br />
+    <code> accessor </code> is a required key since it is the column identifier and{" "}
+    <code> Header </code> key is used to set the column label, eg.
+    {`[{ Header: 'First Name', accessor: 'firstName' }]`}. Key
+    <code> defaultCanSort </code> can be set to enable sorting for a specific column.
+  </p>
+  <p>
+    A column can be sorted by clicking on the header. Repeat this action to
+    change the sorting order.
   </p>
 </CodeBlock>
 

@@ -857,3 +857,53 @@ export const TableSmall = `
   </Table>
 </div>
 `
+
+export const TableSorting = `function Example() {
+  const columns = React.useMemo(
+    () => [
+      {
+        Header: "First Name",
+        accessor: "firstName",
+        disableSortBy: true,
+      },
+      {
+        Header: "Last Name",
+        accessor: "lastName",
+      },
+      {
+        Header: "Age",
+        accessor: "age",
+      },
+    ],
+    []
+  )
+
+  const data = [
+    {
+      firstName: "Mark",
+      lastName: "Otto",
+      age: "25",
+    },
+    {
+      firstName: "Jacob",
+      lastName: "Thornton",
+      age: "22",
+    },
+    {
+      firstName: "John",
+      lastName: "Snow",
+      age: "23",
+    },
+    {
+      firstName: "Lary",
+      lastName: "the Bird",
+      age: "31",
+    },
+  ]
+
+  return (
+    <CustomTable columns={columns} data={data} />
+  );
+}
+
+render(<Example />);`
