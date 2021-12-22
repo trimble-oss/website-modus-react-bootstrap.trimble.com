@@ -82,8 +82,10 @@ import CustomTable from "../../common/Table/Table"
     <br />
     <code> accessor </code> is a required key since it is the column identifier and{" "}
     <code> Header </code> key is used to set the column label, eg.
-    {`[{ Header: 'First Name', accessor: 'firstName' }]`}. Key
-    <code> defaultCanSort </code> can be set to enable sorting for a specific column.
+    {`[{ Header: 'First Name', accessor: 'firstName' }]`}. All columns are
+    sorted by default, set the key
+    <code> disableSortBy </code> to <code> true </code> to disable sorting for any
+    column.
   </p>
   <p>
     A column can be sorted by clicking on the header. Repeat this action to

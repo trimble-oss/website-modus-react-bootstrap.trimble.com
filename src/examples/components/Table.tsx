@@ -864,7 +864,6 @@ export const TableSorting = `function Example() {
       {
         Header: "First Name",
         accessor: "firstName",
-        disableSortBy: true,
       },
       {
         Header: "Last Name",
@@ -873,6 +872,7 @@ export const TableSorting = `function Example() {
       {
         Header: "Age",
         accessor: "age",
+        disableSortBy: true,
       },
     ],
     []
