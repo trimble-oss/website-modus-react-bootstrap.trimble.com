@@ -858,7 +858,7 @@ export const TableSmall = `
 </div>
 `
 
-export const TableSorting = `function Example() {
+export const TableWithSorting = `function Example() {
   const columns = React.useMemo(
     () => [
       {
@@ -903,6 +903,97 @@ export const TableSorting = `function Example() {
 
   return (
     <CustomTable columns={columns} data={data} />
+  );
+}
+
+render(<Example />);`
+
+export const TableWithScroll = `function Example() {
+  const columns = React.useMemo(
+    () => [
+      {
+        Header: "First Name",
+        accessor: "firstName",
+        disableSortBy: true,
+      },
+      {
+        Header: "Last Name",
+        accessor: "lastName",
+      },
+      {
+        Header: "Age",
+        accessor: "age",
+      },
+      {
+        Header: "Visits",
+        accessor: "visits",
+      },
+      {
+        Header: "Status",
+        accessor: "status",
+      },
+      {
+        Header: "Profile Progress",
+        accessor: "progress",
+      },
+    ],
+    []
+  )
+
+  const data = React.useMemo(() => makeData(100), [])
+
+  return (
+      <CustomTable
+        columns={columns}
+        data={data}
+        style={{ width: "100%", height: "500px" }}
+      />
+  );
+}
+
+render(<Example />);`
+
+export const TableWithFixedHeader = `function Example() {
+  const columns = React.useMemo(
+    () => [
+      {
+        Header: "First Name",
+        accessor: "firstName",
+        disableSortBy: true,
+      },
+      {
+        Header: "Last Name",
+        accessor: "lastName",
+      },
+      {
+        Header: "Age",
+        accessor: "age",
+      },
+      {
+        Header: "Visits",
+        accessor: "visits",
+      },
+      {
+        Header: "Status",
+        accessor: "status",
+      },
+      {
+        Header: "Profile Progress",
+        accessor: "progress",
+      },
+    ],
+    []
+  )
+
+  const data = React.useMemo(() => makeData(100), [])
+
+  return (
+      <CustomTable
+        columns={columns}
+        data={data}
+        style={{ width: "100%", height: "500px" }}
+        fixedHeader={true}
+      />
   );
 }
 

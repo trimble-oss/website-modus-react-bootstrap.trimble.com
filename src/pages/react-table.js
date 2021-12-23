@@ -353,7 +353,7 @@ function TableWithControlledPagination({
   )
 }
 
-const ReactTableWithControlledPagination = props => {
+const BasicReactTable = props => {
   const columns = React.useMemo(
     () => [
       {
@@ -435,7 +435,7 @@ const ReactTableWithControlledPagination = props => {
   )
 }
 
-const BasicReactTable = props => {
+const CustomReactTable = props => {
   const columns = React.useMemo(
     () => [
       {
@@ -471,7 +471,12 @@ const BasicReactTable = props => {
 
   return (
     <>
-      <CustomTable columns={columns} data={data} />
+      <CustomTable
+        columns={columns}
+        data={data}
+        style={{ width: "100%", height: "400px" }}
+        fixedHeader={true}
+      />
       {/* <CodeBlock
         title="Collapsible Lists"
         scope={{
@@ -488,7 +493,7 @@ const BasicReactTable = props => {
   )
 }
 
-const ReactTable = props => {
+const ReactTablePage = props => {
   return (
     <DefaultLayout location={props.location}>
       <ModusIconsReferences />
@@ -502,7 +507,7 @@ const ReactTable = props => {
                   React Table with sorting
                 </LinkedHeading>
 
-                <BasicReactTable />
+                <CustomReactTable />
               </Col>
               <Col className="d-none d-xl-block menu-right" xl={2}>
                 <TableOfContents></TableOfContents>
@@ -515,4 +520,4 @@ const ReactTable = props => {
   )
 }
 
-export default ReactTable
+export default ReactTablePage

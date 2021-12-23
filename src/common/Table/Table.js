@@ -3,6 +3,7 @@ import PropTypes from "prop-types"
 import { useTable, useSortBy, usePagination } from "react-table"
 import { Badge, Table as BTable } from "@trimbleinc/modus-react-bootstrap"
 import classNames from "classnames"
+import styled from "styled-components"
 import "./Table.css"
 
 const propTypes = {
@@ -15,6 +16,11 @@ const propTypes = {
    * Set of rows matching the columns schema.
    */
   data: PropTypes.arrayOf(PropTypes.object).isRequired,
+
+  /**
+   * Sets the sticky-top class on thead.
+   */
+  fixedHeader: PropTypes.bool,
 }
 
 const SortArrows = {
@@ -45,63 +51,84 @@ const SortIcon = ({ sort, title, className, ...props }) => (
   </Badge>
 )
 
-const Table = React.forwardRef(({ columns, data, ...props }, ref) => {
-  const { getTableProps, headerGroups, rows, prepareRow } = useTable(
-    {
-      columns,
-      data,
-    },
-    useSortBy
-  )
+const Table = React.forwardRef(
+  ({ columns, data, fixedHeader, ...props }, ref) => {
+    const { getTableProps, headerGroups, rows, prepareRow } = useTable(
+      {
+        columns,
+        data,
+      },
+      useSortBy
+    )
 
-  return (
-    <BTable striped bordered hover {...getTableProps()}>
-      <thead>
-        {headerGroups.map(headerGroup => (
-          <tr {...headerGroup.getHeaderGroupProps()}>
-            {headerGroup.headers.map(column => (
-              <th
-                className="sticky-top"
-                {...column.getHeaderProps(column.getSortByToggleProps())}
-                title=""
+    const TableContainer = styled("div")`
+      overflow: auto;
+      padding: 0;
+      width: ${props.style && props.style.width};
+      height: ${props.style && props.style.height};
+    `
+
+    return (
+      <TableContainer className="container">
+        <BTable bordered hover {...getTableProps()} style={{ marginBottom: 0 }}>
+          <thead
+            className={classNames("bg-gray-light", fixedHeader && "sticky-top")}
+          >
+            {headerGroups.map(headerGroup => (
+              <tr
+                {...headerGroup.getHeaderGroupProps()}
+                className="bg-gray-light"
               >
-                {column.render("Header")}
-                {column.canSort && (
-                  <>
-                    {column.isSorted ? (
-                      <SortIcon
-                        className="sorted"
-                        sort={column.isSortedDesc ? "desc" : "asc"}
-                      />
-                    ) : (
-                      <SortIcon
-                        className="unsorted"
-                        title="Sort Ascending"
-                        sort="asc"
-                      />
+                {headerGroup.headers.map(column => (
+                  <th
+                    className={classNames(
+                      "bg-gray-light border-0",
+                      fixedHeader && "sticky-top"
                     )}
-                  </>
-                )}
-              </th>
+                    {...column.getHeaderProps(column.getSortByToggleProps())}
+                    title=""
+                  >
+                    {column.render("Header")}
+                    {column.canSort && (
+                      <>
+                        {column.isSorted ? (
+                          <SortIcon
+                            className="sorted"
+                            sort={column.isSortedDesc ? "desc" : "asc"}
+                          />
+                        ) : (
+                          <SortIcon
+                            className="unsorted"
+                            title="Sort Ascending"
+                            sort="asc"
+                          />
+                        )}
+                      </>
+                    )}
+                  </th>
+                ))}
+              </tr>
             ))}
-          </tr>
-        ))}
-      </thead>
-      <tbody>
-        {rows.map((row, i) => {
-          prepareRow(row)
-          return (
-            <tr {...row.getRowProps()}>
-              {row.cells.map(cell => {
-                return <td {...cell.getCellProps()}>{cell.render("Cell")}</td>
-              })}
-            </tr>
-          )
-        })}
-      </tbody>
-    </BTable>
-  )
-})
+          </thead>
+          <tbody>
+            {rows.map((row, i) => {
+              prepareRow(row)
+              return (
+                <tr {...row.getRowProps()}>
+                  {row.cells.map(cell => {
+                    return (
+                      <td {...cell.getCellProps()}>{cell.render("Cell")}</td>
+                    )
+                  })}
+                </tr>
+              )
+            })}
+          </tbody>
+        </BTable>
+      </TableContainer>
+    )
+  }
+)
 
 Table.propTypes = propTypes
 
