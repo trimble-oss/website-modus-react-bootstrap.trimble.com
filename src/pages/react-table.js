@@ -436,37 +436,6 @@ const ReactTableWithControlledPagination = props => {
 }
 
 const BasicReactTable = props => {
-  // const columns = React.useMemo(
-  //   () => [
-  //     {
-  //       Header: "First Name",
-  //       accessor: "firstName",
-  //       disableSortBy: true,
-  //     },
-  //     {
-  //       Header: "Last Name",
-  //       accessor: "lastName",
-  //     },
-  //     {
-  //       Header: "Age",
-  //       accessor: "age",
-  //     },
-  //     {
-  //       Header: "Visits",
-  //       accessor: "visits",
-  //     },
-  //     {
-  //       Header: "Status",
-  //       accessor: "status",
-  //     },
-  //     {
-  //       Header: "Profile Progress",
-  //       accessor: "progress",
-  //     },
-  //   ],
-  //   []
-  // )
-
   const columns = React.useMemo(
     () => [
       {
@@ -482,39 +451,28 @@ const BasicReactTable = props => {
         Header: "Age",
         accessor: "age",
       },
+      {
+        Header: "Visits",
+        accessor: "visits",
+      },
+      {
+        Header: "Status",
+        accessor: "status",
+      },
+      {
+        Header: "Profile Progress",
+        accessor: "progress",
+      },
     ],
     []
   )
 
-  const data = [
-    {
-      firstName: "Mark",
-      lastName: "Otto",
-      age: "25",
-    },
-    {
-      firstName: "Jacob",
-      lastName: "Thornton",
-      age: "22",
-    },
-    {
-      firstName: "John",
-      lastName: "Snow",
-      age: "23",
-    },
-    {
-      firstName: "Lary",
-      lastName: "the Bird",
-      age: "31",
-    },
-  ]
-
-  // const data = React.useMemo(() => makeData(10), [])
+  const data = React.useMemo(() => makeData(100), [])
 
   return (
     <>
       <CustomTable columns={columns} data={data} />
-      <CodeBlock
+      {/* <CodeBlock
         title="Collapsible Lists"
         scope={{
           CustomTable,
@@ -525,7 +483,7 @@ const BasicReactTable = props => {
       >
         You can use Accordion combination with other UI Elements to create
         collapsible content.
-      </CodeBlock>
+      </CodeBlock> */}
     </>
   )
 }
@@ -541,7 +499,7 @@ const ReactTable = props => {
               <Col className="col-12 col-md-3 col-lg-2 menu-left"></Col>
               <Col xs={12} md={9} xl={8} id="rb-docs-content" className="main">
                 <LinkedHeading id="basicReactTable" h="2" className="h1">
-                  React Table with client side pagination and sorting
+                  React Table with sorting
                 </LinkedHeading>
 
                 <BasicReactTable />

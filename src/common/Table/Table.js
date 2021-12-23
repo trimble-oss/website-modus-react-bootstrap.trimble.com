@@ -1,11 +1,7 @@
 import * as React from "react"
 import PropTypes from "prop-types"
 import { useTable, useSortBy, usePagination } from "react-table"
-import {
-  Badge,
-  Button,
-  Table as BTable,
-} from "@trimbleinc/modus-react-bootstrap"
+import { Badge, Table as BTable } from "@trimbleinc/modus-react-bootstrap"
 import classNames from "classnames"
 import "./Table.css"
 
@@ -21,7 +17,7 @@ const propTypes = {
   data: PropTypes.arrayOf(PropTypes.object).isRequired,
 }
 
-const Arrows = {
+const SortArrows = {
   asc: {
     path: (
       <path d="M4 12l1.41 1.41L11 7.83V20h2V7.83l5.58 5.59L20 12l-8-8-8 8z" />
@@ -42,31 +38,11 @@ const SortIcon = ({ sort, title, className, ...props }) => (
       className={classNames("modus-icons material-icons", className)}
       data-toggle="tooltip"
       data-placement="top"
-      title={title || Arrows[sort].title}
+      title={title || SortArrows[sort].title}
     >
-      <svg viewBox="0 0 24 24">{Arrows[sort].path}</svg>
+      <svg viewBox="0 0 24 24">{SortArrows[sort].path}</svg>
     </i>
   </Badge>
-  // <Badge variant="text-dark" >
-  //   <i
-  //     className={classNames("modus-icons material-icons", className)}
-  //     data-toggle="tooltip"
-  //     data-placement="top"
-  //     title={title || Arrows[sort].title}
-  //   >
-  //     <svg viewBox="0 0 24 24">{Arrows[sort].path}</svg>
-  //   </i>
-  // </Badge>
-  // <Button variant="icon-only" className="btn-text-dark">
-  //   <i
-  //     className={classNames("modus-icons material-icons", className)}
-  //     data-toggle="tooltip"
-  //     data-placement="top"
-  //     title={title || Arrows[sort].title}
-  //   >
-  //     <svg viewBox="0 0 24 24">{Arrows[sort].path}</svg>
-  //   </i>
-  // </Button>
 )
 
 const Table = React.forwardRef(({ columns, data, ...props }, ref) => {
@@ -85,6 +61,7 @@ const Table = React.forwardRef(({ columns, data, ...props }, ref) => {
           <tr {...headerGroup.getHeaderGroupProps()}>
             {headerGroup.headers.map(column => (
               <th
+                className="sticky-top"
                 {...column.getHeaderProps(column.getSortByToggleProps())}
                 title=""
               >
