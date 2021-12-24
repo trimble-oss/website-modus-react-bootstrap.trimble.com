@@ -64,13 +64,21 @@ const Table = React.forwardRef(
     const TableContainer = styled("div")`
       overflow: auto;
       padding: 0;
-      width: ${props.style && props.style.width};
-      height: ${props.style && props.style.height};
     `
-
     return (
-      <TableContainer className="container">
-        <BTable bordered hover {...getTableProps()} style={{ marginBottom: 0 }}>
+      <TableContainer className="container" {...props}>
+        <BTable
+          bordered
+          hover
+          {...getTableProps()}
+          style={{
+            tableLayout: "fixed",
+            borderCollapse: "separate",
+            borderSpacing: 0,
+            margin: 0,
+            width: "100%",
+          }}
+        >
           <thead
             className={classNames("bg-gray-light", fixedHeader && "sticky-top")}
           >
@@ -82,7 +90,7 @@ const Table = React.forwardRef(
                 {headerGroup.headers.map(column => (
                   <th
                     className={classNames(
-                      "bg-gray-light border-0",
+                      "bg-gray-light",
                       fixedHeader && "sticky-top"
                     )}
                     {...column.getHeaderProps(column.getSortByToggleProps())}

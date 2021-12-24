@@ -1,14 +1,14 @@
-.modus-icons.material-icons.sorted,
+th .modus-icons.material-icons.sorted,
 .modus-icons.material-icons.unsorted {
   width: 1rem;
   height: 1rem;
   vertical-align: text-bottom;
 }
 
-.modus-icons.material-icons.unsorted {
+th .modus-icons.material-icons.unsorted {
   opacity: 0;
 }
 
-.modus-icons.material-icons.unsorted:hover {
+th .modus-icons.material-icons.unsorted:hover {
   opacity: 0.5;
 }
