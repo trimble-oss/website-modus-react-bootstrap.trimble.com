@@ -38,15 +38,26 @@ const SortArrows = {
   },
 }
 
+const ModusSortArrows = {
+  asc: {
+    icon: "sort_alpha_down",
+    title: "Sort Descending",
+  },
+  desc: {
+    icon: "sort_alpha_up",
+    title: "Sort Ascending",
+  },
+}
+
 const SortIcon = ({ sort, title, className, ...props }) => (
   <Badge variant="text-dark" className="p-1">
     <i
       className={classNames("modus-icons material-icons", className)}
       data-toggle="tooltip"
       data-placement="top"
-      title={title || SortArrows[sort].title}
+      title={title || ModusSortArrows[sort].title}
     >
-      <svg viewBox="0 0 24 24">{SortArrows[sort].path}</svg>
+      {ModusSortArrows[sort].icon}
     </i>
   </Badge>
 )

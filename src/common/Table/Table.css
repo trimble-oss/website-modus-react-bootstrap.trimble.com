@@ -3,6 +3,7 @@ th .modus-icons.material-icons.sorted,
   width: 1rem;
   height: 1rem;
   vertical-align: text-bottom;
+  font-size: 15px;
 }
 
 th .modus-icons.material-icons.unsorted {
