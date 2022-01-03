@@ -73,8 +73,8 @@ const Table = React.forwardRef(
           {...getTableProps()}
           style={{
             tableLayout: "fixed",
-            borderCollapse: "separate",
-            borderSpacing: 0,
+            // borderCollapse: "separate",
+            // borderSpacing: 0,
             margin: 0,
             width: "100%",
           }}
