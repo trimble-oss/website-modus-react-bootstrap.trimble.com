@@ -16,7 +16,7 @@ div.modus-data-table th .modus-icons.material-icons.sorted,
   font-size: 15px;
 }
 
-div.modus-data-table th.sticky-top {
+div.modus-data-table table.table-bordered th.sticky-top {
   box-shadow: inset 0 1px 0 0 #b7b9c3, inset 0 -1px 0 0 #b7b9c3;
   border-bottom-width: 0;
   border-top-width: 0;
