@@ -864,15 +864,16 @@ export const TableWithSorting = `function Example() {
       {
         Header: "First Name",
         accessor: "firstName",
+        sortBy: true,
       },
       {
         Header: "Last Name",
         accessor: "lastName",
+        sortBy: true,
       },
       {
         Header: "Age",
         accessor: "age",
-        disableSortBy: true,
       },
     ],
     []
@@ -914,23 +915,26 @@ export const TableWithScroll = `function Example() {
       {
         Header: "First Name",
         accessor: "firstName",
-        disableSortBy: true,
       },
       {
         Header: "Last Name",
         accessor: "lastName",
+        sortBy: true,
       },
       {
         Header: "Age",
         accessor: "age",
+        sortBy: true,
       },
       {
         Header: "Visits",
         accessor: "visits",
+        sortBy: true,
       },
       {
         Header: "Status",
         accessor: "status",
+        sortBy: true,
       },
       {
         Header: "Profile Progress",
@@ -959,23 +963,26 @@ export const TableWithFixedHeader = `function Example() {
       {
         Header: "First Name",
         accessor: "firstName",
-        disableSortBy: true,
       },
       {
         Header: "Last Name",
         accessor: "lastName",
+        sortBy: true,
       },
       {
         Header: "Age",
         accessor: "age",
+        sortBy: true,
       },
       {
         Header: "Visits",
         accessor: "visits",
+        sortBy: true,
       },
       {
         Header: "Status",
         accessor: "status",
+        sortBy: true,
       },
       {
         Header: "Profile Progress",

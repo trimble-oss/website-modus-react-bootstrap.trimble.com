@@ -441,15 +441,17 @@ const CustomReactTable = props => {
       {
         Header: "First Name",
         accessor: "firstName",
-        disableSortBy: true,
+        sortBy: true,
       },
       {
         Header: "Last Name",
         accessor: "lastName",
+        sortBy: true,
       },
       {
         Header: "Age",
         accessor: "age",
+        sortBy: true,
       },
       {
         Header: "Visits",

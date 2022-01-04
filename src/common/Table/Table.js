@@ -64,9 +64,21 @@ const SortIcon = ({ sort, title, className, ...props }) => (
 
 const Table = React.forwardRef(
   ({ columns, data, fixedHeader, ...props }, ref) => {
+    const convertedColumns = React.useMemo(
+      () =>
+        columns.map(col => {
+          return {
+            Header: col.Header,
+            accessor: col.accessor,
+            disableSortBy: !col.sortBy,
+          }
+        }),
+      []
+    )
+
     const { getTableProps, headerGroups, rows, prepareRow } = useTable(
       {
-        columns,
+        columns: convertedColumns,
         data,
       },
       useSortBy
