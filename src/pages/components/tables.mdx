@@ -16,9 +16,18 @@ import {
   TableWithSorting,
   TableWithScroll,
   TableWithFixedHeader,
+  DataTableWithFixedHeader,
 } from "../../examples/components/Table"
 import CustomTable from "../../common/Table/Table"
 import makeData from "../../common/Table/MakeData"
+import DataTable, {
+  TableHead,
+  TableBody,
+  TableCell,
+  TableHeader,
+  TableRow,
+  Table,
+} from "../../common/DataTable"
 
 <Overview>
   Due to the widespread use of tables across third-party widgets like calendars
@@ -116,6 +125,25 @@ import makeData from "../../common/Table/MakeData"
   noInline={true}
 >
   Use the <code> fixedHeader </code> option to ensure that the table's header is
+  always visible while scrolling.
+</CodeBlock>
+
+<CodeBlock
+  title="DataTable with Fixed Header"
+  scope={{
+    DataTable,
+    makeData,
+    TableHead,
+    TableBody,
+    TableCell,
+    TableHeader,
+    TableRow,
+    Table,
+  }}
+  code={DataTableWithFixedHeader}
+  noInline={true}
+>
+  Use the <code> sticky-top </code> class to ensure that the table's header is
   always visible while scrolling.
 </CodeBlock>
 

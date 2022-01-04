@@ -1005,3 +1005,95 @@ export const TableWithFixedHeader = `function Example() {
 }
 
 render(<Example />);`
+
+export const DataTableWithFixedHeader = `function Example() {
+  const columns = React.useMemo(
+    () => [
+      {
+        Header: "First Name",
+        accessor: "firstName",
+      },
+      {
+        Header: "Last Name",
+        accessor: "lastName",
+        sortBy: true,
+      },
+      {
+        Header: "Age",
+        accessor: "age",
+        sortBy: true,
+      },
+      {
+        Header: "Visits",
+        accessor: "visits",
+        sortBy: true,
+      },
+      {
+        Header: "Status",
+        accessor: "status",
+        sortBy: true,
+      },
+      {
+        Header: "Profile Progress",
+        accessor: "progress",
+      },
+    ],
+    []
+  )
+
+  const data = React.useMemo(() => makeData(100), [])
+
+  return (
+     <DataTable
+        columns={columns}
+        data={data}
+        style={{ width: "100%", height: "400px" }}>
+        {({ getTableProps, headerGroups, rows, prepareRow }) => (
+
+          <Table bordered hover {...getTableProps()}>
+            <TableHead className="bg-gray-light sticky-top">
+              {headerGroups.map(headerGroup => (
+
+                <TableRow
+                  {...headerGroup.getHeaderGroupProps()}
+                  className="bg-gray-light">
+                  {headerGroup.headers.map(header => (
+
+                    <TableHeader
+                      isSortable={header.canSort}
+                      isSorted={header.isSorted}
+                      sortDirection={header.isSortedDesc ? "desc" : "asc"}
+                      className="bg-gray-light sticky-top"
+                      {...header.getHeaderProps(header.getSortByToggleProps())}
+                    >
+                      {header.render("Header")}
+                    </TableHeader>
+                  ))}
+                </TableRow>
+              ))}
+            </TableHead>
+            <TableBody>
+              {rows.map((row, i) => {
+                prepareRow(row)
+                return (
+
+                  <TableRow {...row.getRowProps()}>
+                    {row.cells.map(cell => {
+
+                      return (
+                        <TableCell {...cell.getCellProps()}>
+                          {cell.render("Cell")}
+                        </TableCell>
+                      )
+                    })}
+                  </TableRow>
+                )
+              })}
+            </TableBody>
+          </Table>
+        )}
+      </DataTable>
+  );
+}
+
+render(<Example />);`

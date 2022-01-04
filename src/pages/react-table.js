@@ -13,6 +13,14 @@ import TableOfContents from "../common/TableOfContents"
 import CustomTable from "../common/Table/Table"
 import { ModusIconsReferences } from "../common/ExternalReferences"
 import CodeBlock from "../common/CodeBlock"
+import DataTable, {
+  TableHead,
+  TableBody,
+  TableCell,
+  TableHeader,
+  TableRow,
+  Table,
+} from "../common/DataTable"
 
 function TableWithSorting({ columns, data }) {
   // Use the state and functions returned from useTable to build your UI
@@ -495,6 +503,111 @@ const CustomReactTable = props => {
   )
 }
 
+const ReactDataTable = props => {
+  const columns = React.useMemo(
+    () => [
+      {
+        Header: "First Name",
+        accessor: "firstName",
+        sortBy: true,
+      },
+      {
+        Header: "Last Name",
+        accessor: "lastName",
+        sortBy: true,
+      },
+      {
+        Header: "Age",
+        accessor: "age",
+        sortBy: true,
+      },
+      {
+        Header: "Visits",
+        accessor: "visits",
+      },
+      {
+        Header: "Status",
+        accessor: "status",
+      },
+      {
+        Header: "Profile Progress",
+        accessor: "progress",
+      },
+    ],
+    []
+  )
+
+  const data = React.useMemo(() => makeData(100), [])
+
+  return (
+    <>
+      <CodeBlock
+        scope={{
+          DataTable,
+          columns,
+          data,
+          TableHead,
+          TableBody,
+          TableCell,
+          TableHeader,
+          TableRow,
+          Table,
+        }}
+        code={`
+    <DataTable
+        columns={columns}
+        data={data}
+        style={{ width: "100%", height: "400px" }}>
+        {({ getTableProps, headerGroups, rows, prepareRow }) => (
+
+          <Table bordered hover {...getTableProps()}>
+            <TableHead className="bg-gray-light sticky-top">
+              {headerGroups.map(headerGroup => (
+
+                <TableRow
+                  {...headerGroup.getHeaderGroupProps()}
+                  className="bg-gray-light">
+                  {headerGroup.headers.map(header => (
+
+                    <TableHeader
+                      isSortable={header.canSort}
+                      isSorted={header.isSorted}
+                      sortDirection={header.isSortedDesc ? "desc" : "asc"}
+                      className="bg-gray-light sticky-top"
+                      {...header.getHeaderProps(header.getSortByToggleProps())}
+                    >
+                      {header.render("Header")}
+                    </TableHeader>
+                  ))}
+                </TableRow>
+              ))}
+            </TableHead>
+            <TableBody>
+              {rows.map((row, i) => {
+                prepareRow(row)
+                return (
+
+                  <TableRow {...row.getRowProps()}>
+                    {row.cells.map(cell => {
+
+                      return (
+                        <TableCell {...cell.getCellProps()}>
+                          {cell.render("Cell")}
+                        </TableCell>
+                      )
+                    })}
+                  </TableRow>
+                )
+              })}
+            </TableBody>
+          </Table>
+        )}
+      </DataTable>`}
+      ></CodeBlock>
+    </>
+  )
+}
+
 const ReactTablePage = props => {
   return (
     <DefaultLayout location={props.location}>
@@ -508,8 +621,8 @@ const ReactTablePage = props => {
                 <LinkedHeading id="basicReactTable" h="2" className="h1">
                   React Table with sorting
                 </LinkedHeading>
-
-                <CustomReactTable />
+                {/* <CustomReactTable /> */}
+                <ReactDataTable />
               </Col>
               <Col className="d-none d-xl-block menu-right" xl={2}>
                 <TableOfContents></TableOfContents>
