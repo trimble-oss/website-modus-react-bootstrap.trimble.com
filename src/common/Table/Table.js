@@ -64,6 +64,8 @@ const SortIcon = ({ sort, title, className, ...props }) => (
 
 const Table = React.forwardRef(
   ({ columns, data, fixedHeader, ...props }, ref) => {
+    //useSortBy hook enables sorting for all the columns
+    //and disableSortBy is the only prop available at column configuration level
     const convertedColumns = React.useMemo(
       () =>
         columns.map(col => {
