@@ -8,11 +8,11 @@
   ],
   "homepage": "https://modus-react-bootstrap.trimble.com",
   "bugs": {
-    "url": "https://bitbucket.trimble.tools/scm/tmds/modus-react-bootstrap-guide.git"
+    "url": "https://github.com/trimble-oss/website-modus-react-bootstrap.trimble.com"
   },
   "repository": {
     "type": "git",
-    "url": "https://bitbucket.trimble.tools/scm/tmds/modus-react-bootstrap-guide.git"
+    "url": "https://github.com/trimble-oss/website-modus-react-bootstrap.trimble.com.git"
   },
   "license": "0BSD",
   "author": "Trimble Inc.",
