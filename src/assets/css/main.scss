@@ -103,13 +103,13 @@ body {
   padding-left: 1rem;
 }
 
-.guide-example-block .navbar {
+.guide-example-block .navbar,
+.guide-example-block .table {
   margin-bottom: 0;
   padding: 0;
 }
 
-.guide-example-block .message,
-.guide-example-block .table {
+.guide-example-block .message {
   margin-bottom: 0.5rem;
   margin-top: 0.5rem;
 }

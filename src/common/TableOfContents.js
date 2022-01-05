@@ -162,7 +162,7 @@ const TableOfContents = props => {
         <nav id="TableOfContents" aria-label="Table of contents">
           <Headings headings={nestedHeadings} activeId={activeId} />
         </nav>
-        {current.styleguideUrl && (
+        {current && current.styleguideUrl && (
           <div>
             <h5 className="pt-2 ml-3">More Information</h5>
             <ul className="list-unstyled pl-0 ml-0">

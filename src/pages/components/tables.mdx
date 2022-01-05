@@ -13,7 +13,21 @@ import {
   TableHoverable,
   TableIconsControls,
   TableSmall,
+  TableWithSorting,
+  TableWithScroll,
+  TableWithFixedHeader,
+  DataTableWithFixedHeader,
 } from "../../examples/components/Table"
+import CustomTable from "../../common/Table/Table"
+import makeData from "../../common/Table/MakeData"
+import DataTable, {
+  TableHead,
+  TableBody,
+  TableCell,
+  TableHeader,
+  TableRow,
+  Table,
+} from "../../common/DataTable"
 
 <Overview>
   Due to the widespread use of tables across third-party widgets like calendars
@@ -62,6 +76,62 @@ import {
     When using small variants of tables with icons and controls, don’t forget to
     use the smaller variants of those icons and controls too!
   </p>
+</CodeBlock>
+
+<CodeBlock
+  title="Table with Sorting"
+  scope={{
+    CustomTable,
+  }}
+  code={TableWithSorting}
+  noInline={true}
+>
+  <p>
+    To trigger sorting, Table component needs values for the props{" "}
+    <code> columns </code> and
+    <code> data</code>. Table headers are defined with the <code>columns</code> prop
+    which is an array of objects.
+    <br />
+    <code> accessor </code> is a required key since it is the column identifier and{" "}
+    <code> Header </code> key is used to set the column label, eg.
+    {`[{ Header: 'First Name', accessor: 'firstName' }]`}. Use
+    <code> sortBy </code> to enable sorting for any column.
+  </p>
+  <p>
+    A column can be sorted by clicking on the header. Repeat this action to
+    change the sorting order.
+  </p>
+</CodeBlock>
+
+<CodeBlock
+  title="Table with Scroll"
+  scope={{
+    CustomTable,
+    makeData,
+  }}
+  code={TableWithScroll}
+  noInline={true}
+>
+  Setting maximum height/width will enable vertical/horizontal scrolling.
+</CodeBlock>
+
+<CodeBlock
+  title="DataTable with Fixed Header"
+  scope={{
+    DataTable,
+    makeData,
+    TableHead,
+    TableBody,
+    TableCell,
+    TableHeader,
+    TableRow,
+    Table,
+  }}
+  code={DataTableWithFixedHeader}
+  noInline={true}
+>
+  Use the <code> sticky-top </code> class to ensure that the table's header is
+  always visible while scrolling.
 </CodeBlock>
 
 <LinkedHeading h="2" className="h1" id="table-api">

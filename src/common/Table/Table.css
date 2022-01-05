@@ -1,0 +1,15 @@
+th .modus-icons.material-icons.sorted,
+.modus-icons.material-icons.unsorted {
+  width: 1rem;
+  height: 1rem;
+  vertical-align: text-bottom;
+  font-size: 15px;
+}
+
+th .modus-icons.material-icons.unsorted {
+  opacity: 0;
+}
+
+th .modus-icons.material-icons.unsorted:hover {
+  opacity: 0.5;
+}
