@@ -61,7 +61,7 @@
   },
   "devDependencies": {
     "@netlify/plugin-gatsby": "^1.0.3",
-    "@types/styled-components": "^5.1.14",
+    "@types/styled-components": "^5.1.19",
     "ast-types": "^0.14.2",
     "lodash": "^4.17.21",
     "prettier": "2.4.1",
