@@ -6,11 +6,11 @@ import styled from "styled-components"
 
 const ModusSortArrows = {
   asc: {
-    icon: "sort_alpha_down",
+    icon: "sort_alpha_up",
     title: "Sort Descending",
   },
   desc: {
-    icon: "sort_alpha_up",
+    icon: "sort_alpha_down",
     title: "Sort Ascending",
   },
 }
