@@ -2,6 +2,7 @@ import * as React from "react"
 import PropTypes from "prop-types"
 import classNames from "classnames"
 import { Badge } from "@trimbleinc/modus-react-bootstrap"
+import styled from "styled-components"
 
 const ModusSortArrows = {
   asc: {
@@ -14,17 +15,20 @@ const ModusSortArrows = {
   },
 }
 
+const IconButton = styled("button")`
+  background: none;
+  border: 0;
+`
+
 const SortIcon = ({ sort, title, className, ...props }) => (
-  <Badge variant="text-dark" className="p-1">
-    <i
-      className={classNames("modus-icons material-icons", className)}
-      data-toggle="tooltip"
-      data-placement="top"
-      title={title || ModusSortArrows[sort].title}
-    >
-      {ModusSortArrows[sort].icon}
-    </i>
-  </Badge>
+  <i
+    className={classNames("modus-icons material-icons", className)}
+    data-toggle="tooltip"
+    data-placement="top"
+    title={title || ModusSortArrows[sort].title}
+  >
+    {ModusSortArrows[sort].icon}
+  </i>
 )
 
 const TableHeader = React.forwardRef(function Header(
@@ -32,17 +36,25 @@ const TableHeader = React.forwardRef(function Header(
   ref
 ) {
   return (
-    <th className={className} {...props} ref={ref}>
-      {children}
-      {isSortable && (
-        <>
-          {isSorted ? (
-            <SortIcon className="sorted" sort={sortDirection} />
-          ) : (
-            <SortIcon className="unsorted" title="Sort Ascending" sort="asc" />
+    <th className={classNames("pr-2", className)} {...props} title="" ref={ref}>
+      <div class="d-flex">
+        <div className="flex-grow-1">{children}</div>
+        <div>
+          {isSortable && (
+            <>
+              {isSorted ? (
+                <SortIcon className="sorted" sort={sortDirection} />
+              ) : (
+                <SortIcon
+                  className="unsorted"
+                  title="Sort Ascending"
+                  sort="asc"
+                />
+              )}
+            </>
           )}
-        </>
-      )}
+        </div>
+      </div>
     </th>
   )
 })

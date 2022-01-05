@@ -23,7 +23,7 @@ const propTypes = {
   fixedHeader: PropTypes.bool,
 }
 
-const DataTable = React.forwardRef(
+const TableContainer = React.forwardRef(
   ({ columns, data, fixedHeader, ...props }, ref) => {
     //useSortBy hook enables sorting for all the columns
     //and disableSortBy is the only prop available at column configuration level
@@ -47,18 +47,19 @@ const DataTable = React.forwardRef(
       useSortBy
     )
 
-    const TableContainer = styled("div")`
+    const Container = styled("div")`
       overflow: auto;
       padding: 0;
+      width: 100%;
     `
     return (
-      <TableContainer className="modus-data-table container" {...props}>
+      <Container className="modus-data-table container" {...props}>
         {props.children({ getTableProps, headerGroups, rows, prepareRow })}
-      </TableContainer>
+      </Container>
     )
   }
 )
 
-DataTable.propTypes = propTypes
+TableContainer.propTypes = propTypes
 
-export default DataTable
+export default TableContainer

@@ -6,28 +6,23 @@ description: Tables display information in a grid-like format of rows and column
 import { graphql } from "gatsby"
 import {
   TableBasic,
-  TableBordered,
-  TableBorderless,
-  TableDark,
-  TableHeadOptions,
   TableHoverable,
   TableIconsControls,
   TableSmall,
   TableWithSorting,
   TableWithScroll,
   TableWithFixedHeader,
-  DataTableWithFixedHeader,
+  MakeData as makeData,
 } from "../../examples/components/Table"
-import CustomTable from "../../common/Table/Table"
-import makeData from "../../common/Table/MakeData"
-import DataTable, {
+import {
+  TableContainer,
   TableHead,
   TableBody,
   TableCell,
   TableHeader,
   TableRow,
   Table,
-} from "../../common/DataTable"
+} from "../../common/Table"
 
 <Overview>
   Due to the widespread use of tables across third-party widgets like calendars
@@ -37,25 +32,6 @@ import DataTable, {
 </Overview>
 
 <CodeBlock title="Basic Table" code={TableBasic}></CodeBlock>
-
-<CodeBlock title="Dark Table" code={TableDark}>
-  You can modify tables to use a dark background with light text by setting the
-  <code>variant</code> prop to <code>dark</code>.
-</CodeBlock>
-
-<CodeBlock title="Table Head Options" code={TableHeadOptions}>
-  Similar to tables and dark tables, use the modifier classes
-  <code>.thead-light</code> or <code>.thead-light</code> to make
-  <code>&lt;thead&gt;</code> appear light or dark.
-</CodeBlock>
-
-<CodeBlock title="Bordered Table" code={TableBordered}>
-  Add prop <code>bordered</code> to add borders to your table.
-</CodeBlock>
-
-<CodeBlock title="Borderless Table" code={TableBorderless}>
-  Add prop <code>borderless </code> to remove borders to your table.
-</CodeBlock>
 
 <CodeBlock title="Hoverable Rows" code={TableHoverable}>
   Add prop <code>hover </code> to enable a hover state on table rows within
@@ -81,7 +57,13 @@ import DataTable, {
 <CodeBlock
   title="Table with Sorting"
   scope={{
-    CustomTable,
+    TableContainer,
+    TableHead,
+    TableBody,
+    TableCell,
+    TableHeader,
+    TableRow,
+    Table,
   }}
   code={TableWithSorting}
   noInline={true}
@@ -106,19 +88,7 @@ import DataTable, {
 <CodeBlock
   title="Table with Scroll"
   scope={{
-    CustomTable,
-    makeData,
-  }}
-  code={TableWithScroll}
-  noInline={true}
->
-  Setting maximum height/width will enable vertical/horizontal scrolling.
-</CodeBlock>
-
-<CodeBlock
-  title="DataTable with Fixed Header"
-  scope={{
-    DataTable,
+    TableContainer,
     makeData,
     TableHead,
     TableBody,
@@ -127,7 +97,25 @@ import DataTable, {
     TableRow,
     Table,
   }}
-  code={DataTableWithFixedHeader}
+  code={TableWithScroll}
+  noInline={true}
+>
+  Setting height will enable vertical/horizontal scrolling.
+</CodeBlock>
+
+<CodeBlock
+  title="Table with Sticky Header"
+  scope={{
+    TableContainer,
+    makeData,
+    TableHead,
+    TableBody,
+    TableCell,
+    TableHeader,
+    TableRow,
+    Table,
+  }}
+  code={TableWithFixedHeader}
   noInline={true}
 >
   Use the <code> sticky-top </code> class to ensure that the table's header is
