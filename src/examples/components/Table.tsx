@@ -1,3 +1,5 @@
+import * as React from "react"
+
 export const TableBasic = `
 <Table>
   <thead>
@@ -858,6 +860,45 @@ export const TableSmall = `
 </div>
 `
 
+const range = len => {
+  const arr = []
+  for (let i = 0; i < len; i++) {
+    arr.push(i)
+  }
+  return arr
+}
+
+const newPerson = () => {
+  const statusChance = Math.random()
+  return {
+    firstName: "React",
+    lastName: "Table",
+    age: Math.floor(Math.random() * 30),
+    visits: Math.floor(Math.random() * 100),
+    progress: Math.floor(Math.random() * 100),
+    status:
+      statusChance > 0.66
+        ? "relationship"
+        : statusChance > 0.33
+        ? "complicated"
+        : "single",
+  }
+}
+
+export function MakeData(...lens) {
+  const makeDataLevel = (depth = 0) => {
+    const len = lens[depth]
+    return range(len).map(d => {
+      return {
+        ...newPerson(),
+        subRows: lens[depth + 1] ? makeDataLevel(depth + 1) : undefined,
+      }
+    })
+  }
+
+  return makeDataLevel()
+}
+
 export const TableWithSorting = `function Example() {
   const columns = React.useMemo(
     () => [
@@ -903,7 +944,48 @@ export const TableWithSorting = `function Example() {
   ]
 
   return (
-    <CustomTable columns={columns} data={data} />
+      <TableContainer columns={columns} data={data}>
+        {({ getTableProps, headerGroups, rows, prepareRow }) => (
+          <Table bordered hover {...getTableProps()}>
+            <TableHead className="bg-gray-light">
+              {headerGroups.map(headerGroup => (
+                <TableRow
+                  {...headerGroup.getHeaderGroupProps()}
+                  className="bg-gray-light"
+                >
+                  {headerGroup.headers.map(header => (
+                    <TableHeader
+                      isSortable={header.canSort}
+                      isSorted={header.isSorted}
+                      sortDirection={header.isSortedDesc ? "desc" : "asc"}
+                      className="bg-gray-light"
+                      {...header.getHeaderProps(header.getSortByToggleProps())}
+                    >
+                      {header.render("Header")}
+                    </TableHeader>
+                  ))}
+                </TableRow>
+              ))}
+            </TableHead>
+            <TableBody>
+              {rows.map((row, i) => {
+                prepareRow(row)
+                return (
+                  <TableRow {...row.getRowProps()}>
+                    {row.cells.map(cell => {
+                      return (
+                        <TableCell {...cell.getCellProps()}>
+                          {cell.render("Cell")}
+                        </TableCell>
+                      )
+                    })}
+                  </TableRow>
+                )
+              })}
+            </TableBody>
+          </Table>
+        )}
+      </TableContainer>
   );
 }
 
@@ -947,11 +1029,48 @@ export const TableWithScroll = `function Example() {
   const data = React.useMemo(() => makeData(100), [])
 
   return (
-      <CustomTable
-        columns={columns}
-        data={data}
-        style={{ width: "100%", height: "500px" }}
-      />
+      <TableContainer columns={columns} data={data} style={{ height: "400px" }}>
+        {({ getTableProps, headerGroups, rows, prepareRow }) => (
+          <Table bordered hover {...getTableProps()}>
+            <TableHead className="bg-gray-light">
+              {headerGroups.map(headerGroup => (
+                <TableRow
+                  {...headerGroup.getHeaderGroupProps()}
+                  className="bg-gray-light"
+                >
+                  {headerGroup.headers.map(header => (
+                    <TableHeader
+                      isSortable={header.canSort}
+                      isSorted={header.isSorted}
+                      sortDirection={header.isSortedDesc ? "desc" : "asc"}
+                      className="bg-gray-light"
+                      {...header.getHeaderProps(header.getSortByToggleProps())}
+                    >
+                      {header.render("Header")}
+                    </TableHeader>
+                  ))}
+                </TableRow>
+              ))}
+            </TableHead>
+            <TableBody>
+              {rows.map((row, i) => {
+                prepareRow(row)
+                return (
+                  <TableRow {...row.getRowProps()}>
+                    {row.cells.map(cell => {
+                      return (
+                        <TableCell {...cell.getCellProps()}>
+                          {cell.render("Cell")}
+                        </TableCell>
+                      )
+                    })}
+                  </TableRow>
+                )
+              })}
+            </TableBody>
+          </Table>
+        )}
+      </TableContainer>
   );
 }
 
@@ -995,56 +1114,7 @@ export const TableWithFixedHeader = `function Example() {
   const data = React.useMemo(() => makeData(100), [])
 
   return (
-      <CustomTable
-        columns={columns}
-        data={data}
-        style={{ width: "100%", height: "500px" }}
-        fixedHeader={true}
-      />
-  );
-}
-
-render(<Example />);`
-
-export const DataTableWithFixedHeader = `function Example() {
-  const columns = React.useMemo(
-    () => [
-      {
-        Header: "First Name",
-        accessor: "firstName",
-      },
-      {
-        Header: "Last Name",
-        accessor: "lastName",
-        sortBy: true,
-      },
-      {
-        Header: "Age",
-        accessor: "age",
-        sortBy: true,
-      },
-      {
-        Header: "Visits",
-        accessor: "visits",
-        sortBy: true,
-      },
-      {
-        Header: "Status",
-        accessor: "status",
-        sortBy: true,
-      },
-      {
-        Header: "Profile Progress",
-        accessor: "progress",
-      },
-    ],
-    []
-  )
-
-  const data = React.useMemo(() => makeData(100), [])
-
-  return (
-     <DataTable
+    <TableContainer
         columns={columns}
         data={data}
         style={{ width: "100%", height: "400px" }}>
@@ -1063,7 +1133,7 @@ export const DataTableWithFixedHeader = `function Example() {
                       isSortable={header.canSort}
                       isSorted={header.isSorted}
                       sortDirection={header.isSortedDesc ? "desc" : "asc"}
-                      className="bg-gray-light sticky-top"
+                      className="bg-gray-light"
                       {...header.getHeaderProps(header.getSortByToggleProps())}
                     >
                       {header.render("Header")}
@@ -1092,7 +1162,7 @@ export const DataTableWithFixedHeader = `function Example() {
             </TableBody>
           </Table>
         )}
-      </DataTable>
+      </TableContainer>
   );
 }
 
