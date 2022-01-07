@@ -46,7 +46,7 @@
     "gatsby-remark-prismjs": "^6.2.0",
     "gatsby-source-filesystem": "^4.2.0",
     "gatsby-transformer-react-docgen": "^7.4.0",
-    "gatsby-transformer-remark": "^5.2.0",
+    "gatsby-transformer-remark": "^5.4.0",
     "gatsby-transformer-sharp": "^4.2.0",
     "jquery": "^3.6.0",
     "prismjs": "^1.25.0",
