@@ -76,8 +76,7 @@ const Footer = () => (
         </div>
         <div className="col-12 col-sm-6 text-sm-right small">
           <a
-            href="https://www.trimble.com/Corporate/Terms_of_Use.aspx"
-            rel="noopener"
+            href="https://www.trimble.com/en/legal/terms-and-conditions/terms-of-use"
             target="_blank"
           >
             Terms of Use
