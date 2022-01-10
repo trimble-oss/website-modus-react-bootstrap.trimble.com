@@ -31,11 +31,23 @@ import { ModusIconsListing } from "../common/ModusIconsListing"
 
 function range(start, total, count = 5) {
   /* generate a range : [start, start+1, ..., end-1, end] */
+
   const end = total <= count ? total : start + count - 1
   const len = end - start + 1
   let a = new Array(len)
   for (let i = 0; i < len; i++) a[i] = start + i
   return a
+}
+
+function getPaginationGroup(currentPage, totalPages, pageLimit = 5) {
+  debugger
+  const start = Math.floor((currentPage - 1) / pageLimit) * pageLimit
+  const len =
+    Math.ceil(currentPage / pageLimit) === Math.ceil(totalPages / pageLimit)
+      ? totalPages % pageLimit || pageLimit
+      : pageLimit
+
+  return new Array(len).fill().map((_, idx) => start + idx + 1)
 }
 
 const TablePagination = ({
@@ -45,20 +57,34 @@ const TablePagination = ({
   visiblePageRange = 5,
 }) => {
   debugger
-  const firstPage = React.useMemo(
-    () => (totalPages <= visiblePageRange ? 1 : page + 1),
-    []
-  )
-  const lastPage = React.useMemo(() => {
-    return totalPages <= visiblePageRange ? totalPages : page + visiblePageRange
-  }, [])
+  // const firstPage = React.useMemo(
+  //   () => (totalPages <= visiblePageRange ? 1 : page + 1),
+  //   [page, totalPages]
+  // )
+  // const lastPage = React.useMemo(() => {
+  //   return totalPages <= visiblePageRange ? totalPages : page + visiblePageRange
+  // }, [page, totalPages])
 
-  const handlePreviousPage = useCallback(event => {
-    onPageChange(page - 1)
-  }, [])
-  const handleNextPage = useCallback(event => {
-    onPageChange(page + 1)
-  }, [])
+  const paginationGroup = getPaginationGroup(
+    page + 1,
+    totalPages,
+    visiblePageRange
+  )
+  const firstPage = paginationGroup[0]
+  const lastPage = paginationGroup[paginationGroup.length - 1]
+
+  const handlePreviousPage = useCallback(
+    event => {
+      onPageChange(page - 1)
+    },
+    [page]
+  )
+  const handleNextPage = useCallback(
+    event => {
+      onPageChange(page + 1)
+    },
+    [page]
+  )
 
   return (
     <nav aria-label="...">
@@ -72,7 +98,8 @@ const TablePagination = ({
             <i className="modus-icons">more_horizontal</i>
           </Pagination.Item>
         )}
-        {range(firstPage, lastPage).map(item => {
+
+        {paginationGroup.map(item => {
           return (
             <Pagination.Item active={item === page + 1}>{item}</Pagination.Item>
           )
@@ -84,37 +111,9 @@ const TablePagination = ({
           </Pagination.Item>
         )}
         <Pagination.Item
-          disabled={lastPage === totalPages}
+          disabled={page + 1 === totalPages}
           onClick={handleNextPage}
         >
-          <i className="modus-icons">chevron_right</i>
-        </Pagination.Item>
-      </Pagination>
-    </nav>
-  )
-}
-
-const DummyTablePagination = props => {
-  return (
-    <nav aria-label="...">
-      <Pagination style={{ marginBottom: "0" }}>
-        <Pagination.Item>
-          <i className="modus-icons">chevron_left</i>
-        </Pagination.Item>
-        <Pagination.Item>
-          <i className="modus-icons">more_horizontal</i>
-        </Pagination.Item>
-
-        <Pagination.Item>{3}</Pagination.Item>
-        <Pagination.Item>{4}</Pagination.Item>
-        <Pagination.Item active>{5}</Pagination.Item>
-        <Pagination.Item>{6}</Pagination.Item>
-        <Pagination.Item>{7}</Pagination.Item>
-
-        <Pagination.Item>
-          <i className="modus-icons">more_horizontal</i>
-        </Pagination.Item>
-        <Pagination.Item>
           <i className="modus-icons">chevron_right</i>
         </Pagination.Item>
       </Pagination>
