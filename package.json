@@ -56,7 +56,7 @@
     "react-helmet": "^6.1.0",
     "react-live": "^2.3.0",
     "react-router-dom": "^6.2.1",
-    "sass": "^1.46.0",
+    "sass": "^1.47.0",
     "styled-components": "^5.3.1"
   },
   "devDependencies": {
