@@ -39,23 +39,42 @@ const TableContainer = React.forwardRef(
       []
     )
 
-    const { getTableProps, headerGroups, rows, prepareRow } = useTable(
+    const {
+      getTableProps,
+      headerGroups,
+      prepareRow,
+      page,
+      canPreviousPage,
+      canNextPage,
+      pageOptions,
+      pageCount,
+      gotoPage,
+      nextPage,
+      previousPage,
+      setPageSize,
+      state: { pageIndex, pageSize },
+    } = useTable(
       {
         columns: normalizedColumns,
         data,
+        initialState: { pageIndex: 0, pageSize: 10 },
       },
-      useSortBy
+      useSortBy,
+      usePagination
     )
 
-    const Container = styled("div")`
-      overflow: auto;
-      padding: 0;
-      width: 100%;
-    `
     return (
-      <Container className="modus-data-table container" {...props}>
-        {props.children({ getTableProps, headerGroups, rows, prepareRow })}
-      </Container>
+      <div>
+        {props.children({
+          getTableProps,
+          headerGroups,
+          rows: page,
+          prepareRow,
+          gotoPage,
+          pageIndex,
+          pageOptions,
+        })}
+      </div>
     )
   }
 )
