@@ -31,7 +31,7 @@
     "@mdx-js/react": "^1.6.22",
     "@popperjs/core": "^2.11.2",
     "@trimbleinc/modus-react-bootstrap": "^0.9.3",
-    "astroturf": "^1.0.0-beta.27",
+    "astroturf": "^1.0.0",
     "classnames": "^2.3.1",
     "gatsby": "^4.4.0",
     "gatsby-plugin-astroturf": "^0.2.1",
