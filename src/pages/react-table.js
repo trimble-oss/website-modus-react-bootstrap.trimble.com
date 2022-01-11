@@ -1,5 +1,4 @@
 import * as React from "react"
-import { useTable, useSortBy, usePagination } from "react-table"
 import { useState, useCallback } from "react"
 import {
   Col,
@@ -7,6 +6,9 @@ import {
   Dropdown,
   DropdownButton,
   Form,
+  NavDropdown,
+  NavItem,
+  NavLink,
   Pagination,
   Row,
   Table as BootstrapTable,
@@ -24,102 +26,11 @@ import {
   TableRow,
   Table,
   TableContainer,
+  TablePagination,
 } from "../common/Table"
 import { MakeData as makeData } from "../examples/components/Table"
 import styled from "styled-components"
 import { ModusIconsListing } from "../common/ModusIconsListing"
-
-function range(start, total, count = 5) {
-  /* generate a range : [start, start+1, ..., end-1, end] */
-
-  const end = total <= count ? total : start + count - 1
-  const len = end - start + 1
-  let a = new Array(len)
-  for (let i = 0; i < len; i++) a[i] = start + i
-  return a
-}
-
-function getPaginationGroup(currentPage, totalPages, pageLimit = 5) {
-  debugger
-  const start = Math.floor((currentPage - 1) / pageLimit) * pageLimit
-  const len =
-    Math.ceil(currentPage / pageLimit) === Math.ceil(totalPages / pageLimit)
-      ? totalPages % pageLimit || pageLimit
-      : pageLimit
-
-  return new Array(len).fill().map((_, idx) => start + idx + 1)
-}
-
-const TablePagination = ({
-  totalPages,
-  page,
-  onPageChange,
-  visiblePageRange = 5,
-}) => {
-  debugger
-  // const firstPage = React.useMemo(
-  //   () => (totalPages <= visiblePageRange ? 1 : page + 1),
-  //   [page, totalPages]
-  // )
-  // const lastPage = React.useMemo(() => {
-  //   return totalPages <= visiblePageRange ? totalPages : page + visiblePageRange
-  // }, [page, totalPages])
-
-  const paginationGroup = getPaginationGroup(
-    page + 1,
-    totalPages,
-    visiblePageRange
-  )
-  const firstPage = paginationGroup[0]
-  const lastPage = paginationGroup[paginationGroup.length - 1]
-
-  const handlePreviousPage = useCallback(
-    event => {
-      onPageChange(page - 1)
-    },
-    [page]
-  )
-  const handleNextPage = useCallback(
-    event => {
-      onPageChange(page + 1)
-    },
-    [page]
-  )
-
-  return (
-    <nav aria-label="...">
-      <Pagination style={{ marginBottom: "0" }}>
-        <Pagination.Item disabled={page === 0} onClick={handlePreviousPage}>
-          <i className="modus-icons">chevron_left</i>
-        </Pagination.Item>
-
-        {firstPage > 1 && (
-          <Pagination.Item>
-            <i className="modus-icons">more_horizontal</i>
-          </Pagination.Item>
-        )}
-
-        {paginationGroup.map(item => {
-          return (
-            <Pagination.Item active={item === page + 1}>{item}</Pagination.Item>
-          )
-        })}
-
-        {lastPage != totalPages && (
-          <Pagination.Item>
-            <i className="modus-icons">more_horizontal</i>
-          </Pagination.Item>
-        )}
-        <Pagination.Item
-          disabled={page + 1 === totalPages}
-          onClick={handleNextPage}
-        >
-          <i className="modus-icons">chevron_right</i>
-        </Pagination.Item>
-      </Pagination>
-    </nav>
-  )
-}
 
 const ReactTableContainer = props => {
   const Container = styled("div")`
@@ -161,7 +72,7 @@ const ReactTableContainer = props => {
     []
   )
 
-  const data = React.useMemo(() => makeData(100), [])
+  const data = React.useMemo(() => makeData(125), [])
 
   return (
     <>
@@ -173,6 +84,8 @@ const ReactTableContainer = props => {
           prepareRow,
           gotoPage,
           pageIndex,
+          pageSize,
+          setPageSize,
           pageOptions,
         }) => (
           <>
@@ -222,33 +135,14 @@ const ReactTableContainer = props => {
               </Table>
             </Container>
 
-            <div
-              style={{
-                padding: "2px",
-                border: "1px solid #b7b9c3",
-                marginBottom: "1rem",
-                padding: "0.5rem",
-              }}
-              className="d-flex justify-content-end"
-            >
-              <div className="d-inline-flex align-items-center mr-2">
-                <span className="mr-2">Page Size:</span>
-                <div>
-                  <Form.Control as="select" custom>
-                    <option>10</option>
-                    <option>20</option>
-                    <option>50</option>
-                  </Form.Control>
-                </div>
-              </div>
-              <div>
-                <TablePagination
-                  totalPages={pageOptions.length}
-                  page={pageIndex}
-                  onPageChange={gotoPage}
-                ></TablePagination>
-              </div>
-            </div>
+            <TablePagination
+              totalPages={pageOptions.length}
+              pageIndex={pageIndex}
+              pageSize={pageSize}
+              onPageChange={gotoPage}
+              pageSizeOptions={[10, 20, 30, 40, 50]}
+              onPageSizeChange={setPageSize}
+            ></TablePagination>
           </>
         )}
       </TableContainer>

@@ -22,3 +22,11 @@ div.modus-data-table th .modus-icons.material-icons.unsorted {
 div.modus-data-table th .modus-icons.material-icons.unsorted:hover {
   opacity: 1;
 }
+
+.modus-table-pagination li.page-item.p-0 > .page-link {
+  padding: 0;
+}
+
+.modus-table-pagination li.page-item.p-0 .nav-link {
+  padding: calc((2rem - 0.875rem) / 2) 0.75rem;
+}

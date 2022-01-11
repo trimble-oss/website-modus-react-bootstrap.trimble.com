@@ -5,6 +5,7 @@ import TableCell from "./TableCell"
 import TableHead from "./TableHead"
 import TableHeader from "./TableHeader"
 import TableRow from "./TableRow"
+import TablePagination from "./TablePagination"
 
 export {
   Table,
@@ -14,4 +15,5 @@ export {
   TableHeader,
   TableRow,
   TableContainer,
+  TablePagination,
 }

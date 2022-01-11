@@ -73,6 +73,8 @@ const TableContainer = React.forwardRef(
           gotoPage,
           pageIndex,
           pageOptions,
+          pageSize,
+          setPageSize,
         })}
       </div>
     )
