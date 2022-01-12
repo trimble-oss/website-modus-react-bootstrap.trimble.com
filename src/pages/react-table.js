@@ -1,9 +1,17 @@
 import * as React from "react"
-import { useTable, useSortBy, usePagination } from "react-table"
+import { useState, useCallback } from "react"
 import {
   Col,
   Container,
+  Dropdown,
+  DropdownButton,
+  Form,
+  NavDropdown,
+  NavItem,
+  NavLink,
+  Pagination,
   Row,
+  Spinner,
   Table as BootstrapTable,
 } from "@trimbleinc/modus-react-bootstrap"
 import DefaultLayout from "../layouts/DefaultLayout"
@@ -19,8 +27,12 @@ import {
   TableRow,
   Table,
   TableContainer,
+  TablePagination,
+  DataTable,
 } from "../common/Table"
 import { MakeData as makeData } from "../examples/components/Table"
+import styled from "styled-components"
+import { ModusIconsListing } from "../common/ModusIconsListing"
 
 const ReactTableContainer = props => {
   const columns = React.useMemo(
@@ -56,73 +68,93 @@ const ReactTableContainer = props => {
     []
   )
 
-  const data = React.useMemo(() => makeData(100), [])
+  // const data = React.useMemo(() => makeData(125), [])
+  const serverData = makeData(10000)
+
+  const [data, setData] = React.useState([])
+  const [loading, setLoading] = React.useState(false)
+  const [pageCount, setPageCount] = React.useState(0)
+
+  const fetchData = React.useCallback(({ pageSize, pageIndex }) => {
+    setLoading(true)
+    setTimeout(() => {
+      const startRow = pageSize * pageIndex
+      const endRow = startRow + pageSize
+      setData(serverData.slice(startRow, endRow))
+      setPageCount(Math.ceil(serverData.length / pageSize))
+      setLoading(false)
+    }, 1000)
+  }, [])
 
   return (
     <>
-      <CodeBlock
-        scope={{
-          TableContainer,
-          columns,
-          data,
-          TableHead,
-          TableBody,
-          TableCell,
-          TableHeader,
-          TableRow,
-          Table,
-        }}
-        code={`
-    <TableContainer
-        columns={columns}
-        data={data}
-        style={{ width: "100%", height: "400px" }}>
-        {({ getTableProps, headerGroups, rows, prepareRow }) => (
-
-          <Table bordered hover {...getTableProps()}>
-            <TableHead className="bg-gray-light sticky-top">
-              {headerGroups.map(headerGroup => (
-
-                <TableRow
-                  {...headerGroup.getHeaderGroupProps()}
-                  className="bg-gray-light">
-                  {headerGroup.headers.map(header => (
-
-                    <TableHeader
-                      isSortable={header.canSort}
-                      isSorted={header.isSorted}
-                      sortDirection={header.isSortedDesc ? "desc" : "asc"}
-                      className="bg-gray-light sticky-top"
-                      {...header.getHeaderProps(header.getSortByToggleProps())}
+      <DataTable columns={columns} data={data}>
+        {({
+          getTableProps,
+          headerGroups,
+          rows,
+          prepareRow,
+          gotoPage,
+          pageIndex,
+          pageSize,
+          setPageSize,
+          pageOptions,
+        }) => (
+          <>
+            <TableContainer scrollable style={{ maxHeight: "400px" }}>
+              <Table bordered hover {...getTableProps()}>
+                <TableHead className="bg-gray-light sticky-top">
+                  {headerGroups.map(headerGroup => (
+                    <TableRow
+                      {...headerGroup.getHeaderGroupProps()}
+                      className="bg-gray-light"
                     >
-                      {header.render("Header")}
-                    </TableHeader>
+                      {headerGroup.headers.map(header => (
+                        <TableHeader
+                          isSortable={header.canSort}
+                          isSorted={header.isSorted}
+                          sortDirection={header.isSortedDesc ? "desc" : "asc"}
+                          className="bg-gray-light"
+                          {...header.getHeaderProps(
+                            header.getSortByToggleProps()
+                          )}
+                        >
+                          {header.render("Header")}
+                        </TableHeader>
+                      ))}
+                    </TableRow>
                   ))}
-                </TableRow>
-              ))}
-            </TableHead>
-            <TableBody>
-              {rows.map((row, i) => {
-                prepareRow(row)
-                return (
-
-                  <TableRow {...row.getRowProps()}>
-                    {row.cells.map(cell => {
-
-                      return (
-                        <TableCell {...cell.getCellProps()}>
-                          {cell.render("Cell")}
-                        </TableCell>
-                      )
-                    })}
-                  </TableRow>
-                )
-              })}
-            </TableBody>
-          </Table>
+                </TableHead>
+                <TableBody>
+                  {rows.map((row, i) => {
+                    prepareRow(row)
+                    return (
+                      <TableRow {...row.getRowProps()}>
+                        {row.cells.map(cell => {
+                          return (
+                            <TableCell {...cell.getCellProps()}>
+                              {cell.render("Cell")}
+                            </TableCell>
+                          )
+                        })}
+                      </TableRow>
+                    )
+                  })}
+                </TableBody>
+              </Table>
+            </TableContainer>
+            <TablePagination
+              totalPages={pageOptions.length}
+              pageIndex={pageIndex}
+              pageSize={pageSize}
+              onPageChange={gotoPage}
+              pageSizeOptions={[10, 20, 30, 40, 50]}
+              onPageSizeChange={setPageSize}
+              className="border border-tertiary"
+            ></TablePagination>
+          </>
         )}
-      </TableContainer>`}
-      ></CodeBlock>
+      </DataTable>
     </>
   )
 }
