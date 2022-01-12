@@ -944,7 +944,7 @@ export const TableWithSorting = `function Example() {
   ]
 
   return (
-      <TableContainer columns={columns} data={data}>
+      <DataTable columns={columns} data={data}>
         {({ getTableProps, headerGroups, rows, prepareRow }) => (
           <Table bordered hover {...getTableProps()}>
             <TableHead className="bg-gray-light">
@@ -985,7 +985,7 @@ export const TableWithSorting = `function Example() {
             </TableBody>
           </Table>
         )}
-      </TableContainer>
+      </DataTable>
   );
 }
 
@@ -1029,48 +1029,52 @@ export const TableWithScroll = `function Example() {
   const data = React.useMemo(() => makeData(100), [])
 
   return (
-      <TableContainer columns={columns} data={data} style={{ height: "400px" }}>
+      <DataTable columns={columns} data={data}>
         {({ getTableProps, headerGroups, rows, prepareRow }) => (
-          <Table bordered hover {...getTableProps()}>
-            <TableHead className="bg-gray-light">
-              {headerGroups.map(headerGroup => (
-                <TableRow
-                  {...headerGroup.getHeaderGroupProps()}
-                  className="bg-gray-light"
-                >
-                  {headerGroup.headers.map(header => (
-                    <TableHeader
-                      isSortable={header.canSort}
-                      isSorted={header.isSorted}
-                      sortDirection={header.isSortedDesc ? "desc" : "asc"}
-                      className="bg-gray-light"
-                      {...header.getHeaderProps(header.getSortByToggleProps())}
-                    >
-                      {header.render("Header")}
-                    </TableHeader>
-                  ))}
-                </TableRow>
-              ))}
-            </TableHead>
-            <TableBody>
-              {rows.map((row, i) => {
-                prepareRow(row)
-                return (
-                  <TableRow {...row.getRowProps()}>
-                    {row.cells.map(cell => {
-                      return (
-                        <TableCell {...cell.getCellProps()}>
-                          {cell.render("Cell")}
-                        </TableCell>
-                      )
-                    })}
+          <TableContainer scrollable style={{ maxHeight: "400px" }}>
+            <Table bordered hover {...getTableProps()}>
+              <TableHead className="bg-gray-light">
+                {headerGroups.map(headerGroup => (
+                  <TableRow
+                    {...headerGroup.getHeaderGroupProps()}
+                    className="bg-gray-light"
+                  >
+                    {headerGroup.headers.map(header => (
+                      <TableHeader
+                        isSortable={header.canSort}
+                        isSorted={header.isSorted}
+                        sortDirection={header.isSortedDesc ? "desc" : "asc"}
+                        className="bg-gray-light"
+                        {...header.getHeaderProps(
+                          header.getSortByToggleProps()
+                        )}
+                      >
+                        {header.render("Header")}
+                      </TableHeader>
+                    ))}
                   </TableRow>
-                )
-              })}
-            </TableBody>
-          </Table>
+                ))}
+              </TableHead>
+              <TableBody>
+                {rows.map((row, i) => {
+                  prepareRow(row)
+                  return (
+                    <TableRow {...row.getRowProps()}>
+                      {row.cells.map(cell => {
+                        return (
+                          <TableCell {...cell.getCellProps()}>
+                            {cell.render("Cell")}
+                          </TableCell>
+                        )
+                      })}
+                    </TableRow>
+                  )
+                })}
+              </TableBody>
+            </Table>
+          </TableContainer>
         )}
-      </TableContainer>
+      </DataTable>
   );
 }
 
@@ -1114,55 +1118,162 @@ export const TableWithFixedHeader = `function Example() {
   const data = React.useMemo(() => makeData(100), [])
 
   return (
-    <TableContainer
-        columns={columns}
-        data={data}
-        style={{ width: "100%", height: "400px" }}>
+      <DataTable columns={columns} data={data}>
         {({ getTableProps, headerGroups, rows, prepareRow }) => (
-
-          <Table bordered hover {...getTableProps()}>
-            <TableHead className="bg-gray-light sticky-top">
-              {headerGroups.map(headerGroup => (
-
-                <TableRow
-                  {...headerGroup.getHeaderGroupProps()}
-                  className="bg-gray-light">
-                  {headerGroup.headers.map(header => (
-
-                    <TableHeader
-                      isSortable={header.canSort}
-                      isSorted={header.isSorted}
-                      sortDirection={header.isSortedDesc ? "desc" : "asc"}
-                      className="bg-gray-light"
-                      {...header.getHeaderProps(header.getSortByToggleProps())}
-                    >
-                      {header.render("Header")}
-                    </TableHeader>
-                  ))}
-                </TableRow>
-              ))}
-            </TableHead>
-            <TableBody>
-              {rows.map((row, i) => {
-                prepareRow(row)
-                return (
-
-                  <TableRow {...row.getRowProps()}>
-                    {row.cells.map(cell => {
-
-                      return (
-                        <TableCell {...cell.getCellProps()}>
-                          {cell.render("Cell")}
-                        </TableCell>
-                      )
-                    })}
+          <TableContainer scrollable style={{ maxHeight: "400px" }}>
+            <Table bordered hover {...getTableProps()}>
+              <TableHead className="bg-gray-light sticky-top">
+                {headerGroups.map(headerGroup => (
+                  <TableRow
+                    {...headerGroup.getHeaderGroupProps()}
+                    className="bg-gray-light"
+                  >
+                    {headerGroup.headers.map(header => (
+                      <TableHeader
+                        isSortable={header.canSort}
+                        isSorted={header.isSorted}
+                        sortDirection={header.isSortedDesc ? "desc" : "asc"}
+                        className="bg-gray-light"
+                        {...header.getHeaderProps(
+                          header.getSortByToggleProps()
+                        )}
+                      >
+                        {header.render("Header")}
+                      </TableHeader>
+                    ))}
                   </TableRow>
-                )
-              })}
-            </TableBody>
-          </Table>
+                ))}
+              </TableHead>
+              <TableBody>
+                {rows.map((row, i) => {
+                  prepareRow(row)
+                  return (
+                    <TableRow {...row.getRowProps()}>
+                      {row.cells.map(cell => {
+                        return (
+                          <TableCell {...cell.getCellProps()}>
+                            {cell.render("Cell")}
+                          </TableCell>
+                        )
+                      })}
+                    </TableRow>
+                  )
+                })}
+              </TableBody>
+            </Table>
+          </TableContainer>
         )}
-      </TableContainer>
+      </DataTable>
+  );
+}
+
+render(<Example />);`
+
+export const TableWithPagination = `function Example() {
+  const columns = React.useMemo(
+    () => [
+      {
+        Header: "First Name",
+        accessor: "firstName",
+      },
+      {
+        Header: "Last Name",
+        accessor: "lastName",
+        sortBy: true,
+      },
+      {
+        Header: "Age",
+        accessor: "age",
+        sortBy: true,
+      },
+      {
+        Header: "Visits",
+        accessor: "visits",
+        sortBy: true,
+      },
+      {
+        Header: "Status",
+        accessor: "status",
+        sortBy: true,
+      },
+      {
+        Header: "Profile Progress",
+        accessor: "progress",
+      },
+    ],
+    []
+  )
+
+  const data = React.useMemo(() => makeData(175), [])
+
+  return (
+      <DataTable columns={columns} data={data}>
+        {({
+          getTableProps,
+          headerGroups,
+          rows,
+          prepareRow,
+          gotoPage,
+          pageIndex,
+          pageSize,
+          setPageSize,
+          pageOptions,
+        }) => (
+          <>
+            <TableContainer scrollable style={{ maxHeight: "400px" }}>
+              <Table bordered hover {...getTableProps()}>
+                <TableHead className="bg-gray-light sticky-top">
+                  {headerGroups.map(headerGroup => (
+                    <TableRow
+                      {...headerGroup.getHeaderGroupProps()}
+                      className="bg-gray-light"
+                    >
+                      {headerGroup.headers.map(header => (
+                        <TableHeader
+                          isSortable={header.canSort}
+                          isSorted={header.isSorted}
+                          sortDirection={header.isSortedDesc ? "desc" : "asc"}
+                          className="bg-gray-light"
+                          {...header.getHeaderProps(
+                            header.getSortByToggleProps()
+                          )}
+                        >
+                          {header.render("Header")}
+                        </TableHeader>
+                      ))}
+                    </TableRow>
+                  ))}
+                </TableHead>
+                <TableBody>
+                  {rows.map((row, i) => {
+                    prepareRow(row)
+                    return (
+                      <TableRow {...row.getRowProps()}>
+                        {row.cells.map(cell => {
+                          return (
+                            <TableCell {...cell.getCellProps()}>
+                              {cell.render("Cell")}
+                            </TableCell>
+                          )
+                        })}
+                      </TableRow>
+                    )
+                  })}
+                </TableBody>
+              </Table>
+            </TableContainer>
+            <TablePagination
+              totalPages={pageOptions.length}
+              pageIndex={pageIndex}
+              pageSize={pageSize}
+              onPageChange={gotoPage}
+              pageSizeOptions={[10, 20, 30, 40, 50]}
+              onPageSizeChange={setPageSize}
+              className="border border-tertiary"
+            ></TablePagination>
+          </>
+        )}
+      </DataTable>
   );
 }
 

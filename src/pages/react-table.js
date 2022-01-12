@@ -27,18 +27,13 @@ import {
   Table,
   TableContainer,
   TablePagination,
+  DataTable,
 } from "../common/Table"
 import { MakeData as makeData } from "../examples/components/Table"
 import styled from "styled-components"
 import { ModusIconsListing } from "../common/ModusIconsListing"
 
 const ReactTableContainer = props => {
-  const Container = styled("div")`
-    overflow: auto;
-    padding: 0;
-    width: 100%;
-  `
-
   const columns = React.useMemo(
     () => [
       {
@@ -74,9 +69,15 @@ const ReactTableContainer = props => {
 
   const data = React.useMemo(() => makeData(125), [])
 
+  const Container = styled("div")`
+    overflow: auto;
+    padding: 0;
+    width: 100%;
+  `
+
   return (
     <>
-      <TableContainer columns={columns} data={data}>
+      {/* <DataTable columns={columns} data={data}>
         {({
           getTableProps,
           headerGroups,
@@ -89,10 +90,7 @@ const ReactTableContainer = props => {
           pageOptions,
         }) => (
           <>
-            <Container
-              className="modus-data-table container"
-              style={{ width: "100%" }}
-            >
+            <TableContainer scrollable style={{ maxHeight: "400px" }}>
               <Table bordered hover {...getTableProps()}>
                 <TableHead className="bg-gray-light sticky-top">
                   {headerGroups.map(headerGroup => (
@@ -133,7 +131,7 @@ const ReactTableContainer = props => {
                   })}
                 </TableBody>
               </Table>
-            </Container>
+            </TableContainer>
 
             <TablePagination
               totalPages={pageOptions.length}
@@ -142,10 +140,79 @@ const ReactTableContainer = props => {
               onPageChange={gotoPage}
               pageSizeOptions={[10, 20, 30, 40, 50]}
               onPageSizeChange={setPageSize}
+              className="border border-tertiary"
             ></TablePagination>
           </>
         )}
-      </TableContainer>
+      </DataTable> */}
+
+      <DataTable columns={columns} data={data}>
+        {({
+          getTableProps,
+          headerGroups,
+          rows,
+          prepareRow,
+          gotoPage,
+          pageIndex,
+          pageSize,
+          setPageSize,
+          pageOptions,
+        }) => (
+          <>
+            <TableContainer scrollable style={{ maxHeight: "400px" }}>
+              <Table bordered hover {...getTableProps()}>
+                <TableHead className="bg-gray-light sticky-top">
+                  {headerGroups.map(headerGroup => (
+                    <TableRow
+                      {...headerGroup.getHeaderGroupProps()}
+                      className="bg-gray-light"
+                    >
+                      {headerGroup.headers.map(header => (
+                        <TableHeader
+                          isSortable={header.canSort}
+                          isSorted={header.isSorted}
+                          sortDirection={header.isSortedDesc ? "desc" : "asc"}
+                          className="bg-gray-light"
+                          {...header.getHeaderProps(
+                            header.getSortByToggleProps()
+                          )}
+                        >
+                          {header.render("Header")}
+                        </TableHeader>
+                      ))}
+                    </TableRow>
+                  ))}
+                </TableHead>
+                <TableBody>
+                  {rows.map((row, i) => {
+                    prepareRow(row)
+                    return (
+                      <TableRow {...row.getRowProps()}>
+                        {row.cells.map(cell => {
+                          return (
+                            <TableCell {...cell.getCellProps()}>
+                              {cell.render("Cell")}
+                            </TableCell>
+                          )
+                        })}
+                      </TableRow>
+                    )
+                  })}
+                </TableBody>
+              </Table>
+            </TableContainer>
+            <TablePagination
+              totalPages={pageOptions.length}
+              pageIndex={pageIndex}
+              pageSize={pageSize}
+              onPageChange={gotoPage}
+              pageSizeOptions={[10, 20, 30, 40, 50]}
+              onPageSizeChange={setPageSize}
+              className="border border-tertiary"
+            ></TablePagination>
+          </>
+        )}
+      </DataTable>
 
       {/* <CodeBlock
         scope={{

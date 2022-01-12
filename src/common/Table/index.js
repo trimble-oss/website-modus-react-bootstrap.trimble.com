@@ -6,6 +6,7 @@ import TableHead from "./TableHead"
 import TableHeader from "./TableHeader"
 import TableRow from "./TableRow"
 import TablePagination from "./TablePagination"
+import DataTable from "./DataTable"
 
 export {
   Table,
@@ -16,4 +17,5 @@ export {
   TableRow,
   TableContainer,
   TablePagination,
+  DataTable,
 }

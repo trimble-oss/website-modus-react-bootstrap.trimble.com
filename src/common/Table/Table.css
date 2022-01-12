@@ -1,6 +1,15 @@
-div.modus-data-table > table {
+div.modus-data-table .table {
   margin: 0;
   width: "100%";
+}
+
+div.modus-data-table > .container {
+  padding: 0;
+  width: 100%;
+}
+
+div.modus-data-table > .container.scrollable {
+  overflow: auto;
 }
 
 div.modus-data-table th .modus-icons.material-icons.sorted,
@@ -9,7 +18,7 @@ div.modus-data-table th .modus-icons.material-icons.sorted,
   font-size: 1rem;
 }
 
-div.modus-data-table table.table-bordered thead.sticky-top tr {
+div.modus-data-table table thead.sticky-top tr {
   box-shadow: 0 1px 0 0 #b7b9c3, 0 -1px 0 0 #b7b9c3;
   border-bottom-width: 0;
   border-top-width: 0;
@@ -21,6 +30,11 @@ div.modus-data-table th .modus-icons.material-icons.unsorted {
 
 div.modus-data-table th .modus-icons.material-icons.unsorted:hover {
   opacity: 1;
+}
+
+.modus-table-pagination {
+  margin-bottom: 1rem;
+  padding: 0.5rem;
 }
 
 .modus-table-pagination li.page-item.p-0 > .page-link {
