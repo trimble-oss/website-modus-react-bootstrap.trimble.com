@@ -3,13 +3,6 @@ import PropTypes from "prop-types"
 import classNames from "classnames"
 import styled from "styled-components"
 
-const propTypes = {
-  /**
-   * Enables scrolling for the Table component.
-   */
-  scrollable: PropTypes.bool,
-}
-
 const TableContainer = React.forwardRef(({ scrollable, ...props }, ref) => {
   return (
     <div
@@ -21,6 +14,11 @@ const TableContainer = React.forwardRef(({ scrollable, ...props }, ref) => {
   )
 })
 
-TableContainer.propTypes = propTypes
+TableContainer.propTypes = {
+  /**
+   * Enables scrolling for the Table component.
+   */
+  scrollable: PropTypes.bool,
+}
 
 export default TableContainer

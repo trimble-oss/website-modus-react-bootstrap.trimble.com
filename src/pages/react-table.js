@@ -11,6 +11,7 @@ import {
   NavLink,
   Pagination,
   Row,
+  Spinner,
   Table as BootstrapTable,
 } from "@trimbleinc/modus-react-bootstrap"
 import DefaultLayout from "../layouts/DefaultLayout"
@@ -67,85 +68,26 @@ const ReactTableContainer = props => {
     []
   )
 
-  const data = React.useMemo(() => makeData(125), [])
+  // const data = React.useMemo(() => makeData(125), [])
+  const serverData = makeData(10000)
 
-  const Container = styled("div")`
-    overflow: auto;
-    padding: 0;
-    width: 100%;
-  `
+  const [data, setData] = React.useState([])
+  const [loading, setLoading] = React.useState(false)
+  const [pageCount, setPageCount] = React.useState(0)
+
+  const fetchData = React.useCallback(({ pageSize, pageIndex }) => {
+    setLoading(true)
+    setTimeout(() => {
+      const startRow = pageSize * pageIndex
+      const endRow = startRow + pageSize
+      setData(serverData.slice(startRow, endRow))
+      setPageCount(Math.ceil(serverData.length / pageSize))
+      setLoading(false)
+    }, 1000)
+  }, [])
 
   return (
     <>
-      {/* <DataTable columns={columns} data={data}>
-        {({
-          getTableProps,
-          headerGroups,
-          rows,
-          prepareRow,
-          gotoPage,
-          pageIndex,
-          pageSize,
-          setPageSize,
-          pageOptions,
-        }) => (
-          <>
-            <TableContainer scrollable style={{ maxHeight: "400px" }}>
-              <Table bordered hover {...getTableProps()}>
-                <TableHead className="bg-gray-light sticky-top">
-                  {headerGroups.map(headerGroup => (
-                    <TableRow
-                      {...headerGroup.getHeaderGroupProps()}
-                      className="bg-gray-light"
-                    >
-                      {headerGroup.headers.map(header => (
-                        <TableHeader
-                          isSortable={header.canSort}
-                          isSorted={header.isSorted}
-                          sortDirection={header.isSortedDesc ? "desc" : "asc"}
-                          className="bg-gray-light"
-                          {...header.getHeaderProps(
-                            header.getSortByToggleProps()
-                          )}
-                        >
-                          {header.render("Header")}
-                        </TableHeader>
-                      ))}
-                    </TableRow>
-                  ))}
-                </TableHead>
-                <TableBody>
-                  {rows.map((row, i) => {
-                    prepareRow(row)
-                    return (
-                      <TableRow {...row.getRowProps()}>
-                        {row.cells.map(cell => {
-                          return (
-                            <TableCell {...cell.getCellProps()}>
-                              {cell.render("Cell")}
-                            </TableCell>
-                          )
-                        })}
-                      </TableRow>
-                    )
-                  })}
-                </TableBody>
-              </Table>
-            </TableContainer>
-
-            <TablePagination
-              totalPages={pageOptions.length}
-              pageIndex={pageIndex}
-              pageSize={pageSize}
-              onPageChange={gotoPage}
-              pageSizeOptions={[10, 20, 30, 40, 50]}
-              onPageSizeChange={setPageSize}
-              className="border border-tertiary"
-            ></TablePagination>
-          </>
-        )}
-      </DataTable> */}
-
       <DataTable columns={columns} data={data}>
         {({
           getTableProps,
@@ -213,22 +155,6 @@ const ReactTableContainer = props => {
           </>
         )}
       </DataTable>
-
-      {/* <CodeBlock
-        scope={{
-          TableContainer,
-          columns,
-          data,
-          TableHead,
-          TableBody,
-          TableCell,
-          TableHeader,
-          TableRow,
-          Table,
-        }}
-        code={`
-    `}
-      ></CodeBlock> */}
     </>
   )
 }

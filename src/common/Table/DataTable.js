@@ -1,30 +1,26 @@
 import * as React from "react"
 import PropTypes from "prop-types"
+import { useEffect } from "react"
 import { useTable, useSortBy, usePagination } from "react-table"
 import { Badge, Table as BTable } from "@trimbleinc/modus-react-bootstrap"
 import classNames from "classnames"
 import styled from "styled-components"
 import "./Table.css"
 
-const propTypes = {
-  /**
-   * Set of columns of type [[TableColumn]].
-   */
-  columns: PropTypes.array.isRequired,
-
-  /**
-   * Set of rows matching the columns schema.
-   */
-  data: PropTypes.arrayOf(PropTypes.object).isRequired,
-
-  /**
-   * Sets the sticky-top class on thead.
-   */
-  fixedHeader: PropTypes.bool,
-}
-
 const DataTable = React.forwardRef(
-  ({ columns, data, fixedHeader, ...props }, ref) => {
+  (
+    {
+      columns,
+      data,
+      hasSorting,
+      hasPagination,
+      hasManualPagination,
+      pageCount: controlledPageCount,
+      fetchData,
+      ...props
+    },
+    ref
+  ) => {
     //useSortBy hook enables sorting for all the columns
     //and disableSortBy is the only prop available at column configuration level
     const normalizedColumns = React.useMemo(
@@ -38,6 +34,19 @@ const DataTable = React.forwardRef(
         }),
       []
     )
+
+    const defaultOptions = {
+      columns: normalizedColumns,
+      data: data,
+      initialState: { pageIndex: 0, pageSize: 10 },
+    }
+
+    const paginationOptions = hasManualPagination
+      ? {
+          manualPagination: true,
+          pageCount: controlledPageCount,
+        }
+      : {}
 
     const {
       getTableProps,
@@ -55,13 +64,18 @@ const DataTable = React.forwardRef(
       state: { pageIndex, pageSize },
     } = useTable(
       {
-        columns: normalizedColumns,
-        data,
-        initialState: { pageIndex: 0, pageSize: 10 },
+        ...defaultOptions,
+        ...paginationOptions,
       },
       useSortBy,
       usePagination
     )
+
+    useEffect(() => {
+      if (fetchData) {
+        fetchData({ pageIndex, pageSize })
+      }
+    }, [fetchData, pageIndex, pageSize])
 
     return (
       <div className="modus-data-table">
@@ -81,6 +95,14 @@ const DataTable = React.forwardRef(
   }
 )
 
-DataTable.propTypes = propTypes
+DataTable.propTypes = {
+  columns: PropTypes.array.isRequired,
+  data: PropTypes.arrayOf(PropTypes.object).isRequired,
+  hasSorting: PropTypes.bool,
+  hasPagination: PropTypes.bool,
+  hasManualPagination: PropTypes.bool,
+  pageCount: PropTypes.number,
+  fetchData: PropTypes.func,
+}
 
 export default DataTable

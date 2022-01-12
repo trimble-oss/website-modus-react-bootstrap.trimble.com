@@ -41,7 +41,7 @@ const MorePagesDropdown = ({ pages, onPageSelection }) => {
       <Dropdown.Toggle as={NavLink} variant="text-primary" bsPrefix>
         <i className="modus-icons">more_horizontal</i>
       </Dropdown.Toggle>
-      <Dropdown.Menu className="dropdown-menu-sm">
+      <Dropdown.Menu className="dropdown-menu-sm" style={{ minWidth: "5rem" }}>
         {pages.map(item => {
           return (
             <Dropdown.Item
@@ -75,14 +75,15 @@ const TablePagination = React.forwardRef(
   ) => {
     const paginationGroup = getPaginationGroup(
       pageIndex + 1,
-      totalPages,
+      totalPages || 1,
       pageLimit
     )
+
     const firstPage = paginationGroup[0]
     const lastPage = paginationGroup[paginationGroup.length - 1]
     const morePagesLeft = firstPage > 1 && getRange(1, firstPage - 1)
     const morePagesRight =
-      lastPage != totalPages && getRange(lastPage + 1, totalPages)
+      totalPages && lastPage != totalPages && getRange(lastPage + 1, totalPages)
 
     const handlePreviousPage = useCallback(
       event => {

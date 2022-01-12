@@ -1278,3 +1278,140 @@ export const TableWithPagination = `function Example() {
 }
 
 render(<Example />);`
+
+export const TableWithServerPagination = `function Example() {
+  const columns = React.useMemo(
+    () => [
+      {
+        Header: "First Name",
+        accessor: "firstName",
+      },
+      {
+        Header: "Last Name",
+        accessor: "lastName",
+        sortBy: true,
+      },
+      {
+        Header: "Age",
+        accessor: "age",
+        sortBy: true,
+      },
+      {
+        Header: "Visits",
+        accessor: "visits",
+        sortBy: true,
+      },
+      {
+        Header: "Status",
+        accessor: "status",
+        sortBy: true,
+      },
+      {
+        Header: "Profile Progress",
+        accessor: "progress",
+      },
+    ],
+    []
+  )
+
+  const serverData = makeData(10000)
+
+  const [data, setData] = React.useState([])
+  const [loading, setLoading] = React.useState(false)
+  const [pageCount, setPageCount] = React.useState(0)
+
+  const fetchData = React.useCallback(({ pageSize, pageIndex }) => {
+    setLoading(true)
+    setTimeout(() => {
+      const startRow = pageSize * pageIndex
+      const endRow = startRow + pageSize
+      setData(serverData.slice(startRow, endRow))
+      setPageCount(Math.ceil(serverData.length / pageSize))
+      setLoading(false)
+    }, 1000)
+  }, [])
+
+  return (
+      <DataTable
+        columns={columns}
+        data={data}
+        fetchData={fetchData}
+        loading={loading}
+        pageCount={pageCount}
+        hasManualPagination={true}
+      >
+        {({
+          getTableProps,
+          headerGroups,
+          rows,
+          prepareRow,
+          gotoPage,
+          pageIndex,
+          pageSize,
+          setPageSize,
+          pageOptions,
+        }) => (
+          <>
+            <TableContainer scrollable style={{ height: "400px" }}>
+              <Table bordered hover {...getTableProps()}>
+                <TableHead className="bg-gray-light sticky-top">
+                  {headerGroups.map(headerGroup => (
+                    <TableRow
+                      {...headerGroup.getHeaderGroupProps()}
+                      className="bg-gray-light"
+                    >
+                      {headerGroup.headers.map(header => (
+                        <TableHeader
+                          isSortable={header.canSort}
+                          isSorted={header.isSorted}
+                          sortDirection={header.isSortedDesc ? "desc" : "asc"}
+                          className="bg-gray-light"
+                          {...header.getHeaderProps(
+                            header.getSortByToggleProps()
+                          )}
+                        >
+                          {header.render("Header")}
+                        </TableHeader>
+                      ))}
+                    </TableRow>
+                  ))}
+                </TableHead>
+                {loading ? (
+                  <TableSpinner colSpan={headerGroups[0].headers.length} />
+                ) : (
+                  <TableBody>
+                    {rows.map((row, i) => {
+                      prepareRow(row)
+                      return (
+                        <TableRow {...row.getRowProps()}>
+                          {row.cells.map(cell => {
+                            return (
+                              <TableCell {...cell.getCellProps()}>
+                                {cell.render("Cell")}
+                              </TableCell>
+                            )
+                          })}
+                        </TableRow>
+                      )
+                    })}
+                  </TableBody>
+                )}
+              </Table>
+            </TableContainer>
+
+            <TablePagination
+              totalPages={pageOptions.length}
+              pageIndex={pageIndex}
+              pageSize={pageSize}
+              onPageChange={gotoPage}
+              pageSizeOptions={[10, 20, 30, 40, 50]}
+              onPageSizeChange={setPageSize}
+              className="border border-tertiary"
+            ></TablePagination>
+          </>
+        )}
+      </DataTable>
+  );
+}
+
+render(<Example />);`
