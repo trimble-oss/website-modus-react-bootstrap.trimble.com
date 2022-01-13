@@ -71,8 +71,6 @@ module.exports = {
         filename: "search_index.json",
       },
     },
-    `gatsby-transformer-sharp`,
-    `gatsby-plugin-sharp`,
     {
       resolve: `gatsby-plugin-manifest`,
       options: {
@@ -82,16 +80,6 @@ module.exports = {
         icon: `src/assets/img/favicon.svg`, // This path is relative to the root of the site.
       },
     },
-    {
-      resolve: "gatsby-plugin-astroturf",
-      // defaults:
-      options: {
-        tagName: "css",
-        styledTag: "styled",
-        extension: ".module.css",
-      },
-    },
-
     {
       resolve: "gatsby-transformer-react-docgen",
       options: {
