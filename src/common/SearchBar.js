@@ -1,12 +1,5 @@
-import React, { useState, useEffect, useRef } from "react"
-import {
-  Dropdown,
-  Form,
-  FormControl,
-  ListGroup,
-  Nav,
-  Overlay,
-} from "@trimbleinc/modus-react-bootstrap"
+import React, { useState, useRef } from "react"
+import { Dropdown, Form, FormControl } from "@trimbleinc/modus-react-bootstrap"
 
 const SearchBar = () => {
   const [results, setResults] = useState([])
