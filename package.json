@@ -39,7 +39,7 @@
     "@netlify/plugin-gatsby": "^1.0.3",
     "@types/styled-components": "^5.1.19",
     "ast-types": "^0.14.2",
-    "gatsby": "^4.4.0",
+    "gatsby": "^4.5.2",
     "gatsby-plugin-image": "^2.5.1",
     "gatsby-plugin-lunr": "^1.5.2",
     "gatsby-plugin-manifest": "^4.4.0",
