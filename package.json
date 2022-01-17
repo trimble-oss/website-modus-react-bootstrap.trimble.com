@@ -48,7 +48,7 @@
     "gatsby-plugin-sass": "^5.5.0",
     "gatsby-remark-prismjs": "^6.4.0",
     "gatsby-source-filesystem": "^4.4.0",
-    "gatsby-transformer-react-docgen": "^7.4.0",
+    "gatsby-transformer-react-docgen": "^7.5.0",
     "gatsby-transformer-remark": "^5.4.0",
     "lodash": "^4.17.21",
     "prettier": "2.5.1",
