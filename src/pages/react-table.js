@@ -68,23 +68,7 @@ const ReactTableContainer = props => {
     []
   )
 
-  // const data = React.useMemo(() => makeData(125), [])
-  const serverData = makeData(10000)
-
-  const [data, setData] = React.useState([])
-  const [loading, setLoading] = React.useState(false)
-  const [pageCount, setPageCount] = React.useState(0)
-
-  const fetchData = React.useCallback(({ pageSize, pageIndex }) => {
-    setLoading(true)
-    setTimeout(() => {
-      const startRow = pageSize * pageIndex
-      const endRow = startRow + pageSize
-      setData(serverData.slice(startRow, endRow))
-      setPageCount(Math.ceil(serverData.length / pageSize))
-      setLoading(false)
-    }, 1000)
-  }, [])
+  const data = React.useMemo(() => makeData(125), [])
 
   return (
     <>
@@ -111,6 +95,7 @@ const ReactTableContainer = props => {
                     >
                       {headerGroup.headers.map(header => (
                         <TableHeader
+                          header={header}
                           isSortable={header.canSort}
                           isSorted={header.isSorted}
                           sortDirection={header.isSortedDesc ? "desc" : "asc"}

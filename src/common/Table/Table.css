@@ -10,7 +10,7 @@ div.modus-data-table > .container {
 }
 
 div.modus-data-table > .container.scrollable {
-  overflow: auto;
+  overflow-y: auto;
 }
 
 div.modus-data-table th .modus-icons.material-icons.sorted,
@@ -48,4 +48,21 @@ div.modus-data-table th .modus-icons.material-icons.unsorted:hover {
 
 .modus-table-pagination li.page-item.p-0 .nav-item .dropdown-item {
   font-size: 0.875rem;
+}
+
+div.modus-data-table th .resizer {
+  display: inline-block;
+  background: blue;
+  width: 10px;
+  height: 100%;
+  position: absolute;
+  right: 0;
+  top: 0;
+  transform: translateX(50%);
+  z-index: 1;
+  touch-action: none;
+}
+
+div.modus-data-table th .resizer.isResizing {
+  background: red;
 }

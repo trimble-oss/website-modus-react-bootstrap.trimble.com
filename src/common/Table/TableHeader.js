@@ -32,7 +32,15 @@ const SortIcon = ({ sort, title, className, ...props }) => (
 )
 
 const TableHeader = React.forwardRef(function Header(
-  { className, children, isSortable, isSorted, sortDirection, ...props },
+  {
+    className,
+    children,
+    isSortable,
+    isSorted,
+    sortDirection,
+    header,
+    ...props
+  },
   ref
 ) {
   return (
@@ -55,6 +63,10 @@ const TableHeader = React.forwardRef(function Header(
           )}
         </div>
       </div>
+      <div
+        {...header.getResizerProps()}
+        className={`resizer ${header.isResizing ? "isResizing" : ""}`}
+      />
     </th>
   )
 })
@@ -65,6 +77,7 @@ TableHeader.propTypes = {
   isSorted: PropTypes.bool,
   isSortable: PropTypes.bool,
   sortDirection: PropTypes.string,
+  header: PropTypes.object,
 }
 
 TableHeader.defaultProps = {

@@ -1,11 +1,19 @@
 import * as React from "react"
 import PropTypes from "prop-types"
 import { useEffect } from "react"
-import { useTable, useSortBy, usePagination } from "react-table"
+import {
+  useTable,
+  useSortBy,
+  usePagination,
+  useResizeColumns,
+  useBlockLayout,
+  useFlexLayout,
+} from "react-table"
 import { Badge, Table as BTable } from "@trimbleinc/modus-react-bootstrap"
 import classNames from "classnames"
 import styled from "styled-components"
 import "./Table.css"
+import { TableContext } from "./TableContext"
 
 const DataTable = React.forwardRef(
   (
@@ -35,18 +43,21 @@ const DataTable = React.forwardRef(
       []
     )
 
+    // const defaultColumn = React.useMemo(
+    //   () => ({
+    //     minWidth: 30,
+    //     width: 150,
+    //     maxWidth: 400,
+    //   }),
+    //   []
+    // )
+
     const defaultOptions = {
       columns: normalizedColumns,
       data: data,
       initialState: { pageIndex: 0, pageSize: 10 },
+      // defaultColumn,
     }
-
-    const paginationOptions = hasManualPagination
-      ? {
-          manualPagination: true,
-          pageCount: controlledPageCount,
-        }
-      : {}
 
     const {
       getTableProps,
@@ -65,17 +76,29 @@ const DataTable = React.forwardRef(
     } = useTable(
       {
         ...defaultOptions,
-        ...paginationOptions,
       },
       useSortBy,
-      usePagination
+      usePagination,
+      useFlexLayout,
+      useResizeColumns
     )
 
-    useEffect(() => {
-      if (fetchData) {
-        fetchData({ pageIndex, pageSize })
-      }
-    }, [fetchData, pageIndex, pageSize])
+    const tableContext = {
+      // getTableProps: tableProps.getTableProps,
+      // headerGroups: tableProps.headerGroups,
+      // prepareRow: tableProps.prepareRow,
+      // page: tableProps.page,
+      // canPreviousPage: tableProps.canPreviousPage,
+      // canNextPage: tableProps.canNextPage,
+      // pageOptions: tableProps.pageOptions,
+      // pageCount: tableProps.pageCount,
+      // gotoPage: tableProps.gotoPage,
+      // nextPage: tableProps.nextPage,
+      // previousPage: tableProps.previousPage,
+      // setPageSize: tableProps.setPageSize,
+      // pageIndex: tableProps.state.pageIndex,
+      // pageSize: tableProps.state.pageSize,
+    }
 
     return (
       <div className="modus-data-table">
