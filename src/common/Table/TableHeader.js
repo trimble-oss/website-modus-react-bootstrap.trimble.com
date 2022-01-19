@@ -63,10 +63,7 @@ const TableHeader = React.forwardRef(function Header(
           )}
         </div>
       </div>
-      <div
-        {...header.getResizerProps()}
-        className={`resizer ${header.isResizing ? "isResizing" : ""}`}
-      />
+      <div {...header.getResizerProps()} className="table-col-resizable" />
     </th>
   )
 })

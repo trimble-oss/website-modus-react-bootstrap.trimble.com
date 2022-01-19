@@ -50,19 +50,15 @@ div.modus-data-table th .modus-icons.material-icons.unsorted:hover {
   font-size: 0.875rem;
 }
 
-div.modus-data-table th .resizer {
-  display: inline-block;
-  background: blue;
-  width: 10px;
-  height: 100%;
+div.modus-data-table th .table-col-resizable {
+  bottom: 0;
   position: absolute;
   right: 0;
   top: 0;
-  transform: translateX(50%);
-  z-index: 1;
-  touch-action: none;
+  width: 5px;
 }
 
-div.modus-data-table th .resizer.isResizing {
-  background: red;
+div.modus-data-table th .table-col-resizable:hover {
+  background-color: #9bc2f7;
+  cursor: ew-resize;
 }
