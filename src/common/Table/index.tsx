@@ -3,7 +3,7 @@ import Table from "./Table"
 import TableBody from "./TableBody"
 import TableCell from "./TableCell"
 import TableHead from "./TableHead"
-import TableHeader from "./TableHeader"
+import TableHeaderCell from "./TableHeaderCell"
 import TableRow from "./TableRow"
 import TablePagination from "./TablePagination"
 import DataTable from "./DataTable"
@@ -13,7 +13,7 @@ export {
   TableBody,
   TableCell,
   TableHead,
-  TableHeader,
+  TableHeaderCell,
   TableRow,
   TableContainer,
   TablePagination,

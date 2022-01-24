@@ -23,7 +23,7 @@ import {
   TableHead,
   TableBody,
   TableCell,
-  TableHeader,
+  TableHeaderCell,
   TableRow,
   Table,
   TableContainer,
@@ -31,8 +31,6 @@ import {
   DataTable,
 } from "../common/Table"
 import { MakeData as makeData } from "../examples/components/Table"
-import styled from "styled-components"
-import { ModusIconsListing } from "../common/ModusIconsListing"
 
 const ReactTableContainer = props => {
   const columns = React.useMemo(
@@ -72,59 +70,59 @@ const ReactTableContainer = props => {
 
   return (
     <>
-      <DataTable columns={columns} data={data}>
-        {({
-          getTableProps,
-          headerGroups,
-          rows,
-          prepareRow,
-          gotoPage,
-          pageIndex,
-          pageSize,
-          setPageSize,
-          pageOptions,
-        }) => (
+      <DataTable
+        columns={columns}
+        data={data}
+        hasSorting
+        hasPagination
+        resizeColumns
+      >
+        {({ gotoPage, pageIndex, pageSize, setPageSize, pageOptions }) => (
           <>
             <TableContainer scrollable style={{ maxHeight: "400px" }}>
-              <Table bordered hover {...getTableProps()}>
+              <Table bordered hover>
                 <TableHead className="bg-gray-light sticky-top">
-                  {headerGroups.map(headerGroup => (
-                    <TableRow
-                      {...headerGroup.getHeaderGroupProps()}
+                  <TableRow className="bg-gray-light">
+                    <TableHeaderCell
+                      accessor="firstName"
                       className="bg-gray-light"
-                    >
-                      {headerGroup.headers.map(header => (
-                        <TableHeader
-                          header={header}
-                          isSortable={header.canSort}
-                          isSorted={header.isSorted}
-                          sortDirection={header.isSortedDesc ? "desc" : "asc"}
-                          className="bg-gray-light"
-                          {...header.getHeaderProps(
-                            header.getSortByToggleProps()
-                          )}
-                        >
-                          {header.render("Header")}
-                        </TableHeader>
-                      ))}
-                    </TableRow>
-                  ))}
+                    />
+                    <TableHeaderCell
+                      accessor="lastName"
+                      className="bg-gray-light"
+                    />
+                    <TableHeaderCell accessor="age" className="bg-gray-light" />
+                    <TableHeaderCell
+                      accessor="visits"
+                      className="bg-gray-light"
+                    />
+                    <TableHeaderCell
+                      accessor="status"
+                      className="bg-gray-light"
+                    />
+                    <TableHeaderCell
+                      accessor="progress"
+                      className="bg-gray-light"
+                    />
+                  </TableRow>
                 </TableHead>
                 <TableBody>
-                  {rows.map((row, i) => {
-                    prepareRow(row)
-                    return (
-                      <TableRow {...row.getRowProps()}>
-                        {row.cells.map(cell => {
-                          return (
-                            <TableCell {...cell.getCellProps()}>
-                              {cell.render("Cell")}
-                            </TableCell>
-                          )
-                        })}
-                      </TableRow>
-                    )
-                  })}
+                  {({ prepareRow, rows }) =>
+                    rows.map((row, i) => {
+                      prepareRow(row)
+                      return (
+                        <TableRow {...row.getRowProps()}>
+                          {row.cells.map(cell => {
+                            return (
+                              <TableCell {...cell.getCellProps()}>
+                                {cell.render("Cell")}
+                              </TableCell>
+                            )
+                          })}
+                        </TableRow>
+                      )
+                    })
+                  }
                 </TableBody>
               </Table>
             </TableContainer>

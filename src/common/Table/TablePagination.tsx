@@ -17,7 +17,55 @@ import {
 import merge from "lodash/merge"
 import classNames from "classnames"
 
-function getRange(start, end) {
+export interface TablePaginationProps<T extends object = {}>
+  extends React.HTMLProps<HTMLDivElement> {
+  totalPages: number
+  pageIndex: number
+  pageSize: number
+  pageSizeOptions: number[]
+  onPageSizeChange: (...args: any[]) => void
+  onPageChange: (...args: any[]) => void
+  pageLimit?: number
+}
+
+const propTypes = {
+  /**
+   * Pages total count
+   */
+  totalPages: PropTypes.number.isRequired,
+
+  /**
+   * Current Page Index
+   */
+  pageIndex: PropTypes.number.isRequired,
+
+  /**
+   * Callback for Page change event
+   */
+  onPageChange: PropTypes.func,
+
+  /**
+   * Default Page Size
+   */
+  pageSize: PropTypes.number.isRequired,
+
+  /**
+   * An array of page size options
+   */
+  pageSizeOptions: PropTypes.array.isRequired,
+
+  /**
+   * Callback for Page size change event
+   */
+  onPageSizeChange: PropTypes.func,
+
+  /**
+   * Number of visible page numbers
+   */
+  pageLimit: PropTypes.number,
+}
+
+const getRange = (start: number, end: number): number[] => {
   /* generate a range : [start, start+1, ..., end-1, end] */
   const len = end - start + 1
   let a = new Array(len)
@@ -25,20 +73,31 @@ function getRange(start, end) {
   return a
 }
 
-function getPaginationGroup(currentPage, totalPages, pageLimit = 5) {
+const getPaginationGroup = (
+  currentPage: number,
+  totalPages: number,
+  pageLimit = 5
+) => {
   const start = Math.floor((currentPage - 1) / pageLimit) * pageLimit
   const len =
     totalPages < Math.ceil(currentPage / pageLimit) * pageLimit
       ? totalPages % pageLimit
       : pageLimit
 
-  return new Array(len).fill().map((_, idx) => start + idx + 1)
+  return new Array(len).fill(0).map((_, idx) => start + idx + 1)
 }
 
-const MorePagesDropdown = ({ pages, onPageSelection }) => {
+export type MorePagesDropdownProps = {
+  pages: number[]
+  onPageSelection: (...args: any[]) => void
+}
+const MorePagesDropdown: React.FunctionComponent<MorePagesDropdownProps> = ({
+  pages,
+  onPageSelection,
+}) => {
   return (
     <Dropdown as={NavItem}>
-      <Dropdown.Toggle as={NavLink} variant="text-primary" bsPrefix>
+      <Dropdown.Toggle as={NavLink} variant="text-primary" bsPrefix="">
         <i className="modus-icons">more_horizontal</i>
       </Dropdown.Toggle>
       <Dropdown.Menu className="dropdown-menu-sm" style={{ minWidth: "5rem" }}>
@@ -58,7 +117,7 @@ const MorePagesDropdown = ({ pages, onPageSelection }) => {
   )
 }
 
-const TablePagination = React.forwardRef(
+const TablePagination = React.forwardRef<HTMLDivElement, TablePaginationProps>(
   (
     {
       totalPages,
@@ -108,6 +167,7 @@ const TablePagination = React.forwardRef(
           "modus-table-pagination d-flex justify-content-end "
         )}
         {...props}
+        ref={ref}
       >
         <div className="d-inline-flex align-items-center mr-2">
           <span className="mr-2">Page Size:</span>
@@ -183,16 +243,7 @@ const TablePagination = React.forwardRef(
   }
 )
 
-TablePagination.propTypes = {
-  totalPages: PropTypes.number,
-  pageIndex: PropTypes.number,
-  onPageChange: PropTypes.func,
-  pageSize: PropTypes.number,
-  pageSizeOptions: PropTypes.array,
-  onPageSizeChange: PropTypes.func,
-  pageLimit: PropTypes.number,
-}
-
+TablePagination.propTypes = propTypes
 TablePagination.displayName = "TablePagination"
 
 export default TablePagination

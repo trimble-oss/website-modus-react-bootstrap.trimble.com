@@ -1,5 +1,5 @@
+import React, { useContext } from "react"
 import classNames from "classnames"
-import React from "react"
 import PropTypes from "prop-types"
 import { useBootstrapPrefix } from "./ThemeProvider"
 
@@ -7,6 +7,7 @@ import {
   BsPrefixAndClassNameOnlyProps,
   BsPrefixRefForwardingComponent,
 } from "./helpers"
+import { TableContext } from "./TableContext"
 
 export interface TableProps extends BsPrefixAndClassNameOnlyProps {
   striped?: boolean
@@ -98,7 +99,12 @@ const Table: Table = React.forwardRef<HTMLTableElement, TableProps>(
       hover && `${decoratedBsPrefix}-hover`
     )
 
-    const table = <table {...props} className={classes} ref={ref} />
+    const tableInstance = useContext(TableContext)
+    const tableProps = tableInstance && tableInstance.getTableProps()
+
+    const table = (
+      <table {...tableProps} {...props} className={classes} ref={ref} />
+    )
     if (responsive) {
       let responsiveClass = `${decoratedBsPrefix}-responsive`
       if (typeof responsive === "string") {
