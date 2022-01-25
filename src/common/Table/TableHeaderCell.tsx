@@ -2,11 +2,8 @@ import * as React from "react"
 import { useContext } from "react"
 import PropTypes from "prop-types"
 import classNames from "classnames"
-import { Badge } from "@trimbleinc/modus-react-bootstrap"
-import styled from "styled-components"
-import { CustomPropsWithDisplayName } from "./helpers"
-import { TableHeadersContext } from "./TableContext"
-import { UseSortByColumnProps } from "react-table"
+import { TableContext, TableHeadersContext } from "./TableContext"
+import merge from "lodash/merge"
 
 export interface TableHeaderCellProps<T extends object = {}>
   extends React.HTMLProps<HTMLTableCellElement> {
@@ -67,18 +64,21 @@ const TableHeaderCell = React.forwardRef<
   TableHeaderCellProps
 >(({ accessor, renderer, children, className, ...props }, ref) => {
   const headersContext = useContext(TableHeadersContext)
-
   const header = headersContext && headersContext.find(h => h.id == accessor)
+
+  const headerProps = merge(
+    header.getSortByToggleProps && header.getSortByToggleProps(),
+    { title: "" }
+  )
 
   return (
     <th
       className={classNames("pr-2", className)}
-      {...props}
-      title=""
       ref={ref}
-      {...header.getHeaderProps(header.getSortByToggleProps())}
+      {...headerProps}
+      {...props}
     >
-      <div className="d-flex">
+      <div className="d-flex" style={{ width: "100%" }}>
         <div className="flex-grow-1">
           {renderer ? renderer(header) : header.render("Header")}
         </div>
@@ -101,7 +101,9 @@ const TableHeaderCell = React.forwardRef<
           )}
         </div>
       </div>
-      <div {...header.getResizerProps()} className="table-col-resizable" />
+      {header.getResizerProps && (
+        <div {...header.getResizerProps()} className="table-col-resizable" />
+      )}
     </th>
   )
 })

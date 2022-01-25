@@ -77,7 +77,15 @@ const ReactTableContainer = props => {
         hasPagination
         resizeColumns
       >
-        {({ gotoPage, pageIndex, pageSize, setPageSize, pageOptions }) => (
+        {({
+          prepareRow,
+          rows,
+          gotoPage,
+          pageIndex,
+          pageSize,
+          setPageSize,
+          pageOptions,
+        }) => (
           <>
             <TableContainer scrollable style={{ maxHeight: "400px" }}>
               <Table bordered hover>
@@ -107,22 +115,20 @@ const ReactTableContainer = props => {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {({ prepareRow, rows }) =>
-                    rows.map((row, i) => {
-                      prepareRow(row)
-                      return (
-                        <TableRow {...row.getRowProps()}>
-                          {row.cells.map(cell => {
-                            return (
-                              <TableCell {...cell.getCellProps()}>
-                                {cell.render("Cell")}
-                              </TableCell>
-                            )
-                          })}
-                        </TableRow>
-                      )
-                    })
-                  }
+                  {rows.map((row, i) => {
+                    prepareRow(row)
+                    return (
+                      <TableRow {...row.getRowProps()}>
+                        {row.cells.map(cell => {
+                          return (
+                            <TableCell {...cell.getCellProps()}>
+                              {cell.render("Cell")}
+                            </TableCell>
+                          )
+                        })}
+                      </TableRow>
+                    )
+                  })}
                 </TableBody>
               </Table>
             </TableContainer>

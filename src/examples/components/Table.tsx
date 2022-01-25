@@ -944,44 +944,37 @@ export const TableWithSorting = `function Example() {
   ]
 
   return (
-      <DataTable columns={columns} data={data}>
-        {({ getTableProps, headerGroups, rows, prepareRow }) => (
-          <Table bordered hover {...getTableProps()}>
+      <DataTable columns={columns} data={data} hasSorting>
+        {({prepareRow, rows}) => (
+          <Table bordered hover>
             <TableHead className="bg-gray-light">
-              {headerGroups.map(headerGroup => (
-                <TableRow
-                  {...headerGroup.getHeaderGroupProps()}
+              <TableRow className="bg-gray-light">
+                <TableHeaderCell
+                  accessor="firstName"
                   className="bg-gray-light"
-                >
-                  {headerGroup.headers.map(header => (
-                    <TableHeader
-                      isSortable={header.canSort}
-                      isSorted={header.isSorted}
-                      sortDirection={header.isSortedDesc ? "desc" : "asc"}
-                      className="bg-gray-light"
-                      {...header.getHeaderProps(header.getSortByToggleProps())}
-                    >
-                      {header.render("Header")}
-                    </TableHeader>
-                  ))}
-                </TableRow>
-              ))}
+                />
+                <TableHeaderCell
+                  accessor="lastName"
+                  className="bg-gray-light"
+                />
+                <TableHeaderCell accessor="age" className="bg-gray-light" />
+              </TableRow>
             </TableHead>
             <TableBody>
               {rows.map((row, i) => {
-                prepareRow(row)
-                return (
-                  <TableRow {...row.getRowProps()}>
-                    {row.cells.map(cell => {
-                      return (
-                        <TableCell {...cell.getCellProps()}>
-                          {cell.render("Cell")}
-                        </TableCell>
-                      )
-                    })}
-                  </TableRow>
-                )
-              })}
+                    prepareRow(row)
+                    return (
+                      <TableRow {...row.getRowProps()}>
+                        {row.cells.map(cell => {
+                          return (
+                            <TableCell {...cell.getCellProps()}>
+                              {cell.render("Cell")}
+                            </TableCell>
+                          )
+                        })}
+                      </TableRow>
+                    )
+                  })}
             </TableBody>
           </Table>
         )}
@@ -1029,47 +1022,50 @@ export const TableWithScroll = `function Example() {
   const data = React.useMemo(() => makeData(100), [])
 
   return (
-      <DataTable columns={columns} data={data}>
-        {({ getTableProps, headerGroups, rows, prepareRow }) => (
+    <DataTable columns={columns} data={data}>
+        {({prepareRow, rows}) => (
           <TableContainer scrollable style={{ maxHeight: "400px" }}>
-            <Table bordered hover {...getTableProps()}>
+            <Table bordered hover>
               <TableHead className="bg-gray-light">
-                {headerGroups.map(headerGroup => (
-                  <TableRow
-                    {...headerGroup.getHeaderGroupProps()}
+                <TableRow className="bg-gray-light">
+                  <TableHeaderCell
+                    accessor="firstName"
                     className="bg-gray-light"
-                  >
-                    {headerGroup.headers.map(header => (
-                      <TableHeader
-                        isSortable={header.canSort}
-                        isSorted={header.isSorted}
-                        sortDirection={header.isSortedDesc ? "desc" : "asc"}
-                        className="bg-gray-light"
-                        {...header.getHeaderProps(
-                          header.getSortByToggleProps()
-                        )}
-                      >
-                        {header.render("Header")}
-                      </TableHeader>
-                    ))}
-                  </TableRow>
-                ))}
+                  />
+                  <TableHeaderCell
+                    accessor="lastName"
+                    className="bg-gray-light"
+                  />
+                  <TableHeaderCell accessor="age" className="bg-gray-light" />
+                  <TableHeaderCell
+                    accessor="visits"
+                    className="bg-gray-light"
+                  />
+                  <TableHeaderCell
+                    accessor="status"
+                    className="bg-gray-light"
+                  />
+                  <TableHeaderCell
+                    accessor="progress"
+                    className="bg-gray-light"
+                  />
+                </TableRow>
               </TableHead>
               <TableBody>
                 {rows.map((row, i) => {
-                  prepareRow(row)
-                  return (
-                    <TableRow {...row.getRowProps()}>
-                      {row.cells.map(cell => {
-                        return (
-                          <TableCell {...cell.getCellProps()}>
-                            {cell.render("Cell")}
-                          </TableCell>
-                        )
-                      })}
-                    </TableRow>
-                  )
-                })}
+                    prepareRow(row)
+                    return (
+                      <TableRow {...row.getRowProps()}>
+                        {row.cells.map(cell => {
+                          return (
+                            <TableCell {...cell.getCellProps()}>
+                              {cell.render("Cell")}
+                            </TableCell>
+                          )
+                        })}
+                      </TableRow>
+                    )
+                  })}
               </TableBody>
             </Table>
           </TableContainer>
@@ -1118,47 +1114,50 @@ export const TableWithFixedHeader = `function Example() {
   const data = React.useMemo(() => makeData(100), [])
 
   return (
-      <DataTable columns={columns} data={data}>
-        {({ getTableProps, headerGroups, rows, prepareRow }) => (
+    <DataTable columns={columns} data={data}>
+        {({prepareRow, rows}) => (
           <TableContainer scrollable style={{ maxHeight: "400px" }}>
-            <Table bordered hover {...getTableProps()}>
+            <Table bordered hover>
               <TableHead className="bg-gray-light sticky-top">
-                {headerGroups.map(headerGroup => (
-                  <TableRow
-                    {...headerGroup.getHeaderGroupProps()}
+                <TableRow className="bg-gray-light">
+                  <TableHeaderCell
+                    accessor="firstName"
                     className="bg-gray-light"
-                  >
-                    {headerGroup.headers.map(header => (
-                      <TableHeader
-                        isSortable={header.canSort}
-                        isSorted={header.isSorted}
-                        sortDirection={header.isSortedDesc ? "desc" : "asc"}
-                        className="bg-gray-light"
-                        {...header.getHeaderProps(
-                          header.getSortByToggleProps()
-                        )}
-                      >
-                        {header.render("Header")}
-                      </TableHeader>
-                    ))}
-                  </TableRow>
-                ))}
+                  />
+                  <TableHeaderCell
+                    accessor="lastName"
+                    className="bg-gray-light"
+                  />
+                  <TableHeaderCell accessor="age" className="bg-gray-light" />
+                  <TableHeaderCell
+                    accessor="visits"
+                    className="bg-gray-light"
+                  />
+                  <TableHeaderCell
+                    accessor="status"
+                    className="bg-gray-light"
+                  />
+                  <TableHeaderCell
+                    accessor="progress"
+                    className="bg-gray-light"
+                  />
+                </TableRow>
               </TableHead>
               <TableBody>
                 {rows.map((row, i) => {
-                  prepareRow(row)
-                  return (
-                    <TableRow {...row.getRowProps()}>
-                      {row.cells.map(cell => {
-                        return (
-                          <TableCell {...cell.getCellProps()}>
-                            {cell.render("Cell")}
-                          </TableCell>
-                        )
-                      })}
-                    </TableRow>
-                  )
-                })}
+                    prepareRow(row)
+                    return (
+                      <TableRow {...row.getRowProps()}>
+                        {row.cells.map(cell => {
+                          return (
+                            <TableCell {...cell.getCellProps()}>
+                              {cell.render("Cell")}
+                            </TableCell>
+                          )
+                        })}
+                      </TableRow>
+                    )
+                  })}
               </TableBody>
             </Table>
           </TableContainer>
@@ -1207,12 +1206,10 @@ export const TableWithPagination = `function Example() {
   const data = React.useMemo(() => makeData(175), [])
 
   return (
-      <DataTable columns={columns} data={data}>
+    <DataTable columns={columns} data={data} hasSorting hasPagination>
         {({
-          getTableProps,
-          headerGroups,
-          rows,
           prepareRow,
+          rows,
           gotoPage,
           pageIndex,
           pageSize,
@@ -1221,28 +1218,31 @@ export const TableWithPagination = `function Example() {
         }) => (
           <>
             <TableContainer scrollable style={{ maxHeight: "400px" }}>
-              <Table bordered hover {...getTableProps()}>
+              <Table bordered hover>
                 <TableHead className="bg-gray-light sticky-top">
-                  {headerGroups.map(headerGroup => (
-                    <TableRow
-                      {...headerGroup.getHeaderGroupProps()}
+                  <TableRow className="bg-gray-light">
+                    <TableHeaderCell
+                      accessor="firstName"
                       className="bg-gray-light"
-                    >
-                      {headerGroup.headers.map(header => (
-                        <TableHeader
-                          isSortable={header.canSort}
-                          isSorted={header.isSorted}
-                          sortDirection={header.isSortedDesc ? "desc" : "asc"}
-                          className="bg-gray-light"
-                          {...header.getHeaderProps(
-                            header.getSortByToggleProps()
-                          )}
-                        >
-                          {header.render("Header")}
-                        </TableHeader>
-                      ))}
-                    </TableRow>
-                  ))}
+                    />
+                    <TableHeaderCell
+                      accessor="lastName"
+                      className="bg-gray-light"
+                    />
+                    <TableHeaderCell accessor="age" className="bg-gray-light" />
+                    <TableHeaderCell
+                      accessor="visits"
+                      className="bg-gray-light"
+                    />
+                    <TableHeaderCell
+                      accessor="status"
+                      className="bg-gray-light"
+                    />
+                    <TableHeaderCell
+                      accessor="progress"
+                      className="bg-gray-light"
+                    />
+                  </TableRow>
                 </TableHead>
                 <TableBody>
                   {rows.map((row, i) => {
@@ -1399,6 +1399,122 @@ export const TableWithServerPagination = `function Example() {
               </Table>
             </TableContainer>
 
+            <TablePagination
+              totalPages={pageOptions.length}
+              pageIndex={pageIndex}
+              pageSize={pageSize}
+              onPageChange={gotoPage}
+              pageSizeOptions={[10, 20, 30, 40, 50]}
+              onPageSizeChange={setPageSize}
+              className="border border-tertiary"
+            ></TablePagination>
+          </>
+        )}
+      </DataTable>
+  );
+}
+
+render(<Example />);`
+
+export const TableWithColumnResize = `function Example() {
+  const columns = React.useMemo(
+    () => [
+      {
+        Header: "First Name",
+        accessor: "firstName",
+        width: 100,
+      },
+      {
+        Header: "Last Name",
+        accessor: "lastName",
+        sortBy: true,
+        width: 100,
+      },
+      {
+        Header: 'Age',
+        accessor: 'age',
+        width: 60,
+        align: 'right',
+        sortBy: true,
+      },
+      {
+        Header: 'Visits',
+        accessor: 'visits',
+        width: 60,
+        align: 'right',
+      },
+      {
+        Header: "Status",
+        accessor: "status",
+        sortBy: true,
+      },
+      {
+        Header: "Profile Progress",
+        accessor: "progress",
+      },
+    ],
+    []
+  )
+
+  const data = React.useMemo(() => makeData(175), [])
+
+  return (
+    <DataTable columns={columns} data={data} hasSorting hasPagination resizeColumns>
+        {({
+          prepareRow,
+          rows,
+          gotoPage,
+          pageIndex,
+          pageSize,
+          setPageSize,
+          pageOptions,
+        }) => (
+          <>
+            <TableContainer scrollable style={{ maxHeight: "400px" }}>
+              <Table bordered hover>
+                <TableHead className="bg-gray-light sticky-top">
+                  <TableRow className="bg-gray-light">
+                    <TableHeaderCell
+                      accessor="firstName"
+                      className="bg-gray-light"
+                    />
+                    <TableHeaderCell
+                      accessor="lastName"
+                      className="bg-gray-light"
+                    />
+                    <TableHeaderCell accessor="age" className="bg-gray-light" />
+                    <TableHeaderCell
+                      accessor="visits"
+                      className="bg-gray-light"
+                    />
+                    <TableHeaderCell
+                      accessor="status"
+                      className="bg-gray-light"
+                    />
+                    <TableHeaderCell
+                      accessor="progress"
+                      className="bg-gray-light"
+                    />
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {rows.map((row, i) => {
+                    prepareRow(row)
+                    return (
+                      <TableRow {...row.getRowProps()}>
+                        {row.cells.map(cell => {
+                          return (
+                            <TableCell {...cell.getCellProps()}>
+                              {cell.render("Cell")}
+                            </TableCell>
+                          )
+                        })}
+                      </TableRow>
+                    )
+                  })}
+                </TableBody>
+              </Table>
+            </TableContainer>
             <TablePagination
               totalPages={pageOptions.length}
               pageIndex={pageIndex}

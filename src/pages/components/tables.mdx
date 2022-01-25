@@ -14,6 +14,7 @@ import {
   TableWithFixedHeader,
   TableWithPagination,
   MakeData as makeData,
+  TableWithColumnResize,
 } from "../../examples/components/Table"
 import {
   DataTable,
@@ -21,7 +22,7 @@ import {
   TableHead,
   TableBody,
   TableCell,
-  TableHeader,
+  TableHeaderCell,
   TableRow,
   Table,
   TablePagination,
@@ -65,7 +66,7 @@ import {
     TableHead,
     TableBody,
     TableCell,
-    TableHeader,
+    TableHeaderCell,
     TableRow,
     Table,
   }}
@@ -104,7 +105,7 @@ import {
     TableHead,
     TableBody,
     TableCell,
-    TableHeader,
+    TableHeaderCell,
     TableRow,
     Table,
   }}
@@ -124,7 +125,7 @@ import {
     TableHead,
     TableBody,
     TableCell,
-    TableHeader,
+    TableHeaderCell,
     TableRow,
     Table,
   }}
@@ -144,7 +145,7 @@ import {
     TableHead,
     TableBody,
     TableCell,
-    TableHeader,
+    TableHeaderCell,
     TableRow,
     Table,
     TablePagination,
@@ -154,6 +155,26 @@ import {
 >
   Use the <code> TablePagination </code> component along with{" "}
   <code> Table </code> to display the table rows in multiple pages.
+</CodeBlock>
+
+<CodeBlock
+  title="Table with Columns Resizing"
+  scope={{
+    DataTable,
+    TableContainer,
+    makeData,
+    TableHead,
+    TableBody,
+    TableCell,
+    TableHeaderCell,
+    TableRow,
+    Table,
+    TablePagination,
+  }}
+  code={TableWithColumnResize}
+  noInline={true}
+>
+  Use the <code> resizeColumns </code> to resize columns by mouse cursor.
 </CodeBlock>
 
 <LinkedHeading h="2" className="h1" id="table-api">

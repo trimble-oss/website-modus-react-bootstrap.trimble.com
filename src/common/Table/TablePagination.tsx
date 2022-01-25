@@ -14,7 +14,6 @@ import {
   Row,
   Table as BootstrapTable,
 } from "@trimbleinc/modus-react-bootstrap"
-import merge from "lodash/merge"
 import classNames from "classnames"
 
 export interface TablePaginationProps<T extends object = {}>
