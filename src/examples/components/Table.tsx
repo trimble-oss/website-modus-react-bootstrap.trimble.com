@@ -1422,35 +1422,37 @@ export const TableWithColumnResize = `function Example() {
       {
         Header: "First Name",
         accessor: "firstName",
-        width: 100,
+        minWidth: 80,
       },
       {
         Header: "Last Name",
         accessor: "lastName",
         sortBy: true,
-        width: 100,
+        minWidth: 80,
       },
       {
         Header: 'Age',
         accessor: 'age',
         width: 60,
-        align: 'right',
+        minWidth:60,
         sortBy: true,
       },
       {
         Header: 'Visits',
         accessor: 'visits',
         width: 60,
-        align: 'right',
+        minWidth:60,
       },
       {
         Header: "Status",
         accessor: "status",
         sortBy: true,
+        minWidth: 80,
       },
       {
-        Header: "Profile Progress",
+        Header: "Profile Progress Status",
         accessor: "progress",
+        width: 70
       },
     ],
     []

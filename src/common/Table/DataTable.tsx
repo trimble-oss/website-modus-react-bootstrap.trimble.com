@@ -11,12 +11,8 @@ import {
   UseSortByColumnOptions,
   UseResizeColumnsColumnOptions,
   TableState,
-  Meta,
-  HeaderGroup,
-  Cell,
 } from "react-table"
 import { TableContext } from "./TableContext"
-import merge from "lodash/merge"
 import { StyledDataTable } from "./DataTableStyles"
 
 export type TableColumn<D extends object = {}> = Column<D> &
@@ -129,8 +125,8 @@ const DataTable = React.forwardRef<HTMLDivElement, DataTableProps>(
     )
 
     //TODO:
-    //the reason why the params are put in a prop type is the row object passed from Tbody is dynamic
-    //need to figure out a way and define the type for the params passed in CHildren Node, here and in <TableBody>
+    //Params passed in the children are constructed dynamically decided by the hooks passed to useTable
+    //Find a way to create type definition
     return (
       <TableContext.Provider
         value={{
@@ -138,12 +134,7 @@ const DataTable = React.forwardRef<HTMLDivElement, DataTableProps>(
           headerGroups,
         }}
       >
-        <StyledDataTable
-          className="modus-data-table"
-          resizeColumns={resizeColumns}
-          ref={ref}
-          {...props}
-        >
+        <StyledDataTable resizeColumns={resizeColumns} ref={ref} {...props}>
           {children({
             rows: hasPagination ? page : rows,
             prepareRow,

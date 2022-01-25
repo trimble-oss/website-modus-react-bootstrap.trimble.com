@@ -16,15 +16,21 @@ const TableHead = React.forwardRef<
   CustomPropsWithDisplayName
 >(({ children, className, ...props }, ref) => {
   const tableContext = useContext(TableContext)
-  const headerGroups = tableContext && tableContext.headerGroups
-
-  return (
-    <TableHeaderGroupsContext.Provider value={headerGroups}>
+  if (tableContext) {
+    return (
+      <TableHeaderGroupsContext.Provider value={tableContext.headerGroups}>
+        <thead className={className} {...props} ref={ref}>
+          {children}
+        </thead>
+      </TableHeaderGroupsContext.Provider>
+    )
+  } else {
+    return (
       <thead className={className} {...props} ref={ref}>
         {children}
       </thead>
-    </TableHeaderGroupsContext.Provider>
-  )
+    )
+  }
 })
 
 TableHead.displayName = "TableHead"

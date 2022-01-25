@@ -1,6 +1,4 @@
-import React, { createContext } from "react"
-import { Column, HeaderGroup, TableInstance } from "react-table"
-import { CustomTableInstance } from "./TableTypes"
+import { createContext } from "react"
 
 export const TableContext = createContext<any>(null)
 

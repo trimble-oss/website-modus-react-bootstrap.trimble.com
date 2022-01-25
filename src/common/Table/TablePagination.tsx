@@ -87,7 +87,7 @@ const getPaginationGroup = (
   return new Array(len).fill(0).map((_, idx) => start + idx + 1)
 }
 
-export type MorePagesDropdownProps = {
+type MorePagesDropdownProps = {
   pages: number[]
   onPageSelection: (...args: any[]) => void
 }
@@ -179,10 +179,7 @@ const TablePagination = React.forwardRef<HTMLDivElement, TablePaginationProps>(
 
     return (
       <StyledTablePagination
-        className={classNames(
-          className,
-          "modus-table-pagination d-flex justify-content-end "
-        )}
+        className={classNames(className, "d-flex justify-content-end ")}
         {...props}
         ref={ref}
       >
