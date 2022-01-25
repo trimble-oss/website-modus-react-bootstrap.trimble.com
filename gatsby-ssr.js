@@ -30,13 +30,6 @@ export const onRenderBody = ({ setHeadComponents, setPostBodyComponents }) => {
       noModule={true}
       src="https://polyfill.io/v3/polyfill.min.js"
     />,
-    <script
-      src="https://cdn.cookielaw.org/scripttemplates/otSDKStub.js"
-      data-language="en"
-      charset="UTF-8"
-      data-domain-script="64fba379-cc84-440d-b90b-0a32ebabc3a1"
-    />,
-    <script>function OptanonWrapper() {}</script>,
   ])
   setPostBodyComponents([])
 }

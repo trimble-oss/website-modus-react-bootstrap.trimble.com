@@ -6,14 +6,27 @@ description: Tables display information in a grid-like format of rows and column
 import { graphql } from "gatsby"
 import {
   TableBasic,
-  TableBordered,
-  TableBorderless,
-  TableDark,
-  TableHeadOptions,
   TableHoverable,
   TableIconsControls,
   TableSmall,
+  TableWithSorting,
+  TableWithScroll,
+  TableWithFixedHeader,
+  TableWithPagination,
+  MakeData as makeData,
+  TableWithColumnResize,
 } from "../../examples/components/Table"
+import {
+  DataTable,
+  TableContainer,
+  TableHead,
+  TableBody,
+  TableCell,
+  TableHeaderCell,
+  TableRow,
+  Table,
+  TablePagination,
+} from "../../common/Table"
 
 <Overview>
   Due to the widespread use of tables across third-party widgets like calendars
@@ -23,25 +36,6 @@ import {
 </Overview>
 
 <CodeBlock title="Basic Table" code={TableBasic}></CodeBlock>
-
-<CodeBlock title="Dark Table" code={TableDark}>
-  You can modify tables to use a dark background with light text by setting the
-  <code>variant</code> prop to <code>dark</code>.
-</CodeBlock>
-
-<CodeBlock title="Table Head Options" code={TableHeadOptions}>
-  Similar to tables and dark tables, use the modifier classes
-  <code>.thead-light</code> or <code>.thead-light</code> to make
-  <code>&lt;thead&gt;</code> appear light or dark.
-</CodeBlock>
-
-<CodeBlock title="Bordered Table" code={TableBordered}>
-  Add prop <code>bordered</code> to add borders to your table.
-</CodeBlock>
-
-<CodeBlock title="Borderless Table" code={TableBorderless}>
-  Add prop <code>borderless </code> to remove borders to your table.
-</CodeBlock>
 
 <CodeBlock title="Hoverable Rows" code={TableHoverable}>
   Add prop <code>hover </code> to enable a hover state on table rows within
@@ -64,14 +58,165 @@ import {
   </p>
 </CodeBlock>
 
+<CodeBlock
+  title="Table with Sorting"
+  scope={{
+    DataTable,
+    TableContainer,
+    TableHead,
+    TableBody,
+    TableCell,
+    TableHeaderCell,
+    TableRow,
+    Table,
+  }}
+  code={TableWithSorting}
+  noInline={true}
+>
+  To enable advanced features like sorting, use the <code> DataTable </code>{" "}
+  component along with the basic <code> Table </code> and additional components
+  such as
+  <code> TableHead, TableRow, TableBody and TableCell </code>.<p>
+    The <code>DataTable</code> component needs two props:
+    <code> columns </code> and
+    <code> data</code>. The <code> data </code> prop is rendered as rows in the
+    table and the <code>columns</code> prop which takes an array of objects
+    displays table headings.
+    <br />
+    The objects passed in the array to the <code> column </code> prop has a
+    required key <code> accessor </code> which is the column identifier and and
+    the <code> Header </code> key is used to set the column label, eg.
+    {`[{ Header: 'First Name', accessor: 'firstName' }]`}. Use
+    <code> sortBy </code> prop in the object to enable sorting for a specific
+    column.
+  </p>
+  <p>
+    A column can be sorted by clicking on the header. Repeat this action to
+    change the sorting order.
+  </p>
+</CodeBlock>
+
+<CodeBlock
+  title="Table with Scroll"
+  scope={{
+    DataTable,
+    TableContainer,
+    makeData,
+    TableHead,
+    TableBody,
+    TableCell,
+    TableHeaderCell,
+    TableRow,
+    Table,
+  }}
+  code={TableWithScroll}
+  noInline={true}
+>
+  Setting height on <code> TableContainer </code> will enable
+  vertical/horizontal scrolling.
+</CodeBlock>
+
+<CodeBlock
+  title="Table with Sticky Header"
+  scope={{
+    DataTable,
+    TableContainer,
+    makeData,
+    TableHead,
+    TableBody,
+    TableCell,
+    TableHeaderCell,
+    TableRow,
+    Table,
+  }}
+  code={TableWithFixedHeader}
+  noInline={true}
+>
+  Use the <code> sticky-top </code> class to ensure that the table's header is
+  always visible while scrolling.
+</CodeBlock>
+
+<CodeBlock
+  title="Table with Client-side Pagination"
+  scope={{
+    DataTable,
+    TableContainer,
+    makeData,
+    TableHead,
+    TableBody,
+    TableCell,
+    TableHeaderCell,
+    TableRow,
+    Table,
+    TablePagination,
+  }}
+  code={TableWithPagination}
+  noInline={true}
+>
+  Use the <code> TablePagination </code> component along with{" "}
+  <code> Table </code> to display the table rows in multiple pages.
+</CodeBlock>
+
+<CodeBlock
+  title="Table with Columns Resizing"
+  scope={{
+    DataTable,
+    TableContainer,
+    makeData,
+    TableHead,
+    TableBody,
+    TableCell,
+    TableHeaderCell,
+    TableRow,
+    Table,
+    TablePagination,
+  }}
+  code={TableWithColumnResize}
+  noInline={true}
+>
+  Use the <code> resizeColumns </code> to resize columns by mouse cursor.
+</CodeBlock>
+
 <LinkedHeading h="2" className="h1" id="table-api">
   API
 </LinkedHeading>
 <ComponentApi metadata={props.data.Table} />
+<ComponentApi metadata={props.data.DataTable} />
+<ComponentApi metadata={props.data.TableHead} />
+<ComponentApi metadata={props.data.TableHeaderCell} />
+<ComponentApi metadata={props.data.TableBody} />
+<ComponentApi metadata={props.data.TableRow} />
+<ComponentApi metadata={props.data.TableCell} />
+<ComponentApi metadata={props.data.TableContainer} />
+<ComponentApi metadata={props.data.TablePagination} />
 
 export const query = graphql`
   query TableQuery {
     Table: componentMetadata(displayName: { eq: "Table" }) {
+      ...ComponentApi_metadata
+    }
+    DataTable: componentMetadata(displayName: { eq: "DataTable" }) {
+      ...ComponentApi_metadata
+    }
+    TableContainer: componentMetadata(displayName: { eq: "TableContainer" }) {
+      ...ComponentApi_metadata
+    }
+    TableHead: componentMetadata(displayName: { eq: "TableHead" }) {
+      ...ComponentApi_metadata
+    }
+    TableHeaderCell: componentMetadata(displayName: { eq: "TableHeaderCell" }) {
+      ...ComponentApi_metadata
+    }
+    TableBody: componentMetadata(displayName: { eq: "TableBody" }) {
+      ...ComponentApi_metadata
+    }
+    TableRow: componentMetadata(displayName: { eq: "TableRow" }) {
+      ...ComponentApi_metadata
+    }
+    TableCell: componentMetadata(displayName: { eq: "TableCell" }) {
+      ...ComponentApi_metadata
+    }
+    TablePagination: componentMetadata(displayName: { eq: "TablePagination" }) {
       ...ComponentApi_metadata
     }
   }
