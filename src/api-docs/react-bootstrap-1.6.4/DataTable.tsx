@@ -35,14 +35,14 @@ export interface DataTableProps<T extends object = {}>
 
 const propTypes = {
   /**
-   * Array of header data of type TableColumn.
+   * Array of header data of type [[TableColumn]].
    */
   columns: PropTypes.array.isRequired,
 
   /**
    * Array of data to be displayed as Table Rows.
    */
-  data: PropTypes.array.isRequired,
+  data: PropTypes.arrayOf(PropTypes.object).isRequired,
 
   /**
    * Enables sorting on Table rows.

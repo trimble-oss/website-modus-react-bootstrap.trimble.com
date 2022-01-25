@@ -181,10 +181,42 @@ import {
   API
 </LinkedHeading>
 <ComponentApi metadata={props.data.Table} />
+<ComponentApi metadata={props.data.DataTable} />
+<ComponentApi metadata={props.data.TableHead} />
+<ComponentApi metadata={props.data.TableHeaderCell} />
+<ComponentApi metadata={props.data.TableBody} />
+<ComponentApi metadata={props.data.TableRow} />
+<ComponentApi metadata={props.data.TableCell} />
+<ComponentApi metadata={props.data.TableContainer} />
+<ComponentApi metadata={props.data.TablePagination} />
 
 export const query = graphql`
   query TableQuery {
     Table: componentMetadata(displayName: { eq: "Table" }) {
+      ...ComponentApi_metadata
+    }
+    DataTable: componentMetadata(displayName: { eq: "DataTable" }) {
+      ...ComponentApi_metadata
+    }
+    TableContainer: componentMetadata(displayName: { eq: "TableContainer" }) {
+      ...ComponentApi_metadata
+    }
+    TableHead: componentMetadata(displayName: { eq: "TableHead" }) {
+      ...ComponentApi_metadata
+    }
+    TableHeaderCell: componentMetadata(displayName: { eq: "TableHeaderCell" }) {
+      ...ComponentApi_metadata
+    }
+    TableBody: componentMetadata(displayName: { eq: "TableBody" }) {
+      ...ComponentApi_metadata
+    }
+    TableRow: componentMetadata(displayName: { eq: "TableRow" }) {
+      ...ComponentApi_metadata
+    }
+    TableCell: componentMetadata(displayName: { eq: "TableCell" }) {
+      ...ComponentApi_metadata
+    }
+    TablePagination: componentMetadata(displayName: { eq: "TablePagination" }) {
       ...ComponentApi_metadata
     }
   }
