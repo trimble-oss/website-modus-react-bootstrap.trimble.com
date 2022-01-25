@@ -8,11 +8,11 @@
   ],
   "homepage": "https://modus-react-bootstrap.trimble.com",
   "bugs": {
-    "url": "https://bitbucket.trimble.tools/scm/tmds/modus-react-bootstrap-guide.git"
+    "url": "https://github.com/trimble-oss/website-modus-react-bootstrap.trimble.com"
   },
   "repository": {
     "type": "git",
-    "url": "https://bitbucket.trimble.tools/scm/tmds/modus-react-bootstrap-guide.git"
+    "url": "https://github.com/trimble-oss/website-modus-react-bootstrap.trimble.com.git"
   },
   "license": "0BSD",
   "author": "Trimble Inc.",
@@ -27,33 +27,9 @@
     "test": "echo \"Write tests! -> https://gatsby.dev/unit-testing\" && exit 1"
   },
   "dependencies": {
-    "@mdx-js/mdx": "^1.6.22",
-    "@mdx-js/react": "^1.6.22",
-    "@popperjs/core": "^2.10.2",
     "@trimbleinc/modus-react-bootstrap": "^0.9.3",
-    "astroturf": "^1.0.0-beta.27",
     "classnames": "^2.3.1",
-    "gatsby": "^4.2.0",
-    "gatsby-plugin-astroturf": "^0.2.1",
-    "gatsby-plugin-image": "^2.2.0",
-    "gatsby-plugin-lunr": "^1.5.2",
-    "gatsby-plugin-manifest": "^4.2.0",
-    "gatsby-plugin-mdx": "^3.2.0",
-    "gatsby-plugin-offline": "^5.2.0",
-    "gatsby-plugin-react-helmet": "^5.2.0",
-    "gatsby-plugin-sass": "^5.2.0",
-    "gatsby-plugin-sharp": "^4.2.0",
-    "gatsby-remark-prismjs": "^6.2.0",
-    "gatsby-source-filesystem": "^4.2.0",
-    "gatsby-transformer-react-docgen": "^7.2.0",
-    "gatsby-transformer-remark": "^5.2.0",
-    "gatsby-transformer-sharp": "^4.2.0",
-    "jquery": "^3.6.0",
-    "prismjs": "^1.25.0",
-    "prop-types": "^15.7.2",
-    "react": "^17.0.1",
-    "react-dom": "^17.0.1",
-    "react-helmet": "^6.1.0",
+    "prop-types": "^15.8.1",
     "react-live": "^2.3.0",
     "react-router-dom": "^5.3.0",
     "react-table": "^7.7.0",
@@ -61,15 +37,38 @@
     "styled-components": "^5.3.1"
   },
   "devDependencies": {
+    "@mdx-js/mdx": "^1.6.22",
+    "@mdx-js/react": "^1.6.22",
     "@netlify/plugin-gatsby": "^1.0.3",
     "@types/react-table": "^7.7.9",
     "@types/styled-components": "^5.1.14",
     "ast-types": "^0.14.2",
+    "gatsby": "^4.4.0",
+    "gatsby-plugin-image": "^2.5.1",
+    "gatsby-plugin-lunr": "^1.5.2",
+    "gatsby-plugin-manifest": "^4.4.0",
+    "gatsby-plugin-mdx": "^3.5.2",
+    "gatsby-plugin-react-helmet": "^5.4.0",
+    "gatsby-plugin-sass": "^5.5.0",
+    "gatsby-remark-prismjs": "^6.4.0",
+    "gatsby-source-filesystem": "^4.4.0",
+    "gatsby-transformer-react-docgen": "^7.4.0",
+    "gatsby-transformer-remark": "^5.4.0",
     "lodash": "^4.17.21",
-    "prettier": "2.4.1",
+    "prettier": "2.5.1",
+    "prismjs": "^1.26.0",
+    "react": "^17.0.2",
     "react-docgen": "^5.4.0",
+    "react-dom": "^17.0.1",
+    "react-helmet": "^6.1.0",
+    "sass": "^1.48.0",
     "stylelint": "13.13.1",
     "stylelint-config-prettier": "9.0.3",
-    "stylelint-config-standard": "22.0.0"
+    "stylelint-config-standard": "22.0.0",
+    "ws": ">=7.4.6"
+  },
+  "peerDependencies": {
+    "react": ">=16.8.0",
+    "react-dom": ">=16.8.0"
   }
 }

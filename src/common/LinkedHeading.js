@@ -1,6 +1,5 @@
 import React from "react"
 import Heading from "./Heading"
-import classNames from "classnames"
 
 function LinkedHeading({ h, id, children, ...props }) {
   return (
