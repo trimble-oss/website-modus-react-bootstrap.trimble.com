@@ -67,7 +67,9 @@ const TableHeaderCell = React.forwardRef<
   const header = headersContext && headersContext.find(h => h.id == accessor)
 
   const headerProps = merge(
-    header.getSortByToggleProps && header.getSortByToggleProps(),
+    header.getHeaderProps(
+      header.getSortByToggleProps && header.getSortByToggleProps()
+    ),
     { title: "" }
   )
 

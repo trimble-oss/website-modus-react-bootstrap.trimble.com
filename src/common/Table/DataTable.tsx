@@ -15,9 +15,9 @@ import {
   HeaderGroup,
   Cell,
 } from "react-table"
-import "./Table.css"
 import { TableContext } from "./TableContext"
 import merge from "lodash/merge"
+import { StyledDataTable } from "./DataTableStyles"
 
 export type TableColumn<D extends object = {}> = Column<D> &
   UseResizeColumnsColumnOptions<D> &
@@ -128,52 +128,6 @@ const DataTable = React.forwardRef<HTMLDivElement, DataTableProps>(
       ...hooks
     )
 
-    // const headerProps = <T extends object = {}>(
-    //   props: any,
-    //   { column }: Meta<T, { column: HeaderGroup<T> }>
-    // ) => {
-    //   return getStyles(
-    //     props,
-    //     column.canResize &&
-    //       column.getResizerProp && {
-    //         alignItems: "center",
-    //         display: "flex",
-    //         border: 0,
-    //         borderBottom: "1px solid #b7b9c3",
-    //         borderRight: "1px solid #b7b9c3",
-    //       }
-    //   )
-    // }
-
-    // const cellProps = <T extends object = {}>(
-    //   props: any,
-    //   { cell }: Meta<T, { cell: Cell<T> }>
-    // ) => {
-    //   return getStyles(
-    //     props,
-    //     cell.column.canResize && {
-    //       alignItems: "center",
-    //       display: "flex",
-    //       border: 0,
-    //       borderRight: "1px solid #b7b9c3",
-    //     }
-    //   )
-    // }
-
-    // const getStyles = (props: any, canResize = false, align = "left") => [
-    //   props,
-    //   {
-    //     style: {
-    //       ...(canResize && {
-    //         alignItems: "center",
-    //         display: "flex",
-    //         borderStyle: "hidden",
-    //       }),
-    //       // justifyContent: align === "right" ? "flex-end" : "flex-start",
-    //     },
-    //   },
-    // ]
-
     //TODO:
     //the reason why the params are put in a prop type is the row object passed from Tbody is dynamic
     //need to figure out a way and define the type for the params passed in CHildren Node, here and in <TableBody>
@@ -184,7 +138,12 @@ const DataTable = React.forwardRef<HTMLDivElement, DataTableProps>(
           headerGroups,
         }}
       >
-        <div className="modus-data-table" ref={ref} {...props}>
+        <StyledDataTable
+          className="modus-data-table"
+          resizeColumns={resizeColumns}
+          ref={ref}
+          {...props}
+        >
           {children({
             rows: hasPagination ? page : rows,
             prepareRow,
@@ -194,7 +153,7 @@ const DataTable = React.forwardRef<HTMLDivElement, DataTableProps>(
             pageSize,
             setPageSize,
           })}
-        </div>
+        </StyledDataTable>
       </TableContext.Provider>
     )
   }

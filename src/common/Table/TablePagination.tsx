@@ -15,6 +15,7 @@ import {
   Table as BootstrapTable,
 } from "@trimbleinc/modus-react-bootstrap"
 import classNames from "classnames"
+import styled, { css } from "styled-components"
 
 export interface TablePaginationProps<T extends object = {}>
   extends React.HTMLProps<HTMLDivElement> {
@@ -116,6 +117,23 @@ const MorePagesDropdown: React.FunctionComponent<MorePagesDropdownProps> = ({
   )
 }
 
+const StyledTablePagination = styled.div`
+  margin-bottom: 1rem;
+  padding: 0.5rem;
+
+  li.page-item.p-0 > .page-link {
+    padding: 0;
+  }
+
+  li.page-item.p-0 .nav-link {
+    padding: calc((2rem - 0.875rem) / 2) 0.75rem;
+  }
+
+  li.page-item.p-0 .nav-item .dropdown-item {
+    font-size: 0.875rem;
+  }
+`
+
 const TablePagination = React.forwardRef<HTMLDivElement, TablePaginationProps>(
   (
     {
@@ -160,7 +178,7 @@ const TablePagination = React.forwardRef<HTMLDivElement, TablePaginationProps>(
     }, [])
 
     return (
-      <div
+      <StyledTablePagination
         className={classNames(
           className,
           "modus-table-pagination d-flex justify-content-end "
@@ -237,7 +255,7 @@ const TablePagination = React.forwardRef<HTMLDivElement, TablePaginationProps>(
             </Pagination>
           </nav>
         </div>
-      </div>
+      </StyledTablePagination>
     )
   }
 )
