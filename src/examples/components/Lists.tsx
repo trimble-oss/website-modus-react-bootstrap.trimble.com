@@ -25,7 +25,7 @@ export const ListsItems = `
       <Form.Switch id="custom-switch" checked />
     </ListGroup.Item>
     <ListGroup.Item>
-      <FormCheck checked id="custom-checkbx" custom />
+      <FormCheck checked id="custom-checkbx" custom readOnly />
       <span>Left Checkbox</span>
     </ListGroup.Item>
     <ListGroup.Item>
@@ -74,7 +74,7 @@ export const ListsBorderless = `
       <Form.Switch id="custom-switch" checked />
     </ListGroup.Item>
     <ListGroup.Item>
-      <FormCheck checked id="custom-checkbx" custom />
+      <FormCheck checked id="custom-checkbx" custom readOnly />
       <span>Left Checkbox</span>
     </ListGroup.Item>
     <ListGroup.Item>
@@ -123,7 +123,7 @@ export const ListsCondensed = `
       <Form.Switch id="custom-switch" checked />
     </ListGroup.Item>
     <ListGroup.Item>
-      <FormCheck checked id="custom-checkbx" custom />
+      <FormCheck checked id="custom-checkbx" custom readOnly />
       <span>Left Checkbox</span>
     </ListGroup.Item>
     <ListGroup.Item>

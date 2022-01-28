@@ -1,7 +1,7 @@
-import { createContext } from "react"
+import { createContext } from 'react';
 
-export const TableContext = createContext<any>(null)
+export const TableContext = createContext<any>(null);
 
-export const TableHeaderGroupsContext = createContext<Array<any>>(null)
+export const TableHeaderGroupsContext = createContext<any>(null);
 
-export const TableHeadersContext = createContext<Array<any>>(null)
+export const TableHeadersContext = createContext<any>(null);

@@ -7,6 +7,7 @@ import CodeHighlight from "../../common/CodeHighlight"
 import {
   GettingStartedImportModusBootstrap,
   GettingStartedImportModusReactBootstrap,
+  GettingStartedImportModusIcons,
 } from "../../examples/getting-started/GettingStarted"
 
 <article id="main" className="pr-3">
@@ -62,8 +63,11 @@ import {
       aria-label="anchor"
     ></a>
   </h3>
-  <p>Modus Bootstrap stylesheet is required to use the Modus React components:</p>
+  <p>Modus Bootstrap stylesheet and Modus icons are required to use the Modus React components:</p>
   <CodeHighlight code={GettingStartedImportModusBootstrap} />
+  <br/>
+  <CodeHighlight code={GettingStartedImportModusIcons} />
+  <br />
   <p>
     More information about customizing the Modus CSS and advanced use cases can be
     found on the{" "}
@@ -73,23 +77,24 @@ import {
       rel="noopener"
     >
       Modus Bootstrap page
-    </a>
+    </a> and to learn more about <a href="/foundations/icons" > using the icons. </a>
   </p>
-  <h2 id="import-components" className="h1 font-weight-bold mt-5">
-    Importing Components
-    <a
-      className="header-link text-light text-decoration-none font-weight-normal"
-      href="#import-components"
-      aria-label="anchor"
-    ></a>
-  </h2>
-  <p>
-    Import individual components like:
-    <code>{`@trimbleinc/modus-react-bootstrap/Button`}</code> rather than the entire
-    library. Doing so pulls in only the specific components that you use, which can
-    significantly reduce the amount of code you end up sending to the client.
-  </p>
-  <CodeHighlight code={GettingStartedImportModusReactBootstrap} />
+
+<h2 id="import-components" className="h1 font-weight-bold mt-5">
+  Importing Components
+  <a
+    className="header-link text-light text-decoration-none font-weight-normal"
+    href="#import-components"
+    aria-label="anchor"
+  ></a>
+</h2>
+<p>
+  Import individual components like:
+  <code>{`@trimbleinc/modus-react-bootstrap/Button`}</code> rather than the entire
+  library. Doing so pulls in only the specific components that you use, which can
+  significantly reduce the amount of code you end up sending to the client.
+</p>
+<CodeHighlight code={GettingStartedImportModusReactBootstrap} />
 
   <h2 id="browser-support" className="h1 font-weight-bold mt-5">
     Browser Support

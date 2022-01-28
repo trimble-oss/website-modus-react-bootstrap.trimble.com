@@ -1,6 +1,6 @@
 import React from "react"
 import { useContext } from "react"
-import Nav from "@trimbleinc/modus-react-bootstrap/Nav"
+import { Nav } from "@trimbleinc/modus-react-bootstrap"
 
 import { Menu } from "./MenuConfiguration"
 import { MenuContext } from "./MenuContext"

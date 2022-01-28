@@ -368,7 +368,7 @@ export const TableIconsControls = `
       </tr>
       <tr>
         <th scope="row" className="icon-only">
-          <FormCheck custom checked id="tableCheckbox1-tb1"></FormCheck>
+          <FormCheck custom checked id="tableCheckbox1-tb1" readOnly></FormCheck>
         </th>
         <td>Jacob</td>
         <td>Thornton</td>
@@ -492,7 +492,7 @@ export const TableIconsControls = `
       </tr>
       <tr>
         <th scope="row" className="icon-only">
-          <FormCheck custom checked id="tableCheckbox1-tb2"></FormCheck>
+          <FormCheck custom checked id="tableCheckbox1-tb2" readOnly></FormCheck>
         </th>
         <td>Jacob</td>
         <td>Thornton</td>
@@ -626,8 +626,7 @@ export const TableSmall = `
             custom
             checked
             id="tableCheckbox1-tb1"
-            className="custom-control-sm"
-          ></FormCheck>
+            className="custom-control-sm" readOnly></FormCheck>
         </th>
         <td>Jacob</td>
         <td>Thornton</td>
@@ -767,8 +766,7 @@ export const TableSmall = `
             custom
             checked
             id="tableCheckbox1-tb2"
-            className="custom-control-sm"
-          ></FormCheck>
+            className="custom-control-sm" readOnly></FormCheck>
         </th>
         <td>Jacob</td>
         <td>Thornton</td>
@@ -944,7 +942,7 @@ export const TableWithSorting = `function Example() {
   ]
 
   return (
-      <DataTable columns={columns} data={data} hasSorting>
+      <DataTable id="tableSorting" columns={columns} data={data} hasSorting>
         {({prepareRow, rows}) => (
           <Table bordered hover>
             <TableHead className="bg-gray-light">
@@ -1022,9 +1020,9 @@ export const TableWithScroll = `function Example() {
   const data = React.useMemo(() => makeData(100), [])
 
   return (
-    <DataTable columns={columns} data={data}>
+    <DataTable id="tableScroll" columns={columns} data={data}>
         {({prepareRow, rows}) => (
-          <TableContainer scrollable style={{ maxHeight: "400px" }}>
+          <TableContainer scrollable style={{ maxHeight: "400px", borderBottom: "1px solid #b7b9c3" }}>
             <Table bordered hover>
               <TableHead className="bg-gray-light">
                 <TableRow className="bg-gray-light">
@@ -1114,9 +1112,9 @@ export const TableWithFixedHeader = `function Example() {
   const data = React.useMemo(() => makeData(100), [])
 
   return (
-    <DataTable columns={columns} data={data}>
+    <DataTable id="tableFixedHeader" columns={columns} data={data}>
         {({prepareRow, rows}) => (
-          <TableContainer scrollable style={{ maxHeight: "400px" }}>
+          <TableContainer scrollable style={{ maxHeight: "400px", borderBottom: "1px solid #b7b9c3" }}>
             <Table bordered hover>
               <TableHead className="bg-gray-light sticky-top">
                 <TableRow className="bg-gray-light">
@@ -1206,7 +1204,7 @@ export const TableWithPagination = `function Example() {
   const data = React.useMemo(() => makeData(175), [])
 
   return (
-    <DataTable columns={columns} data={data} hasSorting hasPagination>
+    <DataTable id="tablepagination" columns={columns} data={data} hasSorting hasPagination>
         {({
           prepareRow,
           rows,
@@ -1423,12 +1421,14 @@ export const TableWithColumnResize = `function Example() {
         Header: "First Name",
         accessor: "firstName",
         minWidth: 80,
+        disableResizing: true,
       },
       {
         Header: "Last Name",
         accessor: "lastName",
         sortBy: true,
         minWidth: 80,
+        disableResizing: true,
       },
       {
         Header: 'Age',
@@ -1447,7 +1447,7 @@ export const TableWithColumnResize = `function Example() {
         Header: "Status",
         accessor: "status",
         sortBy: true,
-        minWidth: 80,
+        minWidth: 70,
       },
       {
         Header: "Profile Progress Status",
@@ -1461,7 +1461,7 @@ export const TableWithColumnResize = `function Example() {
   const data = React.useMemo(() => makeData(175), [])
 
   return (
-    <DataTable columns={columns} data={data} hasSorting hasPagination resizeColumns>
+    <DataTable id="tableResize" columns={columns} data={data} hasSorting hasPagination resizeColumns>
         {({
           prepareRow,
           rows,
@@ -1507,7 +1507,7 @@ export const TableWithColumnResize = `function Example() {
                         {row.cells.map(cell => {
                           return (
                             <TableCell {...cell.getCellProps()}>
-                              {cell.render("Cell")}
+                              <span style={{ whiteSpace: "nowrap", overflow: "hidden",textOverflow: "ellipsis"}}>{cell.render("Cell")}</span>
                             </TableCell>
                           )
                         })}
@@ -1526,6 +1526,458 @@ export const TableWithColumnResize = `function Example() {
               onPageSizeChange={setPageSize}
               className="border border-tertiary"
             ></TablePagination>
+          </>
+        )}
+      </DataTable>
+  );
+}
+
+render(<Example />);`
+
+export const TableWithSingleRowSelection = `function Example() {
+  const columns = React.useMemo(
+    () => [
+      {
+        Header: "First Name",
+        accessor: "firstName",
+      },
+      {
+        Header: "Last Name",
+        accessor: "lastName",
+        sortBy: true,
+      },
+      {
+        Header: "Age",
+        accessor: "age",
+        sortBy: true,
+      },
+      {
+        Header: "Visits",
+        accessor: "visits",
+        sortBy: true,
+      },
+      {
+        Header: "Status",
+        accessor: "status",
+        sortBy: true,
+      },
+      {
+        Header: "Profile Progress",
+        accessor: "progress",
+      },
+    ],
+    []
+  )
+
+  const data = React.useMemo(() => makeData(100), [])
+
+  return (
+    <DataTable id="tableSingleRowSel" columns={columns} data={data}>
+        {({prepareRow, rows, selectedRows}) => (
+          <>
+          <TableContainer scrollable style={{ maxHeight: "400px", borderBottom: "1px solid #b7b9c3" }}>
+            <Table bordered hover>
+              <TableHead className="bg-gray-light sticky-top">
+                <TableRow className="bg-gray-light">
+                  <TableHeaderCell
+                    accessor="firstName"
+                    className="bg-gray-light"
+                  />
+                  <TableHeaderCell
+                    accessor="lastName"
+                    className="bg-gray-light"
+                  />
+                  <TableHeaderCell accessor="age" className="bg-gray-light" />
+                  <TableHeaderCell
+                    accessor="visits"
+                    className="bg-gray-light"
+                  />
+                  <TableHeaderCell
+                    accessor="status"
+                    className="bg-gray-light"
+                  />
+                  <TableHeaderCell
+                    accessor="progress"
+                    className="bg-gray-light"
+                  />
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {rows.map((row, i) => {
+                    prepareRow(row)
+                    return (
+                      <TableRow {...row.getRowProps()}
+                        onClick={() => {
+                          row.toggleRowSelected(!row.isSelected)
+                        }}
+                        className={row.isSelected && "selected"}>
+                        {row.cells.map(cell => {
+                          return (
+                            <TableCell {...cell.getCellProps()}>
+                              {cell.render("Cell")}
+                            </TableCell>
+                          )
+                        })}
+                      </TableRow>
+                    )
+                  })}
+              </TableBody>
+            </Table>
+          </TableContainer>
+          <br />
+          {selectedRows &&
+              selectedRows.map(row => {
+                return (
+                  <Toast className="toast-primary" key={row.firstName}>
+                    Successfully selected {row.firstName}, Age - {row.age},
+                    Visits - {row.visits}, Status - {row.status} !!
+                  </Toast>
+                )
+              })}
+          </>
+        )}
+      </DataTable>
+  );
+}
+
+render(<Example />);`
+
+export const TableWithMultiRowSelection = `function Example() {
+  const columns = React.useMemo(
+    () => [
+      {
+        Header: "First Name",
+        accessor: "firstName",
+      },
+      {
+        Header: "Last Name",
+        accessor: "lastName",
+        sortBy: true,
+      },
+      {
+        Header: "Age",
+        accessor: "age",
+        sortBy: true,
+      },
+      {
+        Header: "Visits",
+        accessor: "visits",
+        sortBy: true,
+      },
+      {
+        Header: "Status",
+        accessor: "status",
+        sortBy: true,
+      },
+      {
+        Header: "Profile Progress",
+        accessor: "progress",
+      },
+    ],
+    []
+  )
+
+  const data = React.useMemo(() => makeData(100), [])
+
+  return (
+    <DataTable id="tableMultiRowSel" columns={columns} data={data} hasSorting multipleRowSelection>
+        {({prepareRow, rows, selectedRows}) => (
+          <>
+          <TableContainer scrollable style={{ maxHeight: "400px", borderBottom: "1px solid #b7b9c3" }}>
+            <Table bordered hover>
+              <TableHead className="bg-gray-light sticky-top">
+                <TableRow className="bg-gray-light">
+                  <TableHeaderCell
+                    accessor="firstName"
+                    className="bg-gray-light"
+                  />
+                  <TableHeaderCell
+                    accessor="lastName"
+                    className="bg-gray-light"
+                  />
+                  <TableHeaderCell accessor="age" className="bg-gray-light" />
+                  <TableHeaderCell
+                    accessor="visits"
+                    className="bg-gray-light"
+                  />
+                  <TableHeaderCell
+                    accessor="status"
+                    className="bg-gray-light"
+                  />
+                  <TableHeaderCell
+                    accessor="progress"
+                    className="bg-gray-light"
+                  />
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {rows.map((row, i) => {
+                    prepareRow(row)
+                    return (
+                      <TableRow {...row.getRowProps()}
+                        onClick={() => {
+                          row.toggleRowSelected(!row.isSelected)
+                        }}
+                        className={row.isSelected && "selected"}>
+                        {row.cells.map(cell => {
+                          return (
+                            <TableCell {...cell.getCellProps()}>
+                              {cell.render("Cell")}
+                            </TableCell>
+                          )
+                        })}
+                      </TableRow>
+                    )
+                  })}
+              </TableBody>
+            </Table>
+          </TableContainer>
+          <br/>
+          {selectedRows &&
+              selectedRows.map(row => {
+                return (
+                  <Toast className="toast-primary" key={row.firstName}>
+                    Successfully selected {row.firstName}, Age - {row.age},
+                    Visits - {row.visits}, Status - {row.status} !!
+                  </Toast>
+                )
+              })}
+          </>
+        )}
+      </DataTable>
+  );
+}
+
+render(<Example />);`
+
+export const TableWithCheckBoxSelection = `function Example() {
+  const columns = React.useMemo(
+    () => [
+      {
+        Header: "First Name",
+        accessor: "firstName",
+      },
+      {
+        Header: "Last Name",
+        accessor: "lastName",
+        sortBy: true,
+      },
+      {
+        Header: "Age",
+        accessor: "age",
+        sortBy: true,
+      },
+      {
+        Header: "Visits",
+        accessor: "visits",
+        sortBy: true,
+      },
+      {
+        Header: "Status",
+        accessor: "status",
+        sortBy: true,
+      },
+      {
+        Header: "Profile Progress",
+        accessor: "progress",
+      },
+    ],
+    []
+  )
+
+  const data = React.useMemo(() => makeData(100), [])
+
+  return (
+    <DataTable id="tableCbSingleRowSel" columns={columns} data={data} hasSorting checkBoxRowSelection>
+        {({prepareRow, rows, selectedRows}) => (
+          <>
+          <TableContainer scrollable style={{ maxHeight: "400px", borderBottom: "1px solid #b7b9c3" }}>
+            <Table bordered hover>
+              <TableHead className="bg-gray-light sticky-top">
+                <TableRow className="bg-gray-light">
+                  <TableHeaderCell accessor="selector" className='icon-only' />
+                  <TableHeaderCell
+                    accessor="firstName"
+                    className="bg-gray-light"
+                  />
+                  <TableHeaderCell
+                    accessor="lastName"
+                    className="bg-gray-light"
+                  />
+                  <TableHeaderCell accessor="age" className="bg-gray-light" />
+                  <TableHeaderCell
+                    accessor="visits"
+                    className="bg-gray-light"
+                  />
+                  <TableHeaderCell
+                    accessor="status"
+                    className="bg-gray-light"
+                  />
+                  <TableHeaderCell
+                    accessor="progress"
+                    className="bg-gray-light"
+                  />
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {rows.map((row, i) => {
+                    prepareRow(row)
+                    return (
+                      <TableRow {...row.getRowProps()}
+                        className={row.isSelected && "selected"}>
+                        {row.cells.map((cell, index) => {
+                          return (
+                            <TableCell {...cell.getCellProps()} className={index === 0 && 'icon-only'}>
+                              {cell.render("Cell")}
+                            </TableCell>
+                          )
+                        })}
+                      </TableRow>
+                    )
+                  })}
+              </TableBody>
+            </Table>
+          </TableContainer>
+          <br />
+          {selectedRows &&
+              selectedRows.map(row => {
+                return (
+                  <Toast className="toast-primary" key={row.firstName}>
+                    Successfully selected {row.firstName}, Age - {row.age},
+                    Visits - {row.visits}, Status - {row.status} !!
+                  </Toast>
+                )
+              })}
+          </>
+        )}
+      </DataTable>
+  );
+}
+
+render(<Example />);`
+
+export const TableWithCustomCheckBoxSelection = `function Example() {
+  const IndeterminateCheckbox = React.forwardRef(
+    ({ indeterminate,id, ...props }, ref) => {
+      const defaultRef = React.useRef()
+      const resolvedRef = ref || defaultRef
+
+      React.useEffect(() => {
+        resolvedRef.current.indeterminate = indeterminate
+      }, [resolvedRef, indeterminate])
+
+      return <Form.Check custom id={id} ref={resolvedRef} {...props} />
+    }
+  )
+
+  const columns = React.useMemo(
+    () => [
+      {
+        accessor: "selector",
+        Header: ({ getToggleAllRowsSelectedProps }) => (
+          <IndeterminateCheckbox id="tableCbMultiRowSel_checkbox_header"
+          {...getToggleAllRowsSelectedProps()} />
+        ),
+        Cell: ({ row }) => (
+          <IndeterminateCheckbox id={"tableCbMultiRowSel_checkbox_".concat(row.id)}
+          {...row.getToggleRowSelectedProps()} />
+        ),
+      },
+      {
+        Header: "First Name",
+        accessor: "firstName",
+      },
+      {
+        Header: "Last Name",
+        accessor: "lastName",
+        sortBy: true,
+      },
+      {
+        Header: "Age",
+        accessor: "age",
+        sortBy: true,
+      },
+      {
+        Header: "Visits",
+        accessor: "visits",
+        sortBy: true,
+      },
+      {
+        Header: "Status",
+        accessor: "status",
+        sortBy: true,
+      },
+      {
+        Header: "Profile Progress",
+        accessor: "progress",
+      },
+    ],
+    []
+  )
+
+  const data = React.useMemo(() => makeData(100), [])
+
+  return (
+    <DataTable id="tableCbMultiRowSel" columns={columns} data={data} hasSorting checkBoxRowSelection multipleRowSelection>
+        {({prepareRow, rows, selectedRows}) => (
+          <>
+          <TableContainer scrollable style={{ maxHeight: "400px", borderBottom: "1px solid #b7b9c3" }}>
+            <Table bordered hover id="customCheckBoxTable">
+              <TableHead className="bg-gray-light sticky-top">
+                <TableRow className="bg-gray-light">
+                  <TableHeaderCell accessor="selector" className='icon-only' />
+                  <TableHeaderCell
+                    accessor="firstName"
+                    className="bg-gray-light"
+                  />
+                  <TableHeaderCell
+                    accessor="lastName"
+                    className="bg-gray-light"
+                  />
+                  <TableHeaderCell accessor="age" className="bg-gray-light" />
+                  <TableHeaderCell
+                    accessor="visits"
+                    className="bg-gray-light"
+                  />
+                  <TableHeaderCell
+                    accessor="status"
+                    className="bg-gray-light"
+                  />
+                  <TableHeaderCell
+                    accessor="progress"
+                    className="bg-gray-light"
+                  />
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {rows.map((row, i) => {
+                    prepareRow(row)
+                    return (
+                      <TableRow {...row.getRowProps()}
+                        className={row.isSelected && "selected"}>
+                        {row.cells.map((cell,index) => {
+                          return (
+                            <TableCell {...cell.getCellProps()} className={index === 0 && 'icon-only'}>
+                              {cell.render("Cell")}
+                            </TableCell>
+                          )
+                        })}
+                      </TableRow>
+                    )
+                  })}
+              </TableBody>
+            </Table>
+          </TableContainer>
+          <br />
+          {selectedRows &&
+              selectedRows.map(row => {
+                return (
+                  <Toast className="toast-primary" key={row.firstName}>
+                    Successfully selected {row.firstName}, Age - {row.age},
+                    Visits - {row.visits}, Status - {row.status} !!
+                  </Toast>
+                )
+              })}
           </>
         )}
       </DataTable>
