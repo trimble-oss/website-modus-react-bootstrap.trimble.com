@@ -3,22 +3,11 @@ import { useState, useCallback } from "react"
 import {
   Col,
   Container,
-  Dropdown,
-  DropdownButton,
-  Form,
-  NavDropdown,
-  NavItem,
-  NavLink,
-  Pagination,
   Row,
-  Spinner,
-  Table as BootstrapTable,
+  FormCheck,
+  Pagination,
+  Button,
 } from "@trimbleinc/modus-react-bootstrap"
-import DefaultLayout from "../layouts/DefaultLayout"
-import LinkedHeading from "../common/LinkedHeading"
-import TableOfContents from "../common/TableOfContents"
-import { ModusIconsReferences } from "../common/ExternalReferences"
-import CodeBlock from "../common/CodeBlock"
 import {
   TableHead,
   TableBody,
@@ -30,6 +19,12 @@ import {
   TablePagination,
   DataTable,
 } from "../common/Table"
+import DefaultLayout from "../layouts/DefaultLayout"
+import LinkedHeading from "../common/LinkedHeading"
+import TableOfContents from "../common/TableOfContents"
+import { ModusIconsReferences } from "../common/ExternalReferences"
+import CodeBlock from "../common/CodeBlock"
+
 import { MakeData as makeData } from "../examples/components/Table"
 
 const ReactTableContainer = props => {
@@ -49,6 +44,7 @@ const ReactTableContainer = props => {
         Header: "Age",
         accessor: "age",
         sortBy: true,
+        disableResizing: true,
       },
       {
         Header: "Visits",
@@ -76,6 +72,7 @@ const ReactTableContainer = props => {
         hasSorting
         hasPagination
         resizeColumns
+        disableMultiSelecton
       >
         {({
           prepareRow,
@@ -91,6 +88,7 @@ const ReactTableContainer = props => {
               <Table bordered hover>
                 <TableHead className="bg-gray-light sticky-top">
                   <TableRow className="bg-gray-light">
+                    {/* <TableHeaderCell accessor="selector" /> */}
                     <TableHeaderCell
                       accessor="firstName"
                       className="bg-gray-light"
@@ -118,7 +116,13 @@ const ReactTableContainer = props => {
                   {rows.map((row, i) => {
                     prepareRow(row)
                     return (
-                      <TableRow {...row.getRowProps()}>
+                      <TableRow
+                        {...row.getRowProps()}
+                        onClick={() => {
+                          row.toggleRowSelected(!row.isSelected)
+                        }}
+                        className={row.isSelected && "selected"}
+                      >
                         {row.cells.map(cell => {
                           return (
                             <TableCell {...cell.getCellProps()}>

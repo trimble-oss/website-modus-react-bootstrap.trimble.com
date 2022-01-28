@@ -1,21 +1,28 @@
-import TableContainer from "./TableContainer"
-import Table from "./Table"
-import TableBody from "./TableBody"
-import TableCell from "./TableCell"
-import TableHead from "./TableHead"
-import TableHeaderCell from "./TableHeaderCell"
-import TableRow from "./TableRow"
-import TablePagination from "./TablePagination"
-import DataTable from "./DataTable"
+export { default as Table } from "./Table"
+export type { TableProps } from "./Table"
 
-export {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeaderCell,
-  TableRow,
-  TableContainer,
-  TablePagination,
-  DataTable,
-}
+export { default as DataTable } from "./DataTable"
+export type { DataTableProps } from "./DataTable"
+
+export { TableColumn } from "./DataTable"
+
+export { default as TableHead } from "./TableHead"
+export type { TableHeadProps } from "./TableHead"
+
+export { default as TableHeaderCell } from "./TableHeaderCell"
+export type { TableHeaderCellProps } from "./TableHeaderCell"
+
+export { default as TableBody } from "./TableBody"
+export type { TableBodyProps } from "./TableBody"
+
+export { default as TableRow } from "./TableRow"
+export type { TableRowProps } from "./TableRow"
+
+export { default as TableCell } from "./TableCell"
+export type { TableCellProps } from "./TableCell"
+
+export { default as TableContainer } from "./TableContainer"
+export type { TableContainerProps } from "./TableContainer"
+
+export { default as TablePagination } from "./TablePagination"
+export type { TablePaginationProps } from "./TablePagination"

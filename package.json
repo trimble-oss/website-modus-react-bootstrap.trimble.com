@@ -27,7 +27,7 @@
     "test": "echo \"Write tests! -> https://gatsby.dev/unit-testing\" && exit 1"
   },
   "dependencies": {
-    "@trimbleinc/modus-react-bootstrap": "^0.9.3",
+    "@trimbleinc/modus-react-bootstrap": "file:trimbleinc-modus-react-bootstrap-0.9.4.tgz",
     "classnames": "^2.3.1",
     "prop-types": "^15.8.1",
     "react-live": "^2.3.0",

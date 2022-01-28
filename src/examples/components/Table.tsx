@@ -368,7 +368,7 @@ export const TableIconsControls = `
       </tr>
       <tr>
         <th scope="row" className="icon-only">
-          <FormCheck custom checked id="tableCheckbox1-tb1"></FormCheck>
+          <FormCheck custom checked id="tableCheckbox1-tb1" readOnly></FormCheck>
         </th>
         <td>Jacob</td>
         <td>Thornton</td>
@@ -492,7 +492,7 @@ export const TableIconsControls = `
       </tr>
       <tr>
         <th scope="row" className="icon-only">
-          <FormCheck custom checked id="tableCheckbox1-tb2"></FormCheck>
+          <FormCheck custom checked id="tableCheckbox1-tb2" readOnly></FormCheck>
         </th>
         <td>Jacob</td>
         <td>Thornton</td>
@@ -626,8 +626,7 @@ export const TableSmall = `
             custom
             checked
             id="tableCheckbox1-tb1"
-            className="custom-control-sm"
-          ></FormCheck>
+            className="custom-control-sm" readOnly></FormCheck>
         </th>
         <td>Jacob</td>
         <td>Thornton</td>
@@ -767,8 +766,7 @@ export const TableSmall = `
             custom
             checked
             id="tableCheckbox1-tb2"
-            className="custom-control-sm"
-          ></FormCheck>
+            className="custom-control-sm" readOnly></FormCheck>
         </th>
         <td>Jacob</td>
         <td>Thornton</td>
@@ -1423,12 +1421,14 @@ export const TableWithColumnResize = `function Example() {
         Header: "First Name",
         accessor: "firstName",
         minWidth: 80,
+        disableResizing: true,
       },
       {
         Header: "Last Name",
         accessor: "lastName",
         sortBy: true,
         minWidth: 80,
+        disableResizing: true,
       },
       {
         Header: 'Age',
@@ -1447,7 +1447,7 @@ export const TableWithColumnResize = `function Example() {
         Header: "Status",
         accessor: "status",
         sortBy: true,
-        minWidth: 80,
+        minWidth: 70,
       },
       {
         Header: "Profile Progress Status",
@@ -1507,7 +1507,7 @@ export const TableWithColumnResize = `function Example() {
                         {row.cells.map(cell => {
                           return (
                             <TableCell {...cell.getCellProps()}>
-                              {cell.render("Cell")}
+                              <span style={{ whiteSpace: "nowrap", overflow: "hidden",textOverflow: "ellipsis"}}>{cell.render("Cell")}</span>
                             </TableCell>
                           )
                         })}

@@ -4,8 +4,8 @@ import capitalize from "lodash/capitalize"
 import sortBy from "lodash/sortBy"
 import PropTypes from "prop-types"
 import React from "react"
-import Badge from "@trimbleinc/modus-react-bootstrap/Badge"
-import Table from "@trimbleinc/modus-react-bootstrap/Table"
+import { Badge } from "@trimbleinc/modus-react-bootstrap"
+import { Table } from "@trimbleinc/modus-react-bootstrap"
 
 function getDoclet(doclets = [], tag) {
   const doclet = doclets.find(d => d.tag === tag)

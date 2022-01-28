@@ -1,20 +1,15 @@
-import * as React from "react"
-import PropTypes from "prop-types"
-import classNames from "classnames"
-import { CustomPropsWithDisplayName } from "./helpers"
-import { ReactNode, useContext } from "react"
-import { TableContext } from "./TableContext"
-import { Tab } from "@trimbleinc/modus-react-bootstrap"
+import * as React from 'react';
+import PropTypes from 'prop-types';
+import { CustomPropsWithDisplayName } from './helpers';
 
-export interface TableBodyProps<T extends object = {}>
-  extends CustomPropsWithDisplayName {}
+export type TableBodyProps = CustomPropsWithDisplayName;
 
 const propTypes = {
   /**
    * CSS class name
    */
   className: PropTypes.string,
-}
+};
 
 const TableBody = React.forwardRef<HTMLTableSectionElement, TableBodyProps>(
   ({ className, children, ...props }, ref) => {
@@ -22,11 +17,11 @@ const TableBody = React.forwardRef<HTMLTableSectionElement, TableBodyProps>(
       <tbody className={className} {...props} ref={ref}>
         {children}
       </tbody>
-    )
-  }
-)
+    );
+  },
+);
 
-TableBody.displayName = "TableBody"
-TableBody.propTypes = propTypes
+TableBody.displayName = 'TableBody';
+TableBody.propTypes = propTypes;
 
-export default TableBody
+export default TableBody;

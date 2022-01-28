@@ -1,5 +1,5 @@
-import * as React from "react"
-import PropTypes from "prop-types"
+import * as React from 'react';
+import PropTypes from 'prop-types';
 import {
   Column,
   useTable,
@@ -11,38 +11,35 @@ import {
   UseSortByColumnOptions,
   UseResizeColumnsColumnOptions,
   TableState,
-} from "react-table"
-import { TableContext } from "./TableContext"
-import { StyledDataTable } from "./DataTableStyles"
+} from 'react-table';
+import { TableContext } from './TableContext';
+import { StyledDataTable } from './styleHelpers';
 
-export type TableColumn<D extends object = {}> = Column<D> &
-  UseResizeColumnsColumnOptions<D> &
-  UseSortByColumnOptions<D> & {
-    sortBy?: boolean
-  }
+export type TableColumn = Column<any> &
+  UseResizeColumnsColumnOptions<any> &
+  UseSortByColumnOptions<any> & {
+    sortBy?: boolean;
+  };
 
-export interface DataTableProps<T extends object = {}>
-  extends Omit<React.HTMLProps<HTMLDivElement>, "data">,
-    Omit<TableOptions<T>, "columns"> {
-  columns: ReadonlyArray<TableColumn<T>>
-  hasSorting?: boolean
-  hasPagination?: boolean
-  resizeColumns?: boolean
-  hasRowSelection?: boolean
-  hasCheckBoxRowSelection?: boolean
-  children?: (...props: any) => React.ReactNode
+export interface DataTableProps
+  extends Omit<React.HTMLProps<HTMLDivElement>, 'data'>,
+    Omit<TableOptions<any>, 'columns'> {
+  columns: ReadonlyArray<TableColumn>;
+  hasSorting?: boolean;
+  hasPagination?: boolean;
+  resizeColumns?: boolean;
+  children?: (...props: any) => React.ReactNode;
 }
 
 const propTypes = {
   /**
-   * Array of header data of type [[TableColumn]].
+   * Array of header data of type TableColumn.
    */
   columns: PropTypes.array.isRequired,
-
   /**
    * Array of data to be displayed as Table Rows.
    */
-  data: PropTypes.arrayOf(PropTypes.object).isRequired,
+  data: PropTypes.array.isRequired,
 
   /**
    * Enables sorting on Table rows.
@@ -68,88 +65,91 @@ const propTypes = {
    * Enables row selection on Table rows using checkbox.
    */
   hasCheckBoxRowSelection: PropTypes.bool,
+};
+
+export function DataTable(
+  props: React.PropsWithChildren<DataTableProps> & {
+    ref?: React.Ref<HTMLDivElement>;
+  },
+): React.ReactElement {
+  // useSortBy hook enables sorting for all the columns by default
+  // and disableSortBy is the only control available at column configuration level
+
+  const {
+    columns,
+    data,
+    hasSorting,
+    hasPagination,
+    resizeColumns,
+    children,
+    ref,
+    ...rest
+  } = props;
+  const normalizedColumns = React.useMemo(
+    () =>
+      columns.map((col) => {
+        const { sortBy, ...columnProps } = col;
+        columnProps.disableSortBy = !sortBy;
+
+        return columnProps;
+      }),
+    [],
+  );
+
+  const hooks: any = [];
+  if (hasSorting) hooks.push(useSortBy);
+  if (hasPagination) hooks.push(usePagination);
+  if (resizeColumns) hooks.push(useFlexLayout, useResizeColumns);
+
+  const {
+    getTableProps,
+    headerGroups,
+    prepareRow,
+    rows,
+    page,
+    pageOptions,
+    gotoPage,
+    setPageSize,
+    state: { pageIndex, pageSize },
+  } = useTable(
+    {
+      columns: normalizedColumns,
+      data,
+      // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+      initialState: { pageIndex: 0, pageSize: 10 } as TableState,
+      // defaultColumn,
+    },
+    ...hooks,
+  );
+
+  // TODO:
+  // Params passed in the children are constructed dynamically decided by the hooks passed to useTable
+  // Find a way to create type definition
+  return (
+    <TableContext.Provider
+      value={{
+        getTableProps,
+        headerGroups,
+      }}
+    >
+      <StyledDataTable resizecolumns={(resizeColumns && 'true') || 'false'}>
+        <div {...rest} ref={ref}>
+          {children &&
+            children({
+              rows: hasPagination ? page : rows,
+              prepareRow,
+              gotoPage,
+              pageIndex,
+              pageOptions,
+              pageSize,
+              setPageSize,
+            })}
+        </div>
+      </StyledDataTable>
+    </TableContext.Provider>
+  );
 }
 
-const DataTable = React.forwardRef<HTMLDivElement, DataTableProps>(
-  (
-    {
-      columns,
-      data,
-      hasSorting,
-      hasPagination,
-      resizeColumns,
-      hasCheckBoxRowSelection,
-      hasRowSelection,
-      children,
-      ...props
-    },
-    ref
-  ) => {
-    //useSortBy hook enables sorting for all the columns by default
-    //and disableSortBy is the only control available at column configuration level
-    const normalizedColumns = React.useMemo(
-      () =>
-        columns.map(col => {
-          let { sortBy, ...columnProps } = col
-          columnProps.disableSortBy = !col.sortBy
+DataTable.propTypes = propTypes;
 
-          return columnProps
-        }),
-      []
-    )
-
-    const hooks = []
-    if (hasSorting) hooks.push(useSortBy)
-    if (hasPagination) hooks.push(usePagination)
-    if (resizeColumns) hooks.push(useFlexLayout, useResizeColumns)
-
-    const {
-      getTableProps,
-      headerGroups,
-      prepareRow,
-      rows,
-      page,
-      pageOptions,
-      pageCount,
-      gotoPage,
-      setPageSize,
-      state: { pageIndex, pageSize },
-    } = useTable(
-      {
-        columns: normalizedColumns,
-        data: data,
-        initialState: { pageIndex: 0, pageSize: 10 } as TableState,
-        // defaultColumn,
-      },
-      ...hooks
-    )
-
-    //TODO:
-    //Params passed in the children are constructed dynamically decided by the hooks passed to useTable
-    //Find a way to create type definition
-    return (
-      <TableContext.Provider
-        value={{
-          getTableProps,
-          headerGroups,
-        }}
-      >
-        <StyledDataTable resizeColumns={resizeColumns} ref={ref} {...props}>
-          {children({
-            rows: hasPagination ? page : rows,
-            prepareRow,
-            gotoPage,
-            pageIndex,
-            pageOptions,
-            pageSize,
-            setPageSize,
-          })}
-        </StyledDataTable>
-      </TableContext.Provider>
-    )
-  }
-)
-
-DataTable.propTypes = propTypes
-
-export default DataTable
+export default DataTable;

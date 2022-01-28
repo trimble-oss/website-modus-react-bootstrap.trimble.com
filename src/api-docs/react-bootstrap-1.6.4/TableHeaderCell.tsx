@@ -1,14 +1,14 @@
-import * as React from "react"
-import { useContext } from "react"
-import PropTypes from "prop-types"
-import classNames from "classnames"
-import { TableContext, TableHeadersContext } from "./TableContext"
-import merge from "lodash/merge"
+import * as React from 'react';
+import { useContext } from 'react';
+import merge from 'lodash/merge';
+import PropTypes from 'prop-types';
+import classNames from 'classnames';
+import { TableHeadersContext } from './TableContext';
 
-export interface TableHeaderCellProps<T extends object = {}>
+export interface TableHeaderCellProps
   extends React.HTMLProps<HTMLTableCellElement> {
-  accessor?: string
-  renderer?: (header: any) => React.ReactElement
+  accessor?: string;
+  renderer?: (header: any) => React.ReactElement;
 }
 
 const propTypes = {
@@ -26,68 +26,67 @@ const propTypes = {
    * Custom Header cell renderer function
    */
   renderer: PropTypes.func,
-}
+};
 
 const modusSortArrows = {
   asc: {
-    icon: "sort_alpha_up",
-    title: "Sort Descending",
+    icon: 'sort_alpha_up',
+    title: 'Sort Descending',
   },
   desc: {
-    icon: "sort_alpha_down",
-    title: "Sort Ascending",
+    icon: 'sort_alpha_down',
+    title: 'Sort Ascending',
   },
-}
+};
 type SortIconComponentProps = {
-  sort?: string
-  title?: string
-  className?: string
-}
+  sort: string;
+  title?: string;
+  className?: string;
+};
 const SortIcon: React.FunctionComponent<SortIconComponentProps> = ({
   sort,
   title,
   className,
-  ...props
 }) => (
   <i
-    className={classNames("modus-icons material-icons", className)}
+    className={classNames('modus-icons material-icons', className)}
     data-toggle="tooltip"
     data-placement="top"
     title={title || modusSortArrows[sort].title}
   >
     {modusSortArrows[sort].icon}
   </i>
-)
+);
 
 const TableHeaderCell = React.forwardRef<
   HTMLTableCellElement,
   TableHeaderCellProps
 >(({ accessor, renderer, children, className, ...props }, ref) => {
-  const headersContext = useContext(TableHeadersContext)
-
+  const headersContext = useContext(TableHeadersContext);
   if (headersContext && accessor) {
-    const header = headersContext && headersContext.find(h => h.id == accessor)
+    const header =
+      headersContext && headersContext.find((h) => h.id === accessor);
     const headerProps = merge(
       header.getHeaderProps(
-        header.getSortByToggleProps && header.getSortByToggleProps()
+        header.getSortByToggleProps && header.getSortByToggleProps(),
       ),
-      { title: "" }
-    )
-    const headerLabel = renderer ? renderer(header) : header.render("Header")
+      { title: '' },
+    );
+    const headerLabel = renderer ? renderer(header) : header.render('Header');
     return (
       <th
-        className={classNames("pr-2", className)}
+        className={classNames('pr-2', className)}
         ref={ref}
         {...headerProps}
         {...props}
       >
-        <div className="d-flex" style={{ width: "100%" }}>
+        <div className="d-flex" style={{ width: '100%' }}>
           <div
             className="flex-grow-1"
             style={{
-              whiteSpace: "nowrap",
-              overflow: "hidden",
-              textOverflow: "ellipsis",
+              whiteSpace: 'nowrap',
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
             }}
             data-toggle="tooltip"
             data-placement="top"
@@ -101,7 +100,7 @@ const TableHeaderCell = React.forwardRef<
                 {header.isSorted ? (
                   <SortIcon
                     className="sorted"
-                    sort={header.isSortedDesc ? "desc" : "asc"}
+                    sort={header.isSortedDesc ? 'desc' : 'asc'}
                   />
                 ) : (
                   <SortIcon
@@ -118,18 +117,17 @@ const TableHeaderCell = React.forwardRef<
           <div {...header.getResizerProps()} className="table-col-resizable" />
         )}
       </th>
-    )
-  } else {
-    return (
-      <th className={className} {...props} ref={ref}>
-        {children}
-      </th>
-    )
+    );
   }
-})
+  return (
+    <th className={className} {...props} ref={ref}>
+      {children}
+    </th>
+  );
+});
 
-TableHeaderCell.propTypes = propTypes
+TableHeaderCell.propTypes = propTypes;
 
-TableHeaderCell.displayName = "TableHeaderCell"
+TableHeaderCell.displayName = 'TableHeaderCell';
 
-export default TableHeaderCell
+export default TableHeaderCell;

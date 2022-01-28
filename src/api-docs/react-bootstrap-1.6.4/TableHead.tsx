@@ -1,22 +1,20 @@
-import React from "react"
-import PropTypes from "prop-types"
-import { CustomPropsWithDisplayName } from "./helpers"
-import { TableContext, TableHeaderGroupsContext } from "./TableContext"
-import { useContext } from "react"
+import React, { useContext } from 'react';
+import PropTypes from 'prop-types';
+import { CustomPropsWithDisplayName } from './helpers';
+import { TableContext, TableHeaderGroupsContext } from './TableContext';
 
-export interface TableHeadProps<T extends object = {}>
-  extends CustomPropsWithDisplayName {}
+export type TableHeadProps = CustomPropsWithDisplayName;
 
 const propTypes = {
   /**
    * CSS class name
    */
   className: PropTypes.string,
-}
+};
 
 const TableHead = React.forwardRef<HTMLTableSectionElement, TableHeadProps>(
   ({ children, className, ...props }, ref) => {
-    const tableContext = useContext(TableContext)
+    const tableContext = useContext(TableContext);
     if (tableContext) {
       return (
         <TableHeaderGroupsContext.Provider value={tableContext.headerGroups}>
@@ -24,18 +22,17 @@ const TableHead = React.forwardRef<HTMLTableSectionElement, TableHeadProps>(
             {children}
           </thead>
         </TableHeaderGroupsContext.Provider>
-      )
-    } else {
-      return (
-        <thead className={className} {...props} ref={ref}>
-          {children}
-        </thead>
-      )
+      );
     }
-  }
-)
+    return (
+      <thead className={className} {...props} ref={ref}>
+        {children}
+      </thead>
+    );
+  },
+);
 
-TableHead.displayName = "TableHead"
-TableHead.propTypes = propTypes
+TableHead.displayName = 'TableHead';
+TableHead.propTypes = propTypes;
 
-export default TableHead
+export default TableHead;

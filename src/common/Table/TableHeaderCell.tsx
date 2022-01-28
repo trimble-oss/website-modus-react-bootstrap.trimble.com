@@ -1,11 +1,11 @@
 import * as React from "react"
 import { useContext } from "react"
+import merge from "lodash/merge"
 import PropTypes from "prop-types"
 import classNames from "classnames"
-import { TableContext, TableHeadersContext } from "./TableContext"
-import merge from "lodash/merge"
+import { TableHeadersContext } from "./TableContext"
 
-export interface TableHeaderCellProps<T extends object = {}>
+export interface TableHeaderCellProps
   extends React.HTMLProps<HTMLTableCellElement> {
   accessor?: string
   renderer?: (header: any) => React.ReactElement
@@ -39,7 +39,7 @@ const modusSortArrows = {
   },
 }
 type SortIconComponentProps = {
-  sort?: string
+  sort: string
   title?: string
   className?: string
 }
@@ -47,7 +47,6 @@ const SortIcon: React.FunctionComponent<SortIconComponentProps> = ({
   sort,
   title,
   className,
-  ...props
 }) => (
   <i
     className={classNames("modus-icons material-icons", className)}
@@ -64,9 +63,8 @@ const TableHeaderCell = React.forwardRef<
   TableHeaderCellProps
 >(({ accessor, renderer, children, className, ...props }, ref) => {
   const headersContext = useContext(TableHeadersContext)
-
   if (headersContext && accessor) {
-    const header = headersContext && headersContext.find(h => h.id == accessor)
+    const header = headersContext && headersContext.find(h => h.id === accessor)
     const headerProps = merge(
       header.getHeaderProps(
         header.getSortByToggleProps && header.getSortByToggleProps()
@@ -119,13 +117,12 @@ const TableHeaderCell = React.forwardRef<
         )}
       </th>
     )
-  } else {
-    return (
-      <th className={className} {...props} ref={ref}>
-        {children}
-      </th>
-    )
   }
+  return (
+    <th className={className} {...props} ref={ref}>
+      {children}
+    </th>
+  )
 })
 
 TableHeaderCell.propTypes = propTypes

@@ -11,25 +11,32 @@ import {
   UseSortByColumnOptions,
   UseResizeColumnsColumnOptions,
   TableState,
+  Hooks,
+  HeaderProps,
+  CellProps,
+  useRowSelect,
 } from "react-table"
 import { TableContext } from "./TableContext"
-import { StyledDataTable } from "./DataTableStyles"
+import { StyledDataTable } from "./styleHelpers"
+import { FormCheck, FormCheckProps } from "@trimbleinc/modus-react-bootstrap"
 
-export type TableColumn<D extends object = {}> = Column<D> &
-  UseResizeColumnsColumnOptions<D> &
-  UseSortByColumnOptions<D> & {
+export type TableColumn = Column<any> &
+  UseResizeColumnsColumnOptions<any> &
+  UseSortByColumnOptions<any> & {
     sortBy?: boolean
   }
 
-export interface DataTableProps<T extends object = {}>
+export interface DataTableProps
   extends Omit<React.HTMLProps<HTMLDivElement>, "data">,
-    Omit<TableOptions<T>, "columns"> {
-  columns: ReadonlyArray<TableColumn<T>>
+    Omit<TableOptions<any>, "columns"> {
+  columns: ReadonlyArray<TableColumn>
   hasSorting?: boolean
   hasPagination?: boolean
   resizeColumns?: boolean
-  hasRowSelection?: boolean
-  hasCheckBoxRowSelection?: boolean
+  isCheckBoxRowSelection?: boolean
+  disableRowSelection?: boolean
+  disableMultiSelecton?: boolean
+  onRowSelect?: (...args: any[]) => void
   children?: (...props: any) => React.ReactNode
 }
 
@@ -38,7 +45,6 @@ const propTypes = {
    * Array of header data of type TableColumn.
    */
   columns: PropTypes.array.isRequired,
-
   /**
    * Array of data to be displayed as Table Rows.
    */
@@ -60,95 +66,179 @@ const propTypes = {
   resizeColumns: PropTypes.bool,
 
   /**
-   * Enables row selection on Table rows.
+   * Enables row selection using checkbox.
    */
-  hasRowSelection: PropTypes.bool,
+  isCheckBoxRowSelection: PropTypes.bool,
 
   /**
-   * Enables row selection on Table rows using checkbox.
+   * Disables row selection.
    */
-  hasCheckBoxRowSelection: PropTypes.bool,
+  disableRowSelection: PropTypes.bool,
+
+  /**
+   * Disables multiple row selection.
+   */
+  disableMultiSelecton: PropTypes.bool,
+
+  /**
+   * Callback fired when a row is selected.
+   */
+  onRowSelect: PropTypes.func,
 }
 
-const DataTable = React.forwardRef<HTMLDivElement, DataTableProps>(
-  (
-    {
-      columns,
-      data,
-      hasSorting,
-      hasPagination,
-      resizeColumns,
-      hasCheckBoxRowSelection,
-      hasRowSelection,
-      children,
-      ...props
-    },
-    ref
-  ) => {
-    //useSortBy hook enables sorting for all the columns by default
-    //and disableSortBy is the only control available at column configuration level
-    const normalizedColumns = React.useMemo(
-      () =>
-        columns.map(col => {
-          let { sortBy, ...columnProps } = col
-          columnProps.disableSortBy = !col.sortBy
+const IndeterminateCheckbox = React.forwardRef(
+  ({ indeterminate, ...rest }, ref) => {
+    const defaultRef = React.useRef()
+    const resolvedRef = ref || defaultRef
 
-          return columnProps
-        }),
-      []
-    )
+    React.useEffect(() => {
+      resolvedRef.current.indeterminate = indeterminate
+    }, [resolvedRef, indeterminate])
 
-    const hooks = []
-    if (hasSorting) hooks.push(useSortBy)
-    if (hasPagination) hooks.push(usePagination)
-    if (resizeColumns) hooks.push(useFlexLayout, useResizeColumns)
-
-    const {
-      getTableProps,
-      headerGroups,
-      prepareRow,
-      rows,
-      page,
-      pageOptions,
-      pageCount,
-      gotoPage,
-      setPageSize,
-      state: { pageIndex, pageSize },
-    } = useTable(
-      {
-        columns: normalizedColumns,
-        data: data,
-        initialState: { pageIndex: 0, pageSize: 10 } as TableState,
-        // defaultColumn,
-      },
-      ...hooks
-    )
-
-    //TODO:
-    //Params passed in the children are constructed dynamically decided by the hooks passed to useTable
-    //Find a way to create type definition
     return (
-      <TableContext.Provider
-        value={{
-          getTableProps,
-          headerGroups,
-        }}
-      >
-        <StyledDataTable resizeColumns={resizeColumns} ref={ref} {...props}>
-          {children({
-            rows: hasPagination ? page : rows,
-            prepareRow,
-            gotoPage,
-            pageIndex,
-            pageOptions,
-            pageSize,
-            setPageSize,
-          })}
-        </StyledDataTable>
-      </TableContext.Provider>
+      <>
+        <input type="checkbox" ref={resolvedRef} {...rest} />
+      </>
     )
   }
 )
+
+const selectionHook = (hooks: Hooks<any>) => {
+  hooks.visibleColumns.push(columns => [
+    // Let's make a column for selection
+    {
+      id: "selector",
+      disableResizing: true,
+      disableGroupBy: true,
+      minWidth: 45,
+      width: 45,
+      maxWidth: 45,
+      // The header can use the table's getToggleAllRowsSelectedProps method
+      // to render a checkbox
+      Header: ({ getToggleAllRowsSelectedProps }: HeaderProps<any>) => (
+        <div>
+          <IndeterminateCheckbox {...getToggleAllRowsSelectedProps()} />
+        </div>
+      ),
+      // The cell can use the individual row's getToggleRowSelectedProps method
+      // to the render a checkbox
+      Cell: ({ row }: CellProps<any>) => (
+        <div>
+          <IndeterminateCheckbox {...row.getToggleRowSelectedProps()} />
+        </div>
+      ),
+    },
+    ...columns,
+  ])
+}
+
+export function DataTable(
+  props: React.PropsWithChildren<DataTableProps> & {
+    ref?: React.Ref<HTMLDivElement>
+  }
+): React.ReactElement {
+  const {
+    columns,
+    data,
+    hasSorting,
+    hasPagination,
+    resizeColumns,
+    children,
+    isCheckBoxRowSelection,
+    disableMultiSelecton,
+    disableRowSelection,
+    onRowSelect,
+    ref,
+    ...rest
+  } = props
+
+  // Convert the columns input array
+  // useSortBy hook enables sorting for all the columns by default
+  // and disableSortBy is the only control available at column configuration level
+  const normalizedColumns = React.useMemo(
+    () =>
+      columns.map(col => {
+        const { sortBy, ...columnProps } = col
+        columnProps.disableSortBy = !sortBy
+
+        return columnProps
+      }),
+    []
+  )
+  debugger
+  // Make conditional hooks array
+  const hooks: any = []
+  if (hasSorting) hooks.push(useSortBy)
+  if (hasPagination) hooks.push(usePagination)
+  if (resizeColumns) hooks.push(useFlexLayout, useResizeColumns)
+  if (!disableRowSelection) hooks.push(useRowSelect)
+  if (isCheckBoxRowSelection) hooks.push(selectionHook)
+
+  // If Row selection is enabled
+  const rowStateReducer = disableMultiSelecton && {
+    stateReducer: (newState, action, previousState) => {
+      debugger
+      if (action.type === "toggleRowSelected") {
+        newState.selectedRowIds = action.value && {
+          [action.id]: true,
+        }
+      }
+
+      return newState
+    },
+  }
+
+  // Get Final Table instance
+  const {
+    getTableProps,
+    headerGroups,
+    prepareRow,
+    rows,
+    page,
+    pageOptions,
+    gotoPage,
+    setPageSize,
+    selectedFlatRows,
+    state: { pageIndex, pageSize, selectedRowIds },
+  } = useTable(
+    {
+      columns: normalizedColumns,
+      data,
+      // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+      initialState: { pageIndex: 0, pageSize: 10 } as TableState,
+      ...rowStateReducer,
+    },
+    ...hooks
+  )
+
+  // TODO:
+  // Params passed in the children are constructed dynamically decided by the hooks passed to useTable
+  // Find a way to create type definition
+  return (
+    <TableContext.Provider
+      value={{
+        getTableProps,
+        headerGroups,
+      }}
+    >
+      <StyledDataTable resizecolumns={(resizeColumns && "true") || "false"}>
+        <div {...rest} ref={ref}>
+          {children &&
+            children({
+              headerGroups,
+              rows: hasPagination ? page : rows,
+              prepareRow,
+              gotoPage,
+              pageIndex,
+              pageOptions,
+              pageSize,
+              setPageSize,
+            })}
+        </div>
+      </StyledDataTable>
+    </TableContext.Provider>
+  )
+}
 
 DataTable.propTypes = propTypes
 
