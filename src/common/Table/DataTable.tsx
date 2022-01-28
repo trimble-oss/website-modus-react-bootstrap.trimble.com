@@ -33,9 +33,9 @@ export interface DataTableProps
   hasSorting?: boolean
   hasPagination?: boolean
   resizeColumns?: boolean
-  isCheckBoxRowSelection?: boolean
+  checkBoxRowSelection?: boolean
   disableRowSelection?: boolean
-  disableMultiSelecton?: boolean
+  multipleRowSelection?: boolean
   onRowSelect?: (...args: any[]) => void
   children?: (...props: any) => React.ReactNode
 }
@@ -68,7 +68,7 @@ const propTypes = {
   /**
    * Enables row selection using checkbox.
    */
-  isCheckBoxRowSelection: PropTypes.bool,
+  checkBoxRowSelection: PropTypes.bool,
 
   /**
    * Disables row selection.
@@ -76,9 +76,9 @@ const propTypes = {
   disableRowSelection: PropTypes.bool,
 
   /**
-   * Disables multiple row selection.
+   * Enables multiple row selection.
    */
-  disableMultiSelecton: PropTypes.bool,
+  multipleRowSelection: PropTypes.bool,
 
   /**
    * Callback fired when a row is selected.
@@ -119,6 +119,7 @@ const selectionHook = (hooks: Hooks<any>) => {
         <div>
           <IndeterminateCheckbox {...getToggleAllRowsSelectedProps()} />
         </div>
+        don't render the checkbox even if user provides onefor single row selectiion
       ),
       // The cell can use the individual row's getToggleRowSelectedProps method
       // to the render a checkbox
@@ -144,8 +145,8 @@ export function DataTable(
     hasPagination,
     resizeColumns,
     children,
-    isCheckBoxRowSelection,
-    disableMultiSelecton,
+    checkBoxRowSelection,
+    multipleRowSelection,
     disableRowSelection,
     onRowSelect,
     ref,
@@ -165,19 +166,18 @@ export function DataTable(
       }),
     []
   )
-  debugger
+
   // Make conditional hooks array
   const hooks: any = []
   if (hasSorting) hooks.push(useSortBy)
   if (hasPagination) hooks.push(usePagination)
   if (resizeColumns) hooks.push(useFlexLayout, useResizeColumns)
   if (!disableRowSelection) hooks.push(useRowSelect)
-  if (isCheckBoxRowSelection) hooks.push(selectionHook)
+  if (checkBoxRowSelection) hooks.push(selectionHook)
 
-  // If Row selection is enabled
-  const rowStateReducer = disableMultiSelecton && {
+  // If Multi Row selection isn't enabled
+  const rowStateReducer = !multipleRowSelection && {
     stateReducer: (newState, action, previousState) => {
-      debugger
       if (action.type === "toggleRowSelected") {
         newState.selectedRowIds = action.value && {
           [action.id]: true,
@@ -233,6 +233,8 @@ export function DataTable(
               pageOptions,
               pageSize,
               setPageSize,
+              selectedRows:
+                selectedFlatRows && selectedFlatRows.map(d => d.original),
             })}
         </div>
       </StyledDataTable>

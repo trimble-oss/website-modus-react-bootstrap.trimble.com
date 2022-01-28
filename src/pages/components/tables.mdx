@@ -15,7 +15,21 @@ import {
   TableWithPagination,
   MakeData as makeData,
   TableWithColumnResize,
+  TableWithSingleRowSelection,
+  TableWithMultiRowSelection,
+  TableWithCheckBoxSelection,
 } from "../../examples/components/Table"
+import {
+  DataTable,
+  TableContainer,
+  TableHead,
+  TableBody,
+  TableCell,
+  TableHeaderCell,
+  TableRow,
+  Table,
+  TablePagination,
+} from "../../common/Table"
 import Badge from "@trimbleinc/modus-react-bootstrap/Badge"
 
 <Overview>
@@ -76,7 +90,22 @@ import Badge from "@trimbleinc/modus-react-bootstrap/Badge"
   </p>
 </p>
 
-<CodeBlock title="Table with Sorting" code={TableWithSorting} noInline={true}>
+<CodeBlock
+  title="Table with Sorting"
+  scope={{
+    DataTable,
+    TableContainer,
+    TableHead,
+    TableBody,
+    TableCell,
+    TableHeaderCell,
+    TableRow,
+    Table,
+    TablePagination,
+  }}
+  code={TableWithSorting}
+  noInline={true}
+>
   <p>
     Use the prop <code> hasSorting </code> to enable/disable the sorting on the
     entire <code> Table </code> and prop
@@ -93,6 +122,15 @@ import Badge from "@trimbleinc/modus-react-bootstrap/Badge"
   title="Table with Scroll"
   scope={{
     makeData,
+    DataTable,
+    TableContainer,
+    TableHead,
+    TableBody,
+    TableCell,
+    TableHeaderCell,
+    TableRow,
+    Table,
+    TablePagination,
   }}
   code={TableWithScroll}
   noInline={true}
@@ -105,6 +143,15 @@ import Badge from "@trimbleinc/modus-react-bootstrap/Badge"
   title="Table with Sticky Header"
   scope={{
     makeData,
+    DataTable,
+    TableContainer,
+    TableHead,
+    TableBody,
+    TableCell,
+    TableHeaderCell,
+    TableRow,
+    Table,
+    TablePagination,
   }}
   code={TableWithFixedHeader}
   noInline={true}
@@ -117,6 +164,15 @@ import Badge from "@trimbleinc/modus-react-bootstrap/Badge"
   title="Table with Client-side Pagination"
   scope={{
     makeData,
+    DataTable,
+    TableContainer,
+    TableHead,
+    TableBody,
+    TableCell,
+    TableHeaderCell,
+    TableRow,
+    Table,
+    TablePagination,
   }}
   code={TableWithPagination}
   noInline={true}
@@ -130,6 +186,15 @@ import Badge from "@trimbleinc/modus-react-bootstrap/Badge"
   title="Table with Columns Resizing"
   scope={{
     makeData,
+    DataTable,
+    TableContainer,
+    TableHead,
+    TableBody,
+    TableCell,
+    TableHeaderCell,
+    TableRow,
+    Table,
+    TablePagination,
   }}
   code={TableWithColumnResize}
   noInline={true}
@@ -137,6 +202,70 @@ import Badge from "@trimbleinc/modus-react-bootstrap/Badge"
   Set the prop <code> resizeColumns </code> to true on <code> DataTable </code>
   to enable resizing on all the columns. For more control use
   <code> disableResizing </code> on the columns object as shown in the example.
+</CodeBlock>
+
+<CodeBlock
+  title="Table with Single Row Selection"
+  scope={{
+    makeData,
+    DataTable,
+    TableContainer,
+    TableHead,
+    TableBody,
+    TableCell,
+    TableHeaderCell,
+    TableRow,
+    Table,
+    TablePagination,
+  }}
+  code={TableWithSingleRowSelection}
+  noInline={true}
+>
+  To be able to select a row by clicking anywhere inside it, invoke the function{" "}
+  <code>row.toggleRowSelected()</code> to toggle the row's selected state.
+</CodeBlock>
+
+<CodeBlock
+  title="Table with CheckBox Row Selection"
+  scope={{
+    makeData,
+    DataTable,
+    TableContainer,
+    TableHead,
+    TableBody,
+    TableCell,
+    TableHeaderCell,
+    TableRow,
+    Table,
+    TablePagination,
+  }}
+  code={TableWithCheckBoxSelection}
+  noInline={true}
+>
+  Use the prop <code> checkBoxRowSelection </code> on the
+  <code> DataTable </code> component to display checkbox to control row selection.
+  CheckBox in the header row appears when multiple row selection is also enabled.
+</CodeBlock>
+
+<CodeBlock
+  title="Table with Multiple Row Selection"
+  scope={{
+    makeData,
+    DataTable,
+    TableContainer,
+    TableHead,
+    TableBody,
+    TableCell,
+    TableHeaderCell,
+    TableRow,
+    Table,
+    TablePagination,
+  }}
+  code={TableWithMultiRowSelection}
+  noInline={true}
+>
+  Single row selection is the default hence in-order to enable multi-row
+  selection use the prop <code> multipleRowSelection</code>.
 </CodeBlock>
 
 <LinkedHeading h="2" className="h1" id="table-api">

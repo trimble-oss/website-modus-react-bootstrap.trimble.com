@@ -7,6 +7,7 @@ import {
   FormCheck,
   Pagination,
   Button,
+  Toast,
 } from "@trimbleinc/modus-react-bootstrap"
 import {
   TableHead,
@@ -72,7 +73,6 @@ const ReactTableContainer = props => {
         hasSorting
         hasPagination
         resizeColumns
-        disableMultiSelecton
       >
         {({
           prepareRow,
@@ -82,6 +82,7 @@ const ReactTableContainer = props => {
           pageSize,
           setPageSize,
           pageOptions,
+          selectedRows,
         }) => (
           <>
             <TableContainer scrollable style={{ maxHeight: "400px" }}>
@@ -145,6 +146,16 @@ const ReactTableContainer = props => {
               onPageSizeChange={setPageSize}
               className="border border-tertiary"
             ></TablePagination>
+
+            {selectedRows &&
+              selectedRows.map(row => {
+                return (
+                  <Toast className="toast-success" key={row.firstName}>
+                    Successfully selected {row.firstName}, {row.age},
+                    {row.visits}, {row.status} !!
+                  </Toast>
+                )
+              })}
           </>
         )}
       </DataTable>
