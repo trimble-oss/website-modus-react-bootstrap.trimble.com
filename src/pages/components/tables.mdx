@@ -18,6 +18,7 @@ import {
   TableWithSingleRowSelection,
   TableWithMultiRowSelection,
   TableWithCheckBoxSelection,
+  TableWithCustomCheckBoxSelection,
 } from "../../examples/components/Table"
 import {
   DataTable,
@@ -226,28 +227,6 @@ import Badge from "@trimbleinc/modus-react-bootstrap/Badge"
 </CodeBlock>
 
 <CodeBlock
-  title="Table with CheckBox Row Selection"
-  scope={{
-    makeData,
-    DataTable,
-    TableContainer,
-    TableHead,
-    TableBody,
-    TableCell,
-    TableHeaderCell,
-    TableRow,
-    Table,
-    TablePagination,
-  }}
-  code={TableWithCheckBoxSelection}
-  noInline={true}
->
-  Use the prop <code> checkBoxRowSelection </code> on the
-  <code> DataTable </code> component to display checkbox to control row selection.
-  CheckBox in the header row appears when multiple row selection is also enabled.
-</CodeBlock>
-
-<CodeBlock
   title="Table with Multiple Row Selection"
   scope={{
     makeData,
@@ -264,8 +243,54 @@ import Badge from "@trimbleinc/modus-react-bootstrap/Badge"
   code={TableWithMultiRowSelection}
   noInline={true}
 >
-  Single row selection is the default hence in-order to enable multi-row
-  selection use the prop <code> multipleRowSelection</code>.
+  Single row selection is the default so to enable multi-row selection use the
+  prop <code> multipleRowSelection</code>. Clicking on a row selects it and
+  clicking again undo the selection.
+</CodeBlock>
+
+<CodeBlock
+  title="Table with CheckBox Row Selection"
+  scope={{
+    makeData,
+    DataTable,
+    TableContainer,
+    TableHead,
+    TableBody,
+    TableCell,
+    TableHeaderCell,
+    TableRow,
+    Table,
+    TablePagination,
+  }}
+  code={TableWithCheckBoxSelection}
+  noInline={true}
+>
+  Use prop <code> checkBoxRowSelection </code> on the
+  <code> DataTable </code> component for displaying checkbox to control row selection
+  and add a <code> TableHeaderCell </code> with <code>accessor='selector'</code>.
+</CodeBlock>
+
+<CodeBlock
+  title="Table with Custom CheckBox Row Selection"
+  scope={{
+    makeData,
+    DataTable,
+    TableContainer,
+    TableHead,
+    TableBody,
+    TableCell,
+    TableHeaderCell,
+    TableRow,
+    Table,
+    TablePagination,
+  }}
+  code={TableWithCustomCheckBoxSelection}
+  noInline={true}
+>
+  Row Selection Checkbox can be configured by using <code> Header </code> and
+  <code> Cell </code> functions in the column object that is passed to
+  <code> DataTable</code>. For single row selection, <code> Header </code>
+  function should not be used.
 </CodeBlock>
 
 <LinkedHeading h="2" className="h1" id="table-api">

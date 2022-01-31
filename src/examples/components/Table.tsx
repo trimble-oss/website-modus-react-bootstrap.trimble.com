@@ -1855,3 +1855,134 @@ export const TableWithCheckBoxSelection = `function Example() {
 }
 
 render(<Example />);`
+
+export const TableWithCustomCheckBoxSelection = `function Example() {
+  const IndeterminateCheckbox = React.forwardRef(
+    ({ indeterminate, ...rest }, ref) => {
+      const defaultRef = React.useRef()
+      const resolvedRef = ref || defaultRef
+
+      React.useEffect(() => {
+        resolvedRef.current.indeterminate = indeterminate
+      }, [resolvedRef, indeterminate])
+
+      return <input type="checkbox" ref={resolvedRef} {...rest} />
+    }
+  )
+
+  const columns = React.useMemo(
+    () => [
+      {
+        accessor: "selector",
+        minWidth: 45,
+        width: 45,
+        maxWidth: 45,
+        Header: ({ getToggleAllRowsSelectedProps }) => (
+          <IndeterminateCheckbox {...getToggleAllRowsSelectedProps()} />
+        ),
+        Cell: ({ row }) => (
+          <IndeterminateCheckbox {...row.getToggleRowSelectedProps()} />
+        ),
+      },
+      {
+        Header: "First Name",
+        accessor: "firstName",
+      },
+      {
+        Header: "Last Name",
+        accessor: "lastName",
+        sortBy: true,
+      },
+      {
+        Header: "Age",
+        accessor: "age",
+        sortBy: true,
+      },
+      {
+        Header: "Visits",
+        accessor: "visits",
+        sortBy: true,
+      },
+      {
+        Header: "Status",
+        accessor: "status",
+        sortBy: true,
+      },
+      {
+        Header: "Profile Progress",
+        accessor: "progress",
+      },
+    ],
+    []
+  )
+
+  const data = React.useMemo(() => makeData(100), [])
+
+  return (
+    <DataTable columns={columns} data={data} hasSorting checkBoxRowSelection multipleRowSelection>
+        {({prepareRow, rows, selectedRows}) => (
+          <>
+          <TableContainer scrollable style={{ maxHeight: "400px" }}>
+            <Table bordered hover>
+              <TableHead className="bg-gray-light sticky-top">
+                <TableRow className="bg-gray-light">
+                  <TableHeaderCell accessor="selector" />
+                  <TableHeaderCell
+                    accessor="firstName"
+                    className="bg-gray-light"
+                  />
+                  <TableHeaderCell
+                    accessor="lastName"
+                    className="bg-gray-light"
+                  />
+                  <TableHeaderCell accessor="age" className="bg-gray-light" />
+                  <TableHeaderCell
+                    accessor="visits"
+                    className="bg-gray-light"
+                  />
+                  <TableHeaderCell
+                    accessor="status"
+                    className="bg-gray-light"
+                  />
+                  <TableHeaderCell
+                    accessor="progress"
+                    className="bg-gray-light"
+                  />
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {rows.map((row, i) => {
+                    prepareRow(row)
+                    return (
+                      <TableRow {...row.getRowProps()}
+                        className={row.isSelected && "selected"}>
+                        {row.cells.map(cell => {
+                          return (
+                            <TableCell {...cell.getCellProps()}>
+                              {cell.render("Cell")}
+                            </TableCell>
+                          )
+                        })}
+                      </TableRow>
+                    )
+                  })}
+              </TableBody>
+            </Table>
+          </TableContainer>
+          <br />
+          {selectedRows &&
+              selectedRows.map(row => {
+                return (
+                  <Toast className="toast-primary" key={row.firstName}>
+                    Successfully selected {row.firstName}, Age - {row.age},
+                    Visits - {row.visits}, Status - {row.status} !!
+                  </Toast>
+                )
+              })}
+          </>
+        )}
+      </DataTable>
+  );
+}
+
+render(<Example />);`

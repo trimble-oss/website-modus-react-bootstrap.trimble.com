@@ -8,6 +8,7 @@ import {
   Pagination,
   Button,
   Toast,
+  Form,
 } from "@trimbleinc/modus-react-bootstrap"
 import {
   TableHead,
@@ -29,8 +30,33 @@ import CodeBlock from "../common/CodeBlock"
 import { MakeData as makeData } from "../examples/components/Table"
 
 const ReactTableContainer = props => {
+  const IndeterminateCheckbox = React.forwardRef(
+    ({ indeterminate, ...rest }, ref) => {
+      const defaultRef = React.useRef()
+      const resolvedRef = ref || defaultRef
+
+      React.useEffect(() => {
+        resolvedRef.current.indeterminate = indeterminate
+      }, [resolvedRef, indeterminate])
+
+      return <input type="checkbox" ref={resolvedRef} {...rest} />
+    }
+  )
+
   const columns = React.useMemo(
     () => [
+      {
+        accessor: "selector",
+        minWidth: 45,
+        width: 45,
+        maxWidth: 45,
+        Header: ({ getToggleAllRowsSelectedProps }) => (
+          <IndeterminateCheckbox {...getToggleAllRowsSelectedProps()} />
+        ),
+        Cell: ({ row }) => (
+          <IndeterminateCheckbox {...row.getToggleRowSelectedProps()} />
+        ),
+      },
       {
         Header: "First Name",
         accessor: "firstName",
@@ -67,29 +93,14 @@ const ReactTableContainer = props => {
 
   return (
     <>
-      <DataTable
-        columns={columns}
-        data={data}
-        hasSorting
-        hasPagination
-        resizeColumns
-      >
-        {({
-          prepareRow,
-          rows,
-          gotoPage,
-          pageIndex,
-          pageSize,
-          setPageSize,
-          pageOptions,
-          selectedRows,
-        }) => (
+      <DataTable columns={columns} data={data} hasSorting checkBoxRowSelection>
+        {({ prepareRow, rows, selectedRows }) => (
           <>
             <TableContainer scrollable style={{ maxHeight: "400px" }}>
               <Table bordered hover>
                 <TableHead className="bg-gray-light sticky-top">
                   <TableRow className="bg-gray-light">
-                    {/* <TableHeaderCell accessor="selector" /> */}
+                    <TableHeaderCell accessor="selector" />
                     <TableHeaderCell
                       accessor="firstName"
                       className="bg-gray-light"
@@ -119,9 +130,6 @@ const ReactTableContainer = props => {
                     return (
                       <TableRow
                         {...row.getRowProps()}
-                        onClick={() => {
-                          row.toggleRowSelected(!row.isSelected)
-                        }}
                         className={row.isSelected && "selected"}
                       >
                         {row.cells.map(cell => {
@@ -137,22 +145,13 @@ const ReactTableContainer = props => {
                 </TableBody>
               </Table>
             </TableContainer>
-            <TablePagination
-              totalPages={pageOptions.length}
-              pageIndex={pageIndex}
-              pageSize={pageSize}
-              onPageChange={gotoPage}
-              pageSizeOptions={[10, 20, 30, 40, 50]}
-              onPageSizeChange={setPageSize}
-              className="border border-tertiary"
-            ></TablePagination>
-
+            <br />
             {selectedRows &&
               selectedRows.map(row => {
                 return (
-                  <Toast className="toast-success" key={row.firstName}>
-                    Successfully selected {row.firstName}, {row.age},
-                    {row.visits}, {row.status} !!
+                  <Toast className="toast-primary" key={row.firstName}>
+                    Successfully selected {row.firstName}, Age - {row.age},
+                    Visits - {row.visits}, Status - {row.status} !!
                   </Toast>
                 )
               })}

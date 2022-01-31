@@ -95,39 +95,41 @@ const IndeterminateCheckbox = React.forwardRef(
       resolvedRef.current.indeterminate = indeterminate
     }, [resolvedRef, indeterminate])
 
-    return (
-      <>
-        <input type="checkbox" ref={resolvedRef} {...rest} />
-      </>
-    )
+    return <input type="checkbox" ref={resolvedRef} {...rest} />
   }
 )
-
-const selectionHook = (hooks: Hooks<any>) => {
+const checkBoxColumnConfig = {
+  id: "selector",
+  disableResizing: true,
+  disableGroupBy: true,
+  minWidth: 45,
+  width: 45,
+  maxWidth: 45,
+  Cell: ({ row }: CellProps<any>) => (
+    <div>
+      <IndeterminateCheckbox {...row.getToggleRowSelectedProps()} />
+    </div>
+  ),
+}
+const selectionHookWithHeader = (hooks: Hooks<any>) => {
   hooks.visibleColumns.push(columns => [
-    // Let's make a column for selection
     {
-      id: "selector",
-      disableResizing: true,
-      disableGroupBy: true,
-      minWidth: 45,
-      width: 45,
-      maxWidth: 45,
-      // The header can use the table's getToggleAllRowsSelectedProps method
-      // to render a checkbox
-      Header: ({ getToggleAllRowsSelectedProps }: HeaderProps<any>) => (
-        <div>
-          <IndeterminateCheckbox {...getToggleAllRowsSelectedProps()} />
-        </div>
-        don't render the checkbox even if user provides onefor single row selectiion
-      ),
-      // The cell can use the individual row's getToggleRowSelectedProps method
-      // to the render a checkbox
-      Cell: ({ row }: CellProps<any>) => (
-        <div>
-          <IndeterminateCheckbox {...row.getToggleRowSelectedProps()} />
-        </div>
-      ),
+      ...checkBoxColumnConfig,
+      ...{
+        Header: ({ getToggleAllRowsSelectedProps }: HeaderProps<any>) => (
+          <div>
+            <IndeterminateCheckbox {...getToggleAllRowsSelectedProps()} />
+          </div>
+        ),
+      },
+    },
+    ...columns,
+  ])
+}
+const selectionHookWithoutHeader = (hooks: Hooks<any>) => {
+  hooks.visibleColumns.push(columns => [
+    {
+      ...checkBoxColumnConfig,
     },
     ...columns,
   ])
@@ -173,7 +175,16 @@ export function DataTable(
   if (hasPagination) hooks.push(usePagination)
   if (resizeColumns) hooks.push(useFlexLayout, useResizeColumns)
   if (!disableRowSelection) hooks.push(useRowSelect)
-  if (checkBoxRowSelection) hooks.push(selectionHook)
+  if (
+    checkBoxRowSelection &&
+    !columns.find(col => col.accessor === "selector")
+  ) {
+    hooks.push(
+      multipleRowSelection
+        ? selectionHookWithHeader
+        : selectionHookWithoutHeader
+    )
+  }
 
   // If Multi Row selection isn't enabled
   const rowStateReducer = !multipleRowSelection && {
