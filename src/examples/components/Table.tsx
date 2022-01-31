@@ -1022,7 +1022,7 @@ export const TableWithScroll = `function Example() {
   return (
     <DataTable columns={columns} data={data}>
         {({prepareRow, rows}) => (
-          <TableContainer scrollable style={{ maxHeight: "400px" }}>
+          <TableContainer scrollable style={{ maxHeight: "400px", borderBottom: "1px solid #b7b9c3" }}>
             <Table bordered hover>
               <TableHead className="bg-gray-light">
                 <TableRow className="bg-gray-light">
@@ -1114,7 +1114,7 @@ export const TableWithFixedHeader = `function Example() {
   return (
     <DataTable columns={columns} data={data}>
         {({prepareRow, rows}) => (
-          <TableContainer scrollable style={{ maxHeight: "400px" }}>
+          <TableContainer scrollable style={{ maxHeight: "400px", borderBottom: "1px solid #b7b9c3" }}>
             <Table bordered hover>
               <TableHead className="bg-gray-light sticky-top">
                 <TableRow className="bg-gray-light">
@@ -1575,7 +1575,7 @@ export const TableWithSingleRowSelection = `function Example() {
     <DataTable columns={columns} data={data}>
         {({prepareRow, rows, selectedRows}) => (
           <>
-          <TableContainer scrollable style={{ maxHeight: "400px" }}>
+          <TableContainer scrollable style={{ maxHeight: "400px", borderBottom: "1px solid #b7b9c3" }}>
             <Table bordered hover>
               <TableHead className="bg-gray-light sticky-top">
                 <TableRow className="bg-gray-light">
@@ -1683,7 +1683,7 @@ export const TableWithMultiRowSelection = `function Example() {
     <DataTable columns={columns} data={data} hasSorting multipleRowSelection>
         {({prepareRow, rows, selectedRows}) => (
           <>
-          <TableContainer scrollable style={{ maxHeight: "400px" }}>
+          <TableContainer scrollable style={{ maxHeight: "400px", borderBottom: "1px solid #b7b9c3" }}>
             <Table bordered hover>
               <TableHead className="bg-gray-light sticky-top">
                 <TableRow className="bg-gray-light">
@@ -1791,7 +1791,7 @@ export const TableWithCheckBoxSelection = `function Example() {
     <DataTable columns={columns} data={data} hasSorting checkBoxRowSelection>
         {({prepareRow, rows, selectedRows}) => (
           <>
-          <TableContainer scrollable style={{ maxHeight: "400px" }}>
+          <TableContainer scrollable style={{ maxHeight: "400px", borderBottom: "1px solid #b7b9c3" }}>
             <Table bordered hover>
               <TableHead className="bg-gray-light sticky-top">
                 <TableRow className="bg-gray-light">
@@ -1922,7 +1922,7 @@ export const TableWithCustomCheckBoxSelection = `function Example() {
     <DataTable columns={columns} data={data} hasSorting checkBoxRowSelection multipleRowSelection>
         {({prepareRow, rows, selectedRows}) => (
           <>
-          <TableContainer scrollable style={{ maxHeight: "400px" }}>
+          <TableContainer scrollable style={{ maxHeight: "400px", borderBottom: "1px solid #b7b9c3" }}>
             <Table bordered hover>
               <TableHead className="bg-gray-light sticky-top">
                 <TableRow className="bg-gray-light">

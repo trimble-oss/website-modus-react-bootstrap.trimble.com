@@ -18,7 +18,6 @@ import {
 } from "react-table"
 import { TableContext } from "./TableContext"
 import { StyledDataTable } from "./styleHelpers"
-import { FormCheck, FormCheckProps } from "@trimbleinc/modus-react-bootstrap"
 
 export type TableColumn = Column<any> &
   UseResizeColumnsColumnOptions<any> &
@@ -36,7 +35,6 @@ export interface DataTableProps
   checkBoxRowSelection?: boolean
   disableRowSelection?: boolean
   multipleRowSelection?: boolean
-  onRowSelect?: (...args: any[]) => void
   children?: (...props: any) => React.ReactNode
 }
 
@@ -79,25 +77,25 @@ const propTypes = {
    * Enables multiple row selection.
    */
   multipleRowSelection: PropTypes.bool,
-
-  /**
-   * Callback fired when a row is selected.
-   */
-  onRowSelect: PropTypes.func,
 }
 
-const IndeterminateCheckbox = React.forwardRef(
-  ({ indeterminate, ...rest }, ref) => {
-    const defaultRef = React.useRef()
-    const resolvedRef = ref || defaultRef
-
-    React.useEffect(() => {
-      resolvedRef.current.indeterminate = indeterminate
-    }, [resolvedRef, indeterminate])
-
-    return <input type="checkbox" ref={resolvedRef} {...rest} />
+const IndeterminateCheckbox = React.forwardRef<
+  HTMLInputElement,
+  {
+    indeterminate?: any
   }
-)
+>(({ indeterminate, ...props }, ref) => {
+  const defaultRef = React.useRef<HTMLInputElement>(null)
+  const resolvedRef = ref || defaultRef
+
+  React.useEffect(() => {
+    ;(
+      resolvedRef as React.MutableRefObject<HTMLInputElement>
+    ).current.indeterminate = indeterminate
+  }, [resolvedRef, indeterminate])
+
+  return <input type="checkbox" ref={resolvedRef} {...props} />
+})
 const checkBoxColumnConfig = {
   id: "selector",
   disableResizing: true,
@@ -150,7 +148,6 @@ export function DataTable(
     checkBoxRowSelection,
     multipleRowSelection,
     disableRowSelection,
-    onRowSelect,
     ref,
     ...rest
   } = props
@@ -188,7 +185,7 @@ export function DataTable(
 
   // If Multi Row selection isn't enabled
   const rowStateReducer = !multipleRowSelection && {
-    stateReducer: (newState, action, previousState) => {
+    stateReducer: (newState, action) => {
       if (action.type === "toggleRowSelected") {
         newState.selectedRowIds = action.value && {
           [action.id]: true,
@@ -210,7 +207,7 @@ export function DataTable(
     gotoPage,
     setPageSize,
     selectedFlatRows,
-    state: { pageIndex, pageSize, selectedRowIds },
+    state: { pageIndex, pageSize },
   } = useTable(
     {
       columns: normalizedColumns,

@@ -1,4 +1,4 @@
-import { MouseEventHandler } from "react"
+import { MouseEventHandler } from 'react';
 import {
   TableInstance,
   UseColumnOrderInstanceProps,
@@ -21,22 +21,22 @@ import {
   UseSortByInstanceProps,
   UseSortByOptions,
   UseSortByState,
-} from "react-table"
+} from 'react-table';
 
-declare module "react-table" {
+declare module 'react-table' {
   export interface UseFlexLayoutInstanceProps<D extends object = {}> {
-    totalColumnsMinWidth: number
+    totalColumnsMinWidth: number;
   }
 
   export interface UseFlexLayoutColumnProps<D extends object = {}> {
-    totalMinWidth: number
+    totalMinWidth: number;
   }
 
   export interface TableOptions<D extends object = {}>
     extends UsePaginationOptions<D>,
       UseResizeColumnsOptions<D>,
       UseRowSelectOptions<D>,
-      UseSortByOptions<D> {},
+      UseSortByOptions<D> {}
 
   export interface Hooks<D extends object = {}>
     extends UseRowSelectHooks<D>,
@@ -56,13 +56,13 @@ declare module "react-table" {
       UseResizeColumnsState<D>,
       UseRowSelectState<D>,
       UseSortByState<D> {
-    rowCount: number
+    rowCount: number;
   }
 
   export interface ColumnInterface<D extends object = {}>
     extends UseResizeColumnsColumnOptions<D>,
       UseSortByColumnOptions<D> {
-    align?: string
+    align?: string;
   }
 
   export interface ColumnInstance<D extends object = {}>
@@ -75,16 +75,16 @@ declare module "react-table" {
   export interface Row<D extends object = {}> extends UseRowSelectRowProps<D> {}
 
   export interface TableCommonProps {
-    title?: string
-    "aria-label"?: string
+    title?: string;
+    'aria-label'?: string;
   }
 
   export interface TableSortByToggleProps {
-    title?: string
+    title?: string;
   }
 
   export interface TableGroupByToggleProps {
-    title?: string
+    title?: string;
   }
 }
 
