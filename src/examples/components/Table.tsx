@@ -942,7 +942,7 @@ export const TableWithSorting = `function Example() {
   ]
 
   return (
-      <DataTable columns={columns} data={data} hasSorting>
+      <DataTable id="tableSorting" columns={columns} data={data} hasSorting>
         {({prepareRow, rows}) => (
           <Table bordered hover>
             <TableHead className="bg-gray-light">
@@ -1020,7 +1020,7 @@ export const TableWithScroll = `function Example() {
   const data = React.useMemo(() => makeData(100), [])
 
   return (
-    <DataTable columns={columns} data={data}>
+    <DataTable id="tableScroll" columns={columns} data={data}>
         {({prepareRow, rows}) => (
           <TableContainer scrollable style={{ maxHeight: "400px", borderBottom: "1px solid #b7b9c3" }}>
             <Table bordered hover>
@@ -1112,7 +1112,7 @@ export const TableWithFixedHeader = `function Example() {
   const data = React.useMemo(() => makeData(100), [])
 
   return (
-    <DataTable columns={columns} data={data}>
+    <DataTable id="tableFixedHeader" columns={columns} data={data}>
         {({prepareRow, rows}) => (
           <TableContainer scrollable style={{ maxHeight: "400px", borderBottom: "1px solid #b7b9c3" }}>
             <Table bordered hover>
@@ -1204,7 +1204,7 @@ export const TableWithPagination = `function Example() {
   const data = React.useMemo(() => makeData(175), [])
 
   return (
-    <DataTable columns={columns} data={data} hasSorting hasPagination>
+    <DataTable id="tablepagination" columns={columns} data={data} hasSorting hasPagination>
         {({
           prepareRow,
           rows,
@@ -1461,7 +1461,7 @@ export const TableWithColumnResize = `function Example() {
   const data = React.useMemo(() => makeData(175), [])
 
   return (
-    <DataTable columns={columns} data={data} hasSorting hasPagination resizeColumns>
+    <DataTable id="tableResize" columns={columns} data={data} hasSorting hasPagination resizeColumns>
         {({
           prepareRow,
           rows,
@@ -1572,7 +1572,7 @@ export const TableWithSingleRowSelection = `function Example() {
   const data = React.useMemo(() => makeData(100), [])
 
   return (
-    <DataTable columns={columns} data={data}>
+    <DataTable id="tableSingleRowSel" columns={columns} data={data}>
         {({prepareRow, rows, selectedRows}) => (
           <>
           <TableContainer scrollable style={{ maxHeight: "400px", borderBottom: "1px solid #b7b9c3" }}>
@@ -1680,7 +1680,7 @@ export const TableWithMultiRowSelection = `function Example() {
   const data = React.useMemo(() => makeData(100), [])
 
   return (
-    <DataTable columns={columns} data={data} hasSorting multipleRowSelection>
+    <DataTable id="tableMultiRowSel" columns={columns} data={data} hasSorting multipleRowSelection>
         {({prepareRow, rows, selectedRows}) => (
           <>
           <TableContainer scrollable style={{ maxHeight: "400px", borderBottom: "1px solid #b7b9c3" }}>
@@ -1788,14 +1788,14 @@ export const TableWithCheckBoxSelection = `function Example() {
   const data = React.useMemo(() => makeData(100), [])
 
   return (
-    <DataTable columns={columns} data={data} hasSorting checkBoxRowSelection>
+    <DataTable id="tableCbSingleRowSel" columns={columns} data={data} hasSorting checkBoxRowSelection>
         {({prepareRow, rows, selectedRows}) => (
           <>
           <TableContainer scrollable style={{ maxHeight: "400px", borderBottom: "1px solid #b7b9c3" }}>
             <Table bordered hover>
               <TableHead className="bg-gray-light sticky-top">
                 <TableRow className="bg-gray-light">
-                  <TableHeaderCell accessor="selector" />
+                  <TableHeaderCell accessor="selector" className='icon-only' />
                   <TableHeaderCell
                     accessor="firstName"
                     className="bg-gray-light"
@@ -1825,9 +1825,9 @@ export const TableWithCheckBoxSelection = `function Example() {
                     return (
                       <TableRow {...row.getRowProps()}
                         className={row.isSelected && "selected"}>
-                        {row.cells.map(cell => {
+                        {row.cells.map((cell, index) => {
                           return (
-                            <TableCell {...cell.getCellProps()}>
+                            <TableCell {...cell.getCellProps()} className={index === 0 && 'icon-only'}>
                               {cell.render("Cell")}
                             </TableCell>
                           )
@@ -1858,7 +1858,7 @@ render(<Example />);`
 
 export const TableWithCustomCheckBoxSelection = `function Example() {
   const IndeterminateCheckbox = React.forwardRef(
-    ({ indeterminate, ...rest }, ref) => {
+    ({ indeterminate,id, ...props }, ref) => {
       const defaultRef = React.useRef()
       const resolvedRef = ref || defaultRef
 
@@ -1866,7 +1866,7 @@ export const TableWithCustomCheckBoxSelection = `function Example() {
         resolvedRef.current.indeterminate = indeterminate
       }, [resolvedRef, indeterminate])
 
-      return <input type="checkbox" ref={resolvedRef} {...rest} />
+      return <Form.Check custom id={id} ref={resolvedRef} {...props} />
     }
   )
 
@@ -1874,14 +1874,13 @@ export const TableWithCustomCheckBoxSelection = `function Example() {
     () => [
       {
         accessor: "selector",
-        minWidth: 45,
-        width: 45,
-        maxWidth: 45,
         Header: ({ getToggleAllRowsSelectedProps }) => (
-          <IndeterminateCheckbox {...getToggleAllRowsSelectedProps()} />
+          <IndeterminateCheckbox id="tableCbMultiRowSel_checkbox_header"
+          {...getToggleAllRowsSelectedProps()} />
         ),
         Cell: ({ row }) => (
-          <IndeterminateCheckbox {...row.getToggleRowSelectedProps()} />
+          <IndeterminateCheckbox id={"tableCbMultiRowSel_checkbox_".concat(row.id)}
+          {...row.getToggleRowSelectedProps()} />
         ),
       },
       {
@@ -1919,14 +1918,14 @@ export const TableWithCustomCheckBoxSelection = `function Example() {
   const data = React.useMemo(() => makeData(100), [])
 
   return (
-    <DataTable columns={columns} data={data} hasSorting checkBoxRowSelection multipleRowSelection>
+    <DataTable id="tableCbMultiRowSel" columns={columns} data={data} hasSorting checkBoxRowSelection multipleRowSelection>
         {({prepareRow, rows, selectedRows}) => (
           <>
           <TableContainer scrollable style={{ maxHeight: "400px", borderBottom: "1px solid #b7b9c3" }}>
-            <Table bordered hover>
+            <Table bordered hover id="customCheckBoxTable">
               <TableHead className="bg-gray-light sticky-top">
                 <TableRow className="bg-gray-light">
-                  <TableHeaderCell accessor="selector" />
+                  <TableHeaderCell accessor="selector" className='icon-only' />
                   <TableHeaderCell
                     accessor="firstName"
                     className="bg-gray-light"
@@ -1956,9 +1955,9 @@ export const TableWithCustomCheckBoxSelection = `function Example() {
                     return (
                       <TableRow {...row.getRowProps()}
                         className={row.isSelected && "selected"}>
-                        {row.cells.map(cell => {
+                        {row.cells.map((cell,index) => {
                           return (
-                            <TableCell {...cell.getCellProps()}>
+                            <TableCell {...cell.getCellProps()} className={index === 0 && 'icon-only'}>
                               {cell.render("Cell")}
                             </TableCell>
                           )

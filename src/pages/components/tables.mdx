@@ -92,6 +92,34 @@ import Badge from "@trimbleinc/modus-react-bootstrap/Badge"
 </p>
 
 <CodeBlock
+  title="Table with Sorting"
+  scope={{
+    DataTable,
+    TableContainer,
+    TableHead,
+    TableBody,
+    TableCell,
+    TableHeaderCell,
+    TableRow,
+    Table,
+    TablePagination,
+  }}
+  code={TableWithSorting}
+  noInline={true}
+>
+  <p>
+    Use the prop <code> hasSorting </code> to enable/disable the sorting on the
+    entire <code> Table </code> and prop
+    <code> sortBy </code> can be used on the column object to control the sorting
+    at a column level.
+  </p>
+  <p>
+    A column can be sorted by clicking on the header. Repeat this action to
+    change the sorting order.
+  </p>
+</CodeBlock>
+
+<CodeBlock
   title="Table with Scroll"
   scope={{
     makeData,

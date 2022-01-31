@@ -1,4 +1,4 @@
-import * as React from "react"
+import React, { useCallback } from "react"
 import PropTypes from "prop-types"
 import {
   Column,
@@ -18,6 +18,7 @@ import {
 } from "react-table"
 import { TableContext } from "./TableContext"
 import { StyledDataTable } from "./styleHelpers"
+import { Form } from "@trimbleinc/modus-react-bootstrap"
 
 export type TableColumn = Column<any> &
   UseResizeColumnsColumnOptions<any> &
@@ -28,6 +29,7 @@ export type TableColumn = Column<any> &
 export interface DataTableProps
   extends Omit<React.HTMLProps<HTMLDivElement>, "data">,
     Omit<TableOptions<any>, "columns"> {
+  id: string
   columns: ReadonlyArray<TableColumn>
   hasSorting?: boolean
   hasPagination?: boolean
@@ -40,9 +42,15 @@ export interface DataTableProps
 
 const propTypes = {
   /**
+   * DataTable identifier.
+   */
+  id: PropTypes.array.isRequired,
+
+  /**
    * Array of header data of type TableColumn.
    */
   columns: PropTypes.array.isRequired,
+
   /**
    * Array of data to be displayed as Table Rows.
    */
@@ -82,9 +90,10 @@ const propTypes = {
 const IndeterminateCheckbox = React.forwardRef<
   HTMLInputElement,
   {
+    id: string
     indeterminate?: any
   }
->(({ indeterminate, ...props }, ref) => {
+>(({ id, indeterminate, ...props }, ref) => {
   const defaultRef = React.useRef<HTMLInputElement>(null)
   const resolvedRef = ref || defaultRef
 
@@ -94,44 +103,8 @@ const IndeterminateCheckbox = React.forwardRef<
     ).current.indeterminate = indeterminate
   }, [resolvedRef, indeterminate])
 
-  return <input type="checkbox" ref={resolvedRef} {...props} />
+  return <Form.Check custom id={id} ref={resolvedRef} {...props} />
 })
-const checkBoxColumnConfig = {
-  id: "selector",
-  disableResizing: true,
-  disableGroupBy: true,
-  minWidth: 45,
-  width: 45,
-  maxWidth: 45,
-  Cell: ({ row }: CellProps<any>) => (
-    <div>
-      <IndeterminateCheckbox {...row.getToggleRowSelectedProps()} />
-    </div>
-  ),
-}
-const selectionHookWithHeader = (hooks: Hooks<any>) => {
-  hooks.visibleColumns.push(columns => [
-    {
-      ...checkBoxColumnConfig,
-      ...{
-        Header: ({ getToggleAllRowsSelectedProps }: HeaderProps<any>) => (
-          <div>
-            <IndeterminateCheckbox {...getToggleAllRowsSelectedProps()} />
-          </div>
-        ),
-      },
-    },
-    ...columns,
-  ])
-}
-const selectionHookWithoutHeader = (hooks: Hooks<any>) => {
-  hooks.visibleColumns.push(columns => [
-    {
-      ...checkBoxColumnConfig,
-    },
-    ...columns,
-  ])
-}
 
 export function DataTable(
   props: React.PropsWithChildren<DataTableProps> & {
@@ -139,6 +112,7 @@ export function DataTable(
   }
 ): React.ReactElement {
   const {
+    id,
     columns,
     data,
     hasSorting,
@@ -166,6 +140,35 @@ export function DataTable(
     []
   )
 
+  const selectionHook = (hooks: Hooks<any>) => {
+    hooks.visibleColumns.push(columns => [
+      {
+        id: "selector",
+        disableResizing: true,
+        disableGroupBy: true,
+        Cell: ({ row }: CellProps<any>) => {
+          return (
+            <IndeterminateCheckbox
+              {...row.getToggleRowSelectedProps()}
+              id={`${id}_checkbox_"${row.id}`}
+            />
+          )
+        },
+        ...(multipleRowSelection && {
+          Header: ({ getToggleAllRowsSelectedProps }: HeaderProps<any>) => {
+            return (
+              <IndeterminateCheckbox
+                {...getToggleAllRowsSelectedProps()}
+                id={`${id}_checkbox_header`}
+              />
+            )
+          },
+        }),
+      },
+      ...columns,
+    ])
+  }
+
   // Make conditional hooks array
   const hooks: any = []
   if (hasSorting) hooks.push(useSortBy)
@@ -176,11 +179,7 @@ export function DataTable(
     checkBoxRowSelection &&
     !columns.find(col => col.accessor === "selector")
   ) {
-    hooks.push(
-      multipleRowSelection
-        ? selectionHookWithHeader
-        : selectionHookWithoutHeader
-    )
+    hooks.push(selectionHook)
   }
 
   // If Multi Row selection isn't enabled
