@@ -1,6 +1,36 @@
-import styled, { css } from "styled-components"
+/* eslint-disable import/prefer-default-export */
+import * as React from 'react';
+import styled, { css } from 'styled-components';
 
-export const StyledDataTable = styled.div`
+export interface DataTableStyleWrapperProps
+  extends React.HTMLProps<HTMLDivElement> {
+  resizecolumns?: 'true' | 'false';
+}
+export type TablePaginationStyleWrapperProps = React.HTMLProps<HTMLDivElement>;
+
+const DataTableStyleWrapper = React.forwardRef<
+  HTMLDivElement,
+  DataTableStyleWrapperProps
+>(({ children, ...props }, ref) => {
+  return (
+    <div ref={ref} {...props}>
+      {children}
+    </div>
+  );
+});
+
+const TablePaginationStyleWrapper = React.forwardRef<
+  HTMLDivElement,
+  TablePaginationStyleWrapperProps
+>(({ children, ...props }, ref) => {
+  return (
+    <div ref={ref} {...props}>
+      {children}
+    </div>
+  );
+});
+
+export const StyledDataTable = styled(DataTableStyleWrapper)`
   .table {
     :first-child {
       margin: 0;
@@ -54,8 +84,8 @@ export const StyledDataTable = styled.div`
     }
   }
 
-  ${props =>
-    props.resizeColumns &&
+  ${(props) =>
+    props.resizecolumns === 'true' &&
     css`
       table {
         :first-child {
@@ -78,4 +108,25 @@ export const StyledDataTable = styled.div`
         }
       }
     `}
-`
+`;
+
+export const StyledTablePagination = styled(TablePaginationStyleWrapper)`
+  div.container {
+    :first-child {
+      margin-bottom: 1rem;
+      padding: 0.5rem;
+
+      li.page-item.p-0 > .page-link {
+        padding: 0;
+      }
+
+      li.page-item.p-0 .nav-link {
+        padding: calc((2rem - 0.875rem) / 2) 0.75rem;
+      }
+
+      li.page-item.p-0 .nav-item .dropdown-item {
+        font-size: 0.875rem;
+      }
+    }
+  }
+`;

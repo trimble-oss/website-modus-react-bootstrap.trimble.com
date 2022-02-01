@@ -15,18 +15,12 @@ import {
   TableWithPagination,
   MakeData as makeData,
   TableWithColumnResize,
+  TableWithSingleRowSelection,
+  TableWithMultiRowSelection,
+  TableWithCheckBoxSelection,
+  TableWithCustomCheckBoxSelection,
 } from "../../examples/components/Table"
-import {
-  DataTable,
-  TableContainer,
-  TableHead,
-  TableBody,
-  TableCell,
-  TableHeaderCell,
-  TableRow,
-  Table,
-  TablePagination,
-} from "../../common/Table"
+import Badge from "@trimbleinc/modus-react-bootstrap/Badge"
 
 <Overview>
   Due to the widespread use of tables across third-party widgets like calendars
@@ -58,37 +52,40 @@ import {
   </p>
 </CodeBlock>
 
-<CodeBlock
-  title="Table with Sorting"
-  scope={{
-    DataTable,
-    TableContainer,
-    TableHead,
-    TableBody,
-    TableCell,
-    TableHeaderCell,
-    TableRow,
-    Table,
-  }}
-  code={TableWithSorting}
-  noInline={true}
->
+<LinkedHeading h="2" className="h1" id="datatable">
+  <span>
+    DataTable
+    <Badge pill variant="tertiary" className="mr-2 align-top">
+      BETA
+    </Badge>
+  </span>
+</LinkedHeading>
+<p>
   To enable advanced features like sorting, use the <code> DataTable </code>{" "}
   component along with the basic <code> Table </code> and additional components
   such as
-  <code> TableHead, TableRow, TableBody and TableCell </code>.<p>
-    The <code>DataTable</code> component needs two props:
-    <code> columns </code> and
-    <code> data</code>. The <code> data </code> prop is rendered as rows in the
-    table and the <code>columns</code> prop which takes an array of objects
-    displays table headings.
+  <code> TableHead, TableRow, TableBody and TableCell</code>.
+  <br />
+  <br />
+  <p>
+    The <code>DataTable</code> component requires two props:
+    <code> columns </code> which takes an array of header data and
+    <code> data </code> prop which takes an array of row data. The row data
+    should match the header information passed to columns prop.
     <br />
     The objects passed in the array to the <code> column </code> prop has a
     required key <code> accessor </code> which is the column identifier and and
     the <code> Header </code> key is used to set the column label, eg.
-    {`[{ Header: 'First Name', accessor: 'firstName' }]`}. Use
-    <code> sortBy </code> prop in the object to enable sorting for a specific
-    column.
+    {`[{ Header: 'First Name', accessor: 'firstName' }]`}.
+  </p>
+</p>
+
+<CodeBlock title="Table with Sorting" code={TableWithSorting} noInline={true}>
+  <p>
+    Use the prop <code> hasSorting </code> to enable/disable the sorting on the
+    entire <code> Table </code> and prop
+    <code> sortBy </code> can be used on the column object to control the sorting
+    at a column level.
   </p>
   <p>
     A column can be sorted by clicking on the header. Repeat this action to
@@ -99,35 +96,19 @@ import {
 <CodeBlock
   title="Table with Scroll"
   scope={{
-    DataTable,
-    TableContainer,
     makeData,
-    TableHead,
-    TableBody,
-    TableCell,
-    TableHeaderCell,
-    TableRow,
-    Table,
   }}
   code={TableWithScroll}
   noInline={true}
 >
-  Setting height on <code> TableContainer </code> will enable
-  vertical/horizontal scrolling.
+  Setting height & width on <code> TableContainer </code> will enable vertical &
+  horizontal scrolling.
 </CodeBlock>
 
 <CodeBlock
   title="Table with Sticky Header"
   scope={{
-    DataTable,
-    TableContainer,
     makeData,
-    TableHead,
-    TableBody,
-    TableCell,
-    TableHeaderCell,
-    TableRow,
-    Table,
   }}
   code={TableWithFixedHeader}
   noInline={true}
@@ -139,42 +120,79 @@ import {
 <CodeBlock
   title="Table with Client-side Pagination"
   scope={{
-    DataTable,
-    TableContainer,
     makeData,
-    TableHead,
-    TableBody,
-    TableCell,
-    TableHeaderCell,
-    TableRow,
-    Table,
-    TablePagination,
   }}
   code={TableWithPagination}
   noInline={true}
 >
   Use the <code> TablePagination </code> component along with{" "}
-  <code> Table </code> to display the table rows in multiple pages.
+  <code> Table </code> to display the table rows in multiple pages and set the
+  prop <code> hasPagination </code> on <code> DataTable </code> to true.
 </CodeBlock>
 
 <CodeBlock
   title="Table with Columns Resizing"
   scope={{
-    DataTable,
-    TableContainer,
     makeData,
-    TableHead,
-    TableBody,
-    TableCell,
-    TableHeaderCell,
-    TableRow,
-    Table,
-    TablePagination,
   }}
   code={TableWithColumnResize}
   noInline={true}
 >
-  Use the <code> resizeColumns </code> to resize columns by mouse cursor.
+  Set the prop <code> resizeColumns </code> to true on <code> DataTable </code>
+  to enable resizing on all the columns. For more control use
+  <code> disableResizing </code> on the columns object as shown in the example.
+</CodeBlock>
+
+<CodeBlock
+  title="Table with Single Row Selection"
+  scope={{
+    makeData,
+  }}
+  code={TableWithSingleRowSelection}
+  noInline={true}
+>
+  To be able to select a row by clicking anywhere inside it, invoke the function{" "}
+  <code>row.toggleRowSelected()</code> to toggle the row's selected state.
+</CodeBlock>
+
+<CodeBlock
+  title="Table with Multiple Row Selection"
+  scope={{
+    makeData,
+  }}
+  code={TableWithMultiRowSelection}
+  noInline={true}
+>
+  Single row selection is the default so to enable multi-row selection use the
+  prop <code> multipleRowSelection</code>. Clicking on a row selects it and
+  clicking again undo the selection.
+</CodeBlock>
+
+<CodeBlock
+  title="Table with CheckBox Row Selection"
+  scope={{
+    makeData,
+  }}
+  code={TableWithCheckBoxSelection}
+  noInline={true}
+>
+  Use prop <code> checkBoxRowSelection </code> on the
+  <code> DataTable </code> component for displaying checkbox to control row selection
+  and add a <code> TableHeaderCell </code> with <code>accessor='selector'</code>.
+</CodeBlock>
+
+<CodeBlock
+  title="Table with Custom CheckBox Row Selection"
+  scope={{
+    makeData,
+  }}
+  code={TableWithCustomCheckBoxSelection}
+  noInline={true}
+>
+  Row Selection Checkbox can be configured by using <code> Header </code> and
+  <code> Cell </code> functions in the column object that is passed to
+  <code> DataTable</code>. For single row selection, <code> Header </code>
+  function should not be used.
 </CodeBlock>
 
 <LinkedHeading h="2" className="h1" id="table-api">
