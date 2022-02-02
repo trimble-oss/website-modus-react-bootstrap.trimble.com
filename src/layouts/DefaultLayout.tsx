@@ -7,9 +7,14 @@ import { MenuContext, NavigationInfo } from "../common/MenuContext"
 import GetNavigationMenu from "../common/MenuConfiguration"
 import "../assets/css/main.scss"
 import SEO from "../seo"
+import Banner from "../common/Banner"
+import { OneTrustCookieBannerScript } from "../common/ExternalDependencyHelper"
 
 const propTypes = {
   location: PropTypes.object.isRequired,
+  banner: PropTypes.bool,
+  title: PropTypes.string,
+  subtitle: PropTypes.string,
 }
 
 function CreateMenuContext(routeInfo: string): NavigationInfo {
@@ -31,7 +36,7 @@ function CreateMenuContext(routeInfo: string): NavigationInfo {
   return { current: activeMenu, menu: parent.children, all: allMenus }
 }
 
-const DefaultLayout = ({ children, location }) => {
+const DefaultLayout = ({ children, location, title, subtitle, banner }) => {
   const context = CreateMenuContext(location.pathname)
   const navigationMenu = context.all.map(({ key, path, title }) => ({
     key,
@@ -39,14 +44,19 @@ const DefaultLayout = ({ children, location }) => {
     title,
   }))
 
+  const pageTitle = title || (context.current && context.current.title)
+  const pageSubtitle = subtitle || (context.current && context.current.subtitle)
+
   return (
     <MenuContext.Provider value={context}>
+      <OneTrustCookieBannerScript />
       <SEO
-        title={context.current ? context.current.title : null}
-        description={context.current ? context.current.subtitle : null}
+        title={pageTitle}
+        description={pageSubtitle}
         pathname={location.pathname}
       />
       <Header activePage={context.current} navigationMenu={navigationMenu} />
+      {banner && <Banner title={pageTitle} subtitle={pageSubtitle} />}
       {children}
       <Footer />
     </MenuContext.Provider>

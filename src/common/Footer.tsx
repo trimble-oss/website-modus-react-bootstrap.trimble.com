@@ -50,19 +50,47 @@ const Footer = () => {
             <ul className="list-unstyled">
               <li className="my-3 my-sm-2">
                 <a
-                  href="https://currents.google.com/u/0/communities/106752401938284014662"
-                  rel="noopener"
+                  href="https://modus.trimble.com/community/contribute/"
                   target="_blank"
+                  rel="noopener"
                   className="py-2"
                 >
-                  Community Forum
+                  Contribute
                 </a>
               </li>
               <li className="my-3 my-sm-2">
                 <a
-                  href="mailto:modus-ug+subscribe@trimble.com"
+                  href="https://modus.trimble.com/community/contact/"
+                  target="_blank"
+                  rel="noopener"
                   className="py-2"
-                  rel="nofollow"
+                >
+                  Contact Us
+                </a>
+              </li>
+              <li className="my-3 my-sm-2">
+                <a
+                  href="https://mail.google.com/chat/u/0/#chat/space/AAAAexugR1k"
+                  target="_blank"
+                  rel="noopener"
+                  className="py-2"
+                >
+                  Google Chat Space
+                </a>
+              </li>
+              <li className="my-3 my-sm-2">
+                <a
+                  href=""
+                  className="py-2"
+                  onClick={e => {
+                    window.open(
+                      "https://docs.google.com/forms/d/e/1FAIpQLSc5-PBOzJjT2Q8r5Pg7BPYzae-rz5fg5ySSBcHwfhBneUkvWg/viewform",
+                      "window",
+                      "left=20,top=20,width=500,height=660,toolbar=1,resizable=0"
+                    )
+                    e.preventDefault()
+                    return false
+                  }}
                 >
                   Subscribe
                 </a>
@@ -79,12 +107,20 @@ const Footer = () => {
           </div>
           <div className="col-12 col-sm-6 text-sm-right small">
             <a
+              href="https://www.trimble.com/en/our-commitment/responsible-business/data-privacy-and-security/data-privacy-center"
+              target="_blank"
+            >
+              {"Privacy Center - "}
+            </a>
+            <a
               href="https://www.trimble.com/en/legal/terms-and-conditions/terms-of-use"
               target="_blank"
             >
-              Terms of Use
+              {"Terms of Use - "}
             </a>
-            - Modus React Bootstrap Version: {config.modusReactBootstrapVersion}
+            <a href="/cookies/">{"Cookies - "}</a>
+            {"Modus React Bootstrap Version: "}
+            {config.modusReactBootstrapVersion}
           </div>
         </div>
       </div>

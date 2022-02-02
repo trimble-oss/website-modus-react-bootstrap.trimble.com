@@ -2,10 +2,11 @@ import * as PropTypes from "prop-types"
 import React, { useContext } from "react"
 import { MenuContext } from "./MenuContext"
 
-const Banner = () => {
-  const context = useContext(MenuContext)
-  const { title, subtitle } = context.current
-
+interface BannerProps {
+  title: string
+  subtitle?: string
+}
+const Banner: React.FunctionComponent<BannerProps> = ({ title, subtitle }) => {
   return (
     <header className="container-fluid px-0 border-bottom">
       <div className="container py-md-3">

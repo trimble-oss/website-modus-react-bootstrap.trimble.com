@@ -213,7 +213,16 @@ const HomePage = props => (
                     </p>
                   </div>
                   <a
-                    href="mailto:modus-ug+subscribe@trimble.com"
+                    href=""
+                    onClick={e => {
+                      window.open(
+                        "https://docs.google.com/forms/d/e/1FAIpQLSc5-PBOzJjT2Q8r5Pg7BPYzae-rz5fg5ySSBcHwfhBneUkvWg/viewform",
+                        "window",
+                        "left=20,top=20,width=500,height=660,toolbar=1,resizable=0"
+                      )
+                      e.preventDefault()
+                      return false
+                    }}
                     className="btn btn-primary rounded text-center"
                   >
                     Subscribe »
