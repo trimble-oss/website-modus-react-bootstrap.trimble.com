@@ -73,3 +73,7 @@ yarn-error.log
 
 # Package-lock file
 package-lock.json
+
+# SonarQube
+.scannerwork/
+sonar-project.properties

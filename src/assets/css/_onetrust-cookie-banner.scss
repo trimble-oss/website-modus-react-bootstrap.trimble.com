@@ -1,12 +1,10 @@
 /* Cookies title */
-#ot-pc-desc,
-#ot-pc-title,
-#onetrust-policy-title,
-#onetrust-policy-text {
+#onetrust-policy-title {
   color: #252a2e !important;
 }
 
 #onetrust-policy-text {
+  color: #252a2e !important;
   font-size: 14px !important;
 }
 
@@ -16,38 +14,94 @@
 #onetrust-accept-btn-handler {
   background-color: #0063a3 !important;
   border-color: #0063a3 !important;
-  padding: .1875rem 1rem;
-  font-size: .8rem !important;
+  padding: 0.4375rem 1.5rem !important;
+  font-size: 14px !important;
   font-weight: 600 !important;
-  user-select: none !important;
+  user-select: none;
 }
 
 /** 'Cookie Settings' button **/
 #onetrust-pc-btn-handler {
   color: #0063a3 !important;
   border: 1px solid #0063a3 !important;
-  font-size: .8rem !important;
+  font-size: 14px !important;
   font-weight: 600 !important;
-  // padding: .1875rem 1rem;
+  padding: 0.4375rem 1.5rem !important;
   text-decoration: none !important;
+  height: 32px;
+  user-select: none;
 }
 
-.ot-pc-footer-logo a {
-  opacity: .7;
+#optanon-cookie-policy {
+  min-height: 938px;
+}
+
+#cookie-policy-description,
+.ot-sdk-cookie-policy-group-desc,
+#optanon-cookie-policy,
+#optanon-cookie-policy h3,
+#optanon-cookie-policy h4,
+#optanon-cookie-policy > p,
+#optanon-cookie-policy > * > p,
+#optanon-cookie-policy > div {
+  color: #252a2e !important;
+}
+
+.ot-table-header {
+  position: static !important;
+  border-bottom-width: 2px !important;
+}
+
+#ot-sdk-cookie-policy-v2 table,
+.optanon-cookie-policy-subgroup-table {
+  border: 1px solid #b7b9c3;
+  border-radius: 0 !important;
+}
+
+.optanon-cookie-policy-subgroup-table tr th {
+  background-color: #f1f1f6 !important;
+  color: #252a2e !important;
+  padding-bottom: 0 !important;
+  padding-top: 1rem !important;
+  font-weight: 600 !important;
+  border-top: 1px solid #b7b9c3;
+}
+
+.ot-sdk-cookie-policy tr th {
+  background-color: #f1f1f6 !important;
+}
+
+/** prefrence center modal **/
+#ot-pc-content {
+  color: #252a2e !important;
 }
 
 .ot-pc-logo {
   opacity: 0;
 }
 
-#onetrust-pc-sdk .ot-tgl input:checked+.ot-switch .ot-switch-nob {
-  border-color: #0063a3 !important;
+.ot-category-desc,
+#ot-pc-desc {
+  color: #252a2e !important;
 }
 
-#onetrust-pc-sdk .ot-tgl input:checked+.ot-switch .ot-switch-nob:before {
-  background-color: #0063a3 !important;
+.ot-pc-footer-logo a {
+  opacity: 0.7;
 }
 
-#onetrust-pc-sdk .ot-cat-grp .ot-always-active {
+#onetrust-consent-sdk #onetrust-pc-sdk .ot-acc-grpcntr.ot-acc-txt,
+#onetrust-consent-sdk
+  #onetrust-pc-sdk
+  .ot-acc-txt
+  .ot-subgrp-tgl
+  .ot-switch.ot-toggle {
+  background-color: #f1f1f6 !important;
+}
+
+.ot-always-active {
   color: #0063a3 !important;
+}
+
+.optanon-show-settings {
+  cursor: pointer;
 }

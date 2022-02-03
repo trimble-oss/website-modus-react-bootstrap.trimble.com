@@ -7,7 +7,7 @@
  */
 
 import React from "react"
-export const onRenderBody = ({ setHeadComponents, setPostBodyComponents }) => {
+export const onRenderBody = ({ setHeadComponents }) => {
   setHeadComponents([
     <link
       key="fontsGoogleApi"
@@ -31,5 +31,4 @@ export const onRenderBody = ({ setHeadComponents, setPostBodyComponents }) => {
       src="https://polyfill.io/v3/polyfill.min.js"
     />,
   ])
-  setPostBodyComponents([])
 }
