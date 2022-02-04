@@ -49,7 +49,6 @@ const DefaultLayout = ({ children, location, title, subtitle, banner }) => {
 
   return (
     <MenuContext.Provider value={context}>
-      <OneTrustCookieBannerScript />
       <SEO
         title={pageTitle}
         description={pageSubtitle}
