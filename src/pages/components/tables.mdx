@@ -19,6 +19,7 @@ import {
   TableWithMultiRowSelection,
   TableWithCheckBoxSelection,
   TableWithCustomCheckBoxSelection,
+  TableWithStickyFirstColumn,
 } from "../../examples/components/Table"
 import Badge from "@trimbleinc/modus-react-bootstrap/Badge"
 
@@ -193,6 +194,18 @@ import Badge from "@trimbleinc/modus-react-bootstrap/Badge"
   <code> Cell </code> functions in the column object that is passed to
   <code> DataTable</code>. For single row selection, <code> Header </code>
   function should not be used.
+</CodeBlock>
+
+<CodeBlock
+  title="Table with Sticky First Column"
+  scope={{
+    makeData,
+  }}
+  code={TableWithStickyFirstColumn}
+  noInline={true}
+>
+  Use the custom class <code> table-sticky-first-column </code> on{" "}
+  <code> Table </code> component to make first column fixed.
 </CodeBlock>
 
 <LinkedHeading h="2" className="h1" id="table-api">

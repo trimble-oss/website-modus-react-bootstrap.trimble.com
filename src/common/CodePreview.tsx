@@ -4,6 +4,17 @@ import { Container } from "@trimbleinc/modus-react-bootstrap"
 import React, { useContext, useEffect, useRef, useState } from "react"
 import * as ReactBootstrap from "@trimbleinc/modus-react-bootstrap"
 import ReactDOM from "react-dom"
+import {
+  TableHead,
+  TableBody,
+  TableCell,
+  TableHeaderCell,
+  TableRow,
+  Table,
+  TableContainer,
+  TablePagination,
+  DataTable,
+} from "../common/Table"
 
 const CodePreview = props => {
   const scope = {
@@ -14,6 +25,15 @@ const CodePreview = props => {
     ...ReactBootstrap,
     ReactDOM,
     ...props.scope,
+    TableHead,
+    TableBody,
+    TableCell,
+    TableHeaderCell,
+    TableRow,
+    Table,
+    TableContainer,
+    TablePagination,
+    DataTable,
   }
 
   return (
