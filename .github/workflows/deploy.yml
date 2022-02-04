@@ -6,7 +6,7 @@ on:
     # The branches below must be a subset of the branches above
     branches: [main]
 jobs:
-  deploy-storybook:
+  build and deploy:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -17,13 +17,25 @@ jobs:
         with:
           node-version: "14.x"
 
-      - name: Full Build
-        run: npm run build
+      - name: Generate package-lock.json
+        run: npm install
+
+      - name: Clean Install Project Dependencies
+        run: npm ci
+
+      - name: Install Gatsby CLI
+        run: npm install -g gatsby-cli@4.6.1
+
+      - name: Build
+        run: gatsby build
+
+      - name: Verify build
+        run: ls -la public
 
       - name: Deploy to Netlify
         uses: netlify/actions/cli@master
         with:
-          args: deploy --dir=public --prod
+          args: deploy --dir=public
         env:
           NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
