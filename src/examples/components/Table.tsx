@@ -1017,7 +1017,7 @@ export const TableWithScroll = `function Example() {
     []
   )
 
-  const data = React.useMemo(() => makeData(100), [])
+  const data = React.useMemo(() => makeData(30), [])
 
   return (
     <DataTable id="tableScroll" columns={columns} data={data}>
@@ -1109,7 +1109,7 @@ export const TableWithFixedHeader = `function Example() {
     []
   )
 
-  const data = React.useMemo(() => makeData(100), [])
+  const data = React.useMemo(() => makeData(30), [])
 
   return (
     <DataTable id="tableFixedHeader" columns={columns} data={data}>
@@ -1458,7 +1458,7 @@ export const TableWithColumnResize = `function Example() {
     []
   )
 
-  const data = React.useMemo(() => makeData(175), [])
+  const data = React.useMemo(() => makeData(20), [])
 
   return (
     <DataTable id="tableResize" columns={columns} data={data} hasSorting hasPagination resizeColumns>
@@ -1569,7 +1569,7 @@ export const TableWithSingleRowSelection = `function Example() {
     []
   )
 
-  const data = React.useMemo(() => makeData(100), [])
+  const data = React.useMemo(() => makeData(20), [])
 
   return (
     <DataTable id="tableSingleRowSel" columns={columns} data={data}>
@@ -1677,7 +1677,7 @@ export const TableWithMultiRowSelection = `function Example() {
     []
   )
 
-  const data = React.useMemo(() => makeData(100), [])
+  const data = React.useMemo(() => makeData(20), [])
 
   return (
     <DataTable id="tableMultiRowSel" columns={columns} data={data} hasSorting multipleRowSelection>
@@ -1785,7 +1785,7 @@ export const TableWithCheckBoxSelection = `function Example() {
     []
   )
 
-  const data = React.useMemo(() => makeData(100), [])
+  const data = React.useMemo(() => makeData(20), [])
 
   return (
     <DataTable id="tableCbSingleRowSel" columns={columns} data={data} hasSorting checkBoxRowSelection>
@@ -1915,7 +1915,7 @@ export const TableWithCustomCheckBoxSelection = `function Example() {
     []
   )
 
-  const data = React.useMemo(() => makeData(100), [])
+  const data = React.useMemo(() => makeData(20), [])
 
   return (
     <DataTable id="tableCbMultiRowSel" columns={columns} data={data} hasSorting checkBoxRowSelection multipleRowSelection>
@@ -1978,6 +1978,123 @@ export const TableWithCustomCheckBoxSelection = `function Example() {
                   </Toast>
                 )
               })}
+          </>
+        )}
+      </DataTable>
+  );
+}
+
+render(<Example />);`
+
+export const TableWithStickyFirstColumn = `function Example() {
+  const columns = React.useMemo(
+    () => [
+      {
+        Header: "First Name",
+        accessor: "firstName",
+        sortBy: true,
+      },
+      {
+        Header: "Last Name",
+        accessor: "lastName",
+        sortBy: true,
+      },
+      {
+        Header: "Age",
+        accessor: "age",
+        sortBy: true,
+      },
+      {
+        Header: "Visits",
+        accessor: "visits",
+      },
+      {
+        Header: "Status",
+        accessor: "status",
+      },
+      {
+        Header: "Profile Progress",
+        accessor: "progress",
+      },
+    ],
+    []
+  )
+
+  const data = React.useMemo(() => makeData(20), [])
+
+  return (
+      <DataTable
+        id="test"
+        columns={columns}
+        data={data}
+        hasSorting
+        hasPagination
+        resizeColumns
+      >
+        {({
+          prepareRow,
+          rows,
+          gotoPage,
+          pageIndex,
+          pageSize,
+          setPageSize,
+          pageOptions,
+        }) => (
+          <>
+            <TableContainer scrollable style={{ maxHeight: "400px" }}>
+              <Table bordered hover className="table-sticky-first-column">
+                <TableHead className="bg-gray-light sticky-top">
+                  <TableRow className="bg-gray-light">
+                    <TableHeaderCell
+                      accessor="firstName"
+                      className="bg-gray-light"
+                    />
+                    <TableHeaderCell
+                      accessor="lastName"
+                      className="bg-gray-light"
+                    />
+                    <TableHeaderCell accessor="age" className="bg-gray-light" />
+                    <TableHeaderCell
+                      accessor="visits"
+                      className="bg-gray-light"
+                    />
+                    <TableHeaderCell
+                      accessor="status"
+                      className="bg-gray-light"
+                    />
+                    <TableHeaderCell
+                      accessor="progress"
+                      className="bg-gray-light"
+                    />
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {rows.map((row, i) => {
+                    prepareRow(row)
+                    return (
+                      <TableRow {...row.getRowProps()}>
+                        {row.cells.map(cell => {
+                          return (
+                            <TableCell {...cell.getCellProps()}>
+                              {cell.render("Cell")}
+                            </TableCell>
+                          )
+                        })}
+                      </TableRow>
+                    )
+                  })}
+                </TableBody>
+              </Table>
+            </TableContainer>
+            <TablePagination
+              totalPages={pageOptions.length}
+              pageIndex={pageIndex}
+              pageSize={pageSize}
+              onPageChange={gotoPage}
+              pageSizeOptions={[10, 20, 30, 40, 50]}
+              onPageSizeChange={setPageSize}
+              className="border border-tertiary"
+            ></TablePagination>
           </>
         )}
       </DataTable>
