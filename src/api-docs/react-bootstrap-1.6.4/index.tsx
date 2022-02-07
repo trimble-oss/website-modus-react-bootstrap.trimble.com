@@ -194,7 +194,7 @@ export type { TableProps } from './Table';
 export { default as DataTable } from './DataTable';
 export type { DataTableProps } from './DataTable';
 
-export type { TableColumn } from './types';
+export { TableColumn } from './DataTable';
 
 export { default as TableHead } from './TableHead';
 export type { TableHeadProps } from './TableHead';
