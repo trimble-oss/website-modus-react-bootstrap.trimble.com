@@ -51,7 +51,7 @@ export type ContextMenuState = {
   items: ContextMenuItem[]
 }
 export type ContextMenuItem = {
-  title: string
+  title: React.ReactNode
   onClick?: (...args: any) => void
   children?: ContextMenuItem[]
 }

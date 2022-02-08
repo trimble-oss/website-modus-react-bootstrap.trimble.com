@@ -237,7 +237,21 @@ export function DataTable(
           },
           {
             title: "Show Columns",
-            children: [{ title: "Show" }],
+            children: allColumns.map(column => {
+              return {
+                title: (
+                  <Form.Check
+                    label={column.render("Header")}
+                    custom
+                    id={column.id}
+                    data-indeterminate="false"
+                    defaultChecked
+                    {...(!column.isVisible && { checked: false })}
+                    onClick={() => column.toggleHidden()}
+                  ></Form.Check>
+                ),
+              }
+            }),
           },
           {
             title: "Show All Columns",

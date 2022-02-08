@@ -29,6 +29,10 @@ const ContextMenu: React.FunctionComponent<ContextMenuProps> = ({
     [onClose]
   )
 
+  const handleToggle = useCallback((isOpen, e) => {
+    if (isOpen) e.preventDefault()
+  }, [])
+
   useEffect(() => {
     if (!(typeof window === "undefined" || !window.document)) {
       window.document.addEventListener("mousedown", handleClickOutside)
@@ -58,15 +62,17 @@ const ContextMenu: React.FunctionComponent<ContextMenuProps> = ({
             </Dropdown.Toggle>
 
             <Dropdown.Menu>
-              {item.children.map((childItem, childIndex) => (
-                <Dropdown.Item
-                  as="li"
-                  key={`child_list_item_${childIndex}`}
-                  onClick={childItem.onClick}
-                >
-                  {childItem.title}
-                </Dropdown.Item>
-              ))}
+              <ul className="list-group">
+                {item.children.map((childItem, childIndex) => (
+                  <li
+                    className="list-group-item"
+                    key={`child_list_item_${childIndex}`}
+                    onClick={childItem.onClick}
+                  >
+                    {childItem.title}
+                  </li>
+                ))}
+              </ul>
             </Dropdown.Menu>
           </Dropdown>
         ) : (

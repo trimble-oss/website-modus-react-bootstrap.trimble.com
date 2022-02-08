@@ -183,4 +183,8 @@ export const StyledContextMenu = styled.div`
   position: absolute;
   z-index: 9999;
   min-width: 150px;
+
+  .list-group-item + .dropdown-menu {
+    padding: 0;
+  }
 `
