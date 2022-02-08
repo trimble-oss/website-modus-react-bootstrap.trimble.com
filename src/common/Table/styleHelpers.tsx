@@ -163,6 +163,10 @@ export const StyledTable = styled.table`
         position: sticky !important;
         background-color: #fff;
       }
+
+      tbody tr:hover {
+        background-color: #dcedf9 !important;
+      }
     `}
 
   ${props =>
@@ -174,4 +178,18 @@ export const StyledTable = styled.table`
         border-right-width: 2px !important;
       }
     `}
+`
+export const StyledContextMenu = styled.div`
+  font-size: 14px;
+  background-color: #fff;
+  border-radius: 2px;
+  padding: 5px 0 5px 0;
+  width: 150px;
+  height: auto;
+  margin: 0;
+  position: absolute;
+  list-style: none;
+  box-shadow: 0 0 20px 0 #ccc;
+  opacity: 1;
+  transition: opacity 0.5s linear;
 `

@@ -88,6 +88,7 @@ type MorePagesDropdownProps = {
   pages: number[]
   onPageSelection: (...args: any[]) => void
 }
+
 const MorePagesDropdown: React.FunctionComponent<MorePagesDropdownProps> = ({
   pages,
   onPageSelection,
