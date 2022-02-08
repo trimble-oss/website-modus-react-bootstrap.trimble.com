@@ -148,9 +148,11 @@ const TablePagination = React.forwardRef<HTMLDivElement, TablePaginationProps>(
     const handlePreviousPage = useCallback(() => {
       onPageChange(pageIndex - 1)
     }, [pageIndex])
+
     const handleNextPage = useCallback(() => {
       onPageChange(pageIndex + 1)
     }, [pageIndex])
+
     const handleGotoPage = useCallback(page => {
       onPageChange(page - 1)
     }, [])

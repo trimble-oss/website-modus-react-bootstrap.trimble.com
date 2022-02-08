@@ -17,8 +17,8 @@ import { TableContext } from "./TableContext"
 import { StyledDataTable } from "./styleHelpers"
 // import Form from './Form';
 import Form from "@trimbleinc/modus-react-bootstrap/Form"
-import { ContextMenu, TableColumn } from "./types"
-import ContextMenuPopUp from "./ContextMenu"
+import { ContextMenuState, ContextMenuItem, TableColumn } from "./types"
+import ContextMenu from "./ContextMenu"
 
 export interface DataTableProps
   extends Omit<React.HTMLProps<HTMLDivElement>, "data">,
@@ -215,58 +215,49 @@ export function DataTable(
     ...hooks
   )
 
-  const [contextMenu, setContextMenu] = useState([])
-  const [contextPosX, setContextPosX] = useState(0)
-  const [contextPosY, setContextPosY] = useState(0)
+  const [contextMenu, setContextMenu] = useState<ContextMenuState>(null)
   const [showContextMenu, setShowContextMenu] = useState(false)
-  const contextMenuRef = useRef(null)
   const containerRef = useRef<HTMLDivElement>(null)
 
-  const handleHeaderContextMenu = useCallback((columnId: string, event) => {
-    const contextMenu: ContextMenu[] = [
-      {
-        title: "Hide",
-        onClick: () => {
-          toggleHideColumn(columnId, true)
-        },
-      },
-      {
-        title: "Show Columns",
-        onClick: () => {
-          toggleHideAllColumns(false)
-        },
-      },
-    ]
+  const handleHeaderContextMenu = useCallback(
+    (columnId: string, event) => {
+      if (!containerRef.current) return
 
-    let x = 0,
-      y = 0
-    if (containerRef.current) {
       const rect = containerRef.current.getBoundingClientRect()
-      x = event.clientX - rect.left
-      y = event.clientY - rect.top
-    }
-
-    setContextMenu(contextMenu)
-    setShowContextMenu(true)
-    setContextPosX(x)
-    setContextPosY(y)
-
-    if (!(typeof window === "undefined" || !window.document)) {
-      window.document.addEventListener("mousedown", handleClickOutside)
-    }
-  }, [])
-
-  const handleClickOutside = useCallback(
-    e => {
-      if (
-        contextMenuRef.current &&
-        !contextMenuRef.current.contains(e.target)
-      ) {
-        if (!(typeof window === "undefined" || !window.document)) {
-          window.document.removeEventListener("mousedown", handleClickOutside)
-        }
-        setShowContextMenu(false)
+      const contextMenu: ContextMenuState = {
+        positionX: event.clientX - rect.left,
+        positionY: event.clientY - rect.top + 100,
+        items: [
+          {
+            title: "Hide",
+            onClick: () => {
+              toggleHideColumn(columnId, true)
+              setShowContextMenu(false)
+            },
+          },
+          {
+            title: "Show Columns",
+            children: [{ title: "Show" }],
+          },
+          {
+            title: "Show All Columns",
+            onClick: () => {
+              toggleHideAllColumns(false)
+              setShowContextMenu(false)
+            },
+          },
+        ] as ContextMenuItem[],
       }
+
+      setContextMenu(contextMenu)
+      setShowContextMenu(true)
+    },
+    [toggleHideColumn, toggleHideAllColumns]
+  )
+
+  const handleContextMenuClose = useCallback(
+    e => {
+      setShowContextMenu(false)
     },
     [setShowContextMenu]
   )
@@ -275,42 +266,45 @@ export function DataTable(
   // Params passed in the children are constructed dynamically decided by the hooks passed to useTable
   // Find a way to create type definition
   return (
-    <TableContext.Provider
-      value={{
-        getTableProps,
-        headerGroups,
-        onHeaderContextMenu: handleHeaderContextMenu,
-      }}
-    >
-      <StyledDataTable
-        resizecolumns={(resizeColumns && "true") || "false"}
-        ref={containerRef}
+    <>
+      <TableContext.Provider
+        value={{
+          getTableProps,
+          headerGroups,
+          onHeaderContextMenu: handleHeaderContextMenu,
+        }}
       >
-        <div {...rest} ref={ref}>
-          {children &&
-            children({
-              headerGroups,
-              rows: hasPagination ? page : rows,
-              prepareRow,
-              gotoPage,
-              pageIndex,
-              pageOptions,
-              pageSize,
-              setPageSize,
-              selectedRows:
-                selectedFlatRows && selectedFlatRows.map(d => d.original),
-            })}
-        </div>
-        {showContextMenu && (
-          <ContextMenuPopUp
-            ref={contextMenuRef}
-            menu={contextMenu}
-            anchorPointX={contextPosX}
-            anchorPointY={contextPosY}
-          />
-        )}
-      </StyledDataTable>
-    </TableContext.Provider>
+        <StyledDataTable
+          resizecolumns={(resizeColumns && "true") || "false"}
+          ref={containerRef}
+        >
+          <div {...rest} ref={ref}>
+            {children &&
+              children({
+                headerGroups,
+                rows: hasPagination ? page : rows,
+                prepareRow,
+                gotoPage,
+                pageIndex,
+                pageOptions,
+                pageSize,
+                setPageSize,
+                selectedRows:
+                  selectedFlatRows && selectedFlatRows.map(d => d.original),
+              })}
+          </div>
+        </StyledDataTable>
+      </TableContext.Provider>
+
+      {showContextMenu && (
+        <ContextMenu
+          menu={contextMenu.items}
+          anchorPointX={contextMenu.positionX}
+          anchorPointY={contextMenu.positionY}
+          onClose={handleContextMenuClose}
+        />
+      )}
+    </>
   )
 }
 

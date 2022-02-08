@@ -4,8 +4,6 @@ import merge from "lodash/merge"
 import PropTypes from "prop-types"
 import classNames from "classnames"
 import { TableContext, TableHeadersContext } from "./TableContext"
-import { ContextMenu } from "./types"
-import ContextMenuPopUp from "./ContextMenu"
 
 export interface TableHeaderCellProps
   extends React.HTMLProps<HTMLTableCellElement> {
@@ -68,34 +66,16 @@ const TableHeaderCell = React.forwardRef<
   const headersContext = useContext(TableHeadersContext)
   const tableContext = useContext(TableContext)
 
-  // context menu variables
-  // const [contextMenu, setContextMenu] = useState([])
-  // const [contextMenuPositionX, setContextMenuPositionX] = useState(0)
-  // const [contextMenuPositionY, setContextMenuPositionY] = useState(0)
-
   // handle right-click
   const handleContextMenuClick = useCallback(event => {
     event.preventDefault()
-    // setContextMenu(tableContext.getContextMenu(accessor))
-
-    debugger
-    const rect = event.target.getBoundingClientRect()
-    const x = event.clientX - rect.left
-    const y = event.clientY - rect.top
-
-    // setContextMenuPositionX(x)
-    // setContextMenuPositionY(y)
-
-    //  top: window.scrollY + e.nativeEvent.clientY,
-    // left: e.nativeEvent.clientX,
-
     tableContext.onHeaderContextMenu(accessor, event)
   }, [])
 
   // if header context is present render with header props
   if (headersContext && accessor) {
     const header = headersContext && headersContext.find(h => h.id === accessor)
-    if (!header) return
+    if (!header) return <></>
 
     const headerProps = merge(
       header.getHeaderProps(
@@ -150,14 +130,6 @@ const TableHeaderCell = React.forwardRef<
         {header.getResizerProps && (
           <div {...header.getResizerProps()} className="table-col-resizable" />
         )}
-
-        {/* {contextMenu.length > 0 && (
-          <ContextMenuPopUp
-            menu={contextMenu}
-            anchorPointX={contextMenuPositionX}
-            anchorPointY={contextMenuPositionY}
-          />
-        )} */}
       </th>
     )
   }

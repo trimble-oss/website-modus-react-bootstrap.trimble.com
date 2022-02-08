@@ -1,78 +1,86 @@
+import { Dropdown, OverlayTrigger } from "@trimbleinc/modus-react-bootstrap"
 import React, { useCallback, useEffect } from "react"
-import PropTypes from "prop-types"
-import useContextMenu from "./useContextMenu"
-import useEventCallback from "@restart/hooks/useEventCallback"
-import { Overlay } from "@trimbleinc/modus-react-bootstrap"
-import { ContextMenu } from "./types"
+import { StyledContextMenu } from "./styleHelpers"
+import { ContextMenuItem } from "./types"
 
 interface ContextMenuProps extends React.HTMLProps<HTMLUListElement> {
-  menu: ContextMenu[]
+  menu: ContextMenuItem[]
   anchorPointX: string | number
   anchorPointY: string | number
+  onClose: (...args: any[]) => void
 }
-// const propTypes = {
-//   /**
-//    * List of options to display in the context menu pop-up
-//    */
-//   options: PropTypes.arrayOf(PropTypes.string),
-// }
 
-const ContextMenuPopUp = React.forwardRef<HTMLUListElement, ContextMenuProps>(
-  ({ menu, anchorPointX, anchorPointY, className, ...props }, ref) => {
-    // const listRef = React.useRef(null)
-    // const [show, setShow] = React.useState(true)
+const ContextMenu: React.FunctionComponent<ContextMenuProps> = ({
+  menu,
+  anchorPointX,
+  anchorPointY,
+  className,
+  onClose,
+  ...props
+}) => {
+  const ref = React.useRef(null)
 
-    // const handleClickOutside = useCallback(
-    //   e => {
-    //     if (listRef.current && !listRef.current.contains(e.target)) {
-    //       if (!(typeof window === "undefined" || !window.document)) {
-    //         window.document.removeEventListener("mousedown", handleClickOutside)
-    //       }
-    //       setShow(false)
-    //     }
-    //   },
-    //   [show]
-    // )
+  const handleClickOutside = useCallback(
+    e => {
+      if (ref.current && !ref.current.contains(e.target)) {
+        onClose(e)
+      }
+    },
+    [onClose]
+  )
 
-    //https://www.gatsbyjs.com/docs/using-client-side-only-packages/
-    //Gatsby is a server side rendering framework, some apis, like window and document are not present during the build process,
-    //so needed some additional checks
+  useEffect(() => {
+    if (!(typeof window === "undefined" || !window.document)) {
+      window.document.addEventListener("mousedown", handleClickOutside)
+    }
+    return () => {
+      if (!(typeof window === "undefined" || !window.document)) {
+        window.document.removeEventListener("mousedown", handleClickOutside)
+      }
+    }
+  }, [])
 
-    // useEffect(() => {
-    //   debugger
-    //   if (!(typeof window === "undefined" || !window.document)) {
-    //     window.document.addEventListener("mousedown", handleClickOutside)
-    //   }
-    //   return () => {
-    //     debugger
-    //     if (!(typeof window === "undefined" || !window.document)) {
-    //       window.document.removeEventListener("mousedown", handleClickOutside)
-    //     }
-    //   }
-    // }, [])
+  return (
+    <StyledContextMenu
+      className="list-group"
+      {...props}
+      ref={ref}
+      style={{
+        top: anchorPointY,
+        left: anchorPointX,
+      }}
+    >
+      {menu.map((item, index) => {
+        return item.children ? (
+          <Dropdown id={`list_item_${index}`} drop="right">
+            <Dropdown.Toggle as="li" className="list-group-item">
+              <span style={{ marginRight: "10%" }}>{item.title}</span>
+            </Dropdown.Toggle>
 
-    return (
-      <ul
-        className="list-group"
-        {...props}
-        ref={ref}
-        style={{
-          top: anchorPointY,
-          left: anchorPointX,
-          position: "absolute",
-          zIndex: 9999,
-        }}
-      >
-        {menu.map((item, index) => (
-          <li className="list-group-item" key={index} onClick={item.onClick}>
+            <Dropdown.Menu>
+              {item.children.map((childItem, childIndex) => (
+                <Dropdown.Item
+                  as="li"
+                  key={`child_list_item_${childIndex}`}
+                  onClick={childItem.onClick}
+                >
+                  {childItem.title}
+                </Dropdown.Item>
+              ))}
+            </Dropdown.Menu>
+          </Dropdown>
+        ) : (
+          <li
+            className="list-group-item"
+            key={`list_item_${index}`}
+            onClick={item.onClick}
+          >
             {item.title}
           </li>
-        ))}
-      </ul>
-    )
-  }
-)
+        )
+      })}
+    </StyledContextMenu>
+  )
+}
 
-// ContextMenu.defaultProps = propTypes
-
-export default ContextMenuPopUp
+export default ContextMenu

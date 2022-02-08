@@ -180,16 +180,7 @@ export const StyledTable = styled.table`
     `}
 `
 export const StyledContextMenu = styled.div`
-  font-size: 14px;
-  background-color: #fff;
-  border-radius: 2px;
-  padding: 5px 0 5px 0;
-  width: 150px;
-  height: auto;
-  margin: 0;
   position: absolute;
-  list-style: none;
-  box-shadow: 0 0 20px 0 #ccc;
-  opacity: 1;
-  transition: opacity 0.5s linear;
+  z-index: 9999;
+  min-width: 150px;
 `

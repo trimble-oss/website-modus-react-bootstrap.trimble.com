@@ -45,8 +45,13 @@ export type TableColumn = Column<any> &
     sortBy?: boolean
   }
 
-export type ContextMenu = {
+export type ContextMenuState = {
+  positionX: string | number
+  positionY: string | number
+  items: ContextMenuItem[]
+}
+export type ContextMenuItem = {
   title: string
   onClick?: (...args: any) => void
-  children?: ContextMenu[]
+  children?: ContextMenuItem[]
 }
