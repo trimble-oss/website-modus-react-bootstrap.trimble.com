@@ -2042,7 +2042,7 @@ export const TableWithStickyFirstColumn = `function Example() {
         }) => (
           <>
             <TableContainer scrollable style={{ maxHeight: "400px" }}>
-              <Table bordered hover className="table-sticky-first-column">
+              <Table bordered className="table-sticky-first-column">
                 <TableHead className="bg-gray-light sticky-top">
                   <TableRow className="bg-gray-light">
                     <TableHeaderCell
