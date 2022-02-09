@@ -38,7 +38,7 @@ const propTypes = {
   /**
    * DataTable identifier.
    */
-  id: PropTypes.array.isRequired,
+  id: PropTypes.string.isRequired,
 
   /**
    * Array of header data of type TableColumn.
@@ -138,6 +138,7 @@ export function DataTable(
     hooks.visibleColumns.push(columns => [
       {
         id: "selector",
+        width: 30,
         disableResizing: true,
         disableGroupBy: true,
         Cell: ({ row }: CellProps<any>) => {
@@ -164,10 +165,10 @@ export function DataTable(
   }
 
   // Make conditional hooks array
-  const hooks: any = []
+  const hooks: any = [useFlexLayout]
   if (hasSorting) hooks.push(useSortBy)
   if (hasPagination) hooks.push(usePagination)
-  if (resizeColumns) hooks.push(useFlexLayout, useResizeColumns)
+  if (resizeColumns) hooks.push(useResizeColumns)
   if (!disableRowSelection) hooks.push(useRowSelect)
   if (
     checkBoxRowSelection &&
@@ -226,7 +227,7 @@ export function DataTable(
       const rect = containerRef.current.getBoundingClientRect()
       const contextMenu: ContextMenuState = {
         positionX: event.clientX - rect.left,
-        positionY: event.clientY - rect.top + 100,
+        positionY: event.clientY - rect.top,
         items: [
           {
             title: "Hide",
@@ -245,9 +246,10 @@ export function DataTable(
                     custom
                     id={column.id}
                     data-indeterminate="false"
-                    defaultChecked
-                    {...(!column.isVisible && { checked: false })}
-                    onClick={() => column.toggleHidden()}
+                    {...(column.isVisible && { defaultChecked: true })}
+                    onChange={() =>
+                      toggleHideColumn(column.id, column.isVisible)
+                    }
                   ></Form.Check>
                 ),
               }
@@ -286,12 +288,10 @@ export function DataTable(
           getTableProps,
           headerGroups,
           onHeaderContextMenu: handleHeaderContextMenu,
+          onToggleHiddenColumn: toggleHideColumn,
         }}
       >
-        <StyledDataTable
-          resizecolumns={(resizeColumns && "true") || "false"}
-          ref={containerRef}
-        >
+        <StyledDataTable ref={containerRef}>
           <div {...rest} ref={ref}>
             {children &&
               children({

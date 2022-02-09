@@ -3,21 +3,27 @@ import React, { useCallback, useEffect } from "react"
 import { StyledContextMenu } from "./styleHelpers"
 import { ContextMenuItem } from "./types"
 
-interface ContextMenuProps extends React.HTMLProps<HTMLUListElement> {
+interface ContextMenuProps extends React.HTMLProps<HTMLDivElement> {
   menu: ContextMenuItem[]
   anchorPointX: string | number
   anchorPointY: string | number
   onClose: (...args: any[]) => void
 }
 
-const ContextMenu: React.FunctionComponent<ContextMenuProps> = ({
-  menu,
-  anchorPointX,
-  anchorPointY,
-  className,
-  onClose,
-  ...props
-}) => {
+export function ContextMenu(
+  props: React.PropsWithChildren<ContextMenuProps> & {
+    ref?: React.Ref<HTMLDivElement>
+  }
+): React.ReactElement {
+  const {
+    menu,
+    anchorPointX,
+    anchorPointY,
+    className,
+    onClose,
+    children,
+    ...rest
+  } = props
   const ref = React.useRef(null)
 
   const handleClickOutside = useCallback(
@@ -47,7 +53,6 @@ const ContextMenu: React.FunctionComponent<ContextMenuProps> = ({
   return (
     <StyledContextMenu
       className="list-group"
-      {...props}
       ref={ref}
       style={{
         top: anchorPointY,

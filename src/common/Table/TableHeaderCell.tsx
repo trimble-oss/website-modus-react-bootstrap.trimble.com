@@ -72,10 +72,27 @@ const TableHeaderCell = React.forwardRef<
     tableContext.onHeaderContextMenu(accessor, event)
   }, [])
 
+  const handleShowHiddenColumn = useCallback(event => {
+    tableContext.onToggleHiddenColumn(accessor, false)
+  }, [])
+
   // if header context is present render with header props
   if (headersContext && accessor) {
     const header = headersContext && headersContext.find(h => h.id === accessor)
-    if (!header) return <></>
+
+    if (!header) {
+      return (
+        <div className="hidden-column">
+          <div
+            className="d-flex flex-row align-items-center justify-content-center"
+            onClick={handleShowHiddenColumn}
+          >
+            <i className="modus-icons triangle_left">triangle_left</i>
+            <i className="modus-icons triangle_right">triangle_right</i>
+          </div>
+        </div>
+      )
+    }
 
     const headerProps = merge(
       header.getHeaderProps(

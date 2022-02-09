@@ -988,30 +988,32 @@ export const TableWithScroll = `function Example() {
       {
         Header: "First Name",
         accessor: "firstName",
+        width: 80,
       },
       {
         Header: "Last Name",
         accessor: "lastName",
-        sortBy: true,
+        width: 80,
       },
       {
-        Header: "Age",
-        accessor: "age",
-        sortBy: true,
+        Header: 'Age',
+        accessor: 'age',
+        width: 50,
       },
       {
-        Header: "Visits",
-        accessor: "visits",
-        sortBy: true,
+        Header: 'Visits',
+        accessor: 'visits',
+        width: 50,
       },
       {
         Header: "Status",
         accessor: "status",
-        sortBy: true,
+        width: 70,
       },
       {
-        Header: "Profile Progress",
+        Header: "Profile Progress Status",
         accessor: "progress",
+        width: 70
       },
     ],
     []
@@ -1080,30 +1082,32 @@ export const TableWithFixedHeader = `function Example() {
       {
         Header: "First Name",
         accessor: "firstName",
+        width: 80,
       },
       {
         Header: "Last Name",
         accessor: "lastName",
-        sortBy: true,
+        width: 80,
       },
       {
-        Header: "Age",
-        accessor: "age",
-        sortBy: true,
+        Header: 'Age',
+        accessor: 'age',
+        width: 50,
       },
       {
-        Header: "Visits",
-        accessor: "visits",
-        sortBy: true,
+        Header: 'Visits',
+        accessor: 'visits',
+        width: 50,
       },
       {
         Header: "Status",
         accessor: "status",
-        sortBy: true,
+        width: 70,
       },
       {
-        Header: "Profile Progress",
+        Header: "Profile Progress Status",
         accessor: "progress",
+        width: 70
       },
     ],
     []
@@ -1172,30 +1176,38 @@ export const TableWithPagination = `function Example() {
       {
         Header: "First Name",
         accessor: "firstName",
+        width: 80,
+        sortBy: true,
       },
       {
         Header: "Last Name",
         accessor: "lastName",
+        width: 80,
         sortBy: true,
       },
       {
-        Header: "Age",
-        accessor: "age",
+        Header: 'Age',
+        accessor: 'age',
+        width: 50,
         sortBy: true,
       },
       {
-        Header: "Visits",
-        accessor: "visits",
+        Header: 'Visits',
+        accessor: 'visits',
+        width: 50,
         sortBy: true,
       },
       {
         Header: "Status",
         accessor: "status",
+        width: 70,
         sortBy: true,
       },
       {
-        Header: "Profile Progress",
+        Header: "Profile Progress Status",
         accessor: "progress",
+        width: 70,
+        sortBy: true,
       },
     ],
     []
@@ -1421,14 +1433,12 @@ export const TableWithColumnResize = `function Example() {
         Header: "First Name",
         accessor: "firstName",
         minWidth: 80,
-        disableResizing: true,
       },
       {
         Header: "Last Name",
         accessor: "lastName",
         sortBy: true,
         minWidth: 80,
-        disableResizing: true,
       },
       {
         Header: 'Age',
@@ -1436,12 +1446,14 @@ export const TableWithColumnResize = `function Example() {
         width: 60,
         minWidth:60,
         sortBy: true,
+        disableResizing: true,
       },
       {
         Header: 'Visits',
         accessor: 'visits',
         width: 60,
         minWidth:60,
+        disableResizing: true,
       },
       {
         Header: "Status",
@@ -1540,30 +1552,32 @@ export const TableWithSingleRowSelection = `function Example() {
       {
         Header: "First Name",
         accessor: "firstName",
+        width: 80,
       },
       {
         Header: "Last Name",
         accessor: "lastName",
-        sortBy: true,
+        width: 80,
       },
       {
-        Header: "Age",
-        accessor: "age",
-        sortBy: true,
+        Header: 'Age',
+        accessor: 'age',
+        width: 50,
       },
       {
-        Header: "Visits",
-        accessor: "visits",
-        sortBy: true,
+        Header: 'Visits',
+        accessor: 'visits',
+        width: 50,
       },
       {
         Header: "Status",
         accessor: "status",
-        sortBy: true,
+        width: 70,
       },
       {
-        Header: "Profile Progress",
+        Header: "Profile Progress Status",
         accessor: "progress",
+        width: 70
       },
     ],
     []
@@ -1648,30 +1662,32 @@ export const TableWithMultiRowSelection = `function Example() {
       {
         Header: "First Name",
         accessor: "firstName",
+        width: 80,
       },
       {
         Header: "Last Name",
         accessor: "lastName",
-        sortBy: true,
+        width: 80,
       },
       {
-        Header: "Age",
-        accessor: "age",
-        sortBy: true,
+        Header: 'Age',
+        accessor: 'age',
+        width: 50,
       },
       {
-        Header: "Visits",
-        accessor: "visits",
-        sortBy: true,
+        Header: 'Visits',
+        accessor: 'visits',
+        width: 50,
       },
       {
         Header: "Status",
         accessor: "status",
-        sortBy: true,
+        width: 70,
       },
       {
-        Header: "Profile Progress",
+        Header: "Profile Progress Status",
         accessor: "progress",
+        width: 70
       },
     ],
     []
@@ -1756,30 +1772,32 @@ export const TableWithCheckBoxSelection = `function Example() {
       {
         Header: "First Name",
         accessor: "firstName",
+        width: 80,
       },
       {
         Header: "Last Name",
         accessor: "lastName",
-        sortBy: true,
+        width: 80,
       },
       {
-        Header: "Age",
-        accessor: "age",
-        sortBy: true,
+        Header: 'Age',
+        accessor: 'age',
+        width: 50,
       },
       {
-        Header: "Visits",
-        accessor: "visits",
-        sortBy: true,
+        Header: 'Visits',
+        accessor: 'visits',
+        width: 50,
       },
       {
         Header: "Status",
         accessor: "status",
-        sortBy: true,
+        width: 70,
       },
       {
-        Header: "Profile Progress",
+        Header: "Profile Progress Status",
         accessor: "progress",
+        width: 70
       },
     ],
     []
@@ -1874,6 +1892,7 @@ export const TableWithCustomCheckBoxSelection = `function Example() {
     () => [
       {
         accessor: "selector",
+        width: 25,
         Header: ({ getToggleAllRowsSelectedProps }) => (
           <IndeterminateCheckbox id="tableCbMultiRowSel_checkbox_header"
           {...getToggleAllRowsSelectedProps()} />
@@ -1883,33 +1902,35 @@ export const TableWithCustomCheckBoxSelection = `function Example() {
           {...row.getToggleRowSelectedProps()} />
         ),
       },
-      {
+     {
         Header: "First Name",
         accessor: "firstName",
+        width: 80,
       },
       {
         Header: "Last Name",
         accessor: "lastName",
-        sortBy: true,
+        width: 80,
       },
       {
-        Header: "Age",
-        accessor: "age",
-        sortBy: true,
+        Header: 'Age',
+        accessor: 'age',
+        width: 50,
       },
       {
-        Header: "Visits",
-        accessor: "visits",
-        sortBy: true,
+        Header: 'Visits',
+        accessor: 'visits',
+        width: 50,
       },
       {
         Header: "Status",
         accessor: "status",
-        sortBy: true,
+        width: 70,
       },
       {
-        Header: "Profile Progress",
+        Header: "Profile Progress Status",
         accessor: "progress",
+        width: 70
       },
     ],
     []
@@ -1989,32 +2010,35 @@ render(<Example />);`
 export const TableWithStickyFirstColumn = `function Example() {
   const columns = React.useMemo(
     () => [
-      {
+     {
         Header: "First Name",
         accessor: "firstName",
-        sortBy: true,
+        width: 80,
       },
       {
         Header: "Last Name",
         accessor: "lastName",
-        sortBy: true,
+        width: 80,
       },
       {
-        Header: "Age",
-        accessor: "age",
-        sortBy: true,
+        Header: 'Age',
+        accessor: 'age',
+        width: 50,
       },
       {
-        Header: "Visits",
-        accessor: "visits",
+        Header: 'Visits',
+        accessor: 'visits',
+        width: 50,
       },
       {
         Header: "Status",
         accessor: "status",
+        width: 70,
       },
       {
-        Header: "Profile Progress",
+        Header: "Profile Progress Status",
         accessor: "progress",
+        width: 70
       },
     ],
     []
@@ -2042,7 +2066,7 @@ export const TableWithStickyFirstColumn = `function Example() {
         }) => (
           <>
             <TableContainer scrollable style={{ maxHeight: "400px" }}>
-              <Table bordered hover className="table-sticky-first-column">
+              <Table bordered className="table-sticky-first-column">
                 <TableHead className="bg-gray-light sticky-top">
                   <TableRow className="bg-gray-light">
                     <TableHeaderCell
