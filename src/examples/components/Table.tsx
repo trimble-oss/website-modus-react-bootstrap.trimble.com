@@ -2048,7 +2048,7 @@ export const TableWithStickyFirstColumn = `function Example() {
 
   return (
       <DataTable
-        id="test"
+        id="stickyfirstcolumn"
         columns={columns}
         data={data}
         hasSorting
