@@ -76,7 +76,7 @@ export const StyledDataTable = styled(StyledDivWrapper)`
           z-index: 9999;
           cursor: pointer;
           background-color: #b7b9c3;
-          width: 1px;
+          width: 3px;
 
           .modus-icons {
             width: 0.5rem;
@@ -84,7 +84,7 @@ export const StyledDataTable = styled(StyledDivWrapper)`
           }
 
           .modus-icons.triangle_left {
-            left: calc(-0.5rem + 2px);
+            left: calc(-0.5rem + 1px);
           }
           .modus-icons.triangle_right {
             left: calc(-0.5rem + 5px);

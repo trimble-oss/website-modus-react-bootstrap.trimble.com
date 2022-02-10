@@ -71,9 +71,9 @@ yarn-error.log
 # Local Netlify folder
 .netlify
 
-# Package-lock file
-package-lock.json
-
 # SonarQube
 .scannerwork/
 sonar-project.properties
+
+# Package-lock file
+package-lock.json
