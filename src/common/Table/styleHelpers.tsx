@@ -2,15 +2,9 @@
 import * as React from "react"
 import styled, { css } from "styled-components"
 
-export interface DataTableStyleWrapperProps
-  extends React.HTMLProps<HTMLDivElement> {
-  resizecolumns?: "true" | "false"
-}
-export type TablePaginationStyleWrapperProps = React.HTMLProps<HTMLDivElement>
-
-const DataTableStyleWrapper = React.forwardRef<
+const StyledDivWrapper = React.forwardRef<
   HTMLDivElement,
-  DataTableStyleWrapperProps
+  React.HTMLProps<HTMLDivElement>
 >(({ children, ...props }, ref) => {
   return (
     <div ref={ref} {...props}>
@@ -19,18 +13,19 @@ const DataTableStyleWrapper = React.forwardRef<
   )
 })
 
-const TablePaginationStyleWrapper = React.forwardRef<
-  HTMLDivElement,
-  TablePaginationStyleWrapperProps
->(({ children, ...props }, ref) => {
-  return (
-    <div ref={ref} {...props}>
-      {children}
-    </div>
-  )
-})
+export const StyledDataTable = styled(StyledDivWrapper)`
+  .container {
+    :first-child {
+      padding: 0;
+      width: 100%;
+    }
+  }
+  .scrollable.container {
+    :first-child {
+      overflow-y: auto;
+    }
+  }
 
-export const StyledDataTable = styled(DataTableStyleWrapper)`
   .table {
     :first-child {
       margin: 0;
@@ -71,6 +66,32 @@ export const StyledDataTable = styled(DataTableStyleWrapper)`
         cursor: ew-resize;
       }
 
+      .hidden-column {
+        position: relative;
+        width: 0;
+
+        div:first-child {
+          position: absolute;
+          height: 100%;
+          z-index: 9999;
+          cursor: pointer;
+          background-color: #b7b9c3;
+          width: 3px;
+
+          .modus-icons {
+            width: 0.5rem;
+            font-size: 1rem;
+          }
+
+          .modus-icons.triangle_left {
+            left: calc(-0.5rem + 1px);
+          }
+          .modus-icons.triangle_right {
+            left: calc(-0.5rem + 5px);
+          }
+        }
+      }
+
       tr.selected {
         background-color: #dcedf9;
       }
@@ -93,45 +114,29 @@ export const StyledDataTable = styled(DataTableStyleWrapper)`
     }
   }
 
-  .container {
+  table {
     :first-child {
-      padding: 0;
-      width: 100%;
-    }
-  }
-  .scrollable.container {
-    :first-child {
-      overflow-y: auto;
+      th,
+      td {
+        align-items: center;
+        display: flex;
+      }
     }
   }
 
-  ${props =>
-    props.resizecolumns === "true" &&
-    css`
-      table {
-        :first-child {
-          th,
-          td {
-            align-items: center;
-            display: flex;
-          }
-        }
+  table.table-bordered {
+    :first-child {
+      th,
+      td {
+        border: 0;
+        border-bottom: 1px solid #b7b9c3;
+        border-right: 1px solid #b7b9c3;
       }
-
-      table.table-bordered {
-        :first-child {
-          th,
-          td {
-            border: 0;
-            border-bottom: 1px solid #b7b9c3;
-            border-right: 1px solid #b7b9c3;
-          }
-        }
-      }
-    `}
+    }
+  }
 `
 
-export const StyledTablePagination = styled(TablePaginationStyleWrapper)`
+export const StyledTablePagination = styled(StyledDivWrapper)`
   div.container {
     :first-child {
       margin-bottom: 1rem;
@@ -163,6 +168,10 @@ export const StyledTable = styled.table`
         position: sticky !important;
         background-color: #fff;
       }
+
+      tbody tr:hover {
+        background-color: #dcedf9 !important;
+      }
     `}
 
   ${props =>
@@ -174,4 +183,22 @@ export const StyledTable = styled.table`
         border-right-width: 2px !important;
       }
     `}
+`
+
+export const StyledContextMenu = styled(StyledDivWrapper)`
+  position: absolute;
+  z-index: 9999;
+  min-width: 150px;
+  cursor: pointer;
+
+  .list-group-item + .dropdown-menu {
+    padding: 0;
+  }
+
+  span,
+  div,
+  label,
+  li {
+    font-size: 0.875rem;
+  }
 `

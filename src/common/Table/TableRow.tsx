@@ -1,10 +1,10 @@
-import * as React from 'react';
-import PropTypes from 'prop-types';
-import { useContext } from 'react';
-import { TableHeaderGroupsContext, TableHeadersContext } from './TableContext';
+import * as React from "react"
+import PropTypes from "prop-types"
+import { useContext } from "react"
+import { TableHeaderGroupsContext, TableHeadersContext } from "./TableContext"
 
 export interface TableRowProps extends React.HTMLProps<HTMLTableRowElement> {
-  headerGroupIndex?: number;
+  headerGroupIndex?: number
 }
 
 const propTypes = {
@@ -17,13 +17,13 @@ const propTypes = {
    * Position index for the header group row
    */
   headerGroupIndex: PropTypes.number,
-};
+}
 
 const TableRow = React.forwardRef<HTMLTableRowElement, TableRowProps>(
   ({ className, children, headerGroupIndex, ...props }, ref) => {
-    const headerGroupsContext = useContext(TableHeaderGroupsContext);
+    const headerGroupsContext = useContext(TableHeaderGroupsContext)
     const headerGroup =
-      headerGroupsContext && headerGroupsContext[headerGroupIndex || 0];
+      headerGroupsContext && headerGroupsContext[headerGroupIndex || 0]
 
     if (headerGroup) {
       return (
@@ -37,17 +37,17 @@ const TableRow = React.forwardRef<HTMLTableRowElement, TableRowProps>(
             {children}
           </TableHeadersContext.Provider>
         </tr>
-      );
+      )
     }
     return (
       <tr className={className} {...props} ref={ref}>
         {children}
       </tr>
-    );
-  },
-);
+    )
+  }
+)
 
-TableRow.displayName = 'TableRow';
-TableRow.propTypes = propTypes;
+TableRow.displayName = "TableRow"
+TableRow.propTypes = propTypes
 
-export default TableRow;
+export default TableRow
