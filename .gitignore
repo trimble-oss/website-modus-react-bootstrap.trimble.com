@@ -76,4 +76,3 @@ package-lock.json
 
 # SonarQube
 .scannerwork/
-sonar-project.properties
