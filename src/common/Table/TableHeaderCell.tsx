@@ -67,9 +67,9 @@ const TableHeaderCell = React.forwardRef<
   const tableContext = useContext(TableContext)
 
   // handle right-click
-  const handleContextMenuClick = useCallback(event => {
+  const handleContextMenuClick = useCallback((header, event) => {
     event.preventDefault()
-    tableContext.onHeaderContextMenu(accessor, event)
+    tableContext.onHeaderContextMenu(header, event)
   }, [])
 
   const handleShowHiddenColumn = useCallback(event => {
@@ -108,7 +108,7 @@ const TableHeaderCell = React.forwardRef<
         ref={ref}
         {...headerProps}
         {...props}
-        onContextMenu={handleContextMenuClick}
+        onContextMenu={e => handleContextMenuClick(header, e)}
       >
         <div className="d-flex" style={{ width: "100%" }}>
           <div
