@@ -1,3 +1,9 @@
+import {
+  Column,
+  UseResizeColumnsColumnOptions,
+  UseSortByColumnOptions,
+} from 'react-table';
+
 export type Variant =
   | 'primary'
   | 'secondary'
@@ -32,3 +38,9 @@ export type Color =
   | 'muted';
 
 export type EventKey = string | number;
+
+export type TableColumn = Column<any> &
+  UseResizeColumnsColumnOptions<any> &
+  UseSortByColumnOptions<any> & {
+    sortBy?: boolean;
+  };
