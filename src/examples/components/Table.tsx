@@ -1,4 +1,61 @@
-import * as React from "react"
+const range = len => {
+  const arr = []
+  for (let i = 0; i < len; i++) {
+    arr.push(i)
+  }
+  return arr
+}
+
+const names = [
+  "Mickey Mouse",
+  "Bugs Bunny",
+  "Homer Simpson",
+  "Fred Flintstone",
+  "Sponge Bob",
+  "Daffy Duck",
+  "Charlie Brown",
+  "Scooby Doo",
+  "Tom Cat",
+  "Jerry Mouse",
+  "Mighty Mouse",
+  "Wile E Coyote",
+  "Tweety Bird",
+  "Pink Panther",
+  "Road Runner",
+  "Patrick Star",
+  "Roger Rabbit",
+  "Papa Smurf",
+  "Buzz Lightyear",
+]
+const newPerson = () => {
+  const rand = Math.random()
+  const namesIndex = Math.floor(rand * (names.length - 1))
+  const firstName = names[namesIndex].split(" ")[0]
+  const lastName = names[namesIndex].split(" ")[1]
+  return {
+    firstName,
+    lastName,
+    age: Math.floor(rand * 30),
+    visits: Math.floor(rand * 100),
+    progress: Math.floor(rand * 100),
+    status:
+      rand > 0.66 ? "relationship" : rand > 0.33 ? "complicated" : "single",
+  }
+}
+
+export function MakeData(...lens) {
+  const makeDataLevel = (depth = 0) => {
+    const len = lens[depth]
+    return range(len).map(d => {
+      return {
+        ...newPerson(),
+        subRows: lens[depth + 1] ? makeDataLevel(depth + 1) : undefined,
+      }
+    })
+  }
+
+  return makeDataLevel()
+}
 
 export const TableBasic = `
 <Table>
@@ -857,65 +914,6 @@ export const TableSmall = `
   </Table>
 </div>
 `
-
-const range = len => {
-  const arr = []
-  for (let i = 0; i < len; i++) {
-    arr.push(i)
-  }
-  return arr
-}
-
-const names = [
-  "Mickey Mouse",
-  "Bugs Bunny",
-  "Homer Simpson",
-  "Fred Flintstone",
-  "Sponge Bob",
-  "Daffy Duck",
-  "Charlie Brown",
-  "Scooby Doo",
-  "Tom Cat",
-  "Jerry Mouse",
-  "Mighty Mouse",
-  "Wile E Coyote",
-  "Tweety Bird",
-  "Pink Panther",
-  "Road Runner",
-  "Patrick Star",
-  "Roger Rabbit",
-  "Papa Smurf",
-  "Buzz Lightyear",
-]
-const newPerson = () => {
-  const rand = Math.random()
-  const namesIndex = Math.floor(rand * (names.length - 1))
-  const firstName = names[namesIndex].split(" ")[0]
-  const lastName = names[namesIndex].split(" ")[1]
-  return {
-    firstName,
-    lastName,
-    age: Math.floor(rand * 30),
-    visits: Math.floor(rand * 100),
-    progress: Math.floor(rand * 100),
-    status:
-      rand > 0.66 ? "relationship" : rand > 0.33 ? "complicated" : "single",
-  }
-}
-
-export function MakeData(...lens) {
-  const makeDataLevel = (depth = 0) => {
-    const len = lens[depth]
-    return range(len).map(d => {
-      return {
-        ...newPerson(),
-        subRows: lens[depth + 1] ? makeDataLevel(depth + 1) : undefined,
-      }
-    })
-  }
-
-  return makeDataLevel()
-}
 
 export const TableWithSorting = `function Example() {
   const columns = React.useMemo(
@@ -2239,33 +2237,42 @@ export const TableWithColumnFilter = `function Example() {
       {
         Header: "First Name",
         accessor: "firstName",
+        width: 80,
         sortBy: true,
-        Filter: TextFilter,
+        Filter: TextFilter
       },
       {
         Header: "Last Name",
         accessor: "lastName",
+        width: 80,
         sortBy: true,
-        Filter: TextFilter,
+        Filter: TextFilter
       },
       {
-        Header: "Age",
-        accessor: "age",
+        Header: 'Age',
+        accessor: 'age',
+        width: 50,
         sortBy: true,
-        Filter: SliderFilter,
+        Filter: SliderFilter
       },
       {
-        Header: "Visits",
-        accessor: "visits",
+        Header: 'Visits',
+        accessor: 'visits',
+        width: 50,
+        sortBy: true,
       },
       {
         Header: "Status",
         accessor: "status",
-        Filter: SelectFilter,
+        width: 70,
+        sortBy: true,
+        Filter: SelectFilter
       },
       {
-        Header: "Profile Progress",
+        Header: "Profile Progress Status",
         accessor: "progress",
+        width: 70,
+        sortBy: true,
       },
     ],
     []
