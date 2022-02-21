@@ -11,6 +11,7 @@ module.exports = {
     url: `https://modus-react-bootstrap.trimble.com/`,
   },
   plugins: [
+    `gatsby-plugin-netlify`,
     `gatsby-plugin-sass`,
     `gatsby-plugin-react-helmet`,
     `gatsby-plugin-image`,

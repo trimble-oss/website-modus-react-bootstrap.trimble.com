@@ -232,7 +232,7 @@ const ReactTableContainer = props => {
                 <div style={{ minWidth: "170px", lineHeight: 2 }}>
                   <OverlayTrigger
                     trigger="click"
-                    placement="left"
+                    placement="bottom"
                     overlay={popover}
                   >
                     <Nav.Link eventKey="1" className="p-0">
