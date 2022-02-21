@@ -866,20 +866,40 @@ const range = len => {
   return arr
 }
 
+const names = [
+  "Mickey Mouse",
+  "Bugs Bunny",
+  "Homer Simpson",
+  "Fred Flintstone",
+  "Sponge Bob",
+  "Daffy Duck",
+  "Charlie Brown",
+  "Scooby Doo",
+  "Tom Cat",
+  "Jerry Mouse",
+  "Mighty Mouse",
+  "Wile E Coyote",
+  "Tweety Bird",
+  "Pink Panther",
+  "Road Runner",
+  "Patrick Star",
+  "Roger Rabbit",
+  "Papa Smurf",
+  "Buzz Lightyear",
+]
 const newPerson = () => {
-  const statusChance = Math.random()
+  const rand = Math.random()
+  const namesIndex = Math.floor(rand * (names.length - 1))
+  const firstName = names[namesIndex].split(" ")[0]
+  const lastName = names[namesIndex].split(" ")[1]
   return {
-    firstName: "React",
-    lastName: "Table",
-    age: Math.floor(Math.random() * 30),
-    visits: Math.floor(Math.random() * 100),
-    progress: Math.floor(Math.random() * 100),
+    firstName,
+    lastName,
+    age: Math.floor(rand * 30),
+    visits: Math.floor(rand * 100),
+    progress: Math.floor(rand * 100),
     status:
-      statusChance > 0.66
-        ? "relationship"
-        : statusChance > 0.33
-        ? "complicated"
-        : "single",
+      rand > 0.66 ? "relationship" : rand > 0.33 ? "complicated" : "single",
   }
 }
 
@@ -2326,8 +2346,8 @@ export const TableWithColumnFilter = `function Example() {
                 <div style={{ minWidth: "170px", lineHeight: 2 }}>
                   <OverlayTrigger
                     trigger="click"
-                    placement="left"
-                    overlay={popover}
+                    placement="bottom"
+                    overlay={popover} rootClose
                   >
                     <Nav.Link eventKey="1" className="p-0">
                       <i
@@ -2341,8 +2361,6 @@ export const TableWithColumnFilter = `function Example() {
                   </OverlayTrigger>
                 </div>
               </div>
-              <div className="d-flex align-content-start flex-wrap"></div>
-              <div className="d-flex justify-content-end align-items-center"></div>
               <div>
                 <TableContainer scrollable style={{ maxHeight: "400px" }}>
                   <Table bordered hover>
