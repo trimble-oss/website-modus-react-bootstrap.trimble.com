@@ -1,8 +1,9 @@
 import * as React from "react"
 import { Container, Row } from "@trimbleinc/modus-react-bootstrap"
 import DefaultLayout from "../layouts/DefaultLayout"
-import Tree from "../common/Tree/Tree"
 import { ModusIconsScripts } from "../common/ExternalDependencyHelper"
+import TreeViewItem from "../common/Tree/TreeViewItem"
+import TreeView from "../common/Tree/TreeView"
 
 const ContentTreePage = props => {
   return (
@@ -14,7 +15,12 @@ const ContentTreePage = props => {
               <div className="col-12 col-lg-6 pt-5 mt-xl-5">
                 <h1 className="text-trimble-blue mt-4 display-4 font-weight-bold text-center text-lg-left">
                   <ModusIconsScripts />
-                  <Tree />
+                  <TreeView>
+                    <TreeViewItem nodeId={1} label="Node1">
+                      <TreeViewItem nodeId={2} label="Node2"></TreeViewItem>
+                      <TreeViewItem nodeId={3} label="Node3"></TreeViewItem>
+                    </TreeViewItem>
+                  </TreeView>
                 </h1>
               </div>
             </Row>
