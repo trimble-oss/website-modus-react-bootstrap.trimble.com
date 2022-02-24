@@ -7,7 +7,7 @@ export interface TreeViewContextType {
   isExpanded: (nodeId: number) => boolean
   isSelected: (nodeId: number) => boolean
   toggleExpansion: (event: any, nodeId: number) => void
-  selectNode: (event: any, nodeId: number, multiple: boolean) => void
+  toggleSelection: (event: any, nodeId: number, multiple: boolean) => void
   multiSelect?: boolean
 }
 

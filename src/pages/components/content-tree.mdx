@@ -1,0 +1,41 @@
+---
+title: Content Tree
+description: A content tree provides users with a way to navigate nested hierarchical information using a parent-child relationship model.
+---
+
+import { graphql } from "gatsby"
+import {
+  Basic,
+  Condensed,
+  MultiSelect,
+} from "../../examples/components/ContentTree"
+import TreeViewItem from "../../common/Tree/TreeViewItem"
+import TreeView from "../../common/Tree/TreeView"
+
+<Overview>
+  A content tree provides users with a way to navigate nested hierarchical
+  information using a parent-child relationship model. It is located on the left
+  side of the screen and cannot be combined with Side Navigation or Toolbar.
+</Overview>
+
+<CodeBlock
+  title="Basic"
+  code={Basic}
+  scope={{ TreeView, TreeViewItem }}
+></CodeBlock>
+
+<CodeBlock
+  title="Condensed Tree"
+  code={Condensed}
+  scope={{ TreeView, TreeViewItem }}
+></CodeBlock>
+
+<CodeBlock
+  title="Multi Selection Tree"
+  code={MultiSelect}
+  scope={{ TreeView, TreeViewItem }}
+></CodeBlock>
+
+<LinkedHeading h="2" className="h1" id="chip-api">
+  API
+</LinkedHeading>

@@ -1,6 +1,6 @@
 import React, { Children, useContext } from "react"
 
-import styled from "styled-components"
+import styled, { css } from "styled-components"
 import last from "lodash/last"
 import PropTypes from "prop-types"
 import TreeViewContext from "./TreeViewContext"
@@ -8,21 +8,28 @@ import TreeViewItemContext from "./TreeViewItemContext"
 import classNames from "classnames"
 import { Form } from "@trimbleinc/modus-react-bootstrap"
 
-const getPaddingLeft = (level, type) => {
-  let paddingLeft = level * 20
-  if (type === "file") paddingLeft += 20
-  return paddingLeft
-}
-
 const StyledTreeNode = styled.li`
   padding: 5px 8px !important;
-  cursor: pointer;
-  padding-left: ${props =>
-    getPaddingLeft(props.level, props.type)}px !important;
+  ${props =>
+    props.multiselect != "true" &&
+    css`
+      cursor: pointer;
+    `}
+
+  padding-left: ${props => props.level * 20}px !important;
+
+  &.multiselect {
+    grid-template-columns: min-content min-content auto min-content;
+  }
 `
+const ExpandableTreeGroup = styled.div`
+  display: ${props => (props.expanded == "true" ? "block" : "none")};
+`
+
 export interface TreeViewItemProps extends React.HTMLProps<HTMLDivElement> {
   nodeId: number
   label: string
+  custom?: React.ReactElement
   collapseIcon?: React.ReactElement
   expandIcon?: React.ReactElement
 }
@@ -39,6 +46,11 @@ const propTypes = {
   label: PropTypes.string.isRequired,
 
   /**
+   * Custom Node element
+   */
+  custom: PropTypes.element,
+
+  /**
    * Collapse icon for the Tree node.
    */
   collapseIcon: PropTypes.element,
@@ -51,7 +63,16 @@ const propTypes = {
 
 const TreeViewItem = React.forwardRef<HTMLDivElement, TreeViewItemProps>(
   (
-    { className, children, nodeId, label, collapseIcon, expandIcon, ...props },
+    {
+      className,
+      children,
+      nodeId,
+      label,
+      custom,
+      collapseIcon,
+      expandIcon,
+      ...props
+    },
     ref
   ) => {
     const {
@@ -60,7 +81,7 @@ const TreeViewItem = React.forwardRef<HTMLDivElement, TreeViewItemProps>(
       isExpanded,
       isSelected,
       toggleExpansion,
-      selectNode,
+      toggleSelection,
       multiSelect,
     } = useContext(TreeViewContext)
 
@@ -71,12 +92,6 @@ const TreeViewItem = React.forwardRef<HTMLDivElement, TreeViewItemProps>(
     )
     const expanded = isExpanded ? isExpanded(nodeId) : false
     const selected = isSelected ? isSelected(nodeId) : false
-
-    const selectNodeFn = {
-      onClick: function (e) {
-        selectNode(e, nodeId, multiSelect)
-      },
-    }
 
     React.useEffect(() => {
       if (registerNode) {
@@ -94,10 +109,16 @@ const TreeViewItem = React.forwardRef<HTMLDivElement, TreeViewItemProps>(
           className={classNames(
             "list-group-item list-item-leftright-control",
             selected && "active",
+            multiSelect && "multiselect",
             className
           )}
           level={level}
-          {...(!multiSelect && selectNodeFn)}
+          multiselect={multiSelect ? "true" : "false"}
+          {...(!multiSelect && {
+            onClick: function (e) {
+              toggleSelection(e, nodeId, multiSelect)
+            },
+          })}
         >
           <i
             className="modus-icons material-icons"
@@ -105,6 +126,7 @@ const TreeViewItem = React.forwardRef<HTMLDivElement, TreeViewItemProps>(
               e.stopPropagation()
               toggleExpansion(e, nodeId)
             }}
+            style={{ cursor: "pointer" }}
           >
             {expandable
               ? expanded
@@ -115,18 +137,26 @@ const TreeViewItem = React.forwardRef<HTMLDivElement, TreeViewItemProps>(
 
           {multiSelect && (
             <Form.Check
-              {...selectNodeFn}
+              checked={selected}
               custom
               id={`checkboxselection_${nodeId}`}
+              onChange={e => {
+                e.stopPropagation()
+                toggleSelection(e, nodeId, multiSelect)
+              }}
             />
           )}
 
-          <span>{label}</span>
+          {custom || <span>{label}</span>}
         </StyledTreeNode>
 
-        {expanded && children && (
-          <TreeViewItemContext.Provider value={{ parentId, level: level + 1 }}>
-            {children}
+        {children && (
+          <TreeViewItemContext.Provider
+            value={{ parentId: nodeId, level: level + 1 }}
+          >
+            <ExpandableTreeGroup expanded={expanded ? "true" : "false"}>
+              {children}
+            </ExpandableTreeGroup>
           </TreeViewItemContext.Provider>
         )}
       </>

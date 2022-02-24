@@ -15,7 +15,7 @@ const ContentTreePage = props => {
               <div className="col-12 col-lg-6 pt-5 mt-xl-5">
                 <h1 className=" mt-4 ">
                   <ModusIconsScripts />
-                  <TreeView multiSelect>
+                  <TreeView>
                     <TreeViewItem nodeId={1} label="Node1">
                       <TreeViewItem nodeId={2} label="Node2"></TreeViewItem>
                       <TreeViewItem nodeId={3} label="Node3"></TreeViewItem>

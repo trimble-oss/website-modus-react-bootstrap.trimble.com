@@ -72,6 +72,18 @@ const TreeView = React.forwardRef<HTMLDivElement, TreeViewProps>(
     const [expanded, setExpanded] = React.useState<number[]>([])
     const [selected, setSelected] = React.useState<number[]>([])
 
+    React.useEffect(() => {
+      if (onNodeSelect) {
+        onNodeSelect(selected)
+      }
+    }, [selected])
+
+    React.useEffect(() => {
+      if (onNodeToggle) {
+        onNodeToggle(expanded)
+      }
+    }, [expanded])
+
     // Context values
     const registerNode = React.useCallback((node: TreeItem) => {
       nodes.current[node.id] = node
@@ -93,9 +105,6 @@ const TreeView = React.forwardRef<HTMLDivElement, TreeViewProps>(
         }
         return newExpanded
       })
-      if (onNodeToggle) {
-        onNodeToggle(event, newExpanded)
-      }
     }, [])
 
     const isExpanded = React.useCallback(
@@ -112,7 +121,7 @@ const TreeView = React.forwardRef<HTMLDivElement, TreeViewProps>(
       [selected]
     )
 
-    const selectNode = React.useCallback(
+    const toggleSelection = React.useCallback(
       (event: any, nodeId: number, multiple = false) => {
         if (multiple) {
           handleMultipleSelect(event, nodeId)
@@ -124,7 +133,7 @@ const TreeView = React.forwardRef<HTMLDivElement, TreeViewProps>(
     )
 
     const expandAllSiblings = (event, id) => {
-      const siblings = getAllChildIds(id)
+      const siblings = getChildren(getNodesArray(), id)
 
       const diff = siblings.filter(child => !isExpanded(child))
 
@@ -132,10 +141,6 @@ const TreeView = React.forwardRef<HTMLDivElement, TreeViewProps>(
 
       if (diff.length > 0) {
         setExpanded(newExpanded)
-
-        if (onNodeToggle) {
-          onNodeToggle(event, newExpanded)
-        }
       }
     }
 
@@ -143,50 +148,63 @@ const TreeView = React.forwardRef<HTMLDivElement, TreeViewProps>(
       let newSelected
 
       setSelected(prevState => {
+        const array = getNodesArray()
+        const siblings = getChildren(array, value)
         if (prevState.indexOf(value) !== -1) {
-          newSelected = prevState.filter(id => id !== value)
-        } else {
-          debugger
-          const children = getAllChildIds(value)
+          //filter out parents
 
-          // first remove if there is any child already in selected list
-          let filtered = prevState.filter(id => children.indexOf(id) < 0)
-          // merge with the new list
-          newSelected = filtered.concat([value], children)
+          let parents = getParents(value)
+
+          // filter out parents & children
+          let filtered = prevState.filter(
+            id =>
+              siblings.indexOf(id) < 0 &&
+              id !== value &&
+              parents.indexOf(id) < 0
+          )
+
+          newSelected = filtered
+        } else {
+          let filtered = prevState.filter(id => siblings.indexOf(id) < 0)
+          newSelected = filtered.concat([value], siblings)
         }
+
         return newSelected
       })
-
-      if (onNodeSelect) {
-        onNodeSelect(event, newSelected)
-      }
     }
 
     const handleSingleSelect = (event, value) => {
       const newSelected = [value]
 
-      setSelected(newSelected)
-      if (onNodeSelect) {
-        onNodeSelect(event, newSelected)
-      }
+      setSelected(prevState => {
+        return newSelected
+      })
     }
 
     // Helpers
-    const getAllChildIds = nodeId => {
-      const array = Object.keys(nodes.current).map(key => {
+    const getNodesArray = () =>
+      Object.keys(nodes.current).map(key => {
         return nodes.current[key]
       })
 
-      return getChildren(array, nodeId)
-    }
-
-    function getChildren(array, id) {
-      return array.reduce((r, { menuId, parentId }) => {
-        if (parentId === id) {
-          r.push(menuId, ...getChildren(array, menuId))
+    function getChildren(array, nodeId) {
+      return array.reduce((r, { id, parentId }) => {
+        if (parentId === nodeId) {
+          r.push(id, ...getChildren(array, id))
         }
         return r
       }, [])
+    }
+
+    function getParents(nodeId) {
+      let { parentId } = nodes.current[nodeId]
+      let parents = []
+      while (parentId != null) {
+        parents.push(parentId)
+        parentId = nodes.current[parentId].parentId
+      }
+
+      return parents
     }
 
     return (
@@ -197,7 +215,7 @@ const TreeView = React.forwardRef<HTMLDivElement, TreeViewProps>(
           isExpanded,
           isSelected,
           toggleExpansion,
-          selectNode,
+          toggleSelection,
           multiSelect: multiSelect,
         }}
       >
