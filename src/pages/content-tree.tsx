@@ -13,13 +13,23 @@ const ContentTreePage = props => {
           <Container>
             <Row>
               <div className="col-12 col-lg-6 pt-5 mt-xl-5">
-                <h1 className="text-trimble-blue mt-4 display-4 font-weight-bold text-center text-lg-left">
+                <h1 className=" mt-4 ">
                   <ModusIconsScripts />
-                  <TreeView>
+                  <TreeView multiSelect>
                     <TreeViewItem nodeId={1} label="Node1">
                       <TreeViewItem nodeId={2} label="Node2"></TreeViewItem>
                       <TreeViewItem nodeId={3} label="Node3"></TreeViewItem>
                     </TreeViewItem>
+                    <TreeViewItem nodeId={4} label="Node4">
+                      <TreeViewItem nodeId={5} label="Node5">
+                        <TreeViewItem nodeId={6} label="Node6"></TreeViewItem>
+                        <TreeViewItem nodeId={7} label="Node7">
+                          <TreeViewItem nodeId={8} label="Node8"></TreeViewItem>
+                        </TreeViewItem>
+                      </TreeViewItem>
+                    </TreeViewItem>
+                    <TreeViewItem nodeId={9} label="Node9"></TreeViewItem>
+                    <TreeViewItem nodeId={10} label="Node10"></TreeViewItem>
                   </TreeView>
                 </h1>
               </div>

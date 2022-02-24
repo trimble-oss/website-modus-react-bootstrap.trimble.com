@@ -5,6 +5,8 @@ import last from "lodash/last"
 import PropTypes from "prop-types"
 import TreeViewContext from "./TreeViewContext"
 import TreeViewItemContext from "./TreeViewItemContext"
+import classNames from "classnames"
+import { Form } from "@trimbleinc/modus-react-bootstrap"
 
 const getPaddingLeft = (level, type) => {
   let paddingLeft = level * 20
@@ -12,42 +14,12 @@ const getPaddingLeft = (level, type) => {
   return paddingLeft
 }
 
-// const StyledTreeNode = styled.div`
-//   display: flex;
-//   flex-direction: row;
-//   padding: 0 8px;
-//   width: 100%;
-//   align-items: center;
-//   cursor: pointer;
-
-//   &:hover {
-//     background: #e0e1e9;
-//   }
-//   &.active {
-//     background: #dcedf9;
-//   }
-// `
-
-const StyledTreeNode = styled.div`
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  padding: 5px 8px;
-  pointer: cursor;
-  padding-left: ${props => getPaddingLeft(props.level, props.type)}px;
-  &:hover {
-    background: lightgray;
-  }
-  &.active {
-    background: #dcedf9;
-  }
+const StyledTreeNode = styled.li`
+  padding: 5px 8px !important;
+  cursor: pointer;
+  padding-left: ${props =>
+    getPaddingLeft(props.level, props.type)}px !important;
 `
-
-const NodeIcon = styled.div`
-  font-size: 12px;
-  margin-right: ${props => (props.marginRight ? props.marginRight : 5)}px;
-`
-
 export interface TreeViewItemProps extends React.HTMLProps<HTMLDivElement> {
   nodeId: number
   label: string
@@ -100,6 +72,12 @@ const TreeViewItem = React.forwardRef<HTMLDivElement, TreeViewItemProps>(
     const expanded = isExpanded ? isExpanded(nodeId) : false
     const selected = isSelected ? isSelected(nodeId) : false
 
+    const selectNodeFn = {
+      onClick: function (e) {
+        selectNode(e, nodeId, multiSelect)
+      },
+    }
+
     React.useEffect(() => {
       if (registerNode) {
         registerNode({ id: nodeId, parentId, label })
@@ -112,19 +90,40 @@ const TreeViewItem = React.forwardRef<HTMLDivElement, TreeViewItemProps>(
 
     return (
       <>
-        <StyledTreeNode className={selected && "active"} level={level}>
-          <NodeIcon onClick={e => toggleExpansion(e, nodeId)}>
-            {expanded ? (
-              <i className="modus-icons">chevron_left</i>
-            ) : (
-              <i className="modus-icons">chevron_right</i>
-            )}
-          </NodeIcon>
+        <StyledTreeNode
+          className={classNames(
+            "list-group-item list-item-leftright-control",
+            selected && "active",
+            className
+          )}
+          level={level}
+          {...(!multiSelect && selectNodeFn)}
+        >
+          <i
+            className="modus-icons material-icons"
+            onClick={e => {
+              e.stopPropagation()
+              toggleExpansion(e, nodeId)
+            }}
+          >
+            {expandable
+              ? expanded
+                ? "chevron_left"
+                : "chevron_right"
+              : "blank"}
+          </i>
 
-          <span role="button" onClick={e => selectNode(e, nodeId, multiSelect)}>
-            {label}
-          </span>
+          {multiSelect && (
+            <Form.Check
+              {...selectNodeFn}
+              custom
+              id={`checkboxselection_${nodeId}`}
+            />
+          )}
+
+          <span>{label}</span>
         </StyledTreeNode>
+
         {expanded && children && (
           <TreeViewItemContext.Provider value={{ parentId, level: level + 1 }}>
             {children}

@@ -3,8 +3,9 @@ import PropTypes from "prop-types"
 import TreeViewContext from "./TreeViewContext"
 import { TreeItem } from "./types"
 import TreeViewItemContext from "./TreeViewItemContext"
+import classNames from "classnames"
 
-export interface TreeViewProps extends React.HTMLProps<HTMLDivElement> {
+export interface TreeViewProps extends React.HTMLProps<HTMLUListElement> {
   collapseIcon?: React.ReactElement
   expandIcon?: React.ReactElement
   expandAll?: boolean
@@ -84,18 +85,17 @@ const TreeView = React.forwardRef<HTMLDivElement, TreeViewProps>(
 
     const toggleExpansion = React.useCallback((event: any, nodeId: number) => {
       let newExpanded
-
-      if (expanded.indexOf(nodeId) !== -1) {
-        newExpanded = expanded.filter(id => id !== nodeId)
-      } else {
-        newExpanded = [nodeId].concat(expanded)
-      }
-
+      setExpanded(prevState => {
+        if (prevState.indexOf(nodeId) !== -1) {
+          newExpanded = prevState.filter(id => id !== nodeId)
+        } else {
+          newExpanded = [nodeId].concat(prevState)
+        }
+        return newExpanded
+      })
       if (onNodeToggle) {
         onNodeToggle(event, newExpanded)
       }
-
-      setExpanded(newExpanded)
     }, [])
 
     const isExpanded = React.useCallback(
@@ -124,7 +124,7 @@ const TreeView = React.forwardRef<HTMLDivElement, TreeViewProps>(
     )
 
     const expandAllSiblings = (event, id) => {
-      const siblings = getChildrenIds(id)
+      const siblings = getAllChildIds(id)
 
       const diff = siblings.filter(child => !isExpanded(child))
 
@@ -141,31 +141,38 @@ const TreeView = React.forwardRef<HTMLDivElement, TreeViewProps>(
 
     const handleMultipleSelect = (event, value) => {
       let newSelected
-      if (selected.indexOf(value) !== -1) {
-        newSelected = selected.filter(id => id !== value)
-      } else {
-        newSelected = [value].concat(selected)
-      }
+
+      setSelected(prevState => {
+        if (prevState.indexOf(value) !== -1) {
+          newSelected = prevState.filter(id => id !== value)
+        } else {
+          debugger
+          const children = getAllChildIds(value)
+
+          // first remove if there is any child already in selected list
+          let filtered = prevState.filter(id => children.indexOf(id) < 0)
+          // merge with the new list
+          newSelected = filtered.concat([value], children)
+        }
+        return newSelected
+      })
 
       if (onNodeSelect) {
         onNodeSelect(event, newSelected)
       }
-
-      setSelected(newSelected)
     }
 
     const handleSingleSelect = (event, value) => {
       const newSelected = [value]
 
+      setSelected(newSelected)
       if (onNodeSelect) {
         onNodeSelect(event, newSelected)
       }
-
-      setSelected(newSelected)
     }
 
     // Helpers
-    const getChildrenIds = nodeId => {
+    const getAllChildIds = nodeId => {
       const array = Object.keys(nodes.current).map(key => {
         return nodes.current[key]
       })
@@ -195,7 +202,9 @@ const TreeView = React.forwardRef<HTMLDivElement, TreeViewProps>(
         }}
       >
         <TreeViewItemContext.Provider value={{ parentId: null, level: 1 }}>
-          <div {...props}>{children}</div>
+          <ul className={classNames("list-group", className)} {...props}>
+            {children}
+          </ul>
         </TreeViewItemContext.Provider>
       </TreeViewContext.Provider>
     )
