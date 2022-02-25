@@ -5,9 +5,10 @@ description: A content tree provides users with a way to navigate nested hierarc
 
 import { graphql } from "gatsby"
 import {
-  Basic,
-  Condensed,
-  MultiSelect,
+  TreeViewBasic,
+  TreeViewCondensed,
+  TreeViewMultiSelect,
+  TreeViewWithItemIcon,
 } from "../../examples/components/ContentTree"
 import TreeViewItem from "../../common/Tree/TreeViewItem"
 import TreeView from "../../common/Tree/TreeView"
@@ -19,23 +20,49 @@ import TreeView from "../../common/Tree/TreeView"
 </Overview>
 
 <CodeBlock
-  title="Basic"
-  code={Basic}
+  title="TreeViewBasic"
+  code={TreeViewBasic}
   scope={{ TreeView, TreeViewItem }}
+>
+  Content Tree can be created using the components <code> TreeView </code> in
+  the root and <code> TreeViewItem </code> for nodes.{" "}
+  <code> TreeViewItem </code> takes <code> nodeId </code> which should be a
+  unique number for each node and the <code> label </code> prop to display the
+  node text.
+</CodeBlock>
+
+<CodeBlock
+  title="Tree with Icons"
+  code={TreeViewWithItemIcon}
+  scope={{ TreeView, TreeViewItem }}
+  noInline={true}
 ></CodeBlock>
 
 <CodeBlock
-  title="Condensed Tree"
-  code={Condensed}
+  title="TreeViewCondensed Tree"
+  code={TreeViewCondensed}
   scope={{ TreeView, TreeViewItem }}
 ></CodeBlock>
 
 <CodeBlock
   title="Multi Selection Tree"
-  code={MultiSelect}
+  code={TreeViewMultiSelect}
   scope={{ TreeView, TreeViewItem }}
 ></CodeBlock>
 
 <LinkedHeading h="2" className="h1" id="chip-api">
   API
 </LinkedHeading>
+<ComponentApi metadata={props.data.TreeView} />
+<ComponentApi metadata={props.data.TreeViewItem} />
+
+export const query = graphql`
+  query TreeViewQuery {
+    TreeView: componentMetadata(displayName: { eq: "TreeView" }) {
+      ...ComponentApi_metadata
+    }
+    TreeViewItem: componentMetadata(displayName: { eq: "TreeViewItem" }) {
+      ...ComponentApi_metadata
+    }
+  }
+`

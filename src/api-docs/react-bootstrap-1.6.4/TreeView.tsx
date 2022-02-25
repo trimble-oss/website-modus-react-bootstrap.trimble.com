@@ -9,11 +9,11 @@ export interface TreeViewProps extends React.HTMLProps<HTMLUListElement> {
   collapseIcon?: React.ReactElement
   expandIcon?: React.ReactElement
   itemIcon?: React.ReactElement
+  expandAll?: boolean
+  selectAll?: boolean
   onNodeToggle?: (expanded: number[]) => void
   onNodeSelect?: (selected: number[]) => void
   multiSelect?: boolean
-  defaultExpanded?: number[]
-  defaultSelected?: number[]
 }
 
 const propTypes = {
@@ -33,6 +33,16 @@ const propTypes = {
   itemIcon: PropTypes.element,
 
   /**
+   * Expand all the nodes.
+   */
+  expandAll: PropTypes.bool,
+
+  /**
+   * Select all the nodes.
+   */
+  selectAll: PropTypes.bool,
+
+  /**
    * Callback when a node expands or collapse.
    */
   onNodeToggle: PropTypes.func,
@@ -46,16 +56,6 @@ const propTypes = {
    * Enables Multiple Node selection.
    */
   multiSelect: PropTypes.bool,
-
-  /**
-   * Nodes that needed to be expanded by default.
-   */
-  defaultExpanded: PropTypes.arrayOf(PropTypes.number),
-
-  /**
-   * Node(s) that needed to be selected by default (if multiSelect not enabled only the first node is considered).
-   */
-  defaultSelected: PropTypes.arrayOf(PropTypes.number),
 }
 
 const TreeView = React.forwardRef<HTMLDivElement, TreeViewProps>(
@@ -64,11 +64,11 @@ const TreeView = React.forwardRef<HTMLDivElement, TreeViewProps>(
       collapseIcon,
       expandIcon,
       itemIcon,
+      expandAll,
+      selectAll,
       onNodeToggle,
       onNodeSelect,
       multiSelect,
-      defaultExpanded,
-      defaultSelected,
       className,
       children,
       ...props
@@ -76,16 +76,8 @@ const TreeView = React.forwardRef<HTMLDivElement, TreeViewProps>(
     ref
   ) => {
     const nodes = React.useRef({})
-    const [expanded, setExpanded] = React.useState<number[]>(
-      [].concat(defaultExpanded)
-    )
-    const [selected, setSelected] = React.useState<number[]>(
-      [].concat(
-        defaultSelected && defaultSelected.length > 1 && !multiSelect
-          ? [defaultSelected[0]]
-          : defaultSelected
-      )
-    )
+    const [expanded, setExpanded] = React.useState<number[]>([])
+    const [selected, setSelected] = React.useState<number[]>([])
 
     React.useEffect(() => {
       if (onNodeSelect) {
