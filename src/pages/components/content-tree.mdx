@@ -20,7 +20,7 @@ import TreeView from "../../common/Tree/TreeView"
 </Overview>
 
 <CodeBlock
-  title="TreeViewBasic"
+  title="Basic"
   code={TreeViewBasic}
   scope={{ TreeView, TreeViewItem }}
 >
@@ -36,19 +36,31 @@ import TreeView from "../../common/Tree/TreeView"
   code={TreeViewWithItemIcon}
   scope={{ TreeView, TreeViewItem }}
   noInline={true}
-></CodeBlock>
+>
+  Icons can be configured at the root level and node level and the state can be
+  managed with callback functions <code> onNodeToggle </code> and
+  <code> onNodeSelect</code>. An additional icon can be added through the prop <code>
+    itemIcon
+  </code>.
+</CodeBlock>
 
 <CodeBlock
-  title="TreeViewCondensed Tree"
+  title="Condensed Tree"
   code={TreeViewCondensed}
   scope={{ TreeView, TreeViewItem }}
-></CodeBlock>
+>
+  Use class <code> list-group-condensed </code> to shrink the size of Tree and
+  its items.
+</CodeBlock>
 
 <CodeBlock
   title="Multi Selection Tree"
   code={TreeViewMultiSelect}
   scope={{ TreeView, TreeViewItem }}
-></CodeBlock>
+>
+  Multiple node selection can be enabled through prop <code> multiSelect </code>
+  .
+</CodeBlock>
 
 <LinkedHeading h="2" className="h1" id="chip-api">
   API
