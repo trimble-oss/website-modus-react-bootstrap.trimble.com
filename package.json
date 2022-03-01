@@ -64,7 +64,7 @@
     "stylelint": "13.13.1",
     "stylelint-config-prettier": "9.0.3",
     "stylelint-config-standard": "22.0.0",
-    "ws": ">=7.4.6"
+    "ws": ">=8.5.0"
   },
   "peerDependencies": {
     "react": ">=16.8.0",
