@@ -165,3 +165,7 @@ article a:not(.stretched-link)[href^="http"]::after,
 .autocomplete-suggestions.dropdown-menu {
   padding: 0px;
 }
+
+.popover .arrow {
+  display: none !important;
+}

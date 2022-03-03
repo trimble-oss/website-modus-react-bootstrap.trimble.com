@@ -1,4 +1,4 @@
-import { MouseEventHandler } from 'react';
+import { MouseEventHandler } from "react"
 import {
   TableInstance,
   UseColumnOrderInstanceProps,
@@ -21,21 +21,27 @@ import {
   UseSortByInstanceProps,
   UseSortByOptions,
   UseSortByState,
-} from 'react-table';
+  UseFiltersColumnOptions,
+  UseFiltersColumnProps,
+  UseFiltersInstanceProps,
+  UseFiltersOptions,
+  UseFiltersState,
+} from "react-table"
 
-declare module 'react-table' {
+declare module "react-table" {
   export interface UseFlexLayoutInstanceProps<D extends object = {}> {
-    totalColumnsMinWidth: number;
+    totalColumnsMinWidth: number
   }
 
   export interface UseFlexLayoutColumnProps<D extends object = {}> {
-    totalMinWidth: number;
+    totalMinWidth: number
   }
 
   export interface TableOptions<D extends object = {}>
     extends UsePaginationOptions<D>,
       UseResizeColumnsOptions<D>,
       UseRowSelectOptions<D>,
+      UseFiltersOptions<D>,
       UseSortByOptions<D> {}
 
   export interface Hooks<D extends object = {}>
@@ -48,6 +54,7 @@ declare module 'react-table' {
       UseRowSelectInstanceProps<D>,
       UseFlexLayoutInstanceProps<D>,
       UsePaginationInstanceProps<D>,
+      UseFiltersInstanceProps<D>,
       UseSortByInstanceProps<D> {}
 
   export interface TableState<D extends object = {}>
@@ -55,18 +62,21 @@ declare module 'react-table' {
       UsePaginationState<D>,
       UseResizeColumnsState<D>,
       UseRowSelectState<D>,
+      UseFiltersState<D>,
       UseSortByState<D> {
-    rowCount: number;
+    rowCount: number
   }
 
   export interface ColumnInterface<D extends object = {}>
-    extends UseResizeColumnsColumnOptions<D>,
+    extends UseFiltersColumnOptions<D>,
+      UseResizeColumnsColumnOptions<D>,
       UseSortByColumnOptions<D> {
-    align?: string;
+    align?: string
   }
 
   export interface ColumnInstance<D extends object = {}>
-    extends UseResizeColumnsColumnProps<D>,
+    extends UseFiltersColumnProps<D>,
+      UseResizeColumnsColumnProps<D>,
       UseFlexLayoutColumnProps<D>,
       UseSortByColumnProps<D> {}
 
@@ -75,16 +85,16 @@ declare module 'react-table' {
   export interface Row<D extends object = {}> extends UseRowSelectRowProps<D> {}
 
   export interface TableCommonProps {
-    title?: string;
-    'aria-label'?: string;
+    title?: string
+    "aria-label"?: string
   }
 
   export interface TableSortByToggleProps {
-    title?: string;
+    title?: string
   }
 
   export interface TableGroupByToggleProps {
-    title?: string;
+    title?: string
   }
 }
 

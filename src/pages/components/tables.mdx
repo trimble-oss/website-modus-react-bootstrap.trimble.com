@@ -20,6 +20,7 @@ import {
   TableWithCheckBoxSelection,
   TableWithCustomCheckBoxSelection,
   TableWithStickyFirstColumn,
+  TableWithColumnFilter,
 } from "../../examples/components/Table"
 import Badge from "@trimbleinc/modus-react-bootstrap/Badge"
 
@@ -220,6 +221,15 @@ import Badge from "@trimbleinc/modus-react-bootstrap/Badge"
   columns. When a column is collapsed, a visual indicator with arrows is
   displayed and clicking on it will show the column.
 </CodeBlock>
+
+<CodeBlock
+  title="Filter Columns"
+  scope={{
+    makeData,
+  }}
+  code={TableWithColumnFilter}
+  noInline={true}
+></CodeBlock>
 
 <LinkedHeading h="2" className="h1" id="table-api">
   API

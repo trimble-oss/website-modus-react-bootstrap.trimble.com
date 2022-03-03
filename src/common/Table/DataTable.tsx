@@ -12,6 +12,8 @@ import {
   HeaderProps,
   CellProps,
   useRowSelect,
+  useFilters,
+  ColumnInstance,
 } from "react-table"
 import { TableContext } from "./TableContext"
 import { StyledDataTable } from "./styleHelpers"
@@ -19,6 +21,7 @@ import { StyledDataTable } from "./styleHelpers"
 import Form from "@trimbleinc/modus-react-bootstrap/Form"
 import { ContextMenuState, ContextMenuItem, TableColumn } from "./types"
 import ContextMenu from "./ContextMenu"
+import { OverlayTrigger, Popover } from "@trimbleinc/modus-react-bootstrap"
 
 export interface DataTableProps
   extends Omit<React.HTMLProps<HTMLDivElement>, "data">,
@@ -165,7 +168,7 @@ export function DataTable(
   }
 
   // Make conditional hooks array
-  const hooks: any = [useFlexLayout]
+  const hooks: any = [useFlexLayout, useFilters]
   if (hasSorting) hooks.push(useSortBy)
   if (hasPagination) hooks.push(usePagination)
   if (resizeColumns) hooks.push(useResizeColumns)
@@ -197,6 +200,8 @@ export function DataTable(
     prepareRow,
     rows,
     allColumns,
+    setFilter,
+    setAllFilters,
     toggleHideColumn,
     toggleHideAllColumns,
     page,
@@ -204,7 +209,7 @@ export function DataTable(
     gotoPage,
     setPageSize,
     selectedFlatRows,
-    state: { pageIndex, pageSize },
+    state: { pageIndex, pageSize, filters },
   } = useTable(
     {
       columns: normalizedColumns,
@@ -221,7 +226,7 @@ export function DataTable(
   const containerRef = useRef<HTMLDivElement>(null)
 
   const handleHeaderContextMenu = useCallback(
-    (columnId: string, event) => {
+    (column: ColumnInstance, event) => {
       if (!containerRef.current) return
 
       const rect = containerRef.current.getBoundingClientRect()
@@ -232,7 +237,7 @@ export function DataTable(
           {
             title: "Hide",
             onClick: () => {
-              toggleHideColumn(columnId, true)
+              toggleHideColumn(column.id, true)
               setShowContextMenu(false)
             },
           },
@@ -262,9 +267,8 @@ export function DataTable(
               setShowContextMenu(false)
             },
           },
-        ] as ContextMenuItem[],
+        ],
       }
-
       setContextMenu(contextMenu)
       setShowContextMenu(true)
     },
@@ -278,9 +282,6 @@ export function DataTable(
     [setShowContextMenu]
   )
 
-  // TODO:
-  // Params passed in the children are constructed dynamically decided by the hooks passed to useTable
-  // Find a way to create type definition
   return (
     <>
       <TableContext.Provider
@@ -295,6 +296,10 @@ export function DataTable(
           <div {...rest} ref={ref}>
             {children &&
               children({
+                allColumns,
+                setFilter,
+                setAllFilters,
+                filters,
                 headerGroups,
                 rows: hasPagination ? page : rows,
                 prepareRow,

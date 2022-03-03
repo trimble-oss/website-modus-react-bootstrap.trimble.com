@@ -1,4 +1,61 @@
-import * as React from "react"
+const range = len => {
+  const arr = []
+  for (let i = 0; i < len; i++) {
+    arr.push(i)
+  }
+  return arr
+}
+
+const names = [
+  "Mickey Mouse",
+  "Bugs Bunny",
+  "Homer Simpson",
+  "Fred Flintstone",
+  "Sponge Bob",
+  "Daffy Duck",
+  "Charlie Brown",
+  "Scooby Doo",
+  "Tom Cat",
+  "Jerry Mouse",
+  "Mighty Mouse",
+  "Wile E Coyote",
+  "Tweety Bird",
+  "Pink Panther",
+  "Road Runner",
+  "Patrick Star",
+  "Roger Rabbit",
+  "Papa Smurf",
+  "Buzz Lightyear",
+]
+const newPerson = () => {
+  const rand = Math.random()
+  const namesIndex = Math.floor(rand * (names.length - 1))
+  const firstName = names[namesIndex].split(" ")[0]
+  const lastName = names[namesIndex].split(" ")[1]
+  return {
+    firstName,
+    lastName,
+    age: Math.floor(rand * 30),
+    visits: Math.floor(rand * 100),
+    progress: Math.floor(rand * 100),
+    status:
+      rand > 0.66 ? "relationship" : rand > 0.33 ? "complicated" : "single",
+  }
+}
+
+export function MakeData(...lens) {
+  const makeDataLevel = (depth = 0) => {
+    const len = lens[depth]
+    return range(len).map(d => {
+      return {
+        ...newPerson(),
+        subRows: lens[depth + 1] ? makeDataLevel(depth + 1) : undefined,
+      }
+    })
+  }
+
+  return makeDataLevel()
+}
 
 export const TableBasic = `
 <Table>
@@ -857,66 +914,6 @@ export const TableSmall = `
   </Table>
 </div>
 `
-
-const range = len => {
-  const arr = []
-  for (let i = 0; i < len; i++) {
-    arr.push(i)
-  }
-  return arr
-}
-
-const names = [
-  "Mickey Mouse",
-  "Bugs Bunny",
-  "Homer Simpson",
-  "Fred Flintstone",
-  "Sponge Bob",
-  "Daffy Duck",
-  "Charlie Brown",
-  "Scooby Doo",
-  "Tom Cat",
-  "Jerry Mouse",
-  "Mighty Mouse",
-  "Wile E Coyote",
-  "Tweety Bird",
-  "Pink Panther",
-  "Road Runner",
-  "Patrick Star",
-  "Roger Rabbit",
-  "Papa Smurf",
-  "Buzz Lightyear",
-]
-
-const newPerson = () => {
-  const rand = Math.random()
-  const namesIndex = Math.floor(rand * (names.length - 1))
-  const firstName = names[namesIndex].split(" ")[0]
-  const lastName = names[namesIndex].split(" ")[1]
-  return {
-    firstName,
-    lastName,
-    age: Math.floor(rand * 30),
-    visits: Math.floor(rand * 100),
-    progress: Math.floor(rand * 100),
-    status:
-      rand > 0.66 ? "relationship" : rand > 0.33 ? "complicated" : "single",
-  }
-}
-
-export function MakeData(...lens) {
-  const makeDataLevel = (depth = 0) => {
-    const len = lens[depth]
-    return range(len).map(d => {
-      return {
-        ...newPerson(),
-        subRows: lens[depth + 1] ? makeDataLevel(depth + 1) : undefined,
-      }
-    })
-  }
-
-  return makeDataLevel()
-}
 
 export const TableWithSorting = `function Example() {
   const columns = React.useMemo(
@@ -2144,6 +2141,300 @@ export const TableWithStickyFirstColumn = `function Example() {
         )}
       </DataTable>
   );
+}
+
+render(<Example />);`
+
+export const TableWithColumnFilter = `function Example() {
+  function TextFilter({
+    column: { filterValue, preFilteredRows, setFilter, id, render },
+  }) {
+    const count = preFilteredRows.length
+    return (
+      <Form.Group controlId="formBasicEmail">
+        <Form.Label>{render("Header")}</Form.Label>
+        <div className="input-with-icon-left">
+          <Form.Control
+            as="input"
+            placeholder={render("Header")}
+            value={filterValue || ""}
+            onChange={e => {
+              setFilter(e.target.value || undefined)
+            }}
+          ></Form.Control>
+          <div className="input-icon">
+            <i className="modus-icons material-icons">search</i>
+          </div>
+        </div>
+      </Form.Group>
+    )
+  }
+
+  function SliderFilter({
+    column: { filterValue, preFilteredRows, setFilter, id, render },
+  }) {
+    return (
+      <Form.Group controlId="formBasicRangeCustom" custom>
+        <Form.Label>{render("Header")}</Form.Label>
+        <Form.Control
+          type="range"
+          min={0}
+          max={100}
+          value={filterValue || 0}
+          onChange={e => {
+            setFilter(parseInt(e.target.value, 10))
+          }}
+          custom
+        />
+      </Form.Group>
+    )
+  }
+
+  function SelectFilter({
+    column: { filterValue, preFilteredRows, setFilter, id, render },
+  }) {
+    return (
+      <Form.Group controlId="exampleForm.SelectCustom">
+        <Form.Label>{render("Header")}</Form.Label>
+        <Form.Control
+          as="select"
+          custom
+          value={filterValue}
+          onChange={e => {
+            setFilter(e.target.value || undefined)
+          }}
+        >
+          <option value="">All</option>
+          <option>single</option>
+          <option>complicated</option>
+          <option>relationship</option>
+        </Form.Control>
+      </Form.Group>
+    )
+  }
+
+  const DismissibleChip = ({ label, onClose, ...props }) => {
+    const [show, setShow] = useState(true)
+    const handleClose = useCallback(() => {
+      setShow(!show)
+      onClose()
+    }, [setShow])
+
+    return (
+      <Chip
+        label={label}
+        onClose={handleClose}
+        show={show}
+        variant="outline"
+        type="input"
+        className="m-1"
+      ></Chip>
+    )
+  }
+
+  const columns = React.useMemo(
+    () => [
+      {
+        Header: "First Name",
+        accessor: "firstName",
+        width: 80,
+        sortBy: true,
+        Filter: TextFilter
+      },
+      {
+        Header: "Last Name",
+        accessor: "lastName",
+        width: 80,
+        sortBy: true,
+        Filter: TextFilter
+      },
+      {
+        Header: 'Age',
+        accessor: 'age',
+        width: 50,
+        sortBy: true,
+        Filter: SliderFilter
+      },
+      {
+        Header: 'Visits',
+        accessor: 'visits',
+        width: 50,
+        sortBy: true,
+      },
+      {
+        Header: "Status",
+        accessor: "status",
+        width: 70,
+        sortBy: true,
+        Filter: SelectFilter
+      },
+      {
+        Header: "Profile Progress Status",
+        accessor: "progress",
+        width: 70,
+        sortBy: true,
+      },
+    ],
+    []
+  )
+
+  const data = React.useMemo(() => makeData(125), [])
+
+  return (
+    <>
+      <DataTable
+        id="test"
+        columns={columns}
+        data={data}
+        hasSorting
+        hasPagination
+        resizeColumns
+      >
+        {({
+          allColumns,
+          setFilter,
+          filters,
+          setAllFilters,
+          prepareRow,
+          rows,
+          gotoPage,
+          pageIndex,
+          pageSize,
+          setPageSize,
+          pageOptions,
+        }) => {
+          const popover = (
+            <Popover
+              id="popover-basic"
+              style={{ width: "500px", maxWidth: "500px" }}
+            >
+              <Popover.Content>
+                <Container style={{ width: "100%" }} className="p-1">
+                  <Row xs={1} md={2}>
+                    {allColumns
+                      .filter(it => it.canFilter && it.Filter)
+                      .map(column => (
+                        <div key={column.id}>
+                          <Col>{column.render("Filter")}</Col>
+                        </div>
+                      ))}
+                  </Row>
+                  <Row className="d-flex justify-content-end mr-2">
+                    <Button onClick={e => setAllFilters([])}>RESET</Button>
+                  </Row>
+                </Container>
+              </Popover.Content>
+            </Popover>
+          )
+
+          return (
+            <div className="d-flex flex-column">
+              <div className="d-flex align-items-center">
+                <div className="flex-grow-1">
+                  {filters && filters.length > 0 && (
+                    <div>
+                      Active Filters:
+                      {allColumns.map(column => {
+                        const filter = filters.find(f => f.id === column.id)
+                        const value = filter && filter.value
+                        return (
+                          value && (
+                            <DismissibleChip
+                              key={column.id}
+                              label={column.render("Header").concat(": ",filter.value )}
+                              onClose={e => setFilter(column.id, undefined)}
+                            />
+                          )
+                        )
+                      })}
+                    </div>
+                  )}
+                </div>
+                <div style={{ minWidth: "170px", lineHeight: 2 }}>
+                  <OverlayTrigger
+                    trigger="click"
+                    placement="bottom"
+                    overlay={popover} rootClose
+                  >
+                    <Nav.Link eventKey="1" className="p-0">
+                      <i
+                        className="modus-icons material-icons left-icon p-1"
+                        style={{ top: "5px", fontSize: "20px" }}
+                      >
+                        filter
+                      </i>
+                      FILTER COLUMNS
+                    </Nav.Link>
+                  </OverlayTrigger>
+                </div>
+              </div>
+              <div>
+                <TableContainer scrollable style={{ maxHeight: "400px" }}>
+                  <Table bordered hover>
+                    <TableHead className="bg-gray-light sticky-top">
+                      <TableRow className="bg-gray-light">
+                        <TableHeaderCell
+                          accessor="firstName"
+                          className="bg-gray-light"
+                        />
+                        <TableHeaderCell
+                          accessor="lastName"
+                          className="bg-gray-light"
+                        />
+                        <TableHeaderCell
+                          accessor="age"
+                          className="bg-gray-light"
+                        />
+                        <TableHeaderCell
+                          accessor="visits"
+                          className="bg-gray-light"
+                        />
+                        <TableHeaderCell
+                          accessor="status"
+                          className="bg-gray-light"
+                        />
+                        <TableHeaderCell
+                          accessor="progress"
+                          className="bg-gray-light"
+                        />
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                      {rows.map((row, i) => {
+                        prepareRow(row)
+                        return (
+                          <TableRow {...row.getRowProps()}>
+                            {row.cells.map(cell => {
+                              return (
+                                <TableCell {...cell.getCellProps()}>
+                                  {cell.render("Cell")}
+                                </TableCell>
+                              )
+                            })}
+                          </TableRow>
+                        )
+                      })}
+                    </TableBody>
+                  </Table>
+                </TableContainer>
+              </div>
+              <div>
+                <TablePagination
+                  totalPages={pageOptions.length}
+                  pageIndex={pageIndex}
+                  pageSize={pageSize}
+                  onPageChange={gotoPage}
+                  pageSizeOptions={[10, 20, 30, 40, 50]}
+                  onPageSizeChange={setPageSize}
+                  className="border border-tertiary"
+                ></TablePagination>
+              </div>
+            </div>
+          )
+        }}
+      </DataTable>
+    </>
+  )
 }
 
 render(<Example />);`
