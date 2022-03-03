@@ -6,17 +6,25 @@ import TreeViewItemContext from "./TreeViewItemContext"
 import classNames from "classnames"
 
 export interface TreeViewProps extends React.HTMLProps<HTMLUListElement> {
+  id: string
   collapseIcon?: React.ReactElement
   expandIcon?: React.ReactElement
   itemIcon?: React.ReactElement
-  onNodeToggle?: (expanded: number[]) => void
-  onNodeSelect?: (selected: number[]) => void
-  multiSelect?: boolean
+  checkBoxSelection?: boolean
+  multiSelectNode?: boolean
+  multiSelectCheckBox?: boolean
   defaultExpanded?: number[]
   defaultSelected?: number[]
+  onNodeToggle?: (expanded: number[]) => void
+  onNodeSelect?: (selected: number[]) => void
+  onCheckBoxSelect?: (selected: number[]) => void
 }
 
 const propTypes = {
+  /**
+   * Tree View Unique Identifier.
+   */
+  id: PropTypes.string.isRequired,
   /**
    * Default Collapse icon for all the Tree items including root node.
    */
@@ -33,19 +41,19 @@ const propTypes = {
   itemIcon: PropTypes.element,
 
   /**
-   * Callback when a node expands or collapse.
+   * Enables checkbox selection on nodes.
    */
-  onNodeToggle: PropTypes.func,
-
-  /**
-   * Callback when a node is selected.
-   */
-  onNodeSelect: PropTypes.func,
+  checkBoxSelection: PropTypes.bool,
 
   /**
    * Enables Multiple Node selection.
    */
-  multiSelect: PropTypes.bool,
+  multiSelectNode: PropTypes.bool,
+
+  /**
+   * Enables Multiple CheckBox selection.
+   */
+  multiSelectCheckBox: PropTypes.bool,
 
   /**
    * Nodes that needed to be expanded by default.
@@ -56,17 +64,36 @@ const propTypes = {
    * Node(s) that needed to be selected by default (if multiSelect not enabled only the first node is considered).
    */
   defaultSelected: PropTypes.arrayOf(PropTypes.number),
+
+  /**
+   * Callback when a node expands or collapse.
+   */
+  onNodeToggle: PropTypes.func,
+
+  /**
+   * Callback when a single node or multiple nodes selected.
+   */
+  onNodeSelect: PropTypes.func,
+
+  /**
+   * Callback when checkbox on a single or multiple nodes selected.
+   */
+  onCheckBoxSelect: PropTypes.func,
 }
 
-const TreeView = React.forwardRef<HTMLDivElement, TreeViewProps>(
+const TreeView = React.forwardRef<HTMLUListElement, TreeViewProps>(
   (
     {
+      id,
       collapseIcon,
       expandIcon,
       itemIcon,
       onNodeToggle,
       onNodeSelect,
-      multiSelect,
+      onCheckBoxSelect,
+      checkBoxSelection,
+      multiSelectNode,
+      multiSelectCheckBox,
       defaultExpanded,
       defaultSelected,
       className,
@@ -79,19 +106,23 @@ const TreeView = React.forwardRef<HTMLDivElement, TreeViewProps>(
     const [expanded, setExpanded] = React.useState<number[]>(
       [].concat(defaultExpanded)
     )
-    const [selected, setSelected] = React.useState<number[]>(
+    const [nodesSelected, setNodeSelected] = React.useState<number[]>(
       [].concat(
-        defaultSelected && defaultSelected.length > 1 && !multiSelect
+        defaultSelected && defaultSelected.length > 1 && !multiSelectNode
           ? [defaultSelected[0]]
           : defaultSelected
       )
     )
 
+    const [nodeCheckBoxSelected, setNodeCheckBoxSelected] = React.useState<
+      number[]
+    >([])
+
     React.useEffect(() => {
       if (onNodeSelect) {
-        onNodeSelect(selected)
+        onNodeSelect(nodesSelected)
       }
-    }, [selected])
+    }, [nodesSelected])
 
     React.useEffect(() => {
       if (onNodeToggle) {
@@ -99,7 +130,14 @@ const TreeView = React.forwardRef<HTMLDivElement, TreeViewProps>(
       }
     }, [expanded])
 
+    React.useEffect(() => {
+      if (onCheckBoxSelect) {
+        onNodeSelect(nodeCheckBoxSelected)
+      }
+    }, [nodeCheckBoxSelected])
+
     // Tree view context
+    // Actions
     const registerNode = React.useCallback((node: TreeItem) => {
       nodes.current[node.id] = node
     }, [])
@@ -122,13 +160,22 @@ const TreeView = React.forwardRef<HTMLDivElement, TreeViewProps>(
       })
     }, [])
 
-    const toggleSelection = React.useCallback(
-      (event: any, nodeId: number, multiple = false) => {
-        if (multiple) {
-          handleMultipleSelect(event, nodeId)
-        } else {
-          handleSingleSelect(event, nodeId)
-        }
+    const toggleNodeSelection = React.useCallback(
+      (event: any, nodeId: number) => {
+        // TODO: implement shift + click, ctrl + click for multi selection on node
+        handleSelection(event, nodeId, setNodeSelected, false)
+      },
+      []
+    )
+
+    const toggleCheckBoxSelection = React.useCallback(
+      (event: any, nodeId: number) => {
+        handleSelection(
+          event,
+          nodeId,
+          setNodeCheckBoxSelected,
+          multiSelectCheckBox
+        )
       },
       []
     )
@@ -145,65 +192,122 @@ const TreeView = React.forwardRef<HTMLDivElement, TreeViewProps>(
       }
     }
 
+    // Verifiers
     const isExpanded = React.useCallback(
       (nodeId: number) =>
         Array.isArray(expanded) ? expanded.indexOf(nodeId) !== -1 : false,
       [expanded]
     )
 
-    const isSelected = React.useCallback(
+    const isNodeSelected = React.useCallback(
       (nodeId: number) =>
-        Array.isArray(selected)
-          ? selected.indexOf(nodeId) !== -1
-          : selected === nodeId,
-      [selected]
+        Array.isArray(nodesSelected)
+          ? nodesSelected.indexOf(nodeId) !== -1
+          : nodesSelected === nodeId,
+      [nodesSelected]
+    )
+
+    const isCheckBoxSelected = React.useCallback(
+      (nodeId: number) =>
+        Array.isArray(nodeCheckBoxSelected)
+          ? nodeCheckBoxSelected.indexOf(nodeId) !== -1
+          : nodeCheckBoxSelected === nodeId,
+      [nodeCheckBoxSelected]
+    )
+
+    const isIndeterminate = React.useCallback(
+      (nodeId: number) => {
+        const childNodes = getChildren(getNodesArray(), nodeId)
+        if (!childNodes || childNodes.length === 0) return false
+
+        const unSelectChildNodes = childNodes.filter(
+          node => nodeCheckBoxSelected.indexOf(node) < 0
+        )
+
+        if (
+          unSelectChildNodes.length !== childNodes.length &&
+          unSelectChildNodes.length > 0
+        )
+          return true
+        return false
+      },
+      [nodeCheckBoxSelected]
     )
 
     // Handlers
-    const handleMultipleSelect = (event, value) => {
+    const handleSelection = (
+      event: any,
+      nodeId: number,
+      setCallBackfn: (value: React.SetStateAction<number[]>) => void,
+      multiple = false
+    ) => {
+      if (multiple) {
+        handleMultipleSelect(event, nodeId, setCallBackfn)
+      } else {
+        handleSingleSelect(event, nodeId, setCallBackfn)
+      }
+    }
+
+    const handleMultipleSelect = (
+      event,
+      value,
+      setCallBackfn: (value: React.SetStateAction<number[]>) => void
+    ) => {
       let newSelected
 
-      setSelected(prevState => {
+      setCallBackfn(prevState => {
         const array = getNodesArray()
-        const siblings = getChildren(array, value)
+        const childNodes = getChildren(array, value)
+
+        // unselect parents and children
         if (prevState.indexOf(value) !== -1) {
-          //filter out parents
-
-          let parents = getParents(value)
-
-          // filter out parents & children
+          const parents = getParents(value)
           let filtered = prevState.filter(
             id =>
-              siblings.indexOf(id) < 0 &&
+              childNodes.indexOf(id) < 0 &&
               id !== value &&
               parents.indexOf(id) < 0
           )
 
           newSelected = filtered
-        } else {
-          let filtered = prevState.filter(id => siblings.indexOf(id) < 0)
-          newSelected = filtered.concat([value], siblings)
+        }
+        // select children and parents with all child nodes selected
+        else {
+          let filtered = prevState.filter(id => childNodes.indexOf(id) < 0)
+          newSelected = filtered.concat([value], childNodes)
+
+          // let parentId = nodes[value].parentId
+          // while(parentId){
+          //   let siblings = getChildren
+          // }
         }
 
         return newSelected
       })
     }
 
-    const handleSingleSelect = (event, value) => {
+    const handleSingleSelect = (
+      event,
+      value,
+      setCallBackfn: (value: React.SetStateAction<number[]>) => void
+    ) => {
       const newSelected = [value]
 
-      setSelected(prevState => {
+      setCallBackfn(prevState => {
         return newSelected
       })
     }
 
     // Helpers
-    const getNodesArray = () =>
-      Object.keys(nodes.current).map(key => {
-        return nodes.current[key]
-      })
+    const getNodesArray = React.useCallback(
+      () =>
+        Object.keys(nodes.current).map(key => {
+          return nodes.current[key]
+        }) as TreeItem[],
+      [nodes]
+    )
 
-    function getChildren(array, nodeId) {
+    function getChildren(array: TreeItem[], nodeId: number): number[] {
       return array.reduce((r, { id, parentId }) => {
         if (parentId === nodeId) {
           r.push(id, ...getChildren(array, id))
@@ -212,34 +316,48 @@ const TreeView = React.forwardRef<HTMLDivElement, TreeViewProps>(
       }, [])
     }
 
-    function getParents(nodeId) {
-      let { parentId } = nodes.current[nodeId]
-      let parents = []
-      while (parentId != null) {
-        parents.push(parentId)
-        parentId = nodes.current[parentId].parentId
-      }
+    const getParents = React.useCallback(
+      (nodeId: number): number[] => {
+        let { parentId } = nodes.current[nodeId]
+        let parents = []
+        while (parentId != null) {
+          parents.push(parentId)
+          parentId = nodes.current[parentId].parentId
+        }
 
-      return parents
-    }
+        return parents
+      },
+      [nodes]
+    )
 
     return (
       <TreeViewContext.Provider
         value={{
+          id,
           registerNode,
           unRegisterNode,
           isExpanded,
-          isSelected,
+          isNodeSelected,
+          isCheckBoxSelected,
+          isIndeterminate,
           toggleExpansion,
-          toggleSelection,
-          multiSelect,
+          toggleNodeSelection,
+          toggleCheckBoxSelection,
+          checkBoxSelection: checkBoxSelection || multiSelectCheckBox,
+          multiSelectCheckBox,
+          multiSelectNode,
           collapseIcon,
           expandIcon,
           itemIcon,
         }}
       >
         <TreeViewItemContext.Provider value={{ parentId: null, level: 1 }}>
-          <ul className={classNames("list-group", className)} {...props}>
+          <ul
+            className={classNames("list-group", className)}
+            {...props}
+            id={id}
+            ref={ref}
+          >
             {children}
           </ul>
         </TreeViewItemContext.Provider>

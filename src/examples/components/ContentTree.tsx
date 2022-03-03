@@ -30,7 +30,7 @@ export const TreeViewBasic = `
 `
 
 export const TreeViewMultiSelect = `
-<TreeView multiSelect>
+<TreeView multiSelectCheckBox>
   <TreeViewItem nodeId={1} label="Layout">
     <TreeViewItem nodeId={2} label="Main Layout">
       <TreeViewItem nodeId={3} label="Header"></TreeViewItem>

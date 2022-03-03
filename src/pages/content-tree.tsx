@@ -9,14 +9,12 @@ function TreeViewWithIcon() {
   const [expanded, setExpanded] = React.useState([])
   const [selected, setSelected] = React.useState([])
 
-  const handleExpansion = React.useCallback((nodesExpanded: number[]) => {
+  const handleExpansion = React.useCallback(nodesExpanded => {
     setExpanded(nodesExpanded)
   }, [])
-
-  const handleSelection = React.useCallback((nodesSelected: number[]) => {
+  const handleSelection = React.useCallback(nodesSelected => {
     setSelected(nodesSelected)
   }, [])
-
   const isExpanded = nodeId => expanded.indexOf(nodeId) > -1
   const isSelected = nodeId => selected.indexOf(nodeId) > -1
   const CustomTreeViewItem = ({ nodeId, label, ...props }) => {
@@ -34,13 +32,19 @@ function TreeViewWithIcon() {
   }
 
   return (
-    <TreeView onNodeToggle={handleExpansion} onNodeSelect={handleSelection}>
+    <TreeView
+      onNodeToggle={handleExpansion}
+      onNodeSelect={handleSelection}
+      defaultExpanded={[1]}
+      checkBoxSelection
+      multiSelectCheckBox
+    >
       <TreeViewItem
         nodeId={1}
         label="Inbox"
         itemIcon={
-          <i className="modus-icons">
-            {isExpanded(1) ? "folder" : "folder_open"}
+          <i className="material-icons">
+            {isExpanded(1) ? "folder_open" : "folder"}
           </i>
         }
       >
