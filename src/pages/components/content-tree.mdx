@@ -1,0 +1,80 @@
+---
+title: Content Tree
+description: A content tree provides users with a way to navigate nested hierarchical information using a parent-child relationship model.
+---
+
+import { graphql } from "gatsby"
+import {
+  TreeViewBasic,
+  TreeViewCondensed,
+  TreeViewMultiSelect,
+  TreeViewWithItemIcon,
+} from "../../examples/components/ContentTree"
+import TreeViewItem from "../../common/Tree/TreeViewItem"
+import TreeView from "../../common/Tree/TreeView"
+
+<Overview>
+  A content tree provides users with a way to navigate nested hierarchical
+  information using a parent-child relationship model. It is located on the left
+  side of the screen and cannot be combined with Side Navigation or Toolbar.
+</Overview>
+
+<CodeBlock
+  title="Basic"
+  code={TreeViewBasic}
+  scope={{ TreeView, TreeViewItem }}
+>
+  Content Tree can be created using the components <code> TreeView </code> in
+  the root and <code> TreeViewItem </code> for nodes.{" "}
+  <code> TreeViewItem </code> takes <code> nodeId </code> which should be a
+  unique number for each node and the <code> label </code> prop to display the
+  node text.
+</CodeBlock>
+
+<CodeBlock
+  title="Tree with Icons"
+  code={TreeViewWithItemIcon}
+  scope={{ TreeView, TreeViewItem }}
+  noInline={true}
+>
+  Icons can be configured at the root level and node level and the state can be
+  managed with callback functions <code> onNodeToggle </code> and
+  <code> onNodeSelect</code>. An additional icon can be added through the prop <code>
+    itemIcon
+  </code>.
+</CodeBlock>
+
+<CodeBlock
+  title="Condensed Tree"
+  code={TreeViewCondensed}
+  scope={{ TreeView, TreeViewItem }}
+>
+  Use class <code> list-group-condensed </code> to shrink the size of Tree and
+  its items.
+</CodeBlock>
+
+<CodeBlock
+  title="Multi Selection Tree"
+  code={TreeViewMultiSelect}
+  scope={{ TreeView, TreeViewItem }}
+>
+  Multiple node selection can be enabled through prop <code> multiSelect </code>
+  .
+</CodeBlock>
+
+<LinkedHeading h="2" className="h1" id="chip-api">
+  API
+</LinkedHeading>
+<ComponentApi metadata={props.data.TreeView} />
+<ComponentApi metadata={props.data.TreeViewItem} />
+
+export const query = graphql`
+  query TreeViewQuery {
+    TreeView: componentMetadata(displayName: { eq: "TreeView" }) {
+      ...ComponentApi_metadata
+    }
+    TreeViewItem: componentMetadata(displayName: { eq: "TreeViewItem" }) {
+      ...ComponentApi_metadata
+    }
+  }
+`
