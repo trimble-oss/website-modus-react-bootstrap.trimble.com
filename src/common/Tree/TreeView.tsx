@@ -5,7 +5,8 @@ import { TreeItem } from "./types"
 import TreeViewItemContext from "./TreeViewItemContext"
 import classNames from "classnames"
 
-export interface TreeViewProps extends React.HTMLProps<HTMLUListElement> {
+export interface TreeViewProps
+  extends Omit<React.HTMLProps<HTMLUListElement>, "expanded" | "selected"> {
   id: string
   collapseIcon?: React.ReactElement
   expandIcon?: React.ReactElement
@@ -13,11 +14,12 @@ export interface TreeViewProps extends React.HTMLProps<HTMLUListElement> {
   checkBoxSelection?: boolean
   multiSelectNode?: boolean
   multiSelectCheckBox?: boolean
+  expanded?: number[]
   defaultExpanded?: number[]
   defaultSelected?: number[]
-  onNodeToggle?: (expanded: number[]) => void
-  onNodeSelect?: (selected: number[]) => void
-  onCheckBoxSelect?: (selected: number[]) => void
+  onNodeToggle?: (event: any, expanded: number[]) => void
+  onNodeSelect?: (event: any, selected: number[]) => void
+  onCheckBoxSelect?: (event: any, selected: number[]) => void
 }
 
 const propTypes = {
@@ -66,6 +68,11 @@ const propTypes = {
   defaultSelected: PropTypes.arrayOf(PropTypes.number),
 
   /**
+   * To Expand the nodes manually.
+   */
+  expanded: PropTypes.arrayOf(PropTypes.number),
+
+  /**
    * Callback when a node expands or collapse.
    */
   onNodeToggle: PropTypes.func,
@@ -96,6 +103,7 @@ const TreeView = React.forwardRef<HTMLUListElement, TreeViewProps>(
       multiSelectCheckBox,
       defaultExpanded,
       defaultSelected,
+      expanded,
       className,
       children,
       ...props
@@ -103,7 +111,8 @@ const TreeView = React.forwardRef<HTMLUListElement, TreeViewProps>(
     ref
   ) => {
     const nodes = React.useRef({})
-    const [expanded, setExpanded] = React.useState<number[]>(
+    const expandedProp = React.useRef([])
+    const [nodesExpanded, setExpanded] = React.useState<number[]>(
       [].concat(defaultExpanded)
     )
     const [nodesSelected, setNodeSelected] = React.useState<number[]>(
@@ -113,28 +122,16 @@ const TreeView = React.forwardRef<HTMLUListElement, TreeViewProps>(
           : defaultSelected
       )
     )
-
     const [nodeCheckBoxSelected, setNodeCheckBoxSelected] = React.useState<
       number[]
     >([])
 
     React.useEffect(() => {
-      if (onNodeSelect) {
-        onNodeSelect(nodesSelected)
-      }
-    }, [nodesSelected])
-
-    React.useEffect(() => {
-      if (onNodeToggle) {
-        onNodeToggle(expanded)
+      if (expanded !== undefined && expandedProp.current !== expanded) {
+        expandedProp.current = expanded
+        setExpanded(expanded)
       }
     }, [expanded])
-
-    React.useEffect(() => {
-      if (onCheckBoxSelect) {
-        onNodeSelect(nodeCheckBoxSelected)
-      }
-    }, [nodeCheckBoxSelected])
 
     // Tree view context
     // Actions
@@ -149,12 +146,17 @@ const TreeView = React.forwardRef<HTMLUListElement, TreeViewProps>(
     }, [])
 
     const toggleExpansion = React.useCallback((event: any, nodeId: number) => {
-      let newExpanded
+      let newExpanded = []
       setExpanded(prevState => {
-        if (prevState.indexOf(nodeId) !== -1) {
-          newExpanded = prevState.filter(id => id !== nodeId)
+        let oldExpanded = prevState || []
+        if (oldExpanded.indexOf(nodeId) !== -1) {
+          newExpanded = oldExpanded.filter(id => id !== nodeId)
         } else {
-          newExpanded = [nodeId].concat(prevState)
+          newExpanded = [nodeId].concat(oldExpanded)
+        }
+
+        if (onNodeToggle) {
+          onNodeToggle(event, newExpanded)
         }
         return newExpanded
       })
@@ -163,7 +165,7 @@ const TreeView = React.forwardRef<HTMLUListElement, TreeViewProps>(
     const toggleNodeSelection = React.useCallback(
       (event: any, nodeId: number) => {
         // TODO: implement shift + click, ctrl + click for multi selection on node
-        handleSelection(event, nodeId, setNodeSelected, false)
+        handleSelection(event, nodeId, setNodeSelected, onNodeSelect, false)
       },
       []
     )
@@ -174,6 +176,7 @@ const TreeView = React.forwardRef<HTMLUListElement, TreeViewProps>(
           event,
           nodeId,
           setNodeCheckBoxSelected,
+          onCheckBoxSelect,
           multiSelectCheckBox
         )
       },
@@ -185,7 +188,7 @@ const TreeView = React.forwardRef<HTMLUListElement, TreeViewProps>(
 
       const diff = siblings.filter(child => !isExpanded(child))
 
-      const newExpanded = expanded.concat(diff)
+      const newExpanded = nodesExpanded.concat(diff)
 
       if (diff.length > 0) {
         setExpanded(newExpanded)
@@ -195,8 +198,10 @@ const TreeView = React.forwardRef<HTMLUListElement, TreeViewProps>(
     // Verifiers
     const isExpanded = React.useCallback(
       (nodeId: number) =>
-        Array.isArray(expanded) ? expanded.indexOf(nodeId) !== -1 : false,
-      [expanded]
+        Array.isArray(nodesExpanded)
+          ? nodesExpanded.indexOf(nodeId) !== -1
+          : false,
+      [nodesExpanded]
     )
 
     const isNodeSelected = React.useCallback(
@@ -238,31 +243,35 @@ const TreeView = React.forwardRef<HTMLUListElement, TreeViewProps>(
     const handleSelection = (
       event: any,
       nodeId: number,
-      setCallBackfn: (value: React.SetStateAction<number[]>) => void,
+      setStatefn: (value: React.SetStateAction<number[]>) => void,
+      callBackfn: (event: any, value: number[]) => void,
       multiple = false
     ) => {
+      let newSelected = []
       if (multiple) {
-        handleMultipleSelect(event, nodeId, setCallBackfn)
+        newSelected = handleMultipleSelect(nodeId, setStatefn)
       } else {
-        handleSingleSelect(event, nodeId, setCallBackfn)
+        newSelected = handleSingleSelect(nodeId, setStatefn)
       }
+
+      if (callBackfn) callBackfn(event, newSelected)
     }
 
     const handleMultipleSelect = (
-      event,
       value,
-      setCallBackfn: (value: React.SetStateAction<number[]>) => void
-    ) => {
+      setStatefn: (value: React.SetStateAction<number[]>) => void
+    ): number[] => {
       let newSelected
 
-      setCallBackfn(prevState => {
+      setStatefn(prevState => {
+        const oldSelected = prevState || []
         const array = getNodesArray()
         const childNodes = getChildren(array, value)
 
         // unselect parents and children
-        if (prevState.indexOf(value) !== -1) {
+        if (oldSelected.indexOf(value) !== -1) {
           const parents = getParents(value)
-          let filtered = prevState.filter(
+          let filtered = oldSelected.filter(
             id =>
               childNodes.indexOf(id) < 0 &&
               id !== value &&
@@ -273,7 +282,7 @@ const TreeView = React.forwardRef<HTMLUListElement, TreeViewProps>(
         }
         // select children and parents with all child nodes selected
         else {
-          let filtered = prevState.filter(id => childNodes.indexOf(id) < 0)
+          let filtered = oldSelected.filter(id => childNodes.indexOf(id) < 0)
           newSelected = filtered.concat([value], childNodes)
 
           // let parentId = nodes[value].parentId
@@ -284,18 +293,18 @@ const TreeView = React.forwardRef<HTMLUListElement, TreeViewProps>(
 
         return newSelected
       })
+
+      return newSelected
     }
 
     const handleSingleSelect = (
-      event,
       value,
-      setCallBackfn: (value: React.SetStateAction<number[]>) => void
-    ) => {
+      setStatefn: (value: React.SetStateAction<number[]>) => void
+    ): number[] => {
       const newSelected = [value]
+      setStatefn(newSelected)
 
-      setCallBackfn(prevState => {
-        return newSelected
-      })
+      return newSelected
     }
 
     // Helpers

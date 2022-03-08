@@ -110,10 +110,10 @@ function TreeViewWithIcon() {
   const [expanded, setExpanded] = React.useState([])
   const [selected, setSelected] = React.useState([])
 
-  const handleExpansion = React.useCallback((nodesExpanded) => {
+  const handleExpansion = React.useCallback((event, nodesExpanded) => {
     setExpanded(nodesExpanded)
   }, [])
-  const handleSelection = React.useCallback((nodesSelected) => {
+  const handleSelection = React.useCallback((event, nodesSelected) => {
     setSelected(nodesSelected)
   }, [])
   const isExpanded = nodeId => expanded.indexOf(nodeId) > -1
