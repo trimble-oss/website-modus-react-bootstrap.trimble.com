@@ -1,5 +1,5 @@
 import * as React from "react"
-import { Container, Row } from "@trimbleinc/modus-react-bootstrap"
+import { Container, Form, Row } from "@trimbleinc/modus-react-bootstrap"
 import DefaultLayout from "../layouts/DefaultLayout"
 import {
   ModusIconsScripts,
@@ -17,48 +17,46 @@ function TreeViewWithIcon() {
     display: inline-block !important;
   `
 
-  const data = React.useMemo(
-    () => [
-      {
-        nodeId: 1,
-        label: "Inbox",
-        children: [
-          { nodeId: 2, label: "Personal" },
-          { nodeId: 3, label: "Work" },
-          { nodeId: 4, label: "Community" },
-          { nodeId: 5, label: "Social" },
-          { nodeId: 6, label: "Friends" },
-          { nodeId: 7, label: "More..." },
-        ],
-      },
-      {
-        nodeId: 11,
-        label: "Archived",
-        children: [
-          {
-            nodeId: 12,
-            label: "Folder1",
-            children: [
-              {
-                nodeId: 13,
-                label: "Folder2",
-                children: [{ nodeId: 15, label: "File1" }],
-              },
-              { nodeId: 14, label: "File2" },
-            ],
-          },
-          { nodeId: 16, label: "File3" },
-        ],
-      },
-    ],
-    []
-  )
   const getNodeIds = (array): number[] => {
     return array.reduce((r, { nodeId, children }) => {
       r.push(nodeId, ...(children ? getNodeIds(children) : []))
       return r
     }, [])
   }
+
+  const [data, setData] = React.useState([
+    {
+      nodeId: 1,
+      label: "Inbox",
+      children: [
+        { nodeId: 2, label: "Personal" },
+        { nodeId: 3, label: "Work" },
+        { nodeId: 4, label: "Community" },
+        { nodeId: 5, label: "Social" },
+        { nodeId: 6, label: "Friends" },
+        { nodeId: 7, label: "More..." },
+      ],
+    },
+    {
+      nodeId: 11,
+      label: "Archived",
+      children: [
+        {
+          nodeId: 12,
+          label: "Folder1",
+          children: [
+            {
+              nodeId: 13,
+              label: "Folder2",
+              children: [{ nodeId: 15, label: "File1" }],
+            },
+            { nodeId: 14, label: "File2" },
+          ],
+        },
+        { nodeId: 16, label: "File3" },
+      ],
+    },
+  ])
 
   const [expanded, setExpanded] = React.useState([])
   const [selected, setSelected] = React.useState([])
@@ -83,7 +81,52 @@ function TreeViewWithIcon() {
     )
   }
 
-  const CustomTreeViewItem = ({ nodeId, label, children, ...props }) => {
+  const handleAddClick = () => {
+    debugger
+    const newNodeId = getNodeIds(data).length + 1
+    setData(prevState => {
+      const newNode = {
+        nodeId: newNodeId,
+        label: "",
+        isNew: true,
+        children: [],
+      }
+      return [newNode, ...prevState]
+    })
+  }
+
+  const handleAddNode = (event, nodeId, label) => {
+    let newData = data.filter(item => !item.isNew)
+    newData.unshift({ nodeId, label, children: [] })
+    setData(newData)
+  }
+
+  const CustomTreeViewItem = ({
+    nodeId,
+    isNew,
+    onNodeAdd,
+    label,
+    children,
+    ...props
+  }) => {
+    debugger
+    const handleOnKeyUp = e => {
+      if (e.key === "Enter" || e.keyCode === 13) {
+        onNodeAdd(e, nodeId, e.target.value)
+      }
+    }
+    if (isNew) {
+      return (
+        <li className="list-group-item">
+          <Form.Control
+            as="input"
+            autoFocus
+            onKeyUp={handleOnKeyUp}
+            style={{ width: "100%", minHeight: "3rem", height: "100%" }}
+          ></Form.Control>
+        </li>
+      )
+    }
     return (
       <TreeViewItem nodeId={nodeId} label={label}>
         {children &&
@@ -92,6 +135,8 @@ function TreeViewWithIcon() {
               nodeId={item.nodeId}
               label={item.label}
               children={item.children}
+              onNodeAdd={handleAddNode}
+              isNew={item.isNew}
             />
           ))}
       </TreeViewItem>
@@ -114,7 +159,10 @@ function TreeViewWithIcon() {
             <button className="btn btn-icon-only btn-text-dark">
               <StyledIcon className="material-icons">edit</StyledIcon>
             </button>
-            <button className="btn btn-icon-only btn-text-dark">
+            <button
+              className="btn btn-icon-only btn-text-dark"
+              onClick={handleAddClick}
+            >
               <StyledIcon className="material-icons">add</StyledIcon>
             </button>
             <button className="btn btn-icon-only btn-text-dark">
@@ -137,6 +185,8 @@ function TreeViewWithIcon() {
                 nodeId={item.nodeId}
                 label={item.label}
                 children={item.children}
+                isNew={item.isNew}
+                onNodeAdd={handleAddNode}
               />
             ))}
           </TreeView>
