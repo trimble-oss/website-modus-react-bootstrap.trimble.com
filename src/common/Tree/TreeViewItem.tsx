@@ -8,9 +8,10 @@ import TreeViewItemStyled, {
   TreeViewItemGroupStyled,
 } from "./TreeViewItemStyled"
 
-export interface TreeViewItemProps extends React.HTMLProps<HTMLLIElement> {
+export interface TreeViewItemProps
+  extends Omit<React.HTMLProps<HTMLLIElement>, "label"> {
   nodeId: number
-  label: string
+  label: React.ReactNode
   collapseIcon?: React.ReactElement
   expandIcon?: React.ReactElement
   itemIcon?: React.ReactElement
@@ -26,7 +27,7 @@ const propTypes = {
   /**
    * Tree Node Text
    */
-  label: PropTypes.string.isRequired,
+  label: PropTypes.element,
 
   /**
    * Collapse icon for the Tree node.
@@ -198,7 +199,7 @@ function TreeViewItem(
           )}
 
           {finalItemIcon}
-          <span onClick={handleNodeSelection}>{label}</span>
+          <div onClick={handleNodeSelection}>{label}</div>
         </li>
       </TreeViewItemStyled>
 

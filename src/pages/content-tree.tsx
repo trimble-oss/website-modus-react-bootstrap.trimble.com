@@ -17,14 +17,13 @@ function TreeViewWithIcon() {
     display: inline-block !important;
   `
 
-  const getNodeIds = (array): number[] => {
-    return array.reduce((r, { nodeId, children }) => {
-      r.push(nodeId, ...(children ? getNodeIds(children) : []))
-      return r
-    }, [])
+  type Node = {
+    nodeId: number
+    label?: string
+    children?: Node[]
+    isNew?: boolean
   }
-
-  const [data, setData] = React.useState([
+  const [data, setData] = React.useState<Node[]>([
     {
       nodeId: 1,
       label: "Inbox",
@@ -60,29 +59,16 @@ function TreeViewWithIcon() {
 
   const [expanded, setExpanded] = React.useState([])
   const [selected, setSelected] = React.useState([])
+  const [editableNode, setEditableNode] = React.useState<number | null>()
 
-  const handleToggle = (event: any, nodeIds: number[]) => {
-    setExpanded(nodeIds)
-  }
-
-  const handleSelect = (event: any, nodeIds: number[]) => {
-    setSelected(nodeIds)
-  }
-
-  const handleExpandClick = () => {
+  // Action Bar Handlers
+  const handleExpandAllClick = () => {
     setExpanded(oldExpanded =>
       oldExpanded.length === 0 ? getNodeIds(data) : []
     )
   }
 
-  const handleSelectClick = () => {
-    setSelected(oldSelected =>
-      oldSelected.length === 0 ? getNodeIds(data) : []
-    )
-  }
-
   const handleAddClick = () => {
-    debugger
     const newNodeId = getNodeIds(data).length + 1
     setData(prevState => {
       const newNode = {
@@ -95,24 +81,66 @@ function TreeViewWithIcon() {
     })
   }
 
+  const handleEditClick = (event: any) => {
+    if (!selected || selected.length === 0) return
+    setEditableNode(selected[0])
+  }
+
+  // Tree View Handlers
   const handleAddNode = (event, nodeId, label) => {
     let newData = data.filter(item => !item.isNew)
     newData.unshift({ nodeId, label, children: [] })
     setData(newData)
   }
 
+  const handleEditNode = (event, nodeId, label) => {
+    setData(prevState => {
+      let newData = prevState
+      for (let i = 0; i < newData.length; i++) {
+        updateNodeLabel(newData[i], nodeId, label)
+      }
+      return newData
+    })
+    setEditableNode(null)
+  }
+
+  const handleSelect = (event: any, nodeIds: number[]) => {
+    setSelected(nodeIds)
+  }
+
+  // Helpers
+  function getNodeIds(array): number[] {
+    return array.reduce((r, { nodeId, children }) => {
+      r.push(nodeId, ...(children ? getNodeIds(children) : []))
+      return r
+    }, [])
+  }
+
+  function updateNodeLabel(node, nodeId, label) {
+    if (node.nodeId == nodeId) {
+      node.label = label
+    } else if (node.children != null) {
+      for (let i = 0; i < node.children.length; i++) {
+        updateNodeLabel(node.children[i], nodeId, label)
+      }
+    }
+  }
+
+  // Components
   const CustomTreeViewItem = ({
     nodeId,
     isNew,
-    onNodeAdd,
     label,
     children,
+    onNodeAdd,
+    onNodeEdit,
     ...props
   }) => {
-    debugger
+    const isEditable = editableNode === nodeId
     const handleOnKeyUp = e => {
       if (e.key === "Enter" || e.keyCode === 13) {
-        onNodeAdd(e, nodeId, e.target.value)
+        if (isNew) onNodeAdd(e, nodeId, e.target.value)
+        else if (isEditable) onNodeEdit(e, nodeId, e.target.value)
       }
     }
     if (isNew) {
@@ -122,24 +150,44 @@ function TreeViewWithIcon() {
             as="input"
             autoFocus
             onKeyUp={handleOnKeyUp}
-            style={{ width: "100%", minHeight: "3rem", height: "100%" }}
+            size="lg"
+            className="border-0"
           ></Form.Control>
         </li>
       )
     }
+
     return (
-      <TreeViewItem nodeId={nodeId} label={label}>
-        {children &&
-          children.map(item => (
-            <CustomTreeViewItem
-              nodeId={item.nodeId}
-              label={item.label}
-              children={item.children}
-              onNodeAdd={handleAddNode}
-              isNew={item.isNew}
-            />
-          ))}
-      </TreeViewItem>
+      <>
+        <TreeViewItem
+          nodeId={nodeId}
+          label={
+            isEditable ? (
+              <Form.Control
+                as="input"
+                autoFocus
+                onKeyUp={handleOnKeyUp}
+                size="lg"
+                className="border-0"
+              ></Form.Control>
+            ) : (
+              label
+            )
+          }
+        >
+          {children &&
+            children.map(item => (
+              <CustomTreeViewItem
+                nodeId={item.nodeId}
+                children={item.children}
+                label={item.label}
+                isNew={item.isNew}
+                onNodeAdd={handleAddNode}
+                onNodeEdit={handleEditNode}
+              />
+            ))}
+        </TreeViewItem>
+      </>
     )
   }
   return (
@@ -156,7 +204,10 @@ function TreeViewWithIcon() {
             <button className="btn btn-icon-only btn-text-dark">
               <StyledIcon className="material-icons">content_copy</StyledIcon>
             </button>
-            <button className="btn btn-icon-only btn-text-dark">
+            <button
+              className="btn btn-icon-only btn-text-dark"
+              onClick={handleEditClick}
+            >
               <StyledIcon className="material-icons">edit</StyledIcon>
             </button>
             <button
@@ -170,7 +221,7 @@ function TreeViewWithIcon() {
             </button>
             <button
               className="btn btn-icon-only btn-text-dark"
-              onClick={handleExpandClick}
+              onClick={handleExpandAllClick}
             >
               <StyledIcon className="material-icons">
                 {expanded.length === 0 ? "unfold_more" : "unfold_less"}
@@ -179,14 +230,19 @@ function TreeViewWithIcon() {
           </div>
         </div>
         <div className="col">
-          <TreeView id="example" expanded={expanded}>
+          <TreeView
+            id="example"
+            expanded={expanded}
+            onNodeSelect={handleSelect}
+          >
             {data.map(item => (
               <CustomTreeViewItem
                 nodeId={item.nodeId}
-                label={item.label}
                 children={item.children}
+                label={item.label}
                 isNew={item.isNew}
                 onNodeAdd={handleAddNode}
+                onNodeEdit={handleEditNode}
               />
             ))}
           </TreeView>
