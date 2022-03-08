@@ -9,6 +9,9 @@ import {
   TreeViewCondensed,
   TreeViewMultiSelect,
   TreeViewWithItemIcon,
+  TreeViewWithActionBar,
+  StyledIcon,
+  TreeNode,
 } from "../../examples/components/ContentTree"
 import TreeViewItem from "../../common/Tree/TreeViewItem"
 import TreeView from "../../common/Tree/TreeView"
@@ -60,6 +63,16 @@ import TreeView from "../../common/Tree/TreeView"
 >
   Multiple node selection can be enabled through prop <code> multiSelect </code>
   .
+</CodeBlock>
+
+<CodeBlock
+  title="Tree with Actions"
+  code={TreeViewWithActionBar}
+  scope={{ TreeView, TreeViewItem, StyledIcon, TreeNode }}
+  noInline={true}
+>
+  Using the props and callback functions from the <code> TreeView </code>{" "}
+  component we perform more actions on each node.
 </CodeBlock>
 
 <LinkedHeading h="2" className="h1" id="chip-api">

@@ -86,6 +86,21 @@ function TreeViewWithIcon() {
     setEditableNode(selected[0])
   }
 
+  const handleDeleteClick = (event: any) => {
+    if (!selected || selected.length === 0) return
+    const nodeId = selected[0]
+    setData(prevState => {
+      let newData = prevState.filter(f => f.nodeId !== nodeId)
+      if (prevState.length !== newData.length) {
+        return newData
+      }
+      for (let i = 0; i < newData.length; i++) {
+        deleteNodeFromTree(newData[i], nodeId)
+      }
+      return newData
+    })
+  }
+
   // Tree View Handlers
   const handleAddNode = (event, nodeId, label) => {
     let newData = data.filter(item => !item.isNew)
@@ -122,6 +137,19 @@ function TreeViewWithIcon() {
     } else if (node.children != null) {
       for (let i = 0; i < node.children.length; i++) {
         updateNodeLabel(node.children[i], nodeId, label)
+      }
+    }
+  }
+
+  function deleteNodeFromTree(node, nodeId) {
+    if (node.children != null) {
+      for (let i = 0; i < node.children.length; i++) {
+        let filtered = node.children.filter(f => f.nodeId == nodeId)
+        if (filtered && filtered.length > 0) {
+          node.children = node.children.filter(f => f.nodeId != nodeId)
+          return
+        }
+        deleteNodeFromTree(node.children[i], nodeId)
       }
     }
   }
@@ -198,10 +226,13 @@ function TreeViewWithIcon() {
             className="d-flex justify-content-end align-items-center"
             style={{ minHeight: "3rem" }}
           >
-            <button className="btn btn-icon-only btn-text-dark">
+            <button
+              className="btn btn-icon-only btn-text-dark"
+              onClick={handleDeleteClick}
+            >
               <StyledIcon className="material-icons">delete</StyledIcon>
             </button>
-            <button className="btn btn-icon-only btn-text-dark">
+            <button className="btn btn-icon-only btn-text-dark" disabled>
               <StyledIcon className="material-icons">content_copy</StyledIcon>
             </button>
             <button
@@ -216,7 +247,7 @@ function TreeViewWithIcon() {
             >
               <StyledIcon className="material-icons">add</StyledIcon>
             </button>
-            <button className="btn btn-icon-only btn-text-dark">
+            <button className="btn btn-icon-only btn-text-dark" disabled>
               <StyledIcon className="material-icons">drag_indicator</StyledIcon>
             </button>
             <button
