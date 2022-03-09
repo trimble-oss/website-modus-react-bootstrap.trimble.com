@@ -6,13 +6,15 @@ description: A content tree provides users with a way to navigate nested hierarc
 import { graphql } from "gatsby"
 import {
   TreeViewBasic,
+  TreeViewBorderless,
   TreeViewCondensed,
   TreeViewMultiSelect,
   TreeViewWithItemIcon,
   TreeViewWithActionBar,
   StyledIcon,
-  TreeNode,
+  TreeNode as Node,
 } from "../../examples/components/ContentTree"
+import findIndex from "lodash/findIndex"
 import TreeViewItem from "../../common/Tree/TreeViewItem"
 import TreeView from "../../common/Tree/TreeView"
 
@@ -57,6 +59,15 @@ import TreeView from "../../common/Tree/TreeView"
 </CodeBlock>
 
 <CodeBlock
+  title="Borderless Tree"
+  code={TreeViewBorderless}
+  scope={{ TreeView, TreeViewItem }}
+>
+  Add a class of <code>.list-group-borderless</code> to your Tree view for a
+  borderless variant.
+</CodeBlock>
+
+<CodeBlock
   title="Multi Selection Tree"
   code={TreeViewMultiSelect}
   scope={{ TreeView, TreeViewItem }}
@@ -68,7 +79,7 @@ import TreeView from "../../common/Tree/TreeView"
 <CodeBlock
   title="Tree with Actions"
   code={TreeViewWithActionBar}
-  scope={{ TreeView, TreeViewItem, StyledIcon, TreeNode }}
+  scope={{ TreeView, TreeViewItem, StyledIcon, Node, findIndex }}
   noInline={true}
 >
   Using the props and callback functions from the <code> TreeView </code>{" "}

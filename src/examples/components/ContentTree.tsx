@@ -1,110 +1,151 @@
 import styled from "styled-components"
 
 export const TreeViewBasic = `
-<TreeView>
-  <TreeViewItem nodeId={7} label="Inbox">
-    <TreeViewItem nodeId={8} label="Personal"></TreeViewItem>
-    <TreeViewItem nodeId={9} label="Work"></TreeViewItem>
-    <TreeViewItem
-      nodeId={10}
-      label="Community"
-    ></TreeViewItem>
-    <TreeViewItem nodeId={11} label="Social"></TreeViewItem>
-    <TreeViewItem nodeId={12} label="Friends"></TreeViewItem>
-    <TreeViewItem nodeId={14} label="More ..."></TreeViewItem>
-  </TreeViewItem>
-  <TreeViewItem nodeId={15} label="Sent">
-    <TreeViewItem nodeId={16} label="Mail1"></TreeViewItem>
-    <TreeViewItem nodeId={17} label="Mail2"></TreeViewItem>
-    <TreeViewItem nodeId={18} label="Mail3"></TreeViewItem>
-  </TreeViewItem>
-  <TreeViewItem nodeId={1} label="Archived">
-    <TreeViewItem nodeId={2} label="Folder1">
-      <TreeViewItem nodeId={3} label="File1"></TreeViewItem>
-      <TreeViewItem nodeId={4} label="Folder2">
-        <TreeViewItem nodeId={5} label="File2"></TreeViewItem>
-      </TreeViewItem>
-      <TreeViewItem nodeId={6} label="File3"></TreeViewItem>
+<div style={{width: "400px"}}>
+  <TreeView>
+    <TreeViewItem nodeId={7} label="Inbox">
+      <TreeViewItem nodeId={8} label="Personal"></TreeViewItem>
+      <TreeViewItem nodeId={9} label="Work"></TreeViewItem>
+      <TreeViewItem
+        nodeId={10}
+        label="Community"
+      ></TreeViewItem>
+      <TreeViewItem nodeId={11} label="Social"></TreeViewItem>
+      <TreeViewItem nodeId={12} label="Friends"></TreeViewItem>
+      <TreeViewItem nodeId={14} label="More ..."></TreeViewItem>
     </TreeViewItem>
-  </TreeViewItem>
-  <TreeViewItem nodeId={19} label="Spam"></TreeViewItem>
-</TreeView>
+    <TreeViewItem nodeId={15} label="Sent">
+      <TreeViewItem nodeId={16} label="Mail1"></TreeViewItem>
+      <TreeViewItem nodeId={17} label="Mail2"></TreeViewItem>
+      <TreeViewItem nodeId={18} label="Mail3"></TreeViewItem>
+    </TreeViewItem>
+    <TreeViewItem nodeId={1} label="Archived">
+      <TreeViewItem nodeId={2} label="Folder1">
+        <TreeViewItem nodeId={3} label="File1"></TreeViewItem>
+        <TreeViewItem nodeId={4} label="Folder2">
+          <TreeViewItem nodeId={5} label="File2"></TreeViewItem>
+        </TreeViewItem>
+        <TreeViewItem nodeId={6} label="File3"></TreeViewItem>
+      </TreeViewItem>
+    </TreeViewItem>
+    <TreeViewItem nodeId={19} label="Spam"></TreeViewItem>
+  </TreeView>
+</div>
+
+`
+
+export const TreeViewBorderless = `
+<div style={{width: "400px"}}>
+  <TreeView className="list-group-borderless">
+    <TreeViewItem nodeId={7} label="Inbox">
+      <TreeViewItem nodeId={8} label="Personal"></TreeViewItem>
+      <TreeViewItem nodeId={9} label="Work"></TreeViewItem>
+      <TreeViewItem
+        nodeId={10}
+        label="Community"
+      ></TreeViewItem>
+      <TreeViewItem nodeId={11} label="Social"></TreeViewItem>
+      <TreeViewItem nodeId={12} label="Friends"></TreeViewItem>
+      <TreeViewItem nodeId={14} label="More ..."></TreeViewItem>
+    </TreeViewItem>
+    <TreeViewItem nodeId={15} label="Sent">
+      <TreeViewItem nodeId={16} label="Mail1"></TreeViewItem>
+      <TreeViewItem nodeId={17} label="Mail2"></TreeViewItem>
+      <TreeViewItem nodeId={18} label="Mail3"></TreeViewItem>
+    </TreeViewItem>
+    <TreeViewItem nodeId={1} label="Archived">
+      <TreeViewItem nodeId={2} label="Folder1">
+        <TreeViewItem nodeId={3} label="File1"></TreeViewItem>
+        <TreeViewItem nodeId={4} label="Folder2">
+          <TreeViewItem nodeId={5} label="File2"></TreeViewItem>
+        </TreeViewItem>
+        <TreeViewItem nodeId={6} label="File3"></TreeViewItem>
+      </TreeViewItem>
+    </TreeViewItem>
+    <TreeViewItem nodeId={19} label="Spam"></TreeViewItem>
+  </TreeView>
+</div>
+
 `
 
 export const TreeViewMultiSelect = `
-<TreeView multiSelectCheckBox>
-  <TreeViewItem nodeId={1} label="Layout">
-    <TreeViewItem nodeId={2} label="Main Layout">
-      <TreeViewItem nodeId={3} label="Header"></TreeViewItem>
-      <TreeViewItem nodeId={4} label="Body">
-        <TreeViewItem
-          nodeId={5}
-          label="Section"
-        ></TreeViewItem>
+<div style={{width: "400px"}}>
+  <TreeView multiSelectCheckBox>
+    <TreeViewItem nodeId={1} label="Layout">
+      <TreeViewItem nodeId={2} label="Main Layout">
+        <TreeViewItem nodeId={3} label="Header"></TreeViewItem>
+        <TreeViewItem nodeId={4} label="Body">
+          <TreeViewItem
+            nodeId={5}
+            label="Section"
+          ></TreeViewItem>
+        </TreeViewItem>
+        <TreeViewItem nodeId={6} label="Footer"></TreeViewItem>
       </TreeViewItem>
-      <TreeViewItem nodeId={6} label="Footer"></TreeViewItem>
     </TreeViewItem>
-  </TreeViewItem>
-  <TreeViewItem nodeId={7} label="UI Elements">
-    <TreeViewItem nodeId={8} label="Accordion"></TreeViewItem>
-    <TreeViewItem nodeId={9} label="Alerts"></TreeViewItem>
-    <TreeViewItem nodeId={10} label="Badges"></TreeViewItem>
+    <TreeViewItem nodeId={7} label="UI Elements">
+      <TreeViewItem nodeId={8} label="Accordion"></TreeViewItem>
+      <TreeViewItem nodeId={9} label="Alerts"></TreeViewItem>
+      <TreeViewItem nodeId={10} label="Badges"></TreeViewItem>
+      <TreeViewItem
+        nodeId={11}
+        label="Breadcrumbs"
+      ></TreeViewItem>
+      <TreeViewItem nodeId={12} label="Buttons"></TreeViewItem>
+      <TreeViewItem nodeId={13} label="Cards"></TreeViewItem>
+      <TreeViewItem nodeId={14} label="More ..."></TreeViewItem>
+    </TreeViewItem>
+    <TreeViewItem nodeId={15} label="Patterns">
+      <TreeViewItem nodeId={16} label="Events"></TreeViewItem>
+      <TreeViewItem nodeId={17} label="State"></TreeViewItem>
+      <TreeViewItem nodeId={18} label="Styles"></TreeViewItem>
+    </TreeViewItem>
     <TreeViewItem
-      nodeId={11}
-      label="Breadcrumbs"
+      nodeId={19}
+      label="Configuration"
     ></TreeViewItem>
-    <TreeViewItem nodeId={12} label="Buttons"></TreeViewItem>
-    <TreeViewItem nodeId={13} label="Cards"></TreeViewItem>
-    <TreeViewItem nodeId={14} label="More ..."></TreeViewItem>
-  </TreeViewItem>
-  <TreeViewItem nodeId={15} label="Patterns">
-    <TreeViewItem nodeId={16} label="Events"></TreeViewItem>
-    <TreeViewItem nodeId={17} label="State"></TreeViewItem>
-    <TreeViewItem nodeId={18} label="Styles"></TreeViewItem>
-  </TreeViewItem>
-  <TreeViewItem
-    nodeId={19}
-    label="Configuration"
-  ></TreeViewItem>
-</TreeView>
+  </TreeView>
+</div>
 `
 
 export const TreeViewCondensed = `
-<TreeView className="list-group-condensed">
-  <TreeViewItem nodeId={1} label="Layout">
-    <TreeViewItem nodeId={2} label="Main Layout">
-      <TreeViewItem nodeId={3} label="Header"></TreeViewItem>
-      <TreeViewItem nodeId={4} label="Body">
-        <TreeViewItem
-          nodeId={5}
-          label="Section"
-        ></TreeViewItem>
+<div style={{width: "400px"}}>
+  <TreeView className="list-group-condensed">
+    <TreeViewItem nodeId={1} label="Layout">
+      <TreeViewItem nodeId={2} label="Main Layout">
+        <TreeViewItem nodeId={3} label="Header"></TreeViewItem>
+        <TreeViewItem nodeId={4} label="Body">
+          <TreeViewItem
+            nodeId={5}
+            label="Section"
+          ></TreeViewItem>
+        </TreeViewItem>
+        <TreeViewItem nodeId={6} label="Footer"></TreeViewItem>
       </TreeViewItem>
-      <TreeViewItem nodeId={6} label="Footer"></TreeViewItem>
     </TreeViewItem>
-  </TreeViewItem>
-  <TreeViewItem nodeId={7} label="UI Elements">
-    <TreeViewItem nodeId={8} label="Accordion"></TreeViewItem>
-    <TreeViewItem nodeId={9} label="Alerts"></TreeViewItem>
-    <TreeViewItem nodeId={10} label="Badges"></TreeViewItem>
+    <TreeViewItem nodeId={7} label="UI Elements">
+      <TreeViewItem nodeId={8} label="Accordion"></TreeViewItem>
+      <TreeViewItem nodeId={9} label="Alerts"></TreeViewItem>
+      <TreeViewItem nodeId={10} label="Badges"></TreeViewItem>
+      <TreeViewItem
+        nodeId={11}
+        label="Breadcrumbs"
+      ></TreeViewItem>
+      <TreeViewItem nodeId={12} label="Buttons"></TreeViewItem>
+      <TreeViewItem nodeId={13} label="Cards"></TreeViewItem>
+      <TreeViewItem nodeId={14} label="More ..."></TreeViewItem>
+    </TreeViewItem>
+    <TreeViewItem nodeId={15} label="Patterns">
+      <TreeViewItem nodeId={16} label="Events"></TreeViewItem>
+      <TreeViewItem nodeId={17} label="State"></TreeViewItem>
+      <TreeViewItem nodeId={18} label="Styles"></TreeViewItem>
+    </TreeViewItem>
     <TreeViewItem
-      nodeId={11}
-      label="Breadcrumbs"
+      nodeId={19}
+      label="Configuration"
     ></TreeViewItem>
-    <TreeViewItem nodeId={12} label="Buttons"></TreeViewItem>
-    <TreeViewItem nodeId={13} label="Cards"></TreeViewItem>
-    <TreeViewItem nodeId={14} label="More ..."></TreeViewItem>
-  </TreeViewItem>
-  <TreeViewItem nodeId={15} label="Patterns">
-    <TreeViewItem nodeId={16} label="Events"></TreeViewItem>
-    <TreeViewItem nodeId={17} label="State"></TreeViewItem>
-    <TreeViewItem nodeId={18} label="Styles"></TreeViewItem>
-  </TreeViewItem>
-  <TreeViewItem
-    nodeId={19}
-    label="Configuration"
-  ></TreeViewItem>
-</TreeView>
+  </TreeView>
+</div>
 `
 
 export const TreeViewWithItemIcon = `
@@ -135,24 +176,26 @@ function TreeViewWithIcon() {
   }
 
   return (
-    <TreeView onNodeToggle={handleExpansion} onNodeSelect={handleSelection} defaultExpanded={[1]}>
-      <TreeViewItem
-        nodeId={1}
-        label="Inbox"
-        itemIcon={
-          <i className="material-icons">
-            {isExpanded(1) ? "folder_open" : "folder"}
-          </i>
-        }
-      >
-        <CustomTreeViewItem nodeId={4} label="Personal" />
-        <CustomTreeViewItem nodeId={5} label="Work" />
-        <CustomTreeViewItem nodeId={3} label="Community" />
-        <CustomTreeViewItem nodeId={2} label="Social" />
-        <CustomTreeViewItem nodeId={6} label="Friends" />
-        <CustomTreeViewItem nodeId={8} label="More ..." />
-      </TreeViewItem>
-    </TreeView>
+    <div style={{width: "400px"}}>
+      <TreeView onNodeToggle={handleExpansion} onNodeSelect={handleSelection} defaultExpanded={[1]}>
+        <TreeViewItem
+          nodeId={1}
+          label="Inbox"
+          itemIcon={
+            <i className="material-icons">
+              {isExpanded(1) ? "folder_open" : "folder"}
+            </i>
+          }
+        >
+          <CustomTreeViewItem nodeId={4} label="Personal" />
+          <CustomTreeViewItem nodeId={5} label="Work" />
+          <CustomTreeViewItem nodeId={3} label="Community" />
+          <CustomTreeViewItem nodeId={2} label="Social" />
+          <CustomTreeViewItem nodeId={6} label="Friends" />
+          <CustomTreeViewItem nodeId={8} label="More ..." />
+        </TreeViewItem>
+      </TreeView>
+    </div>
   )
 }
 render(<TreeViewWithIcon />);`
@@ -208,6 +251,7 @@ function TreeViewWithActionBar() {
   const [expanded, setExpanded] = React.useState([])
   const [selected, setSelected] = React.useState([])
   const [editableNode, setEditableNode] = React.useState()
+  const nodesSelected = selected && selected.length > 1
 
   // Action Bar Handlers
   const handleExpandAllClick = () => {
@@ -217,52 +261,69 @@ function TreeViewWithActionBar() {
   }
 
   const handleAddClick = () => {
-    const newNodeId = getNodeIds(data).length + 1
     setData(prevState => {
+      const nodeId = selected[0] || data[0].nodeId
+      const newNodeId = getNodeIds(data).length + 1
       const newNode = {
         nodeId: newNodeId,
         label: "",
         isNew: true,
         children: [],
       }
-      return [newNode, ...prevState]
+      return updateNodes([...prevState], nodeId, (nodeIndex, nodes) =>
+        nodes.splice(nodeIndex, 0, newNode)
+      )
+    })
+  }
+
+  const handleDuplicateClick = () => {
+    setData(prevState => {
+      const nodeId = selected[0]
+      const newNodeId = getNodeIds(data).length + 1
+      return updateNodes([...prevState], nodeId, (nodeIndex, nodes) => {
+        let copy = nodes[nodeIndex]
+        nodes.splice(nodeIndex + 1, 0, {
+          ...copy,
+          label: "Copy of " + copy.label,
+          nodeId: newNodeId,
+        })
+        setEditableNode(newNodeId)
+      })
     })
   }
 
   const handleEditClick = (event) => {
-    if (!selected || selected.length === 0) return
     setEditableNode(selected[0])
   }
 
   const handleDeleteClick = (event) => {
-    if (!selected || selected.length === 0) return
     const nodeId = selected[0]
     setData(prevState => {
-      let newData = prevState.filter(f => f.nodeId !== nodeId)
-      if (prevState.length !== newData.length) {
-        return newData
-      }
-      for (let i = 0; i < newData.length; i++) {
-        deleteNodeFromTree(newData[i], nodeId)
-      }
-      return newData
+      return updateNodes([...prevState], nodeId, (nodeIndex, nodes) =>
+        nodes.splice(nodeIndex, 1)
+      )
     })
   }
 
   // Tree View Handlers
   const handleAddNode = (event, nodeId, label) => {
-    let newData = data.filter(item => !item.isNew)
-    newData.unshift({ nodeId, label, children: [] })
-    setData(newData)
+    setData(prevState => {
+      return updateNodes([...prevState], nodeId, (nodeIndex, nodes) =>
+        nodes.splice(nodeIndex, 1, {
+          ...nodes[nodeIndex],
+          nodeId,
+          ...{ label, isNew: undefined },
+        })
+      )
+    })
+    setEditableNode(null)
   }
 
   const handleEditNode = (event, nodeId, label) => {
     setData(prevState => {
-      let newData = prevState
-      for (let i = 0; i < newData.length; i++) {
-        updateNodeLabel(newData[i], nodeId, label)
-      }
-      return newData
+      return updateNodes([...prevState], nodeId, (nodeIndex, nodes) =>
+        nodes.splice(nodeIndex, 1, { ...nodes[nodeIndex], nodeId, label })
+      )
     })
     setEditableNode(null)
   }
@@ -279,27 +340,17 @@ function TreeViewWithActionBar() {
     }, [])
   }
 
-  function updateNodeLabel(node, nodeId, label) {
-    if (node.nodeId == nodeId) {
-      node.label = label
-    } else if (node.children != null) {
-      for (let i = 0; i < node.children.length; i++) {
-        updateNodeLabel(node.children[i], nodeId, label)
+  function updateNodes(nodes, nodeId, action) {
+    if (!nodes) return nodes
+    let nodeIndex = findIndex(nodes, node => node.nodeId === nodeId)
+    if (nodeIndex >= 0) {
+      action(nodeIndex, nodes)
+    } else {
+      for (let i = 0; i < nodes.length; i++) {
+        nodes[i].children = updateNodes(nodes[i].children, nodeId, action)
       }
     }
-  }
-
-  function deleteNodeFromTree(node, nodeId) {
-    if (node.children != null) {
-      for (let i = 0; i < node.children.length; i++) {
-        let filtered = node.children.filter(f => f.nodeId == nodeId)
-        if (filtered && filtered.length > 0) {
-          node.children = node.children.filter(f => f.nodeId != nodeId)
-          return
-        }
-        deleteNodeFromTree(node.children[i], nodeId)
-      }
-    }
+    return nodes
   }
 
   // Components
@@ -321,13 +372,15 @@ function TreeViewWithActionBar() {
     }
     if (isNew) {
       return (
-        <li className="list-group-item">
+        <li className="list-group-item list-item-leftright-control">
+          <i className="modus-icons">blank</i>
           <Form.Control
             as="input"
             autoFocus
             onKeyUp={handleOnKeyUp}
             size="lg"
             className="border-0"
+            defaultValue={label}
           ></Form.Control>
         </li>
       )
@@ -345,6 +398,7 @@ function TreeViewWithActionBar() {
                 onKeyUp={handleOnKeyUp}
                 size="lg"
                 className="border-0"
+                defaultValue={label}
               ></Form.Control>
             ) : (
               label
@@ -366,68 +420,78 @@ function TreeViewWithActionBar() {
       </>
     )
   }
+
   return (
-    <div className="container w-70">
-      <div className="row row-cols-1">
-        <div className="col">
-          <div
-            className="d-flex justify-content-end align-items-center"
-            style={{ minHeight: "3rem" }}
-          >
-            <button
-              className="btn btn-icon-only btn-text-dark"
-              onClick={handleDeleteClick}
+    <div style={{width: "400px"}}>
+      <div className="container">
+        <div className="row row-cols-1">
+          <div className="col">
+            <div
+              className="d-flex justify-content-end align-items-center"
+              style={{ minHeight: "3rem" }}
             >
-              <StyledIcon className="material-icons">delete</StyledIcon>
-            </button>
-            <button className="btn btn-icon-only btn-text-dark" disabled>
-              <StyledIcon className="material-icons">content_copy</StyledIcon>
-            </button>
-            <button
-              className="btn btn-icon-only btn-text-dark"
-              onClick={handleEditClick}
-            >
-              <StyledIcon className="material-icons">edit</StyledIcon>
-            </button>
-            <button
-              className="btn btn-icon-only btn-text-dark"
-              onClick={handleAddClick}
-            >
-              <StyledIcon className="material-icons">add</StyledIcon>
-            </button>
-            <button className="btn btn-icon-only btn-text-dark" disabled>
-              <StyledIcon className="material-icons">drag_indicator</StyledIcon>
-            </button>
-            <button
-              className="btn btn-icon-only btn-text-dark"
-              onClick={handleExpandAllClick}
-            >
-              <StyledIcon className="material-icons">
-                {expanded.length === 0 ? "unfold_more" : "unfold_less"}
-              </StyledIcon>
-            </button>
+              <button
+                className="btn btn-icon-only btn-text-dark"
+                onClick={handleDeleteClick}
+                disabled={nodesSelected}
+              >
+                <StyledIcon className="material-icons">delete</StyledIcon>
+              </button>
+              <button
+                className="btn btn-icon-only btn-text-dark"
+                disabled={nodesSelected}
+                onClick={handleDuplicateClick}
+              >
+                <StyledIcon className="material-icons">content_copy</StyledIcon>
+              </button>
+              <button
+                className="btn btn-icon-only btn-text-dark"
+                onClick={handleEditClick}
+                disabled={nodesSelected}
+              >
+                <StyledIcon className="material-icons">edit</StyledIcon>
+              </button>
+              <button
+                className="btn btn-icon-only btn-text-dark"
+                onClick={handleAddClick}
+              >
+                <StyledIcon className="material-icons">add</StyledIcon>
+              </button>
+              <button className="btn btn-icon-only btn-text-dark" disabled>
+                <StyledIcon className="material-icons">drag_indicator</StyledIcon>
+              </button>
+              <button
+                className="btn btn-icon-only btn-text-dark"
+                onClick={handleExpandAllClick}
+              >
+                <StyledIcon className="material-icons">
+                  {expanded.length === 0 ? "unfold_more" : "unfold_less"}
+                </StyledIcon>
+              </button>
+            </div>
           </div>
-        </div>
-        <div className="col">
-          <TreeView
-            id="example"
-            expanded={expanded}
-            onNodeSelect={handleSelect}
-          >
-            {data.map(item => (
-              <CustomTreeViewItem
-                nodeId={item.nodeId}
-                children={item.children}
-                label={item.label}
-                isNew={item.isNew}
-                onNodeAdd={handleAddNode}
-                onNodeEdit={handleEditNode}
-              />
-            ))}
-          </TreeView>
+          <div className="col">
+            <TreeView
+              id="example"
+              expanded={expanded}
+              onNodeSelect={handleSelect}
+            >
+              {data.map(item => (
+                <CustomTreeViewItem
+                  nodeId={item.nodeId}
+                  children={item.children}
+                  label={item.label}
+                  isNew={item.isNew}
+                  onNodeAdd={handleAddNode}
+                  onNodeEdit={handleEditNode}
+                />
+              ))}
+            </TreeView>
+          </div>
         </div>
       </div>
     </div>
+
   )
 }
 

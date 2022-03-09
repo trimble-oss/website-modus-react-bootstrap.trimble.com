@@ -8,8 +8,10 @@ import {
 import TreeViewItem from "../common/Tree/TreeViewItem"
 import TreeView from "../common/Tree/TreeView"
 import styled from "styled-components"
+import findIndex from "lodash/findIndex"
+import { TreeNode as Node } from "../examples/components/ContentTree"
 
-function TreeViewWithIcon() {
+function TreeViewWithActionBar() {
   const StyledIcon = styled("i")`
     line-height: 0.8 !important;
     top: 0 !important;
@@ -17,12 +19,6 @@ function TreeViewWithIcon() {
     display: inline-block !important;
   `
 
-  type Node = {
-    nodeId: number
-    label?: string
-    children?: Node[]
-    isNew?: boolean
-  }
   const [data, setData] = React.useState<Node[]>([
     {
       nodeId: 1,
@@ -60,6 +56,7 @@ function TreeViewWithIcon() {
   const [expanded, setExpanded] = React.useState([])
   const [selected, setSelected] = React.useState([])
   const [editableNode, setEditableNode] = React.useState<number | null>()
+  const nodesSelected = selected && selected.length > 1
 
   // Action Bar Handlers
   const handleExpandAllClick = () => {
@@ -69,52 +66,72 @@ function TreeViewWithIcon() {
   }
 
   const handleAddClick = () => {
-    const newNodeId = getNodeIds(data).length + 1
     setData(prevState => {
+      const nodeId = selected[0] || data[0].nodeId
+      const newNodeId = getNodeIds(data).length + 1
       const newNode = {
         nodeId: newNodeId,
         label: "",
         isNew: true,
         children: [],
       }
-      return [newNode, ...prevState]
+
+      return updateNodes([...prevState], nodeId, (nodeIndex, nodes) =>
+        nodes.splice(nodeIndex, 0, newNode)
+      )
+    })
+  }
+
+  const handleDuplicateClick = () => {
+    setData(prevState => {
+      const nodeId = selected[0]
+      const newNodeId = getNodeIds(data).length + 1
+
+      return updateNodes([...prevState], nodeId, (nodeIndex, nodes) => {
+        let copy = nodes[nodeIndex]
+        nodes.splice(nodeIndex + 1, 0, {
+          ...copy,
+          label: "Copy of " + copy.label,
+          nodeId: newNodeId,
+        })
+        setEditableNode(newNodeId)
+      })
     })
   }
 
   const handleEditClick = (event: any) => {
-    if (!selected || selected.length === 0) return
     setEditableNode(selected[0])
   }
 
   const handleDeleteClick = (event: any) => {
-    if (!selected || selected.length === 0) return
     const nodeId = selected[0]
     setData(prevState => {
-      let newData = prevState.filter(f => f.nodeId !== nodeId)
-      if (prevState.length !== newData.length) {
-        return newData
-      }
-      for (let i = 0; i < newData.length; i++) {
-        deleteNodeFromTree(newData[i], nodeId)
-      }
-      return newData
+      return updateNodes([...prevState], nodeId, (nodeIndex, nodes) =>
+        nodes.splice(nodeIndex, 1)
+      )
     })
   }
 
   // Tree View Handlers
   const handleAddNode = (event, nodeId, label) => {
-    let newData = data.filter(item => !item.isNew)
-    newData.unshift({ nodeId, label, children: [] })
-    setData(newData)
+    setData(prevState => {
+      return updateNodes([...prevState], nodeId, (nodeIndex, nodes) =>
+        nodes.splice(nodeIndex, 1, {
+          ...nodes[nodeIndex],
+          nodeId,
+          ...{ label, isNew: undefined },
+        })
+      )
+    })
+
+    setEditableNode(null)
   }
 
   const handleEditNode = (event, nodeId, label) => {
     setData(prevState => {
-      let newData = prevState
-      for (let i = 0; i < newData.length; i++) {
-        updateNodeLabel(newData[i], nodeId, label)
-      }
-      return newData
+      return updateNodes([...prevState], nodeId, (nodeIndex, nodes) =>
+        nodes.splice(nodeIndex, 1, { ...nodes[nodeIndex], nodeId, label })
+      )
     })
     setEditableNode(null)
   }
@@ -131,27 +148,18 @@ function TreeViewWithIcon() {
     }, [])
   }
 
-  function updateNodeLabel(node, nodeId, label) {
-    if (node.nodeId == nodeId) {
-      node.label = label
-    } else if (node.children != null) {
-      for (let i = 0; i < node.children.length; i++) {
-        updateNodeLabel(node.children[i], nodeId, label)
-      }
-    }
-  }
+  function updateNodes(nodes: Node[], nodeId, action) {
+    if (!nodes) return nodes
 
-  function deleteNodeFromTree(node, nodeId) {
-    if (node.children != null) {
-      for (let i = 0; i < node.children.length; i++) {
-        let filtered = node.children.filter(f => f.nodeId == nodeId)
-        if (filtered && filtered.length > 0) {
-          node.children = node.children.filter(f => f.nodeId != nodeId)
-          return
-        }
-        deleteNodeFromTree(node.children[i], nodeId)
+    let nodeIndex = findIndex(nodes, node => node.nodeId === nodeId)
+    if (nodeIndex >= 0) {
+      action(nodeIndex, nodes)
+    } else {
+      for (let i = 0; i < nodes.length; i++) {
+        nodes[i].children = updateNodes(nodes[i].children, nodeId, action)
       }
     }
+    return nodes
   }
 
   // Components
@@ -173,13 +181,15 @@ function TreeViewWithIcon() {
     }
     if (isNew) {
       return (
-        <li className="list-group-item">
+        <li className="list-group-item list-item-leftright-control">
+          <i className="modus-icons">blank</i>
           <Form.Control
             as="input"
             autoFocus
             onKeyUp={handleOnKeyUp}
             size="lg"
             className="border-0"
+            defaultValue={label}
           ></Form.Control>
         </li>
       )
@@ -197,6 +207,7 @@ function TreeViewWithIcon() {
                 onKeyUp={handleOnKeyUp}
                 size="lg"
                 className="border-0"
+                defaultValue={label}
               ></Form.Control>
             ) : (
               label
@@ -218,6 +229,7 @@ function TreeViewWithIcon() {
       </>
     )
   }
+
   return (
     <div className="container w-50">
       <div className="row row-cols-1">
@@ -229,15 +241,21 @@ function TreeViewWithIcon() {
             <button
               className="btn btn-icon-only btn-text-dark"
               onClick={handleDeleteClick}
+              disabled={nodesSelected}
             >
               <StyledIcon className="material-icons">delete</StyledIcon>
             </button>
-            <button className="btn btn-icon-only btn-text-dark" disabled>
+            <button
+              className="btn btn-icon-only btn-text-dark"
+              disabled={nodesSelected}
+              onClick={handleDuplicateClick}
+            >
               <StyledIcon className="material-icons">content_copy</StyledIcon>
             </button>
             <button
               className="btn btn-icon-only btn-text-dark"
               onClick={handleEditClick}
+              disabled={nodesSelected}
             >
               <StyledIcon className="material-icons">edit</StyledIcon>
             </button>
@@ -294,7 +312,7 @@ const ContentTreePage = props => {
                 <h1 className=" mt-4 ">
                   <ModusIconsScripts />
                   <ModusLayoutScripts />
-                  <TreeViewWithIcon />
+                  <TreeViewWithActionBar />
                 </h1>
               </div>
             </Row>
