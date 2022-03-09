@@ -36,7 +36,7 @@ const TreeViewItemGroupStyleWrapper = React.forwardRef<
 })
 
 const TreeViewItemStyled = styled(TreeViewItemStyleWrapper)`
-  li {
+  li.modus-tree-view-item {
     padding: 5px 8px !important;
     cursor: pointer;
     padding-left: ${props => props.level * 20}px !important;
@@ -50,6 +50,8 @@ const TreeViewItemStyled = styled(TreeViewItemStyleWrapper)`
       cursor: pointer;
       font-size: 1.25rem !important;
     }
+
+    align-items: stretch !important;
   }
 `
 export const TreeViewItemGroupStyled = styled(TreeViewItemGroupStyleWrapper)`

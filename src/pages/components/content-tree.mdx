@@ -34,6 +34,10 @@ import TreeView from "../../common/Tree/TreeView"
   <code> TreeViewItem </code> takes <code> nodeId </code> which should be a
   unique number for each node and the <code> label </code> prop to display the
   node text.
+  <p>
+    Clicking the collapse/expand button in each content tree item expands or
+    collapse a tree view item and clicking on the label selects it.
+  </p>
 </CodeBlock>
 
 <CodeBlock
@@ -72,8 +76,7 @@ import TreeView from "../../common/Tree/TreeView"
   code={TreeViewMultiSelect}
   scope={{ TreeView, TreeViewItem }}
 >
-  Multiple node selection can be enabled through prop <code> multiSelect </code>
-  .
+  Multiple node selection can be enabled through prop <code> multiSelect </code>.
 </CodeBlock>
 
 <CodeBlock

@@ -170,11 +170,14 @@ function TreeViewItem(
       <TreeViewItemStyled
         level={level}
         checkBoxSelection={checkBoxSelection ? "true" : "false"}
-        itemIcon={itemIcon ? "true" : "false"}
+        itemIcon={finalItemIcon ? "true" : "false"}
+        role="treeitem"
+        aria-expanded={expandable ? expanded : null}
+        aria-selected={nodeSelected}
       >
         <li
           className={classNames(
-            "list-group-item list-item-leftright-control",
+            "modus-tree-view-item list-group-item list-item-leftright-control",
             nodeSelected && "active",
             className
           )}
@@ -182,7 +185,10 @@ function TreeViewItem(
           ref={ref}
         >
           {expandable ? (
-            <div onClick={handleExpansion}>
+            <div
+              onClick={handleExpansion}
+              className="d-flex align-items-center"
+            >
               {expanded ? finalExpandIcon : finalCollapseIcon}
             </div>
           ) : (
@@ -190,16 +196,25 @@ function TreeViewItem(
           )}
 
           {checkBoxSelection && (
-            <IndeterminateCheckbox
-              checked={checkBoxSelected}
-              id={`${rootId}_cbselection_${nodeId}`}
-              onClick={handleCheckBoxSelection}
-              indeterminate={checkBoxIndeterminate}
-            />
+            <div className="d-flex align-items-center">
+              <IndeterminateCheckbox
+                checked={checkBoxSelected}
+                id={`${rootId}_cbselection_${nodeId}`}
+                onClick={handleCheckBoxSelection}
+                indeterminate={checkBoxIndeterminate}
+              />
+            </div>
           )}
 
-          {finalItemIcon}
-          <div onClick={handleNodeSelection}>{label}</div>
+          {finalItemIcon && (
+            <div className="d-flex align-items-center">{finalItemIcon}</div>
+          )}
+          <div
+            onClick={handleNodeSelection}
+            className="d-flex align-items-center"
+          >
+            {label}
+          </div>
         </li>
       </TreeViewItemStyled>
 
@@ -207,7 +222,10 @@ function TreeViewItem(
         <TreeViewItemContext.Provider
           value={{ parentId: nodeId, level: level + 1 }}
         >
-          <TreeViewItemGroupStyled expanded={expanded ? "true" : "false"}>
+          <TreeViewItemGroupStyled
+            expanded={expanded ? "true" : "false"}
+            role="group"
+          >
             {children}
           </TreeViewItemGroupStyled>
         </TreeViewItemContext.Provider>

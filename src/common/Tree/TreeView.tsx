@@ -366,6 +366,7 @@ const TreeView = React.forwardRef<HTMLUListElement, TreeViewProps>(
             {...props}
             id={id}
             ref={ref}
+            role="tree"
           >
             {children}
           </ul>
