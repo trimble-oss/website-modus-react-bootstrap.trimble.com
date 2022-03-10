@@ -10,6 +10,8 @@ import TreeView from "../common/Tree/TreeView"
 import styled from "styled-components"
 import findIndex from "lodash/findIndex"
 import { TreeNode as Node } from "../examples/components/ContentTree"
+import { useEffect } from "react"
+import useForceUpdate from "@restart/hooks/useForceUpdate"
 
 function TreeViewWithActionBar() {
   const StyledIcon = styled("i")`
@@ -33,30 +35,64 @@ function TreeViewWithActionBar() {
       ],
     },
     {
-      nodeId: 11,
+      nodeId: 8,
       label: "Archived",
       children: [
         {
-          nodeId: 12,
+          nodeId: 9,
           label: "Folder1",
           children: [
             {
-              nodeId: 13,
+              nodeId: 10,
               label: "Folder2",
-              children: [{ nodeId: 15, label: "File1" }],
+              children: [{ nodeId: 13, label: "File1" }],
             },
-            { nodeId: 14, label: "File2" },
+            { nodeId: 11, label: "File2" },
           ],
         },
-        { nodeId: 16, label: "File3" },
+        { nodeId: 12, label: "File3" },
       ],
     },
   ])
 
   const [expanded, setExpanded] = React.useState([])
   const [selected, setSelected] = React.useState([])
-  const [editableNode, setEditableNode] = React.useState<number | null>()
-  const nodesSelected = selected && selected.length > 1
+  const forceUpdate = useForceUpdate()
+  // const [editableNode, setEditableNode] = React.useState<number | null>()
+  const ref = React.useRef(null)
+  const editableNode = React.useRef(null)
+
+  const handleClickOutside = e => {
+    if (
+      ref.current &&
+      !ref.current.contains(e.target) &&
+      editableNode.current
+    ) {
+      setData(prevData => {
+        let newData = updateNodes(
+          [...prevData],
+          editableNode.current,
+          (nodeIndex, nodes) => {
+            if (nodes[nodeIndex].isNew) nodes.splice(nodeIndex, 1)
+          }
+        )
+
+        editableNode.current = null
+        return newData
+      })
+    }
+  }
+
+  useEffect(() => {
+    if (!(typeof window === "undefined" || !window.document)) {
+      window.document.addEventListener("mousedown", handleClickOutside)
+    }
+    return () => {
+      if (!(typeof window === "undefined" || !window.document)) {
+        window.document.removeEventListener("mousedown", handleClickOutside)
+      }
+    }
+  }, [])
 
   // Action Bar Handlers
   const handleExpandAllClick = () => {
@@ -66,16 +102,17 @@ function TreeViewWithActionBar() {
   }
 
   const handleAddClick = () => {
+    const newNodeId = getNodeIds(data).length + 1
+    editableNode.current = newNodeId
     setData(prevState => {
-      const nodeId = selected[0] || data[0].nodeId
-      const newNodeId = getNodeIds(data).length + 1
+      const nodeId = selected[0] || prevState[0].nodeId
+
       const newNode = {
         nodeId: newNodeId,
         label: "",
         isNew: true,
         children: [],
       }
-
       return updateNodes([...prevState], nodeId, (nodeIndex, nodes) =>
         nodes.splice(nodeIndex, 0, newNode)
       )
@@ -83,9 +120,10 @@ function TreeViewWithActionBar() {
   }
 
   const handleDuplicateClick = () => {
+    const newNodeId = getNodeIds(data).length + 1
+    editableNode.current = newNodeId
     setData(prevState => {
       const nodeId = selected[0]
-      const newNodeId = getNodeIds(data).length + 1
 
       return updateNodes([...prevState], nodeId, (nodeIndex, nodes) => {
         let copy = nodes[nodeIndex]
@@ -94,13 +132,13 @@ function TreeViewWithActionBar() {
           label: "Copy of " + copy.label,
           nodeId: newNodeId,
         })
-        setEditableNode(newNodeId)
       })
     })
   }
 
   const handleEditClick = (event: any) => {
-    setEditableNode(selected[0])
+    editableNode.current = selected[0]
+    forceUpdate()
   }
 
   const handleDeleteClick = (event: any) => {
@@ -110,10 +148,12 @@ function TreeViewWithActionBar() {
         nodes.splice(nodeIndex, 1)
       )
     })
+    setSelected([])
   }
 
   // Tree View Handlers
   const handleAddNode = (event, nodeId, label) => {
+    editableNode.current = null
     setData(prevState => {
       return updateNodes([...prevState], nodeId, (nodeIndex, nodes) =>
         nodes.splice(nodeIndex, 1, {
@@ -123,17 +163,15 @@ function TreeViewWithActionBar() {
         })
       )
     })
-
-    setEditableNode(null)
   }
 
   const handleEditNode = (event, nodeId, label) => {
+    editableNode.current = null
     setData(prevState => {
       return updateNodes([...prevState], nodeId, (nodeIndex, nodes) =>
         nodes.splice(nodeIndex, 1, { ...nodes[nodeIndex], nodeId, label })
       )
     })
-    setEditableNode(null)
   }
 
   const handleSelect = (event: any, nodeIds: number[]) => {
@@ -172,7 +210,7 @@ function TreeViewWithActionBar() {
     onNodeEdit,
     ...props
   }) => {
-    const isEditable = editableNode === nodeId
+    const isEditable = editableNode.current === nodeId
     const handleOnKeyUp = e => {
       if (e.key === "Enter" || e.keyCode === 13) {
         if (isNew) onNodeAdd(e, nodeId, e.target.value)
@@ -213,6 +251,7 @@ function TreeViewWithActionBar() {
               label
             )
           }
+          {...props}
         >
           {children &&
             children.map(item => (
@@ -223,6 +262,7 @@ function TreeViewWithActionBar() {
                 isNew={item.isNew}
                 onNodeAdd={handleAddNode}
                 onNodeEdit={handleEditNode}
+                key={item.nodeId}
               />
             ))}
         </TreeViewItem>
@@ -231,70 +271,75 @@ function TreeViewWithActionBar() {
   }
 
   return (
-    <div className="container w-50">
-      <div className="row row-cols-1">
-        <div className="col">
-          <div
-            className="d-flex justify-content-end align-items-center"
-            style={{ minHeight: "3rem" }}
-          >
-            <button
-              className="btn btn-icon-only btn-text-dark"
-              onClick={handleDeleteClick}
-              disabled={!selected.length}
+    <div style={{ width: "400px" }}>
+      <div className="container" ref={ref}>
+        <div className="row row-cols-1">
+          <div className="col">
+            <div
+              className="d-flex justify-content-end align-items-center"
+              style={{ minHeight: "3rem" }}
             >
-              <StyledIcon className="material-icons">delete</StyledIcon>
-            </button>
-            <button
-              className="btn btn-icon-only btn-text-dark"
-              disabled={!selected.length}
-              onClick={handleDuplicateClick}
-            >
-              <StyledIcon className="material-icons">content_copy</StyledIcon>
-            </button>
-            <button
-              className="btn btn-icon-only btn-text-dark"
-              onClick={handleEditClick}
-              disabled={!selected.length}
-            >
-              <StyledIcon className="material-icons">edit</StyledIcon>
-            </button>
-            <button
-              className="btn btn-icon-only btn-text-dark"
-              onClick={handleAddClick}
-            >
-              <StyledIcon className="material-icons">add</StyledIcon>
-            </button>
-            <button className="btn btn-icon-only btn-text-dark" disabled>
-              <StyledIcon className="material-icons">drag_indicator</StyledIcon>
-            </button>
-            <button
-              className="btn btn-icon-only btn-text-dark"
-              onClick={handleExpandAllClick}
-            >
-              <StyledIcon className="material-icons">
-                {expanded.length === 0 ? "unfold_more" : "unfold_less"}
-              </StyledIcon>
-            </button>
+              <button
+                className="btn btn-icon-only btn-text-dark"
+                onClick={handleDeleteClick}
+                disabled={!selected.length}
+              >
+                <StyledIcon className="material-icons">delete</StyledIcon>
+              </button>
+              <button
+                className="btn btn-icon-only btn-text-dark"
+                disabled={!selected.length}
+                onClick={handleDuplicateClick}
+              >
+                <StyledIcon className="material-icons">content_copy</StyledIcon>
+              </button>
+              <button
+                className="btn btn-icon-only btn-text-dark"
+                onClick={handleEditClick}
+                disabled={!selected.length}
+              >
+                <StyledIcon className="material-icons">edit</StyledIcon>
+              </button>
+              <button
+                className="btn btn-icon-only btn-text-dark"
+                onClick={handleAddClick}
+              >
+                <StyledIcon className="material-icons">add</StyledIcon>
+              </button>
+              <button className="btn btn-icon-only btn-text-dark" disabled>
+                <StyledIcon className="material-icons">
+                  drag_indicator
+                </StyledIcon>
+              </button>
+              <button
+                className="btn btn-icon-only btn-text-dark"
+                onClick={handleExpandAllClick}
+              >
+                <StyledIcon className="material-icons">
+                  {expanded.length === 0 ? "unfold_more" : "unfold_less"}
+                </StyledIcon>
+              </button>
+            </div>
           </div>
-        </div>
-        <div className="col">
-          <TreeView
-            id="example"
-            expanded={expanded}
-            onNodeSelect={handleSelect}
-          >
-            {data.map(item => (
-              <CustomTreeViewItem
-                nodeId={item.nodeId}
-                children={item.children}
-                label={item.label}
-                isNew={item.isNew}
-                onNodeAdd={handleAddNode}
-                onNodeEdit={handleEditNode}
-              />
-            ))}
-          </TreeView>
+          <div className="col">
+            <TreeView
+              id="example"
+              expanded={expanded}
+              onNodeSelect={handleSelect}
+            >
+              {data.map(item => (
+                <CustomTreeViewItem
+                  nodeId={item.nodeId}
+                  children={item.children}
+                  label={item.label}
+                  isNew={item.isNew}
+                  onNodeAdd={handleAddNode}
+                  onNodeEdit={handleEditNode}
+                  key={item.nodeId}
+                />
+              ))}
+            </TreeView>
+          </div>
         </div>
       </div>
     </div>

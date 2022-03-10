@@ -17,6 +17,7 @@ import {
 import findIndex from "lodash/findIndex"
 import TreeViewItem from "../../common/Tree/TreeViewItem"
 import TreeView from "../../common/Tree/TreeView"
+import useForceUpdate from "@restart/hooks/useForceUpdate"
 
 <Overview>
   A content tree provides users with a way to navigate nested hierarchical
@@ -76,13 +77,14 @@ import TreeView from "../../common/Tree/TreeView"
   code={TreeViewMultiSelect}
   scope={{ TreeView, TreeViewItem }}
 >
-  Multiple node selection can be enabled through prop <code> multiSelect </code>.
+  Multiple node selection can be enabled through prop <code> multiSelect </code>
+  .
 </CodeBlock>
 
 <CodeBlock
   title="Tree with Actions"
   code={TreeViewWithActionBar}
-  scope={{ TreeView, TreeViewItem, StyledIcon, Node, findIndex }}
+  scope={{ TreeView, TreeViewItem, StyledIcon, findIndex, useForceUpdate }}
   noInline={true}
 >
   Using the props and callback functions from the <code> TreeView </code>{" "}

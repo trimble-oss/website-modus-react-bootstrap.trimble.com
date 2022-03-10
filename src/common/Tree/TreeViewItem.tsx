@@ -11,7 +11,7 @@ import TreeViewItemStyled, {
 export interface TreeViewItemProps
   extends Omit<React.HTMLProps<HTMLLIElement>, "label"> {
   nodeId: number
-  label: React.ReactNode
+  label: React.ReactNode | React.ReactElement | string
   collapseIcon?: React.ReactElement
   expandIcon?: React.ReactElement
   itemIcon?: React.ReactElement
@@ -27,7 +27,7 @@ const propTypes = {
   /**
    * Tree Node Text
    */
-  label: PropTypes.element,
+  label: PropTypes.oneOfType([PropTypes.string, PropTypes.element]),
 
   /**
    * Collapse icon for the Tree node.
