@@ -241,13 +241,13 @@ function TreeViewWithActionBar() {
             <button
               className="btn btn-icon-only btn-text-dark"
               onClick={handleDeleteClick}
-              disabled={nodesSelected}
+              disabled={!selected.length}
             >
               <StyledIcon className="material-icons">delete</StyledIcon>
             </button>
             <button
               className="btn btn-icon-only btn-text-dark"
-              disabled={nodesSelected}
+              disabled={!selected.length}
               onClick={handleDuplicateClick}
             >
               <StyledIcon className="material-icons">content_copy</StyledIcon>
@@ -255,7 +255,7 @@ function TreeViewWithActionBar() {
             <button
               className="btn btn-icon-only btn-text-dark"
               onClick={handleEditClick}
-              disabled={nodesSelected}
+              disabled={!selected.length}
             >
               <StyledIcon className="material-icons">edit</StyledIcon>
             </button>
