@@ -265,7 +265,13 @@ function TreeViewWithActionBar() {
           [...prevData],
           editableNode.current,
           (nodeIndex, nodes) => {
-            if (nodes[nodeIndex].isNew) nodes.splice(nodeIndex, 1)
+            if (nodes[nodeIndex].isNew) {
+              nodes.splice(nodeIndex, 1, {
+                ...nodes[nodeIndex],
+                nodeId: editableNode.current,
+                ...{ isNew: undefined },
+              })
+            }
           }
         )
 
@@ -326,12 +332,12 @@ function TreeViewWithActionBar() {
     })
   }
 
-  const handleEditClick = (event) => {
+  const handleEditClick = event => {
     editableNode.current = selected[0]
     forceUpdate()
   }
 
-  const handleDeleteClick = (event) => {
+  const handleDeleteClick = event => {
     const nodeId = selected[0]
     setData(prevState => {
       return updateNodes([...prevState], nodeId, (nodeIndex, nodes) =>
@@ -357,6 +363,10 @@ function TreeViewWithActionBar() {
 
   const handleEditNode = (event, nodeId, label) => {
     editableNode.current = null
+    handleTreeItemLabelChange(event, nodeId, label)
+  }
+
+  const handleTreeItemLabelChange = (event, nodeId, label) => {
     setData(prevState => {
       return updateNodes([...prevState], nodeId, (nodeIndex, nodes) =>
         nodes.splice(nodeIndex, 1, { ...nodes[nodeIndex], nodeId, label })
@@ -397,6 +407,7 @@ function TreeViewWithActionBar() {
     children,
     onNodeAdd,
     onNodeEdit,
+    onChange,
     ...props
   }) => {
     const isEditable = editableNode.current === nodeId
@@ -404,6 +415,8 @@ function TreeViewWithActionBar() {
       if (e.key === "Enter" || e.keyCode === 13) {
         if (isNew) onNodeAdd(e, nodeId, e.target.value)
         else if (isEditable) onNodeEdit(e, nodeId, e.target.value)
+      } else {
+        onChange(e, nodeId, e.target.value)
       }
     }
     if (isNew) {
@@ -449,8 +462,9 @@ function TreeViewWithActionBar() {
                 children={item.children}
                 label={item.label}
                 isNew={item.isNew}
-                onNodeAdd={handleAddNode}
-                onNodeEdit={handleEditNode}
+                onNodeAdd={onNodeAdd}
+                onNodeEdit={onNodeEdit}
+                onChange={onChange}
                 key={item.nodeId}
               />
             ))}
@@ -460,7 +474,7 @@ function TreeViewWithActionBar() {
   }
 
   return (
-    <div style={{width: "400px"}}>
+    <div style={{ width: "400px" }}>
       <div className="container" ref={ref}>
         <div className="row row-cols-1">
           <div className="col">
@@ -485,18 +499,21 @@ function TreeViewWithActionBar() {
               <button
                 className="btn btn-icon-only btn-text-dark"
                 onClick={handleEditClick}
-                disabled={!selected.length}
+                disabled={!selected.length || editableNode.current}
               >
                 <StyledIcon className="material-icons">edit</StyledIcon>
               </button>
               <button
                 className="btn btn-icon-only btn-text-dark"
                 onClick={handleAddClick}
+                disabled={editableNode.current}
               >
                 <StyledIcon className="material-icons">add</StyledIcon>
               </button>
               <button className="btn btn-icon-only btn-text-dark" disabled>
-                <StyledIcon className="material-icons">drag_indicator</StyledIcon>
+                <StyledIcon className="material-icons">
+                  drag_indicator
+                </StyledIcon>
               </button>
               <button
                 className="btn btn-icon-only btn-text-dark"
@@ -522,6 +539,7 @@ function TreeViewWithActionBar() {
                   isNew={item.isNew}
                   onNodeAdd={handleAddNode}
                   onNodeEdit={handleEditNode}
+                  onChange={handleTreeItemLabelChange}
                   key={item.nodeId}
                 />
               ))}
