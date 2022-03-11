@@ -218,26 +218,6 @@ export function DataTablev2(
     if (onRowSelection) onRowSelection(selectedFlatRows)
   }, [selectedFlatRows])
 
-  const popover = (
-    <Popover id="popover-basic" style={{ width: "500px", maxWidth: "500px" }}>
-      <Popover.Content>
-        <Container style={{ width: "100%" }} className="p-1">
-          <BootstrapRow xs={1} md={2}>
-            {allColumns
-              .filter(it => it.canFilter && it.Filter)
-              .map(column => (
-                <div key={column.id}>
-                  <Col>{column.render("Filter")}</Col>
-                </div>
-              ))}
-          </BootstrapRow>
-          <BootstrapRow className="d-flex justify-content-end mr-2">
-            <Button onClick={e => setAllFilters([])}>RESET</Button>
-          </BootstrapRow>
-        </Container>
-      </Popover.Content>
-    </Popover>
-  )
   return (
     <>
       <DataTableStyled ref={containerRef}>

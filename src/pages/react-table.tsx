@@ -329,6 +329,54 @@ const ReactTableContainer = props => {
 }
 
 const ReactTableNextGen = props => {
+  const EditableCell = ({
+    value: initialValue,
+    row: { index },
+    column: { id },
+  }) => {
+    const [value, setValue] = React.useState(initialValue)
+    const [editMode, setEditMode] = React.useState(false)
+
+    const onKeyUp = e => {
+      if (e.key === "Enter" || e.keyCode === 13) {
+        setEditMode(false)
+        UpdateMyData(index, id, value)
+      } else {
+        setValue(e.target.value)
+      }
+    }
+    const onBlur = () => {
+      setEditMode(false)
+      UpdateMyData(index, id, value)
+    }
+    const onEdit = e => {
+      e.preventDefault()
+      setEditMode(true)
+    }
+    React.useEffect(() => {
+      setValue(initialValue)
+    }, [initialValue])
+
+    return (
+      <div onClick={onEdit}>
+        {editMode ? (
+          <Form.Control
+            as="input"
+            defaultValue={value}
+            onKeyUp={onKeyUp}
+            size="lg"
+            style={{ height: "2.5rem" }}
+            className="border-0"
+            onBlur={onBlur}
+            autoFocus
+          />
+        ) : (
+          value
+        )}
+      </div>
+    )
+  }
+
   function TextFilter({
     column: { filterValue, preFilteredRows, setFilter, id, render },
   }) {
@@ -395,6 +443,7 @@ const ReactTableNextGen = props => {
       </Form.Group>
     )
   }
+
   const columns = React.useMemo(
     () => [
       {
@@ -403,6 +452,7 @@ const ReactTableNextGen = props => {
         sortBy: true,
         Filter: TextFilter,
         width: 80,
+        Cell: EditableCell,
       },
       {
         Header: "Last Name",
@@ -440,8 +490,21 @@ const ReactTableNextGen = props => {
     ],
     []
   )
+  const [data, setData] = React.useState(() => makeData(20))
 
-  const data = React.useMemo(() => makeData(125), [])
+  function UpdateMyData(rowIndex, columnId, value) {
+    setData(old =>
+      old.map((row, index) => {
+        if (index === rowIndex) {
+          return {
+            ...old[rowIndex],
+            [columnId]: value,
+          }
+        }
+        return row
+      })
+    )
+  }
 
   return (
     <>
