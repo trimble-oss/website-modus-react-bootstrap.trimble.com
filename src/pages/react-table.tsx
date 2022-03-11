@@ -30,6 +30,7 @@ import {
   DataTable,
 } from "../common/Table"
 import { MakeData as makeData } from "../examples/components/Table"
+import DataTablev2 from "../common/Table/DataTablev2"
 
 const ReactTableContainer = props => {
   function TextFilter({
@@ -318,6 +319,65 @@ const ReactTableContainer = props => {
   )
 }
 
+const ReactTableNextGen = props => {
+  const columns = React.useMemo(
+    () => [
+      {
+        Header: "First Name",
+        accessor: "firstName",
+        width: 80,
+        sortBy: true,
+      },
+      {
+        Header: "Last Name",
+        accessor: "lastName",
+        width: 80,
+        sortBy: true,
+      },
+      {
+        Header: "Age",
+        accessor: "age",
+        width: 50,
+        sortBy: true,
+      },
+      {
+        Header: "Visits",
+        accessor: "visits",
+        width: 50,
+        sortBy: true,
+      },
+      {
+        Header: "Status",
+        accessor: "status",
+        width: 70,
+        sortBy: true,
+      },
+      {
+        Header: "Profile Progress Status",
+        accessor: "progress",
+        width: 70,
+        sortBy: true,
+      },
+    ],
+    []
+  )
+
+  const data = React.useMemo(() => makeData(125), [])
+
+  return (
+    <>
+      <DataTablev2
+        id="test"
+        columns={columns}
+        data={data}
+        resizeColumns
+        multipleRowSelection
+        checkBoxRowSelection
+      ></DataTablev2>
+    </>
+  )
+}
+
 const ReactTablePage = props => {
   return (
     <DefaultLayout location={props.location}>
@@ -332,7 +392,8 @@ const ReactTablePage = props => {
                   React Table with sorting
                 </LinkedHeading>
                 {/* <CustomReactTable /> */}
-                <ReactTableContainer />
+                {/* <ReactTableContainer /> */}
+                <ReactTableNextGen />
               </Col>
               <Col className="d-none d-xl-block menu-right" xl={2}>
                 <TableOfContents></TableOfContents>

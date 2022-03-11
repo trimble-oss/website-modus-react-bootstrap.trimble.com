@@ -38,8 +38,7 @@ const newPerson = () => {
     age: Math.floor(rand * 30),
     visits: Math.floor(rand * 100),
     progress: Math.floor(rand * 100),
-    status:
-      rand > 0.66 ? "relationship" : rand > 0.33 ? "complicated" : "single",
+    status: rand > 0.66 ? "Verified" : rand > 0.33 ? "Pending" : "Rejected",
   }
 }
 

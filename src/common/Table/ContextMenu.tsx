@@ -1,7 +1,7 @@
-import { Dropdown, OverlayTrigger } from "@trimbleinc/modus-react-bootstrap"
 import React, { useCallback, useEffect } from "react"
-import { StyledContextMenu } from "./styleHelpers"
 import { ContextMenuItem } from "./types"
+import { Dropdown } from "@trimbleinc/modus-react-bootstrap"
+import ContextMenuStyled from "./ContextMenuStyled"
 
 interface ContextMenuProps extends React.HTMLProps<HTMLDivElement> {
   menu: ContextMenuItem[]
@@ -35,10 +35,6 @@ export function ContextMenu(
     [onClose]
   )
 
-  const handleToggle = useCallback((isOpen, e) => {
-    if (isOpen) e.preventDefault()
-  }, [])
-
   useEffect(() => {
     if (!(typeof window === "undefined" || !window.document)) {
       window.document.addEventListener("mousedown", handleClickOutside)
@@ -51,7 +47,7 @@ export function ContextMenu(
   }, [])
 
   return (
-    <StyledContextMenu
+    <ContextMenuStyled
       className="list-group"
       ref={ref}
       style={{
@@ -90,7 +86,7 @@ export function ContextMenu(
           </li>
         )
       })}
-    </StyledContextMenu>
+    </ContextMenuStyled>
   )
 }
 

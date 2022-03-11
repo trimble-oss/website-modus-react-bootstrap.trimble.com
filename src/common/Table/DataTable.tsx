@@ -19,7 +19,7 @@ import { TableContext } from "./TableContext"
 import { StyledDataTable } from "./styleHelpers"
 // import Form from './Form';
 import Form from "@trimbleinc/modus-react-bootstrap/Form"
-import { ContextMenuState, ContextMenuItem, TableColumn } from "./types"
+import { ContextMenuState, TableColumn } from "./types"
 import ContextMenu from "./ContextMenu"
 import { OverlayTrigger, Popover } from "@trimbleinc/modus-react-bootstrap"
 
@@ -137,6 +137,7 @@ export function DataTable(
     []
   )
 
+  // CheckBox Row Selection Hook
   const selectionHook = (hooks: Hooks<any>) => {
     hooks.visibleColumns.push(columns => [
       {
@@ -167,7 +168,7 @@ export function DataTable(
     ])
   }
 
-  // Make conditional hooks array
+  // Construct Hooks dependency conditionally
   const hooks: any = [useFlexLayout, useFilters]
   if (hasSorting) hooks.push(useSortBy)
   if (hasPagination) hooks.push(usePagination)
@@ -180,7 +181,7 @@ export function DataTable(
     hooks.push(selectionHook)
   }
 
-  // If Multi Row selection isn't enabled
+  // Use RowStateReducer to enable Single Row Selection
   const rowStateReducer = !multipleRowSelection && {
     stateReducer: (newState, action) => {
       if (action.type === "toggleRowSelected") {
@@ -193,7 +194,7 @@ export function DataTable(
     },
   }
 
-  // Get Final Table instance
+  // Construct Table instance
   const {
     getTableProps,
     headerGroups,
@@ -221,10 +222,15 @@ export function DataTable(
     ...hooks
   )
 
+  const headersInitial = useRef(headerGroups)
+  debugger
+
+  // Handle Right-Click Context Menu
   const [contextMenu, setContextMenu] = useState<ContextMenuState>(null)
   const [showContextMenu, setShowContextMenu] = useState(false)
   const containerRef = useRef<HTMLDivElement>(null)
 
+  // Header Context Menu
   const handleHeaderContextMenu = useCallback(
     (column: ColumnInstance, event) => {
       if (!containerRef.current) return
@@ -275,6 +281,7 @@ export function DataTable(
     [toggleHideColumn, toggleHideAllColumns]
   )
 
+  // On Context Menu close
   const handleContextMenuClose = useCallback(
     e => {
       setShowContextMenu(false)

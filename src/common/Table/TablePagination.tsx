@@ -13,7 +13,7 @@ import {
   NavLink,
   Pagination,
 } from "@trimbleinc/modus-react-bootstrap"
-import { StyledTablePagination } from "./styleHelpers"
+import TablePaginationStyled from "./TablePaginationStyled"
 
 export interface TablePaginationProps extends React.HTMLProps<HTMLDivElement> {
   totalPages: number
@@ -159,7 +159,7 @@ const TablePagination = React.forwardRef<HTMLDivElement, TablePaginationProps>(
     }, [])
 
     return (
-      <StyledTablePagination>
+      <TablePaginationStyled>
         <div
           className={classNames(
             className,
@@ -239,7 +239,7 @@ const TablePagination = React.forwardRef<HTMLDivElement, TablePaginationProps>(
             </nav>
           </div>
         </div>
-      </StyledTablePagination>
+      </TablePaginationStyled>
     )
   }
 )
