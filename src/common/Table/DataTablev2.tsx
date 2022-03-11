@@ -15,6 +15,13 @@ import {
 } from "react-table"
 import classNames from "classnames"
 import {
+  Button,
+  Col,
+  Container,
+  Nav,
+  OverlayTrigger,
+  Popover,
+  Row as BootstrapRow,
   Table,
   TableContainer,
   TablePagination,
@@ -211,10 +218,35 @@ export function DataTablev2(
     if (onRowSelection) onRowSelection(selectedFlatRows)
   }, [selectedFlatRows])
 
+  const popover = (
+    <Popover id="popover-basic" style={{ width: "500px", maxWidth: "500px" }}>
+      <Popover.Content>
+        <Container style={{ width: "100%" }} className="p-1">
+          <BootstrapRow xs={1} md={2}>
+            {allColumns
+              .filter(it => it.canFilter && it.Filter)
+              .map(column => (
+                <div key={column.id}>
+                  <Col>{column.render("Filter")}</Col>
+                </div>
+              ))}
+          </BootstrapRow>
+          <BootstrapRow className="d-flex justify-content-end mr-2">
+            <Button onClick={e => setAllFilters([])}>RESET</Button>
+          </BootstrapRow>
+        </Container>
+      </Popover.Content>
+    </Popover>
+  )
   return (
     <>
       <DataTableStyled ref={containerRef}>
-        <div className="d-flex flex-column" {...rest} ref={ref}>
+        <div
+          className="d-flex flex-column"
+          ref={ref}
+          style={{ overflow: "hidden" }}
+          {...rest}
+        >
           {!disableFiltering && (
             <DataTableFilterPanel
               allColumns={allColumns}
@@ -223,8 +255,8 @@ export function DataTablev2(
               setAllFilters={setAllFilters}
             />
           )}
-          <div>
-            <TableContainer scrollable style={{ maxHeight: "400px" }}>
+          <div style={{ overflow: "hidden" }} className="d-flex">
+            <div className={classNames("scrollable", "container")}>
               <Table bordered hover {...getTableProps()}>
                 <thead className="bg-gray-light sticky-top">
                   {headerGroups.map(headerGroup => (
@@ -282,7 +314,7 @@ export function DataTablev2(
                   })}
                 </tbody>
               </Table>
-            </TableContainer>
+            </div>
           </div>
 
           {!disablePagination && (

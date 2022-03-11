@@ -7,7 +7,7 @@ import {
   Nav,
   OverlayTrigger,
   Popover,
-  Row,
+  Row as BootstrapRow,
 } from "@trimbleinc/modus-react-bootstrap"
 import { ColumnInstance, Filters, FilterValue } from "react-table"
 
@@ -29,11 +29,11 @@ const DataTableFilterPanel: React.FunctionComponent<DataTableFilterProps> = ({
   setFilter,
   setAllFilters,
 }) => {
-  const popover = props => (
+  const popover = (
     <Popover id="popover-basic" style={{ width: "500px", maxWidth: "500px" }}>
       <Popover.Content>
         <Container style={{ width: "100%" }} className="p-1">
-          <Row xs={1} md={2}>
+          <BootstrapRow xs={1} md={2}>
             {allColumns
               .filter(it => it.canFilter && it.Filter)
               .map(column => (
@@ -41,10 +41,10 @@ const DataTableFilterPanel: React.FunctionComponent<DataTableFilterProps> = ({
                   <Col>{column.render("Filter")}</Col>
                 </div>
               ))}
-          </Row>
-          <Row className="d-flex justify-content-end mr-2">
+          </BootstrapRow>
+          <BootstrapRow className="d-flex justify-content-end mr-2">
             <Button onClick={e => setAllFilters([])}>RESET</Button>
-          </Row>
+          </BootstrapRow>
         </Container>
       </Popover.Content>
     </Popover>
@@ -56,7 +56,6 @@ const DataTableFilterPanel: React.FunctionComponent<DataTableFilterProps> = ({
       setShow(!show)
       onClose()
     }, [setShow])
-
     return (
       <Chip
         label={label}
@@ -98,7 +97,7 @@ const DataTableFilterPanel: React.FunctionComponent<DataTableFilterProps> = ({
         <OverlayTrigger
           trigger="click"
           placement="bottom"
-          overlay={<div>Test</div>}
+          overlay={popover}
           rootClose
         >
           <Nav.Link eventKey="1" className="p-0">

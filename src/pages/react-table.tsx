@@ -126,31 +126,40 @@ const ReactTableContainer = props => {
         accessor: "firstName",
         sortBy: true,
         Filter: TextFilter,
+        width: 80,
       },
       {
         Header: "Last Name",
         accessor: "lastName",
         sortBy: true,
         Filter: TextFilter,
+        width: 80,
       },
       {
         Header: "Age",
         accessor: "age",
-        sortBy: true,
         Filter: SliderFilter,
+        width: 50,
+        sortBy: true,
       },
       {
         Header: "Visits",
         accessor: "visits",
+        width: 50,
+        sortBy: true,
       },
       {
         Header: "Status",
         accessor: "status",
         Filter: SelectFilter,
+        width: 70,
+        sortBy: true,
       },
       {
-        Header: "Profile Progress",
+        Header: "Profile Progress Status",
         accessor: "progress",
+        width: 70,
+        sortBy: true,
       },
     ],
     []
@@ -320,23 +329,92 @@ const ReactTableContainer = props => {
 }
 
 const ReactTableNextGen = props => {
+  function TextFilter({
+    column: { filterValue, preFilteredRows, setFilter, id, render },
+  }) {
+    const count = preFilteredRows.length
+    return (
+      <Form.Group controlId="formBasicEmail">
+        <Form.Label>{render("Header")}</Form.Label>
+        <div className="input-with-icon-left">
+          <Form.Control
+            as="input"
+            placeholder={render("Header")}
+            value={filterValue || ""}
+            onChange={e => {
+              setFilter(e.target.value || undefined)
+            }}
+          ></Form.Control>
+          <div className="input-icon">
+            <i className="modus-icons material-icons">search</i>
+          </div>
+        </div>
+      </Form.Group>
+    )
+  }
+
+  function SliderFilter({
+    column: { filterValue, preFilteredRows, setFilter, id, render },
+  }) {
+    return (
+      <Form.Group controlId="formBasicRangeCustom" custom>
+        <Form.Label>{render("Header")}</Form.Label>
+        <Form.Control
+          type="range"
+          min={0}
+          max={100}
+          value={filterValue || 0}
+          onChange={e => {
+            setFilter(parseInt(e.target.value, 10))
+          }}
+          custom
+        />
+      </Form.Group>
+    )
+  }
+
+  function SelectFilter({
+    column: { filterValue, preFilteredRows, setFilter, id, render },
+  }) {
+    return (
+      <Form.Group controlId="exampleForm.SelectCustom">
+        <Form.Label>{render("Header")}</Form.Label>
+        <Form.Control
+          as="select"
+          custom
+          value={filterValue}
+          onChange={e => {
+            setFilter(e.target.value || undefined)
+          }}
+        >
+          <option value="">All</option>
+          <option>Pending</option>
+          <option>Verified</option>
+          <option>Rejected</option>
+        </Form.Control>
+      </Form.Group>
+    )
+  }
   const columns = React.useMemo(
     () => [
       {
         Header: "First Name",
         accessor: "firstName",
-        width: 80,
         sortBy: true,
+        Filter: TextFilter,
+        width: 80,
       },
       {
         Header: "Last Name",
         accessor: "lastName",
-        width: 80,
         sortBy: true,
+        Filter: TextFilter,
+        width: 80,
       },
       {
         Header: "Age",
         accessor: "age",
+        Filter: SliderFilter,
         width: 50,
         sortBy: true,
       },
@@ -349,6 +427,7 @@ const ReactTableNextGen = props => {
       {
         Header: "Status",
         accessor: "status",
+        Filter: SelectFilter,
         width: 70,
         sortBy: true,
       },
@@ -373,6 +452,7 @@ const ReactTableNextGen = props => {
         resizeColumns
         multipleRowSelection
         checkBoxRowSelection
+        style={{ maxHeight: "400px" }}
       ></DataTablev2>
     </>
   )

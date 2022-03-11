@@ -16,7 +16,7 @@ import {
   ColumnInstance,
 } from "react-table"
 import { TableContext } from "./TableContext"
-import { StyledDataTable } from "./styleHelpers"
+import DataTableStyled from "./DataTableStyled"
 // import Form from './Form';
 import Form from "@trimbleinc/modus-react-bootstrap/Form"
 import { ContextMenuState, TableColumn } from "./types"
@@ -222,9 +222,6 @@ export function DataTable(
     ...hooks
   )
 
-  const headersInitial = useRef(headerGroups)
-  debugger
-
   // Handle Right-Click Context Menu
   const [contextMenu, setContextMenu] = useState<ContextMenuState>(null)
   const [showContextMenu, setShowContextMenu] = useState(false)
@@ -299,7 +296,7 @@ export function DataTable(
           onToggleHiddenColumn: toggleHideColumn,
         }}
       >
-        <StyledDataTable ref={containerRef}>
+        <DataTableStyled ref={containerRef}>
           <div {...rest} ref={ref}>
             {children &&
               children({
@@ -319,7 +316,7 @@ export function DataTable(
                   selectedFlatRows && selectedFlatRows.map(d => d.original),
               })}
           </div>
-        </StyledDataTable>
+        </DataTableStyled>
       </TableContext.Provider>
 
       {showContextMenu && (

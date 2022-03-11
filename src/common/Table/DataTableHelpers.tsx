@@ -30,6 +30,7 @@ export const checkBoxSelectionHook = (
     {
       id: "selector",
       width: 25,
+      minWidth: 25,
       disableResizing: true,
       disableGroupBy: true,
       Cell: ({ row }: CellProps<any>) => {
