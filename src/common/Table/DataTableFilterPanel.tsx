@@ -98,7 +98,7 @@ const DataTableFilterPanel: React.FunctionComponent<DataTableFilterProps> = ({
         <OverlayTrigger
           trigger="click"
           placement="bottom"
-          overlay={popover}
+          overlay={<div>Test</div>}
           rootClose
         >
           <Nav.Link eventKey="1" className="p-0">
