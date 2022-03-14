@@ -1,3 +1,5 @@
+import React from "react"
+import styled from "styled-components"
 const range = len => {
   const arr = []
   for (let i = 0; i < len; i++) {
@@ -914,536 +916,361 @@ export const TableSmall = `
 </div>
 `
 
-export const TableWithSorting = `function Example() {
+export const TableWithSorting = `function Example()
+{
   const columns = React.useMemo(
     () => [
       {
         Header: "First Name",
         accessor: "firstName",
+        width: 80,
         sortBy: true,
       },
       {
         Header: "Last Name",
         accessor: "lastName",
+        width: 80,
         sortBy: true,
       },
       {
         Header: "Age",
         accessor: "age",
-      },
-    ],
-    []
-  )
-
-  const data = [
-    {
-      firstName: "Mark",
-      lastName: "Otto",
-      age: "25",
-    },
-    {
-      firstName: "Jacob",
-      lastName: "Thornton",
-      age: "22",
-    },
-    {
-      firstName: "John",
-      lastName: "Snow",
-      age: "23",
-    },
-    {
-      firstName: "Lary",
-      lastName: "the Bird",
-      age: "31",
-    },
-  ]
-
-  return (
-      <DataTable id="tableSorting" columns={columns} data={data} hasSorting>
-        {({prepareRow, rows}) => (
-          <Table bordered hover>
-            <TableHead className="bg-gray-light">
-              <TableRow className="bg-gray-light">
-                <TableHeaderCell
-                  accessor="firstName"
-                  className="bg-gray-light"
-                />
-                <TableHeaderCell
-                  accessor="lastName"
-                  className="bg-gray-light"
-                />
-                <TableHeaderCell accessor="age" className="bg-gray-light" />
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {rows.map((row, i) => {
-                    prepareRow(row)
-                    return (
-                      <TableRow {...row.getRowProps()}>
-                        {row.cells.map(cell => {
-                          return (
-                            <TableCell {...cell.getCellProps()}>
-                              {cell.render("Cell")}
-                            </TableCell>
-                          )
-                        })}
-                      </TableRow>
-                    )
-                  })}
-            </TableBody>
-          </Table>
-        )}
-      </DataTable>
-  );
-}
-
-render(<Example />);`
-
-export const TableWithScroll = `function Example() {
-  const columns = React.useMemo(
-    () => [
-      {
-        Header: "First Name",
-        accessor: "firstName",
-        width: 80,
-      },
-      {
-        Header: "Last Name",
-        accessor: "lastName",
-        width: 80,
-      },
-      {
-        Header: 'Age',
-        accessor: 'age',
         width: 50,
-      },
-      {
-        Header: 'Visits',
-        accessor: 'visits',
-        width: 50,
-      },
-      {
-        Header: "Status",
-        accessor: "status",
-        width: 70,
-      },
-      {
-        Header: "Profile Progress Status",
-        accessor: "progress",
-        width: 70
-      },
-    ],
-    []
-  )
-
-  const data = React.useMemo(() => makeData(30), [])
-
-  return (
-    <DataTable id="tableScroll" columns={columns} data={data}>
-        {({prepareRow, rows}) => (
-          <TableContainer scrollable style={{ maxHeight: "400px", borderBottom: "1px solid #b7b9c3" }}>
-            <Table bordered hover>
-              <TableHead className="bg-gray-light">
-                <TableRow className="bg-gray-light">
-                  <TableHeaderCell
-                    accessor="firstName"
-                    className="bg-gray-light"
-                  />
-                  <TableHeaderCell
-                    accessor="lastName"
-                    className="bg-gray-light"
-                  />
-                  <TableHeaderCell accessor="age" className="bg-gray-light" />
-                  <TableHeaderCell
-                    accessor="visits"
-                    className="bg-gray-light"
-                  />
-                  <TableHeaderCell
-                    accessor="status"
-                    className="bg-gray-light"
-                  />
-                  <TableHeaderCell
-                    accessor="progress"
-                    className="bg-gray-light"
-                  />
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {rows.map((row, i) => {
-                    prepareRow(row)
-                    return (
-                      <TableRow {...row.getRowProps()}>
-                        {row.cells.map(cell => {
-                          return (
-                            <TableCell {...cell.getCellProps()}>
-                              {cell.render("Cell")}
-                            </TableCell>
-                          )
-                        })}
-                      </TableRow>
-                    )
-                  })}
-              </TableBody>
-            </Table>
-          </TableContainer>
-        )}
-      </DataTable>
-  );
-}
-
-render(<Example />);`
-
-export const TableWithFixedHeader = `function Example() {
-  const columns = React.useMemo(
-    () => [
-      {
-        Header: "First Name",
-        accessor: "firstName",
-        width: 80,
-      },
-      {
-        Header: "Last Name",
-        accessor: "lastName",
-        width: 80,
-      },
-      {
-        Header: 'Age',
-        accessor: 'age',
-        width: 50,
-      },
-      {
-        Header: 'Visits',
-        accessor: 'visits',
-        width: 50,
-      },
-      {
-        Header: "Status",
-        accessor: "status",
-        width: 70,
-      },
-      {
-        Header: "Profile Progress Status",
-        accessor: "progress",
-        width: 70
-      },
-    ],
-    []
-  )
-
-  const data = React.useMemo(() => makeData(30), [])
-
-  return (
-    <DataTable id="tableFixedHeader" columns={columns} data={data}>
-        {({prepareRow, rows}) => (
-          <TableContainer scrollable style={{ maxHeight: "400px", borderBottom: "1px solid #b7b9c3" }}>
-            <Table bordered hover>
-              <TableHead className="bg-gray-light sticky-top">
-                <TableRow className="bg-gray-light">
-                  <TableHeaderCell
-                    accessor="firstName"
-                    className="bg-gray-light"
-                  />
-                  <TableHeaderCell
-                    accessor="lastName"
-                    className="bg-gray-light"
-                  />
-                  <TableHeaderCell accessor="age" className="bg-gray-light" />
-                  <TableHeaderCell
-                    accessor="visits"
-                    className="bg-gray-light"
-                  />
-                  <TableHeaderCell
-                    accessor="status"
-                    className="bg-gray-light"
-                  />
-                  <TableHeaderCell
-                    accessor="progress"
-                    className="bg-gray-light"
-                  />
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {rows.map((row, i) => {
-                    prepareRow(row)
-                    return (
-                      <TableRow {...row.getRowProps()}>
-                        {row.cells.map(cell => {
-                          return (
-                            <TableCell {...cell.getCellProps()}>
-                              {cell.render("Cell")}
-                            </TableCell>
-                          )
-                        })}
-                      </TableRow>
-                    )
-                  })}
-              </TableBody>
-            </Table>
-          </TableContainer>
-        )}
-      </DataTable>
-  );
-}
-
-render(<Example />);`
-
-export const TableWithPagination = `function Example() {
-  const columns = React.useMemo(
-    () => [
-      {
-        Header: "First Name",
-        accessor: "firstName",
-        width: 80,
-        sortBy: true,
-      },
-      {
-        Header: "Last Name",
-        accessor: "lastName",
-        width: 80,
-        sortBy: true,
-      },
-      {
-        Header: 'Age',
-        accessor: 'age',
-        width: 50,
-        sortBy: true,
-      },
-      {
-        Header: 'Visits',
-        accessor: 'visits',
-        width: 50,
-        sortBy: true,
-      },
-      {
-        Header: "Status",
-        accessor: "status",
-        width: 70,
-        sortBy: true,
-      },
-      {
-        Header: "Profile Progress Status",
-        accessor: "progress",
-        width: 70,
-        sortBy: true,
-      },
-    ],
-    []
-  )
-
-  const data = React.useMemo(() => makeData(175), [])
-
-  return (
-    <DataTable id="tablepagination" columns={columns} data={data} hasSorting hasPagination>
-        {({
-          prepareRow,
-          rows,
-          gotoPage,
-          pageIndex,
-          pageSize,
-          setPageSize,
-          pageOptions,
-        }) => (
-          <>
-            <TableContainer scrollable style={{ maxHeight: "400px" }}>
-              <Table bordered hover>
-                <TableHead className="bg-gray-light sticky-top">
-                  <TableRow className="bg-gray-light">
-                    <TableHeaderCell
-                      accessor="firstName"
-                      className="bg-gray-light"
-                    />
-                    <TableHeaderCell
-                      accessor="lastName"
-                      className="bg-gray-light"
-                    />
-                    <TableHeaderCell accessor="age" className="bg-gray-light" />
-                    <TableHeaderCell
-                      accessor="visits"
-                      className="bg-gray-light"
-                    />
-                    <TableHeaderCell
-                      accessor="status"
-                      className="bg-gray-light"
-                    />
-                    <TableHeaderCell
-                      accessor="progress"
-                      className="bg-gray-light"
-                    />
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {rows.map((row, i) => {
-                    prepareRow(row)
-                    return (
-                      <TableRow {...row.getRowProps()}>
-                        {row.cells.map(cell => {
-                          return (
-                            <TableCell {...cell.getCellProps()}>
-                              {cell.render("Cell")}
-                            </TableCell>
-                          )
-                        })}
-                      </TableRow>
-                    )
-                  })}
-                </TableBody>
-              </Table>
-            </TableContainer>
-            <TablePagination
-              totalPages={pageOptions.length}
-              pageIndex={pageIndex}
-              pageSize={pageSize}
-              onPageChange={gotoPage}
-              pageSizeOptions={[10, 20, 30, 40, 50]}
-              onPageSizeChange={setPageSize}
-              className="border border-tertiary"
-            ></TablePagination>
-          </>
-        )}
-      </DataTable>
-  );
-}
-
-render(<Example />);`
-
-export const TableWithServerPagination = `function Example() {
-  const columns = React.useMemo(
-    () => [
-      {
-        Header: "First Name",
-        accessor: "firstName",
-      },
-      {
-        Header: "Last Name",
-        accessor: "lastName",
-        sortBy: true,
-      },
-      {
-        Header: "Age",
-        accessor: "age",
         sortBy: true,
       },
       {
         Header: "Visits",
         accessor: "visits",
+        width: 50,
         sortBy: true,
       },
       {
         Header: "Status",
         accessor: "status",
+        width: 70,
         sortBy: true,
       },
       {
-        Header: "Profile Progress",
+        Header: "Profile Progress Status",
         accessor: "progress",
+        width: 70,
+        sortBy: true,
       },
     ],
     []
   )
+  const data = React.useMemo(() => makeData(100), [])
+  const {
+    getTableProps,
+    headerGroups,
+    prepareRow,
+    rows,
+    allColumns,
+    page,
+    pageOptions,
+    gotoPage,
+    setPageSize,
+    state: { pageIndex, pageSize, filters },
+  } = useTable(
+    {
+      columns,
+      data,
+      initialState: {pageSize:7}
+    },
+    useSortBy,
+    usePagination
+  )
 
-  const serverData = makeData(10000)
+  const modusSortArrows = {
+    asc: {
+      icon: "sort_alpha_up",
+      title: "Sort Descending",
+    },
+    desc: {
+      icon: "sort_alpha_down",
+      title: "Sort Ascending",
+    },
+  }
+  const SortLabel = ({ sort, title, className }) => (
+    <i
+      className={"modus-icons material-icons ".concat(className)}
+      data-toggle="tooltip"
+      data-placement="top"
+      title={title || modusSortArrows[sort].title}
+    >
+      {modusSortArrows[sort].icon}
+    </i>
+  )
+  return (
+    <Styles>
+      <div>
+        <Table bordered hover>
+          <thead className="bg-gray-light sticky-top">
+            {headerGroups.map(headerGroup => (
+              <tr
+                {...headerGroup.getHeaderGroupProps()}
+                className="bg-gray-light"
+              >
+                {headerGroup.headers.map(column => (
+                  <th
+                    {...column.getHeaderProps(column.getSortByToggleProps())}
+                    className="bg-gray-light pr-2"
+                    title=""
+                  >
+                    <div className="d-flex" style={{ width: "100%" }}>
+                      <div className="flex-grow-1">
+                        {column.render("Header")}
+                      </div>
+                      <div>
+                        {column.canSort && (
+                          <>
+                            {column.isSorted ? (
+                              <SortLabel
+                                className="sorted"
+                                sort={column.isSortedDesc ? "desc" : "asc"}
+                              />
+                            ) : (
+                              <SortLabel
+                                className="unsorted"
+                                title="Sort Ascending"
+                                sort="asc"
+                              />
+                            )}
+                          </>
+                        )}
+                      </div>
+                    </div>
+                  </th>
+                ))}
+              </tr>
+            ))}
+          </thead>
+          <tbody>
+            {page.map((row, i) => {
+              prepareRow(row)
+              return (
+                <tr {...row.getRowProps()}>
+                  {row.cells.map(cell => {
+                    return (
+                      <td {...cell.getCellProps()}>{cell.render("Cell")}</td>
+                    )
+                  })}
+                </tr>
+              )
+            })}
+          </tbody>
+        </Table>
+      </div>
+      <TablePagination
+        totalPages={pageOptions.length}
+        pageIndex={pageIndex}
+        pageSize={pageSize}
+        onPageChange={gotoPage}
+        pageSizeOptions={[7, 10, 25, 50]}
+        onPageSizeChange={setPageSize}
+        className="border border-tertiary"
+      ></TablePagination>
+    </Styles>
+  )
+}
 
-  const [data, setData] = React.useState([])
-  const [loading, setLoading] = React.useState(false)
-  const [pageCount, setPageCount] = React.useState(0)
+render(<Example />);`
 
-  const fetchData = React.useCallback(({ pageSize, pageIndex }) => {
-    setLoading(true)
-    setTimeout(() => {
-      const startRow = pageSize * pageIndex
-      const endRow = startRow + pageSize
-      setData(serverData.slice(startRow, endRow))
-      setPageCount(Math.ceil(serverData.length / pageSize))
-      setLoading(false)
-    }, 1000)
-  }, [])
+export const Styles = styled.div`
+  .container {
+    padding: 0;
+    width: 100%;
+  }
+  table {
+    margin: 0;
+    width: 100%;
+    height: 100%;
+  }
+  th .modus-icons.material-icons.sorted,
+  th .modus-icons.material-icons.unsorted {
+    vertical-align: text-bottom;
+    font-size: 1rem;
+  }
+  th .modus-icons.material-icons.unsorted {
+    opacity: 0.5;
+  }
+  th .modus-icons.material-icons.unsorted:hover {
+    opacity: 1;
+  }
+`
+
+export const DataTableWithSorting = `function Example() {
+  const columns = React.useMemo(
+    () => [
+      {
+        Header: "First Name",
+        accessor: "firstName",
+        width: 80,
+        sortBy: true,
+      },
+      {
+        Header: "Last Name",
+        accessor: "lastName",
+        width: 80,
+        sortBy: true,
+      },
+      {
+        Header: "Age",
+        accessor: "age",
+        width: 50,
+        sortBy: true,
+      },
+      {
+        Header: "Visits",
+        accessor: "visits",
+        width: 50,
+        sortBy: true,
+      },
+      {
+        Header: "Status",
+        accessor: "status",
+        width: 70,
+        sortBy: true,
+      },
+      {
+        Header: "Profile Progress Status",
+        accessor: "progress",
+        width: 70,
+        sortBy: true,
+      },
+    ],
+    []
+  )
+  const data = React.useMemo(() => makeData(30), [])
 
   return (
-      <DataTable
-        columns={columns}
-        data={data}
-        fetchData={fetchData}
-        loading={loading}
-        pageCount={pageCount}
-        hasManualPagination={true}
-      >
-        {({
-          getTableProps,
-          headerGroups,
-          rows,
-          prepareRow,
-          gotoPage,
-          pageIndex,
-          pageSize,
-          setPageSize,
-          pageOptions,
-        }) => (
-          <>
-            <TableContainer scrollable style={{ height: "400px" }}>
-              <Table bordered hover {...getTableProps()}>
-                <TableHead className="bg-gray-light sticky-top">
-                  {headerGroups.map(headerGroup => (
-                    <TableRow
-                      {...headerGroup.getHeaderGroupProps()}
-                      className="bg-gray-light"
-                    >
-                      {headerGroup.headers.map(header => (
-                        <TableHeader
-                          isSortable={header.canSort}
-                          isSorted={header.isSorted}
-                          sortDirection={header.isSortedDesc ? "desc" : "asc"}
-                          className="bg-gray-light"
-                          {...header.getHeaderProps(
-                            header.getSortByToggleProps()
-                          )}
-                        >
-                          {header.render("Header")}
-                        </TableHeader>
-                      ))}
-                    </TableRow>
-                  ))}
-                </TableHead>
-                {loading ? (
-                  <TableSpinner colSpan={headerGroups[0].headers.length} />
-                ) : (
-                  <TableBody>
-                    {rows.map((row, i) => {
-                      prepareRow(row)
-                      return (
-                        <TableRow {...row.getRowProps()}>
-                          {row.cells.map(cell => {
-                            return (
-                              <TableCell {...cell.getCellProps()}>
-                                {cell.render("Cell")}
-                              </TableCell>
-                            )
-                          })}
-                        </TableRow>
-                      )
-                    })}
-                  </TableBody>
-                )}
-              </Table>
-            </TableContainer>
-
-            <TablePagination
-              totalPages={pageOptions.length}
-              pageIndex={pageIndex}
-              pageSize={pageSize}
-              onPageChange={gotoPage}
-              pageSizeOptions={[10, 20, 30, 40, 50]}
-              onPageSizeChange={setPageSize}
-              className="border border-tertiary"
-            ></TablePagination>
-          </>
-        )}
-      </DataTable>
+    <DataTable
+      id="dt_sorting"
+      columns={columns}
+      pageSize={7}
+      pageSizeOptions={[7, 10, 25, 50]}
+      data={data}
+    ></DataTable>
   );
 }
 
 render(<Example />);`
 
-export const TableWithColumnResize = `function Example() {
+export const DataTableWithScroll = `function Example() {
+  const columns = React.useMemo(
+    () => [
+      {
+        Header: "First Name",
+        accessor: "firstName",
+        width: 80,
+        sortBy: true,
+      },
+      {
+        Header: "Last Name",
+        accessor: "lastName",
+        width: 80,
+        sortBy: true,
+      },
+      {
+        Header: "Age",
+        accessor: "age",
+        width: 50,
+        sortBy: true,
+      },
+      {
+        Header: "Visits",
+        accessor: "visits",
+        width: 50,
+        sortBy: true,
+      },
+      {
+        Header: "Status",
+        accessor: "status",
+        width: 70,
+        sortBy: true,
+      },
+      {
+        Header: "Profile Progress Status",
+        accessor: "progress",
+        width: 70,
+        sortBy: true,
+      },
+    ],
+    []
+  )
+  const data = React.useMemo(() => makeData(30), [])
+
+  return (
+    <DataTable
+      id="dt_scroll"
+      columns={columns}
+      data={data}
+      pageSize={7}
+      pageSizeOptions={[7, 10, 25, 50]}
+      style={{ maxHeight: "400px" }}
+    ></DataTable>
+  );
+}
+
+render(<Example />);`
+
+export const DataTableWithoutPagination = `function Example() {
+  const columns = React.useMemo(
+    () => [
+      {
+        Header: "First Name",
+        accessor: "firstName",
+        width: 80,
+        sortBy: true,
+      },
+      {
+        Header: "Last Name",
+        accessor: "lastName",
+        width: 80,
+        sortBy: true,
+      },
+      {
+        Header: "Age",
+        accessor: "age",
+        width: 50,
+        sortBy: true,
+      },
+      {
+        Header: "Visits",
+        accessor: "visits",
+        width: 50,
+        sortBy: true,
+      },
+      {
+        Header: "Status",
+        accessor: "status",
+        width: 70,
+        sortBy: true,
+      },
+      {
+        Header: "Profile Progress Status",
+        accessor: "progress",
+        width: 70,
+        sortBy: true,
+      },
+    ],
+    []
+  )
+  const data = React.useMemo(() => makeData(10), [])
+
+  return (
+    <DataTable
+      id="dt_wo_pagination"
+      columns={columns}
+      data={data}
+      disablePagination
+    ></DataTable>
+  );
+}
+render(<Example />);`
+
+export const DataTableWithColumnResize = `
+function Example() {
   const columns = React.useMemo(
     () => [
       {
@@ -1486,84 +1313,169 @@ export const TableWithColumnResize = `function Example() {
     ],
     []
   )
-
-  const data = React.useMemo(() => makeData(20), [])
+  const data = React.useMemo(() => makeData(30), [])
 
   return (
-    <DataTable id="tableResize" columns={columns} data={data} hasSorting hasPagination resizeColumns>
-        {({
-          prepareRow,
-          rows,
-          gotoPage,
-          pageIndex,
-          pageSize,
-          setPageSize,
-          pageOptions,
-        }) => (
-          <>
-            <TableContainer scrollable style={{ maxHeight: "400px" }}>
-              <Table bordered hover>
-                <TableHead className="bg-gray-light sticky-top">
-                  <TableRow className="bg-gray-light">
-                    <TableHeaderCell
-                      accessor="firstName"
-                      className="bg-gray-light"
-                    />
-                    <TableHeaderCell
-                      accessor="lastName"
-                      className="bg-gray-light"
-                    />
-                    <TableHeaderCell accessor="age" className="bg-gray-light" />
-                    <TableHeaderCell
-                      accessor="visits"
-                      className="bg-gray-light"
-                    />
-                    <TableHeaderCell
-                      accessor="status"
-                      className="bg-gray-light"
-                    />
-                    <TableHeaderCell
-                      accessor="progress"
-                      className="bg-gray-light"
-                    />
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {rows.map((row, i) => {
-                    prepareRow(row)
-                    return (
-                      <TableRow {...row.getRowProps()}>
-                        {row.cells.map(cell => {
-                          return (
-                            <TableCell {...cell.getCellProps()}>
-                              <span style={{ whiteSpace: "nowrap", overflow: "hidden",textOverflow: "ellipsis"}}>{cell.render("Cell")}</span>
-                            </TableCell>
-                          )
-                        })}
-                      </TableRow>
-                    )
-                  })}
-                </TableBody>
-              </Table>
-            </TableContainer>
-            <TablePagination
-              totalPages={pageOptions.length}
-              pageIndex={pageIndex}
-              pageSize={pageSize}
-              onPageChange={gotoPage}
-              pageSizeOptions={[10, 20, 30, 40, 50]}
-              onPageSizeChange={setPageSize}
-              className="border border-tertiary"
-            ></TablePagination>
-          </>
-        )}
-      </DataTable>
+    <DataTable
+      id="dt_resize_columns"
+      columns={columns}
+      data={data}
+      pageSize={7}
+      pageSizeOptions={[7, 10, 25, 50]}
+      resizeColumns
+    ></DataTable>
   );
 }
 
 render(<Example />);`
 
-export const TableWithSingleRowSelection = `function Example() {
+export const DataTableWithSingleRowSelection = `function Example() {
+  const columns = React.useMemo(
+    () => [
+      {
+        Header: "First Name",
+        accessor: "firstName",
+        width: 80,
+        sortBy: true,
+      },
+      {
+        Header: "Last Name",
+        accessor: "lastName",
+        width: 80,
+        sortBy: true,
+      },
+      {
+        Header: "Age",
+        accessor: "age",
+        width: 50,
+        sortBy: true,
+      },
+      {
+        Header: "Visits",
+        accessor: "visits",
+        width: 50,
+        sortBy: true,
+      },
+      {
+        Header: "Status",
+        accessor: "status",
+        width: 70,
+        sortBy: true,
+      },
+      {
+        Header: "Profile Progress Status",
+        accessor: "progress",
+        width: 70,
+        sortBy: true,
+      },
+    ],
+    []
+  )
+  const data = React.useMemo(() => makeData(30), [])
+  const [selectedRows , setRowsSelected] = useState([])
+  const handleOnRowSelection = (rows) => {
+    setRowsSelected(rows)
+  }
+
+  return (
+    <div>
+        <DataTable
+          id="dt_row_selection"
+          columns={columns}
+          data={data}
+          pageSize={7}
+          pageSizeOptions={[7, 10, 25, 50]}
+          onRowSelection={handleOnRowSelection}
+        ></DataTable>
+      {selectedRows &&
+        selectedRows.map(row => {
+          return (
+            <Toast className="toast-primary" key={row.firstName}>
+              Successfully selected {row.firstName}, Age - {row.age},
+              Visits - {row.visits}, Status - {row.status} !!
+            </Toast>
+          )
+        })}
+    </div>
+  );
+}
+
+render(<Example />);`
+
+export const DataTableWithMultiRowSelection = `function Example() {
+  const columns = React.useMemo(
+    () => [
+      {
+        Header: "First Name",
+        accessor: "firstName",
+        width: 80,
+        sortBy: true,
+      },
+      {
+        Header: "Last Name",
+        accessor: "lastName",
+        width: 80,
+        sortBy: true,
+      },
+      {
+        Header: "Age",
+        accessor: "age",
+        width: 50,
+        sortBy: true,
+      },
+      {
+        Header: "Visits",
+        accessor: "visits",
+        width: 50,
+        sortBy: true,
+      },
+      {
+        Header: "Status",
+        accessor: "status",
+        width: 70,
+        sortBy: true,
+      },
+      {
+        Header: "Profile Progress Status",
+        accessor: "progress",
+        width: 70,
+        sortBy: true,
+      },
+    ],
+    []
+  )
+  const data = React.useMemo(() => makeData(30), [])
+  const [selectedRows, setRowsSelected] = React.useState([])
+  const handleOnRowSelection = (rows) => {
+    setRowsSelected(rows)
+  }
+
+  return (
+    <div>
+        <DataTable
+          id="dt_multi_row_selection"
+          columns={columns}
+          data={data}
+          pageSize={7}
+          pageSizeOptions={[7, 10, 25, 50]}
+          onRowSelection={handleOnRowSelection}
+          multipleRowSelection
+        ></DataTable>
+      {selectedRows &&
+        selectedRows.map(row => {
+          return (
+            <Toast className="toast-primary" key={row.firstName}>
+              Successfully selected {row.firstName}, Age - {row.age},
+              Visits - {row.visits}, Status - {row.status} !!
+            </Toast>
+          )
+        })}
+    </div>
+  );
+}
+render(<Example />);`
+
+export const DataTableWithCheckBoxSelection = `function Example() {
   const columns = React.useMemo(
     () => [
       {
@@ -1601,297 +1513,39 @@ export const TableWithSingleRowSelection = `function Example() {
   )
 
   const data = React.useMemo(() => makeData(20), [])
+  const [selectedRows, setRowsSelected] = React.useState([])
+  const handleOnRowSelection = (rows) => {
+    setRowsSelected(rows)
+  }
 
   return (
-    <DataTable id="tableSingleRowSel" columns={columns} data={data}>
-        {({prepareRow, rows, selectedRows}) => (
-          <>
-          <TableContainer scrollable style={{ maxHeight: "400px", borderBottom: "1px solid #b7b9c3" }}>
-            <Table bordered hover>
-              <TableHead className="bg-gray-light sticky-top">
-                <TableRow className="bg-gray-light">
-                  <TableHeaderCell
-                    accessor="firstName"
-                    className="bg-gray-light"
-                  />
-                  <TableHeaderCell
-                    accessor="lastName"
-                    className="bg-gray-light"
-                  />
-                  <TableHeaderCell accessor="age" className="bg-gray-light" />
-                  <TableHeaderCell
-                    accessor="visits"
-                    className="bg-gray-light"
-                  />
-                  <TableHeaderCell
-                    accessor="status"
-                    className="bg-gray-light"
-                  />
-                  <TableHeaderCell
-                    accessor="progress"
-                    className="bg-gray-light"
-                  />
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {rows.map((row, i) => {
-                    prepareRow(row)
-                    return (
-                      <TableRow {...row.getRowProps()}
-                        onClick={() => {
-                          row.toggleRowSelected(!row.isSelected)
-                        }}
-                        className={row.isSelected && "selected"}>
-                        {row.cells.map(cell => {
-                          return (
-                            <TableCell {...cell.getCellProps()}>
-                              {cell.render("Cell")}
-                            </TableCell>
-                          )
-                        })}
-                      </TableRow>
-                    )
-                  })}
-              </TableBody>
-            </Table>
-          </TableContainer>
-          <br />
-          {selectedRows &&
-              selectedRows.map(row => {
-                return (
-                  <Toast className="toast-primary" key={row.firstName}>
-                    Successfully selected {row.firstName}, Age - {row.age},
-                    Visits - {row.visits}, Status - {row.status} !!
-                  </Toast>
-                )
-              })}
-          </>
-        )}
-      </DataTable>
+    <div>
+        <DataTable
+          id="dt_cb_selection"
+          columns={columns}
+          data={data}
+          pageSize={7}
+          pageSizeOptions={[7, 10, 25, 50]}
+          onRowSelection={handleOnRowSelection}
+          multipleRowSelection
+          checkBoxRowSelection
+        ></DataTable>
+      {selectedRows &&
+        selectedRows.map(row => {
+          return (
+            <Toast className="toast-primary" key={row.firstName}>
+              Successfully selected {row.firstName}, Age - {row.age},
+              Visits - {row.visits}, Status - {row.status} !!
+            </Toast>
+          )
+        })}
+    </div>
   );
 }
 
 render(<Example />);`
 
-export const TableWithMultiRowSelection = `function Example() {
-  const columns = React.useMemo(
-    () => [
-      {
-        Header: "First Name",
-        accessor: "firstName",
-        width: 80,
-      },
-      {
-        Header: "Last Name",
-        accessor: "lastName",
-        width: 80,
-      },
-      {
-        Header: 'Age',
-        accessor: 'age',
-        width: 50,
-      },
-      {
-        Header: 'Visits',
-        accessor: 'visits',
-        width: 50,
-      },
-      {
-        Header: "Status",
-        accessor: "status",
-        width: 70,
-      },
-      {
-        Header: "Profile Progress Status",
-        accessor: "progress",
-        width: 70
-      },
-    ],
-    []
-  )
-
-  const data = React.useMemo(() => makeData(20), [])
-
-  return (
-    <DataTable id="tableMultiRowSel" columns={columns} data={data} hasSorting multipleRowSelection>
-        {({prepareRow, rows, selectedRows}) => (
-          <>
-          <TableContainer scrollable style={{ maxHeight: "400px", borderBottom: "1px solid #b7b9c3" }}>
-            <Table bordered hover>
-              <TableHead className="bg-gray-light sticky-top">
-                <TableRow className="bg-gray-light">
-                  <TableHeaderCell
-                    accessor="firstName"
-                    className="bg-gray-light"
-                  />
-                  <TableHeaderCell
-                    accessor="lastName"
-                    className="bg-gray-light"
-                  />
-                  <TableHeaderCell accessor="age" className="bg-gray-light" />
-                  <TableHeaderCell
-                    accessor="visits"
-                    className="bg-gray-light"
-                  />
-                  <TableHeaderCell
-                    accessor="status"
-                    className="bg-gray-light"
-                  />
-                  <TableHeaderCell
-                    accessor="progress"
-                    className="bg-gray-light"
-                  />
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {rows.map((row, i) => {
-                    prepareRow(row)
-                    return (
-                      <TableRow {...row.getRowProps()}
-                        onClick={() => {
-                          row.toggleRowSelected(!row.isSelected)
-                        }}
-                        className={row.isSelected && "selected"}>
-                        {row.cells.map(cell => {
-                          return (
-                            <TableCell {...cell.getCellProps()}>
-                              {cell.render("Cell")}
-                            </TableCell>
-                          )
-                        })}
-                      </TableRow>
-                    )
-                  })}
-              </TableBody>
-            </Table>
-          </TableContainer>
-          <br/>
-          {selectedRows &&
-              selectedRows.map(row => {
-                return (
-                  <Toast className="toast-primary" key={row.firstName}>
-                    Successfully selected {row.firstName}, Age - {row.age},
-                    Visits - {row.visits}, Status - {row.status} !!
-                  </Toast>
-                )
-              })}
-          </>
-        )}
-      </DataTable>
-  );
-}
-
-render(<Example />);`
-
-export const TableWithCheckBoxSelection = `function Example() {
-  const columns = React.useMemo(
-    () => [
-      {
-        Header: "First Name",
-        accessor: "firstName",
-        width: 80,
-      },
-      {
-        Header: "Last Name",
-        accessor: "lastName",
-        width: 80,
-      },
-      {
-        Header: 'Age',
-        accessor: 'age',
-        width: 50,
-      },
-      {
-        Header: 'Visits',
-        accessor: 'visits',
-        width: 50,
-      },
-      {
-        Header: "Status",
-        accessor: "status",
-        width: 70,
-      },
-      {
-        Header: "Profile Progress Status",
-        accessor: "progress",
-        width: 70
-      },
-    ],
-    []
-  )
-
-  const data = React.useMemo(() => makeData(20), [])
-
-  return (
-    <DataTable id="tableCbSingleRowSel" columns={columns} data={data} hasSorting checkBoxRowSelection>
-        {({prepareRow, rows, selectedRows}) => (
-          <>
-          <TableContainer scrollable style={{ maxHeight: "400px", borderBottom: "1px solid #b7b9c3" }}>
-            <Table bordered hover>
-              <TableHead className="bg-gray-light sticky-top">
-                <TableRow className="bg-gray-light">
-                  <TableHeaderCell accessor="selector" className='icon-only' />
-                  <TableHeaderCell
-                    accessor="firstName"
-                    className="bg-gray-light"
-                  />
-                  <TableHeaderCell
-                    accessor="lastName"
-                    className="bg-gray-light"
-                  />
-                  <TableHeaderCell accessor="age" className="bg-gray-light" />
-                  <TableHeaderCell
-                    accessor="visits"
-                    className="bg-gray-light"
-                  />
-                  <TableHeaderCell
-                    accessor="status"
-                    className="bg-gray-light"
-                  />
-                  <TableHeaderCell
-                    accessor="progress"
-                    className="bg-gray-light"
-                  />
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {rows.map((row, i) => {
-                    prepareRow(row)
-                    return (
-                      <TableRow {...row.getRowProps()}
-                        className={row.isSelected && "selected"}>
-                        {row.cells.map((cell, index) => {
-                          return (
-                            <TableCell {...cell.getCellProps()} className={index === 0 && 'icon-only'}>
-                              {cell.render("Cell")}
-                            </TableCell>
-                          )
-                        })}
-                      </TableRow>
-                    )
-                  })}
-              </TableBody>
-            </Table>
-          </TableContainer>
-          <br />
-          {selectedRows &&
-              selectedRows.map(row => {
-                return (
-                  <Toast className="toast-primary" key={row.firstName}>
-                    Successfully selected {row.firstName}, Age - {row.age},
-                    Visits - {row.visits}, Status - {row.status} !!
-                  </Toast>
-                )
-              })}
-          </>
-        )}
-      </DataTable>
-  );
-}
-
-render(<Example />);`
-
-export const TableWithCustomCheckBoxSelection = `function Example() {
+export const DataTableWithCustomCheckBoxSelection = `function Example() {
   const IndeterminateCheckbox = React.forwardRef(
     ({ indeterminate,id, ...props }, ref) => {
       const defaultRef = React.useRef()
@@ -1956,75 +1610,23 @@ export const TableWithCustomCheckBoxSelection = `function Example() {
   const data = React.useMemo(() => makeData(20), [])
 
   return (
-    <DataTable id="tableCbMultiRowSel" columns={columns} data={data} hasSorting checkBoxRowSelection multipleRowSelection>
-        {({prepareRow, rows, selectedRows}) => (
-          <>
-          <TableContainer scrollable style={{ maxHeight: "400px", borderBottom: "1px solid #b7b9c3" }}>
-            <Table bordered hover id="customCheckBoxTable">
-              <TableHead className="bg-gray-light sticky-top">
-                <TableRow className="bg-gray-light">
-                  <TableHeaderCell accessor="selector" className='icon-only' />
-                  <TableHeaderCell
-                    accessor="firstName"
-                    className="bg-gray-light"
-                  />
-                  <TableHeaderCell
-                    accessor="lastName"
-                    className="bg-gray-light"
-                  />
-                  <TableHeaderCell accessor="age" className="bg-gray-light" />
-                  <TableHeaderCell
-                    accessor="visits"
-                    className="bg-gray-light"
-                  />
-                  <TableHeaderCell
-                    accessor="status"
-                    className="bg-gray-light"
-                  />
-                  <TableHeaderCell
-                    accessor="progress"
-                    className="bg-gray-light"
-                  />
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {rows.map((row, i) => {
-                    prepareRow(row)
-                    return (
-                      <TableRow {...row.getRowProps()}
-                        className={row.isSelected && "selected"}>
-                        {row.cells.map((cell,index) => {
-                          return (
-                            <TableCell {...cell.getCellProps()} className={index === 0 && 'icon-only'}>
-                              {cell.render("Cell")}
-                            </TableCell>
-                          )
-                        })}
-                      </TableRow>
-                    )
-                  })}
-              </TableBody>
-            </Table>
-          </TableContainer>
-          <br />
-          {selectedRows &&
-              selectedRows.map(row => {
-                return (
-                  <Toast className="toast-primary" key={row.firstName}>
-                    Successfully selected {row.firstName}, Age - {row.age},
-                    Visits - {row.visits}, Status - {row.status} !!
-                  </Toast>
-                )
-              })}
-          </>
-        )}
-      </DataTable>
+    <div>
+        <DataTable
+          id="dt_custom_cb_selection"
+          columns={columns}
+          data={data}
+          pageSize={7}
+          pageSizeOptions={[7, 10, 25, 50]}
+          multipleRowSelection
+          checkBoxRowSelection
+        ></DataTable>
+    </div>
   );
 }
 
 render(<Example />);`
 
-export const TableWithStickyFirstColumn = `function Example() {
+export const DataTableWithStickyFirstColumn = `function Example() {
   const columns = React.useMemo(
     () => [
      {
@@ -2061,90 +1663,21 @@ export const TableWithStickyFirstColumn = `function Example() {
     []
   )
 
-  const data = React.useMemo(() => makeData(20), [])
+  const data = React.useMemo(() => makeData(7), [])
 
   return (
-      <DataTable
-        id="stickyfirstcolumn"
-        columns={columns}
-        data={data}
-        hasSorting
-        hasPagination
-        resizeColumns
-      >
-        {({
-          prepareRow,
-          rows,
-          gotoPage,
-          pageIndex,
-          pageSize,
-          setPageSize,
-          pageOptions,
-        }) => (
-          <>
-            <TableContainer scrollable style={{ maxHeight: "400px" }}>
-              <Table bordered className="table-sticky-first-column">
-                <TableHead className="bg-gray-light sticky-top">
-                  <TableRow className="bg-gray-light">
-                    <TableHeaderCell
-                      accessor="firstName"
-                      className="bg-gray-light"
-                    />
-                    <TableHeaderCell
-                      accessor="lastName"
-                      className="bg-gray-light"
-                    />
-                    <TableHeaderCell accessor="age" className="bg-gray-light" />
-                    <TableHeaderCell
-                      accessor="visits"
-                      className="bg-gray-light"
-                    />
-                    <TableHeaderCell
-                      accessor="status"
-                      className="bg-gray-light"
-                    />
-                    <TableHeaderCell
-                      accessor="progress"
-                      className="bg-gray-light"
-                    />
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {rows.map((row, i) => {
-                    prepareRow(row)
-                    return (
-                      <TableRow {...row.getRowProps()}>
-                        {row.cells.map(cell => {
-                          return (
-                            <TableCell {...cell.getCellProps()}>
-                              {cell.render("Cell")}
-                            </TableCell>
-                          )
-                        })}
-                      </TableRow>
-                    )
-                  })}
-                </TableBody>
-              </Table>
-            </TableContainer>
-            <TablePagination
-              totalPages={pageOptions.length}
-              pageIndex={pageIndex}
-              pageSize={pageSize}
-              onPageChange={gotoPage}
-              pageSizeOptions={[10, 20, 30, 40, 50]}
-              onPageSizeChange={setPageSize}
-              className="border border-tertiary"
-            ></TablePagination>
-          </>
-        )}
-      </DataTable>
+    <DataTable
+      id="dt_sticky_column"
+      columns={columns}
+      data={data}
+      className="table-sticky-first-column"
+    ></DataTable>
   );
 }
 
 render(<Example />);`
 
-export const TableWithColumnFilter = `function Example() {
+export const DataTableWithColumnFilter = `function Example() {
   function TextFilter({
     column: { filterValue, preFilteredRows, setFilter, id, render },
   }) {
@@ -2204,30 +1737,11 @@ export const TableWithColumnFilter = `function Example() {
           }}
         >
           <option value="">All</option>
-          <option>single</option>
-          <option>complicated</option>
-          <option>relationship</option>
+          <option>Pending</option>
+          <option>Verified</option>
+          <option>Rejected</option>
         </Form.Control>
       </Form.Group>
-    )
-  }
-
-  const DismissibleChip = ({ label, onClose, ...props }) => {
-    const [show, setShow] = useState(true)
-    const handleClose = useCallback(() => {
-      setShow(!show)
-      onClose()
-    }, [setShow])
-
-    return (
-      <Chip
-        label={label}
-        onClose={handleClose}
-        show={show}
-        variant="outline"
-        type="input"
-        className="m-1"
-      ></Chip>
     )
   }
 
@@ -2236,36 +1750,36 @@ export const TableWithColumnFilter = `function Example() {
       {
         Header: "First Name",
         accessor: "firstName",
-        width: 80,
         sortBy: true,
-        Filter: TextFilter
+        Filter: TextFilter,
+        width: 80,
       },
       {
         Header: "Last Name",
         accessor: "lastName",
-        width: 80,
         sortBy: true,
-        Filter: TextFilter
+        Filter: TextFilter,
+        width: 80,
       },
       {
-        Header: 'Age',
-        accessor: 'age',
+        Header: "Age",
+        accessor: "age",
+        Filter: SliderFilter,
         width: 50,
         sortBy: true,
-        Filter: SliderFilter
       },
       {
-        Header: 'Visits',
-        accessor: 'visits',
+        Header: "Visits",
+        accessor: "visits",
         width: 50,
         sortBy: true,
       },
       {
         Header: "Status",
         accessor: "status",
+        Filter: SelectFilter,
         width: 70,
         sortBy: true,
-        Filter: SelectFilter
       },
       {
         Header: "Profile Progress Status",
@@ -2277,162 +1791,14 @@ export const TableWithColumnFilter = `function Example() {
     []
   )
 
-  const data = React.useMemo(() => makeData(125), [])
+  const data = React.useMemo(() => makeData(7), [])
 
   return (
-    <>
       <DataTable
-        id="test"
+        id="dt_filter"
         columns={columns}
         data={data}
-        hasSorting
-        hasPagination
-        resizeColumns
-      >
-        {({
-          allColumns,
-          setFilter,
-          filters,
-          setAllFilters,
-          prepareRow,
-          rows,
-          gotoPage,
-          pageIndex,
-          pageSize,
-          setPageSize,
-          pageOptions,
-        }) => {
-          const popover = (
-            <Popover
-              id="popover-basic"
-              style={{ width: "500px", maxWidth: "500px" }}
-            >
-              <Popover.Content>
-                <Container style={{ width: "100%" }} className="p-1">
-                  <Row xs={1} md={2}>
-                    {allColumns
-                      .filter(it => it.canFilter && it.Filter)
-                      .map(column => (
-                        <div key={column.id}>
-                          <Col>{column.render("Filter")}</Col>
-                        </div>
-                      ))}
-                  </Row>
-                  <Row className="d-flex justify-content-end mr-2">
-                    <Button onClick={e => setAllFilters([])}>RESET</Button>
-                  </Row>
-                </Container>
-              </Popover.Content>
-            </Popover>
-          )
-
-          return (
-            <div className="d-flex flex-column">
-              <div className="d-flex align-items-center">
-                <div className="flex-grow-1">
-                  {filters && filters.length > 0 && (
-                    <div>
-                      Active Filters:
-                      {allColumns.map(column => {
-                        const filter = filters.find(f => f.id === column.id)
-                        const value = filter && filter.value
-                        return (
-                          value && (
-                            <DismissibleChip
-                              key={column.id}
-                              label={column.render("Header").concat(": ",filter.value )}
-                              onClose={e => setFilter(column.id, undefined)}
-                            />
-                          )
-                        )
-                      })}
-                    </div>
-                  )}
-                </div>
-                <div style={{ minWidth: "170px", lineHeight: 2 }}>
-                  <OverlayTrigger
-                    trigger="click"
-                    placement="bottom"
-                    overlay={popover} rootClose
-                  >
-                    <Nav.Link eventKey="1" className="p-0">
-                      <i
-                        className="modus-icons material-icons left-icon p-1"
-                        style={{ top: "5px", fontSize: "20px" }}
-                      >
-                        filter
-                      </i>
-                      FILTER COLUMNS
-                    </Nav.Link>
-                  </OverlayTrigger>
-                </div>
-              </div>
-              <div>
-                <TableContainer scrollable style={{ maxHeight: "400px" }}>
-                  <Table bordered hover>
-                    <TableHead className="bg-gray-light sticky-top">
-                      <TableRow className="bg-gray-light">
-                        <TableHeaderCell
-                          accessor="firstName"
-                          className="bg-gray-light"
-                        />
-                        <TableHeaderCell
-                          accessor="lastName"
-                          className="bg-gray-light"
-                        />
-                        <TableHeaderCell
-                          accessor="age"
-                          className="bg-gray-light"
-                        />
-                        <TableHeaderCell
-                          accessor="visits"
-                          className="bg-gray-light"
-                        />
-                        <TableHeaderCell
-                          accessor="status"
-                          className="bg-gray-light"
-                        />
-                        <TableHeaderCell
-                          accessor="progress"
-                          className="bg-gray-light"
-                        />
-                      </TableRow>
-                    </TableHead>
-                    <TableBody>
-                      {rows.map((row, i) => {
-                        prepareRow(row)
-                        return (
-                          <TableRow {...row.getRowProps()}>
-                            {row.cells.map(cell => {
-                              return (
-                                <TableCell {...cell.getCellProps()}>
-                                  {cell.render("Cell")}
-                                </TableCell>
-                              )
-                            })}
-                          </TableRow>
-                        )
-                      })}
-                    </TableBody>
-                  </Table>
-                </TableContainer>
-              </div>
-              <div>
-                <TablePagination
-                  totalPages={pageOptions.length}
-                  pageIndex={pageIndex}
-                  pageSize={pageSize}
-                  onPageChange={gotoPage}
-                  pageSizeOptions={[10, 20, 30, 40, 50]}
-                  onPageSizeChange={setPageSize}
-                  className="border border-tertiary"
-                ></TablePagination>
-              </div>
-            </div>
-          )
-        }}
-      </DataTable>
-    </>
+      ></DataTable>
   )
 }
 

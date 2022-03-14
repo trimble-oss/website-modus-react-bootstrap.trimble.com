@@ -140,7 +140,7 @@ const TablePagination = React.forwardRef<HTMLDivElement, TablePaginationProps>(
     const firstPage = paginationGroup[0]
     const lastPage = paginationGroup[paginationGroup.length - 1]
     const morePagesLeft = firstPage > 1 && getRange(1, firstPage - 1)
-    debugger
+
     const morePagesRight =
       totalPages > 0 &&
       lastPage !== totalPages &&
