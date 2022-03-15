@@ -1,5 +1,5 @@
 import styled, { css } from "styled-components"
-import { StyledDivWrapper } from "./StyleHelpers"
+import { StyledDivWrapper } from "./StyledComponentHelper"
 
 const TablePaginationStyled = styled(StyledDivWrapper)`
   div.container {
