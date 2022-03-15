@@ -1632,32 +1632,26 @@ export const DataTableWithStickyFirstColumn = `function Example() {
      {
         Header: "First Name",
         accessor: "firstName",
-        width: 80,
       },
       {
         Header: "Last Name",
         accessor: "lastName",
-        width: 80,
       },
       {
         Header: 'Age',
         accessor: 'age',
-        width: 50,
       },
       {
         Header: 'Visits',
         accessor: 'visits',
-        width: 50,
       },
       {
         Header: "Status",
         accessor: "status",
-        width: 70,
       },
       {
         Header: "Profile Progress Status",
         accessor: "progress",
-        width: 70
       },
     ],
     []
@@ -1725,13 +1719,14 @@ export const DataTableWithColumnFilter = `function Example() {
   function SelectFilter({
     column: { filterValue, preFilteredRows, setFilter, id, render },
   }) {
+
     return (
       <Form.Group controlId="exampleForm.SelectCustom">
         <Form.Label>{render("Header")}</Form.Label>
         <Form.Control
           as="select"
           custom
-          value={filterValue}
+          value={filterValue || ""}
           onChange={e => {
             setFilter(e.target.value || undefined)
           }}
@@ -1799,6 +1794,176 @@ export const DataTableWithColumnFilter = `function Example() {
         columns={columns}
         data={data}
       ></DataTable>
+  )
+}
+
+render(<Example />);`
+
+export const Editable = styled.div`
+  td:nth-child(-n + 3) {
+    padding: 0;
+  }
+
+  td div.cell-editable {
+    * {
+      padding: 0.25rem 1rem;
+    }
+    .form-control:focus {
+      border: 0 !important;
+      height: 3rem;
+    }
+    &.cell-editing {
+      border: 1px solid #217cbb;
+    }
+  }
+`
+
+export const DataTableWithCellEditable = `function Example() {
+  const EditableCell = ({
+    value: initialValue,
+    row: { index },
+    column: { id },
+  }) => {
+    const [value, setValue] = React.useState(initialValue)
+    const [editMode, setEditMode] = React.useState(false)
+
+    React.useEffect(() => {
+      setValue(initialValue)
+    }, [initialValue])
+
+    const handleEdit = e => {
+      e.preventDefault()
+      setEditMode(true)
+    }
+
+    const handleKeyUp = e => {
+      if (e.key === "Enter" || e.keyCode === 13) {
+        exitEditMode()
+      } else {
+        setValue(e.target.value)
+      }
+    }
+
+    const handleBlur = e => {
+      exitEditMode()
+    }
+
+    const exitEditMode = () => {
+      setEditMode(false)
+      UpdateMyData(index, id, value)
+    }
+
+    return (
+      <div
+        onClick={handleEdit}
+        className={"d-flex align-items-center cell-editable".concat(
+          editMode ? " cell-editing" : ""
+        )}
+      >
+        {editMode ? (
+          <Form.Control
+            as="input"
+            defaultValue={value}
+            size="lg"
+            className="border-0"
+            autoFocus
+            onKeyUp={handleKeyUp}
+            onBlur={handleBlur}
+          />
+        ) : (
+          <span>{value}</span>
+        )}
+      </div>
+    )
+  }
+
+  const columns = React.useMemo(
+    () => [
+      {
+        Header: "First Name",
+        accessor: "firstName",
+        sortBy: true,
+        width: 80,
+        Cell: EditableCell,
+      },
+      {
+        Header: "Last Name",
+        accessor: "lastName",
+        sortBy: true,
+        width: 80,
+        Cell: EditableCell,
+      },
+      {
+        Header: "Age",
+        accessor: "age",
+        width: 50,
+        sortBy: true,
+        Cell: EditableCell,
+      },
+      {
+        Header: "Visits",
+        accessor: "visits",
+        width: 50,
+        sortBy: true,
+      },
+      {
+        Header: "Status",
+        accessor: "status",
+        width: 70,
+        sortBy: true,
+      },
+      {
+        Header: "Profile Progress Status",
+        accessor: "progress",
+        width: 70,
+        sortBy: true,
+      },
+    ],
+    []
+  )
+
+  const [data, setData] = React.useState(() => makeData(7))
+
+  function UpdateMyData(rowIndex, columnId, value) {
+    setData(old =>
+      old.map((row, index) => {
+        if (index === rowIndex) {
+          return {
+            ...old[rowIndex],
+            [columnId]: value,
+          }
+        }
+        return row
+      })
+    )
+  }
+
+  //Editable--CSS
+  // td:nth-child(-n + 3) {
+  //   padding: 0;
+  // }
+  // td div.cell-editable {
+  //   * {
+  //     padding: 0.25rem 1rem;
+  //   }
+  //   .form-control:focus {
+  //     border: 0 !important;
+  //     height: 3rem;
+  //   }
+  //   &.cell-editing {
+  //     border: 1px solid #217cbb;
+  //   }
+  // }
+
+  return (
+    <Editable>
+      <DataTable
+        id="dt_filter"
+        columns={columns}
+        data={data}
+        disableRowSelection
+      ></DataTable>
+    </Editable>
   )
 }
 

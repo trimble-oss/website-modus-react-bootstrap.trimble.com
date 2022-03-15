@@ -45,6 +45,8 @@ export interface DataTableProps
   onRowSelection?: (rows: Array<Row>) => void
 }
 
+// TODO:
+// Improve API details - callback function signature, more details on columns & row objects
 const propTypes = {
   /**
    * DataTable identifier.
@@ -226,12 +228,15 @@ export function DataTable(
   )
 
   useEffect(() => {
-    if (onRowSelection) onRowSelection(selectedFlatRows)
+    if (onRowSelection) onRowSelection(selectedFlatRows.map(d => d.original))
   }, [selectedFlatRows])
 
   // Special css classes
   // TODO: need an alternative to handle custom css classes for Table and other elements
   const classesArray = className ? className.split(" ") : []
+
+  // Row selection by mouse click
+  const rowSelectionByClick = !disableRowSelection && !checkBoxRowSelection
 
   return (
     <>
@@ -296,6 +301,10 @@ export function DataTable(
                     return (
                       <tr
                         {...row.getRowProps()}
+                        onClick={() => {
+                          rowSelectionByClick &&
+                            row.toggleRowSelected(!row.isSelected)
+                        }}
                         className={row.isSelected && "selected"}
                       >
                         {row.cells.map((cell, index) => {

@@ -22,6 +22,8 @@ import {
   DataTableWithCustomCheckBoxSelection,
   DataTableWithStickyFirstColumn,
   DataTableWithColumnFilter,
+  Editable,
+  DataTableWithCellEditable,
 } from "../../examples/components/Table"
 import { useTable, useSortBy, usePagination } from "react-table"
 import Badge from "@trimbleinc/modus-react-bootstrap/Badge"
@@ -148,9 +150,10 @@ import Badge from "@trimbleinc/modus-react-bootstrap/Badge"
   noInline={true}
 >
   The prop <code> resizeColumns </code> on <code> DataTable </code>
-  can be used to enable resizing on all the columns. To disable resizing for specific
-  columns use
-  <code> disableResizing </code> on the columns object as shown in the example.
+  can be used to enable resizing on all the columns. To disable resizing for each
+  column use
+  <code> disableResizing </code> inside the columns object as shown in the
+  example.
 </CodeBlock>
 
 <CodeBlock
@@ -236,7 +239,24 @@ import Badge from "@trimbleinc/modus-react-bootstrap/Badge"
   }}
   code={DataTableWithColumnFilter}
   noInline={true}
-></CodeBlock>
+>
+  Filtering on each column can be set through <code> Filter </code> prop which
+  is a callback to create and return custom filter control, refer the example
+  below for implementation.
+</CodeBlock>
+
+<CodeBlock
+  title="Editable Cell"
+  scope={{
+    Editable,
+    makeData,
+  }}
+  code={DataTableWithCellEditable}
+  noInline={true}
+>
+  Each cell can be customized to render custom control through{" "}
+  <code> Cell </code> prop inside columns object as shown below.
+</CodeBlock>
 
 <LinkedHeading h="2" className="h1" id="table-api">
   API
