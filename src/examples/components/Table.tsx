@@ -1813,7 +1813,7 @@ export const Editable = styled.div`
       height: 3rem;
     }
     &.cell-editing {
-      border: 1px solid #217cbb;
+      border: 2px solid #217cbb;
     }
   }
 `
@@ -1951,7 +1951,7 @@ export const DataTableWithCellEditable = `function Example() {
   //     height: 3rem;
   //   }
   //   &.cell-editing {
-  //     border: 1px solid #217cbb;
+  //     border: 2px solid #217CBB;
   //   }
   // }
 
