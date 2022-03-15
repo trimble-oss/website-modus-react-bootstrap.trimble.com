@@ -1146,7 +1146,7 @@ export const DataTableWithSorting = `function Example() {
   return (
     <DataTable
       id="dt_sorting"
-      columns={columns}
+      columns={columns} bordered hover
       pageSize={7}
       pageSizeOptions={[7, 10, 25, 50]}
       data={data}
@@ -1203,7 +1203,7 @@ export const DataTableWithScroll = `function Example() {
   return (
     <DataTable
       id="dt_scroll"
-      columns={columns}
+      columns={columns} bordered hover
       data={data}
       pageSize={7}
       pageSizeOptions={[7, 10, 25, 50]}
@@ -1261,7 +1261,7 @@ export const DataTableWithoutPagination = `function Example() {
   return (
     <DataTable
       id="dt_wo_pagination"
-      columns={columns}
+      columns={columns} bordered hover
       data={data}
       disablePagination
     ></DataTable>
@@ -1318,7 +1318,7 @@ function Example() {
   return (
     <DataTable
       id="dt_resize_columns"
-      columns={columns}
+      columns={columns} bordered hover
       data={data}
       pageSize={7}
       pageSizeOptions={[7, 10, 25, 50]}
@@ -1381,7 +1381,7 @@ export const DataTableWithSingleRowSelection = `function Example() {
     <div>
         <DataTable
           id="dt_row_selection"
-          columns={columns}
+          columns={columns} bordered hover
           data={data}
           pageSize={7}
           pageSizeOptions={[7, 10, 25, 50]}
@@ -1454,7 +1454,7 @@ export const DataTableWithMultiRowSelection = `function Example() {
     <div>
         <DataTable
           id="dt_multi_row_selection"
-          columns={columns}
+          columns={columns} bordered hover
           data={data}
           pageSize={7}
           pageSizeOptions={[7, 10, 25, 50]}
@@ -1522,7 +1522,7 @@ export const DataTableWithCheckBoxSelection = `function Example() {
     <div>
         <DataTable
           id="dt_cb_selection"
-          columns={columns}
+          columns={columns} bordered hover
           data={data}
           pageSize={7}
           pageSizeOptions={[7, 10, 25, 50]}
@@ -1613,7 +1613,7 @@ export const DataTableWithCustomCheckBoxSelection = `function Example() {
     <div>
         <DataTable
           id="dt_custom_cb_selection"
-          columns={columns}
+          columns={columns} bordered hover
           data={data}
           pageSize={7}
           pageSizeOptions={[7, 10, 25, 50]}
@@ -1662,7 +1662,7 @@ export const DataTableWithStickyFirstColumn = `function Example() {
   return (
     <DataTable
       id="dt_sticky_column"
-      columns={columns}
+      columns={columns} bordered hover
       data={data}
       className="table-sticky-first-column"
     ></DataTable>
@@ -1791,7 +1791,7 @@ export const DataTableWithColumnFilter = `function Example() {
   return (
       <DataTable
         id="dt_filter"
-        columns={columns}
+        columns={columns} bordered hover
         data={data}
       ></DataTable>
   )
@@ -1958,8 +1958,8 @@ export const DataTableWithCellEditable = `function Example() {
   return (
     <Editable>
       <DataTable
-        id="dt_filter"
-        columns={columns}
+        id="dt_editable"
+        columns={columns} bordered hover
         data={data}
         disableRowSelection
       ></DataTable>

@@ -54,20 +54,24 @@ const ReactTableNextGen = props => {
     }, [initialValue])
 
     return (
-      <div onClick={onEdit}>
+      <div
+        onClick={onEdit}
+        className={"d-flex align-items-center cell-editable".concat(
+          editMode ? " cell-editing" : ""
+        )}
+      >
         {editMode ? (
           <Form.Control
             as="input"
             defaultValue={value}
-            onKeyUp={onKeyUp}
             size="lg"
-            style={{ height: "2.5rem" }}
             className="border-0"
-            onBlur={onBlur}
             autoFocus
+            onKeyUp={onKeyUp}
+            onBlur={onBlur}
           />
         ) : (
-          value
+          <span>{value}</span>
         )}
       </div>
     )

@@ -1,9 +1,7 @@
-import * as React from "react"
-import { useContext, useCallback, useState } from "react"
+import React, { useCallback } from "react"
 import merge from "lodash/merge"
 import PropTypes from "prop-types"
 import classNames from "classnames"
-import { TableContext, TableHeadersContext } from "./TableContext"
 import { ColumnInstance } from "react-table"
 
 export interface DataTableHeaderCellProps

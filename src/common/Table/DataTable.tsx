@@ -29,10 +29,17 @@ import {
 import { TableColumn } from "."
 
 export interface DataTableProps
-  extends Omit<React.HTMLProps<HTMLDivElement>, "data">,
+  extends Omit<React.HTMLProps<HTMLDivElement>, "data" | "size">,
     Omit<TableOptions<any>, "columns"> {
   id: string
   columns: ReadonlyArray<TableColumn>
+  striped?: boolean
+  bordered?: boolean
+  borderless?: boolean
+  hover?: boolean
+  size?: string
+  variant?: string
+  responsive?: boolean | string
   pageSize?: number
   pageSizeOptions?: number[]
   resizeColumns?: boolean
@@ -109,6 +116,49 @@ const propTypes = {
   disableFiltering: PropTypes.bool,
 
   /**
+   * Adds zebra-striping to any table row within the `<tbody>`.
+   */
+  striped: PropTypes.bool,
+
+  /**
+   * Adds borders on all sides of the table and cells.
+   */
+  bordered: PropTypes.bool,
+
+  /**
+   * Removes all borders on the table and cells, including table header.
+   */
+  borderless: PropTypes.bool,
+
+  /**
+   * Enable a hover state on table rows within a `<tbody>`.
+   */
+  hover: PropTypes.bool,
+
+  /**
+   * Make tables more compact by cutting cell padding in half by setting
+   * size as `sm`.
+   */
+  size: PropTypes.string,
+
+  /**
+   * Invert the colors of the table — with light text on dark backgrounds
+   * by setting variant as `dark`.
+   */
+  variant: PropTypes.string,
+
+  /**
+   * Responsive tables allow tables to be scrolled horizontally with ease.
+   * Across every breakpoint, use `responsive` for horizontally
+   * scrolling tables. Responsive tables are wrapped automatically in a `div`.
+   * Use `responsive="sm"`, `responsive="md"`, `responsive="lg"`, or
+   * `responsive="xl"` as needed to create responsive tables up to
+   * a particular breakpoint. From that breakpoint and up, the table will
+   * behave normally and not scroll horizontally.
+   */
+  responsive: PropTypes.oneOfType([PropTypes.bool, PropTypes.string]),
+
+  /**
    * Callback when a row is selected. If multipleRowSelection is enabled all rows selected will be available in the callback.
    */
   onRowSelection: PropTypes.bool,
@@ -132,6 +182,13 @@ export function DataTable(
     disablePagination,
     disableSorting,
     disableFiltering,
+    striped,
+    bordered,
+    borderless,
+    hover,
+    size,
+    variant,
+    responsive,
     onRowSelection,
     ref,
     className,
@@ -242,7 +299,7 @@ export function DataTable(
     <>
       <DataTableStyled ref={containerRef}>
         <div
-          className="d-flex flex-column"
+          className={classNames("d-flex flex-column", className)}
           ref={ref}
           style={{ overflow: "hidden" }}
           {...rest}
@@ -258,8 +315,13 @@ export function DataTable(
           <div style={{ overflow: "hidden" }} className="d-flex">
             <div className={classNames("scrollable", "container")}>
               <Table
-                bordered
-                hover
+                striped={striped}
+                bordered={bordered}
+                borderless={borderless}
+                hover={hover}
+                size={size}
+                variant={variant}
+                responsive={responsive}
                 {...getTableProps()}
                 className={classNames(
                   classesArray.includes("table-sticky-first-column") &&
