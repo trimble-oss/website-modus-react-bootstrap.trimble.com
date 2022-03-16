@@ -1,4 +1,4 @@
-import React, { useContext } from "react"
+import React, { useContext, useRef } from "react"
 import PropTypes, { node } from "prop-types"
 import TreeViewContext from "./TreeViewContext"
 import TreeViewItemContext from "./TreeViewItemContext"
@@ -7,6 +7,8 @@ import { Form } from "@trimbleinc/modus-react-bootstrap"
 import TreeViewItemStyled, {
   TreeViewItemGroupStyled,
 } from "./TreeViewItemStyled"
+import { TreeItem } from "./types"
+import findIndex from "lodash/findIndex"
 
 export interface TreeViewItemProps
   extends Omit<React.HTMLProps<HTMLLIElement>, "label"> {
@@ -108,6 +110,7 @@ function TreeViewItem(
     itemIcon: defaultItemIcon,
   } = useContext(TreeViewContext)
 
+  const childNodes = useRef<TreeItem[]>([])
   const { parentId, level } = useContext(TreeViewItemContext)
 
   const expandable = Boolean(
@@ -164,6 +167,40 @@ function TreeViewItem(
     },
     [toggleExpansion]
   )
+
+  const registerDescendant = React.useCallback(({ id, children }) => {
+    if (childNodes.current)
+      childNodes.current.push({ id, children, parentId: nodeId })
+  }, [])
+
+  const unRegisterDescendant = React.useCallback(({ id, children }) => {
+    if (childNodes.current) {
+      childNodes.current = childNodes.current.filter(node => node.id !== id)
+    }
+  }, [])
+
+  const updateDescendant = React.useCallback(({ id, children }) => {
+    if (childNodes.current) {
+      let nodeIndex = findIndex(childNodes.current, node => node.id === id)
+      if (nodeIndex >= 0) {
+        childNodes.current.splice(nodeIndex, 1, {
+          ...childNodes.current[nodeIndex],
+          id,
+          children,
+        })
+      }
+    }
+  }, [])
+
+  const onDescendantToggleSelection = React.useCallback((event, id) => {
+    if (childNodes.current) {
+      const childNotSelected = Boolean(
+        childNodes.current.find(node => isNodeSelected(node.id))
+      )
+      if (!nodeSelected && childNotSelected) return
+      toggleNodeSelection(event, nodeId)
+    }
+  }, [])
 
   return (
     <>

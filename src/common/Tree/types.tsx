@@ -3,6 +3,6 @@ import { ReactNode } from "react"
 export type TreeItem = {
   id: number
   parentId: number
-  label: ReactNode
+  label?: ReactNode
   children?: TreeItem[]
 }

@@ -205,10 +205,7 @@ const TreeView = React.forwardRef<HTMLUListElement, TreeViewProps>(
     )
 
     const isNodeSelected = React.useCallback(
-      (nodeId: number) =>
-        Array.isArray(nodesSelected)
-          ? nodesSelected.indexOf(nodeId) !== -1
-          : nodesSelected === nodeId,
+      (nodeId: number) => nodesSelected.indexOf(nodeId) !== -1,
       [nodesSelected]
     )
 
