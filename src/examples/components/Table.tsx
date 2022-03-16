@@ -1805,8 +1805,14 @@ export const Editable = styled.div`
   }
 
   td div.cell-editable {
+    width: 100%;
     * {
       padding: 0.25rem 1rem;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
     }
     .form-control:focus {
       border: 0 !important;
@@ -1871,7 +1877,7 @@ export const DataTableWithCellEditable = `function Example() {
             onBlur={handleBlur}
           />
         ) : (
-          <span>{value}</span>
+          <span data-toggle="tooltip" data-placement="top" title={value}>{value}</span>
         )}
       </div>
     )
@@ -1943,16 +1949,22 @@ export const DataTableWithCellEditable = `function Example() {
   //   padding: 0;
   // }
   // td div.cell-editable {
-  //   * {
-  //     padding: 0.25rem 1rem;
-  //   }
-  //   .form-control:focus {
-  //     border: 0 !important;
-  //     height: 3rem;
-  //   }
-  //   &.cell-editing {
-  //     border: 2px solid #217CBB;
-  //   }
+  // width: 100%;
+  // * {
+  //   padding: 0.25rem 1rem;
+  //   overflow: hidden;
+  //   text-overflow: ellipsis;
+  //   display: -webkit-box;
+  //   -webkit-line-clamp: 2;
+  //   -webkit-box-orient: vertical;
+  // }
+  // .form-control:focus {
+  //   border: 0 !important;
+  //   height: 3rem;
+  // }
+  // &.cell-editing {
+  //   border: 2px solid #217cbb;
+  // }
   // }
 
   return (
