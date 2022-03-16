@@ -1,5 +1,5 @@
 import React, { useContext } from "react"
-import PropTypes from "prop-types"
+import PropTypes, { node } from "prop-types"
 import TreeViewContext from "./TreeViewContext"
 import TreeViewItemContext from "./TreeViewItemContext"
 import classNames from "classnames"
@@ -8,12 +8,14 @@ import TreeViewItemStyled, {
   TreeViewItemGroupStyled,
 } from "./TreeViewItemStyled"
 
-export interface TreeViewItemProps extends React.HTMLProps<HTMLLIElement> {
+export interface TreeViewItemProps
+  extends Omit<React.HTMLProps<HTMLLIElement>, "label"> {
   nodeId: number
-  label: string
+  label: React.ReactNode | React.ReactElement | string
   collapseIcon?: React.ReactElement
   expandIcon?: React.ReactElement
   itemIcon?: React.ReactElement
+  disableSelection?: boolean
 }
 
 const propTypes = {
@@ -25,7 +27,7 @@ const propTypes = {
   /**
    * Tree Node Text
    */
-  label: PropTypes.string.isRequired,
+  label: PropTypes.oneOfType([PropTypes.string, PropTypes.element]),
 
   /**
    * Collapse icon for the Tree node.
@@ -42,6 +44,36 @@ const propTypes = {
    */
   itemIcon: PropTypes.element,
 }
+
+const IndeterminateCheckbox = React.forwardRef<
+  HTMLInputElement,
+  {
+    id: string
+    indeterminate?: any
+    onClick?: (...args: any[]) => void
+    checked?: boolean
+  }
+>(({ id, indeterminate, checked, onClick, ...props }, ref) => {
+  const defaultRef = React.useRef<HTMLInputElement>(null)
+  const resolvedRef = ref || defaultRef
+
+  React.useEffect(() => {
+    ;(
+      resolvedRef as React.MutableRefObject<HTMLInputElement>
+    ).current.indeterminate = indeterminate
+  }, [resolvedRef, indeterminate])
+
+  return (
+    <Form.Check
+      custom
+      id={id}
+      checked={checked}
+      ref={resolvedRef}
+      onClick={onClick}
+      {...props}
+    />
+  )
+})
 
 function TreeViewItem(
   props: React.PropsWithChildren<TreeViewItemProps> & {
@@ -60,13 +92,17 @@ function TreeViewItem(
     ...rest
   } = props
   const {
+    id: rootId,
     registerNode,
     unRegisterNode,
     isExpanded,
-    isSelected,
+    isNodeSelected,
+    isCheckBoxSelected,
     toggleExpansion,
-    toggleSelection,
-    multiSelect,
+    toggleNodeSelection,
+    toggleCheckBoxSelection,
+    isIndeterminate,
+    checkBoxSelection,
     collapseIcon: defaultCollapseIcon,
     expandIcon: defaultExpandIcon,
     itemIcon: defaultItemIcon,
@@ -78,12 +114,19 @@ function TreeViewItem(
     Array.isArray(children) ? children.length : children
   )
   const expanded = isExpanded ? isExpanded(nodeId) : false
-  const selected = isSelected ? isSelected(nodeId) : false
+  const nodeSelected = isNodeSelected ? isNodeSelected(nodeId) : false
+  const checkBoxSelected = isCheckBoxSelected
+    ? isCheckBoxSelected(nodeId)
+    : false
+  const checkBoxIndeterminate =
+    checkBoxSelection && expandable && isIndeterminate
+      ? isIndeterminate(nodeId)
+      : false
 
   const finalExpandIcon = expandIcon || defaultExpandIcon || (
     <i className="modus-icons">chevron_down_thick</i>
   )
-  const finalCollapseIcon = expandIcon || defaultExpandIcon || (
+  const finalCollapseIcon = expandIcon || defaultCollapseIcon || (
     <i className="modus-icons">chevron_right</i>
   )
   const finalItemIcon = itemIcon || defaultItemIcon
@@ -99,17 +142,24 @@ function TreeViewItem(
     return undefined
   }, [registerNode, unRegisterNode, nodeId, parentId, label])
 
-  const handleSelection = React.useCallback(
-    (e: any, stopPropagation = true) => {
-      if (stopPropagation) e.stopPropagation()
-      toggleSelection(e, nodeId, multiSelect)
+  const handleNodeSelection = React.useCallback(
+    (e: any) => {
+      toggleNodeSelection(e, nodeId)
     },
-    [toggleSelection]
+    [toggleNodeSelection]
+  )
+
+  const handleCheckBoxSelection = React.useCallback(
+    (e: any) => {
+      e.stopPropagation()
+      toggleCheckBoxSelection(e, nodeId)
+    },
+    [toggleCheckBoxSelection]
   )
 
   const handleExpansion = React.useCallback(
-    (e: any, stopPropagation = true) => {
-      if (stopPropagation) e.stopPropagation()
+    (e: any) => {
+      e.stopPropagation()
       toggleExpansion(e, nodeId)
     },
     [toggleExpansion]
@@ -119,49 +169,52 @@ function TreeViewItem(
     <>
       <TreeViewItemStyled
         level={level}
-        multiSelect={multiSelect ? "true" : "false"}
-        itemIcon={itemIcon ? "true" : "false"}
-        {...(!multiSelect && {
-          onClick: function (e) {
-            handleSelection(e, false)
-          },
-        })}
+        checkBoxSelection={checkBoxSelection ? "true" : "false"}
+        itemIcon={finalItemIcon ? "true" : "false"}
+        role="treeitem"
+        aria-expanded={expandable ? expanded : null}
+        aria-selected={nodeSelected}
       >
         <li
           className={classNames(
-            "list-group-item list-item-leftright-control",
-            selected && "active",
-            multiSelect && "checkbox",
-            finalItemIcon && "item-icon",
+            "modus-tree-view-item list-group-item list-item-leftright-control",
+            nodeSelected && "active",
             className
           )}
-          {...(!multiSelect && {
-            onClick: function (e) {
-              handleSelection(e, false)
-            },
-          })}
           {...rest}
           ref={ref}
         >
-          <div onClick={handleExpansion}>
-            {expandable
-              ? expanded
-                ? finalExpandIcon
-                : finalCollapseIcon
-              : blankIcon}
-          </div>
-
-          {multiSelect && (
-            <Form.Check
-              checked={selected}
-              custom
-              id={`checkboxselection_${nodeId}`}
-              onChange={handleSelection}
-            />
+          {expandable ? (
+            <div
+              onClick={handleExpansion}
+              className="d-flex align-items-center"
+            >
+              {expanded ? finalExpandIcon : finalCollapseIcon}
+            </div>
+          ) : (
+            blankIcon
           )}
 
-          {finalItemIcon}
-          <span>{label}</span>
+          {checkBoxSelection && (
+            <div className="d-flex align-items-center">
+              <IndeterminateCheckbox
+                checked={checkBoxSelected}
+                id={`${rootId}_cbselection_${nodeId}`}
+                onClick={handleCheckBoxSelection}
+                indeterminate={checkBoxIndeterminate}
+              />
+            </div>
+          )}
+
+          {finalItemIcon && (
+            <div className="d-flex align-items-center">{finalItemIcon}</div>
+          )}
+          <div
+            onClick={handleNodeSelection}
+            className="d-flex align-items-center"
+          >
+            {label}
+          </div>
         </li>
       </TreeViewItemStyled>
 
@@ -169,7 +222,10 @@ function TreeViewItem(
         <TreeViewItemContext.Provider
           value={{ parentId: nodeId, level: level + 1 }}
         >
-          <TreeViewItemGroupStyled expanded={expanded ? "true" : "false"}>
+          <TreeViewItemGroupStyled
+            expanded={expanded ? "true" : "false"}
+            role="group"
+          >
             {children}
           </TreeViewItemGroupStyled>
         </TreeViewItemContext.Provider>

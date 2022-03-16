@@ -6,12 +6,18 @@ description: A content tree provides users with a way to navigate nested hierarc
 import { graphql } from "gatsby"
 import {
   TreeViewBasic,
+  TreeViewBorderless,
   TreeViewCondensed,
   TreeViewMultiSelect,
   TreeViewWithItemIcon,
+  TreeViewWithActionBar,
+  StyledIcon,
+  TreeNode as Node,
 } from "../../examples/components/ContentTree"
+import findIndex from "lodash/findIndex"
 import TreeViewItem from "../../common/Tree/TreeViewItem"
 import TreeView from "../../common/Tree/TreeView"
+import useForceUpdate from "@restart/hooks/useForceUpdate"
 
 <Overview>
   A content tree provides users with a way to navigate nested hierarchical
@@ -29,6 +35,10 @@ import TreeView from "../../common/Tree/TreeView"
   <code> TreeViewItem </code> takes <code> nodeId </code> which should be a
   unique number for each node and the <code> label </code> prop to display the
   node text.
+  <p>
+    Clicking the collapse/expand button in each content tree item expands or
+    collapse a tree view item and clicking on the label selects it.
+  </p>
 </CodeBlock>
 
 <CodeBlock
@@ -54,12 +64,31 @@ import TreeView from "../../common/Tree/TreeView"
 </CodeBlock>
 
 <CodeBlock
+  title="Borderless Tree"
+  code={TreeViewBorderless}
+  scope={{ TreeView, TreeViewItem }}
+>
+  Add a class of <code>.list-group-borderless</code> to your Tree view for a
+  borderless variant.
+</CodeBlock>
+
+<CodeBlock
   title="Multi Selection Tree"
   code={TreeViewMultiSelect}
   scope={{ TreeView, TreeViewItem }}
 >
   Multiple node selection can be enabled through prop <code> multiSelect </code>
   .
+</CodeBlock>
+
+<CodeBlock
+  title="Tree with Actions"
+  code={TreeViewWithActionBar}
+  scope={{ TreeView, TreeViewItem, StyledIcon, findIndex, useForceUpdate }}
+  noInline={true}
+>
+  Using the props and callback functions from the <code> TreeView </code>{" "}
+  component we perform more actions on each node.
 </CodeBlock>
 
 <LinkedHeading h="2" className="h1" id="chip-api">
