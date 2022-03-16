@@ -162,15 +162,17 @@ function TreeViewWithIcon() {
   const isExpanded = nodeId => expanded.indexOf(nodeId) > -1
   const isSelected = nodeId => selected.indexOf(nodeId) > -1
   const CustomTreeViewItem = ({ nodeId, label, ...props }) => {
+  const labelNode = (
+    <div className="d-flex justify-content-between w-100">
+      <div>{label}</div>
+      <div>{isSelected(nodeId) && <i className="modus-icons">check</i>}</div>
+    </div>
+  )
     return (
       <TreeViewItem
         nodeId={nodeId}
-        label={label}
-        itemIcon={
-          <i className="material-icons">
-            {isSelected(nodeId) ? "mail_outline" : "email"}
-          </i>
-        }
+        label={labelNode}
+        itemIcon={<i className="material-icons">email</i>}
       ></TreeViewItem>
     )
   }
@@ -181,11 +183,8 @@ function TreeViewWithIcon() {
         <TreeViewItem
           nodeId={1}
           label="Inbox"
-          itemIcon={
-            <i className="material-icons">
-              {isExpanded(1) ? "folder_open" : "folder"}
-            </i>
-          }
+          itemIcon={<i className="material-icons">folder</i>}
+          className={isExpanded(1) ? "font-weight-bold" : ""}
         >
           <CustomTreeViewItem nodeId={4} label="Personal" />
           <CustomTreeViewItem nodeId={5} label="Work" />
