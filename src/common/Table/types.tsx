@@ -39,12 +39,6 @@ export type Color =
 
 export type EventKey = string | number
 
-export type TableColumn = Column<any> &
-  UseResizeColumnsColumnOptions<any> &
-  UseSortByColumnOptions<any> & {
-    sortBy?: boolean
-  }
-
 export type ContextMenuState = {
   positionX: string | number
   positionY: string | number

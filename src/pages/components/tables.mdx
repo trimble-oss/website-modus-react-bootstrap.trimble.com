@@ -10,18 +10,22 @@ import {
   TableIconsControls,
   TableSmall,
   TableWithSorting,
-  TableWithScroll,
-  TableWithFixedHeader,
-  TableWithPagination,
   MakeData as makeData,
-  TableWithColumnResize,
-  TableWithSingleRowSelection,
-  TableWithMultiRowSelection,
-  TableWithCheckBoxSelection,
-  TableWithCustomCheckBoxSelection,
-  TableWithStickyFirstColumn,
-  TableWithColumnFilter,
+  Styles,
+  DataTableWithSorting,
+  DataTableWithScroll,
+  DataTableWithoutPagination,
+  DataTableWithColumnResize,
+  DataTableWithSingleRowSelection,
+  DataTableWithMultiRowSelection,
+  DataTableWithCheckBoxSelection,
+  DataTableWithCustomCheckBoxSelection,
+  DataTableWithStickyFirstColumn,
+  DataTableWithColumnFilter,
+  Editable,
+  DataTableWithCellEditable,
 } from "../../examples/components/Table"
+import { useTable, useSortBy, usePagination } from "react-table"
 import Badge from "@trimbleinc/modus-react-bootstrap/Badge"
 
 <Overview>
@@ -54,6 +58,27 @@ import Badge from "@trimbleinc/modus-react-bootstrap/Badge"
   </p>
 </CodeBlock>
 
+<CodeBlock
+  title="Basic Table with Sorting and other features"
+  code={TableWithSorting}
+  scope={{ makeData, useTable, useSortBy, usePagination, Styles }}
+  noInline={true}
+>
+  This example demonstrates the use of <code> Table </code> component with
+  external library{" "}
+  <a
+    href="https://react-table.tanstack.com/docs/examples/bootstrap-ui-components"
+    target="_blank"
+    rel="noopener"
+  >
+    React Table
+  </a>{" "}
+  for advanced features like sorting and pagination.{" "}
+  <code>TablePagination </code> is used here to implement pagination which is
+  basically a wrapper over <a href="/components/pagination">Pagination</a>{" "}
+  component.
+</CodeBlock>
+
 <LinkedHeading h="2" className="h1" id="datatable">
   <span>
     DataTable
@@ -63,73 +88,57 @@ import Badge from "@trimbleinc/modus-react-bootstrap/Badge"
   </span>
 </LinkedHeading>
 <p>
-  To enable advanced features like sorting, use the <code> DataTable </code>{" "}
-  component along with the basic <code> Table </code> and additional components
-  such as
-  <code> TableHead, TableRow, TableBody and TableCell</code>.
+  The <code> DataTable </code> component is a wrapper of <code> Table </code>{" "}
+  component with more features that can be turned on/off anytime through the
+  API.
   <br />
-  <br />
-  <p>
-    The <code>DataTable</code> component requires two props:
-    <code> columns </code> which takes an array of header data and
-    <code> data </code> prop which takes an array of row data. The row data
-    should match the header information passed to columns prop.
-    <br />
-    The objects passed in the array to the <code> column </code> prop has a
-    required key <code> accessor </code> which is the column identifier and and
-    the <code> Header </code> key is used to set the column label, eg.
-    {`[{ Header: 'First Name', accessor: 'firstName' }]`}.
-  </p>
+  <code>DataTable</code> requires two props:
+  <code> columns </code> which takes an array of header data and
+  <code> data </code> prop which takes an array of row data. The row data should
+  match the header information passed to columns prop. The objects passed in the
+  array to the <code> column </code> prop has a required key{" "}
+  <code> accessor </code> which is the column identifier and and the{" "}
+  <code> Header </code> key is used to set the column label, eg.
+  {`[{ Header: 'First Name', accessor: 'firstName' }]`}.
 </p>
 
-<CodeBlock title="Table with Sorting" code={TableWithSorting} noInline={true}>
-  <p>
-    Use the prop <code> hasSorting </code> to enable/disable the sorting on the
-    entire <code> Table </code> and prop
-    <code> sortBy </code> can be used on the column object to control the sorting
-    at a column level.
-  </p>
-  <p>
-    A column can be sorted by clicking on the header. Repeat this action to
-    change the sorting order.
-  </p>
+<CodeBlock
+  title="Table with Sorting"
+  code={DataTableWithSorting}
+  noInline={true}
+  scope={{
+    makeData,
+  }}
+>
+  Use the prop
+  <code> sortBy </code> on each column in the columns object. Sorting can be disabled
+  for the whole <code> DataTable </code> using the prop <code>
+    {" "}
+    disableSorting
+  </code>.
 </CodeBlock>
-
 <CodeBlock
   title="Table with Scroll"
   scope={{
     makeData,
   }}
-  code={TableWithScroll}
   noInline={true}
+  code={DataTableWithScroll}
 >
-  Setting height & width on <code> TableContainer </code> will enable vertical &
+  Setting height and width on <code> DataTable </code> will enable vertical and
   horizontal scrolling.
 </CodeBlock>
 
 <CodeBlock
-  title="Table with Sticky Header"
+  title="Table with and without Client-side Pagination"
   scope={{
     makeData,
   }}
-  code={TableWithFixedHeader}
   noInline={true}
+  code={DataTableWithoutPagination}
 >
-  Use the <code> sticky-top </code> class to ensure that the table's header is
-  always visible while scrolling.
-</CodeBlock>
-
-<CodeBlock
-  title="Table with Client-side Pagination"
-  scope={{
-    makeData,
-  }}
-  code={TableWithPagination}
-  noInline={true}
->
-  Use the <code> TablePagination </code> component along with{" "}
-  <code> Table </code> to display the table rows in multiple pages and set the
-  prop <code> hasPagination </code> on <code> DataTable </code> to true.
+  Pagination is displayed by default, to disable it use the prop{" "}
+  <code> disablePagination </code>.
 </CodeBlock>
 
 <CodeBlock
@@ -137,12 +146,14 @@ import Badge from "@trimbleinc/modus-react-bootstrap/Badge"
   scope={{
     makeData,
   }}
-  code={TableWithColumnResize}
+  code={DataTableWithColumnResize}
   noInline={true}
 >
-  Set the prop <code> resizeColumns </code> to true on <code> DataTable </code>
-  to enable resizing on all the columns. For more control use
-  <code> disableResizing </code> on the columns object as shown in the example.
+  The prop <code> resizeColumns </code> on <code> DataTable </code>
+  can be used to enable resizing on all the columns. To disable resizing for each
+  column use
+  <code> disableResizing </code> inside the columns object as shown in the
+  example.
 </CodeBlock>
 
 <CodeBlock
@@ -150,11 +161,11 @@ import Badge from "@trimbleinc/modus-react-bootstrap/Badge"
   scope={{
     makeData,
   }}
-  code={TableWithSingleRowSelection}
+  code={DataTableWithSingleRowSelection}
   noInline={true}
 >
-  To be able to select a row by clicking anywhere inside it, invoke the function{" "}
-  <code>row.toggleRowSelected()</code> to toggle the row's selected state.
+  Row selection is enabled by default, to disable it use the prop{" "}
+  <code> disableRowSelection </code>.
 </CodeBlock>
 
 <CodeBlock
@@ -162,10 +173,10 @@ import Badge from "@trimbleinc/modus-react-bootstrap/Badge"
   scope={{
     makeData,
   }}
-  code={TableWithMultiRowSelection}
+  code={DataTableWithMultiRowSelection}
   noInline={true}
 >
-  Single row selection is the default so to enable multi-row selection use the
+  Single row selection is the default, to enable multi-row selection use the
   prop <code> multipleRowSelection</code>. Clicking on a row selects it and
   clicking again undo the selection.
 </CodeBlock>
@@ -175,12 +186,12 @@ import Badge from "@trimbleinc/modus-react-bootstrap/Badge"
   scope={{
     makeData,
   }}
-  code={TableWithCheckBoxSelection}
+  code={DataTableWithCheckBoxSelection}
   noInline={true}
 >
-  Use prop <code> checkBoxRowSelection </code> on the
-  <code> DataTable </code> component for displaying checkbox to control row selection
-  and add a <code> TableHeaderCell </code> with <code>accessor='selector'</code>.
+  The prop <code> checkBoxRowSelection </code> on the
+  <code> DataTable </code> component add checkbox on each row's first cell to control
+  row selection.
 </CodeBlock>
 
 <CodeBlock
@@ -188,13 +199,12 @@ import Badge from "@trimbleinc/modus-react-bootstrap/Badge"
   scope={{
     makeData,
   }}
-  code={TableWithCustomCheckBoxSelection}
+  code={DataTableWithCustomCheckBoxSelection}
   noInline={true}
 >
   Row Selection Checkbox can be configured by using <code> Header </code> and
   <code> Cell </code> functions in the column object that is passed to
-  <code> DataTable</code>. For single row selection, <code> Header </code>
-  function should not be used.
+  <code> DataTable</code>.
 </CodeBlock>
 
 <CodeBlock
@@ -202,11 +212,11 @@ import Badge from "@trimbleinc/modus-react-bootstrap/Badge"
   scope={{
     makeData,
   }}
-  code={TableWithStickyFirstColumn}
+  code={DataTableWithStickyFirstColumn}
   noInline={true}
 >
   Use the custom class <code> table-sticky-first-column </code> on{" "}
-  <code> Table </code> component to make first column fixed.
+  <code> DataTable </code> component to make first column fixed.
 </CodeBlock>
 
 <CodeBlock
@@ -214,7 +224,7 @@ import Badge from "@trimbleinc/modus-react-bootstrap/Badge"
   scope={{
     makeData,
   }}
-  code={TableWithPagination}
+  code={DataTableWithSorting}
   noInline={true}
 >
   Right clicking on a column header gives a context menu option to collapse/show
@@ -227,21 +237,32 @@ import Badge from "@trimbleinc/modus-react-bootstrap/Badge"
   scope={{
     makeData,
   }}
-  code={TableWithColumnFilter}
+  code={DataTableWithColumnFilter}
   noInline={true}
-></CodeBlock>
+>
+  Filtering on each column can be set through <code> Filter </code> prop which
+  is a callback to create and return custom filter control, refer the example
+  below for implementation.
+</CodeBlock>
+
+<CodeBlock
+  title="Editable Cell"
+  scope={{
+    Editable,
+    makeData,
+  }}
+  code={DataTableWithCellEditable}
+  noInline={true}
+>
+  Each cell can be customized to render custom control through{" "}
+  <code> Cell </code> prop inside columns object as shown below.
+</CodeBlock>
 
 <LinkedHeading h="2" className="h1" id="table-api">
   API
 </LinkedHeading>
 <ComponentApi metadata={props.data.Table} />
 <ComponentApi metadata={props.data.DataTable} />
-<ComponentApi metadata={props.data.TableHead} />
-<ComponentApi metadata={props.data.TableHeaderCell} />
-<ComponentApi metadata={props.data.TableBody} />
-<ComponentApi metadata={props.data.TableRow} />
-<ComponentApi metadata={props.data.TableCell} />
-<ComponentApi metadata={props.data.TableContainer} />
 <ComponentApi metadata={props.data.TablePagination} />
 
 export const query = graphql`
@@ -250,24 +271,6 @@ export const query = graphql`
       ...ComponentApi_metadata
     }
     DataTable: componentMetadata(displayName: { eq: "DataTable" }) {
-      ...ComponentApi_metadata
-    }
-    TableContainer: componentMetadata(displayName: { eq: "TableContainer" }) {
-      ...ComponentApi_metadata
-    }
-    TableHead: componentMetadata(displayName: { eq: "TableHead" }) {
-      ...ComponentApi_metadata
-    }
-    TableHeaderCell: componentMetadata(displayName: { eq: "TableHeaderCell" }) {
-      ...ComponentApi_metadata
-    }
-    TableBody: componentMetadata(displayName: { eq: "TableBody" }) {
-      ...ComponentApi_metadata
-    }
-    TableRow: componentMetadata(displayName: { eq: "TableRow" }) {
-      ...ComponentApi_metadata
-    }
-    TableCell: componentMetadata(displayName: { eq: "TableCell" }) {
       ...ComponentApi_metadata
     }
     TablePagination: componentMetadata(displayName: { eq: "TablePagination" }) {

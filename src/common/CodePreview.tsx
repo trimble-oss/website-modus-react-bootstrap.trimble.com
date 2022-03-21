@@ -10,35 +10,19 @@ import React, {
 } from "react"
 import * as ReactBootstrap from "@trimbleinc/modus-react-bootstrap"
 import ReactDOM from "react-dom"
-import {
-  TableHead,
-  TableBody,
-  TableCell,
-  TableHeaderCell,
-  TableRow,
-  Table,
-  TableContainer,
-  TablePagination,
-  DataTable,
-} from "../common/Table"
+import { Table, TablePagination, DataTable } from "../common/Table"
 
 const CodePreview = props => {
   const scope = {
+    ReactDOM,
     useEffect,
     useRef,
     useState,
     useContext,
     useCallback,
     ...ReactBootstrap,
-    ReactDOM,
     ...props.scope,
-    TableHead,
-    TableBody,
-    TableCell,
-    TableHeaderCell,
-    TableRow,
     Table,
-    TableContainer,
     TablePagination,
     DataTable,
   }

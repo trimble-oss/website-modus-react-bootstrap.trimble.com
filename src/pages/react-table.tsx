@@ -18,20 +18,65 @@ import DefaultLayout from "../layouts/DefaultLayout"
 import LinkedHeading from "../common/LinkedHeading"
 import TableOfContents from "../common/TableOfContents"
 import { ModusIconsScripts } from "../common/ExternalDependencyHelper"
-import {
-  TableHead,
-  TableBody,
-  TableCell,
-  TableHeaderCell,
-  TableRow,
-  Table,
-  TableContainer,
-  TablePagination,
-  DataTable,
-} from "../common/Table"
+import { Table, TablePagination, DataTable } from "../common/Table"
 import { MakeData as makeData } from "../examples/components/Table"
+import styled from "styled-components"
 
-const ReactTableContainer = props => {
+import { useTable, useSortBy, usePagination } from "react-table"
+
+const ReactTableNextGen = props => {
+  const EditableCell = ({
+    value: initialValue,
+    row: { index },
+    column: { id },
+  }) => {
+    const [value, setValue] = React.useState(initialValue)
+    const [editMode, setEditMode] = React.useState(false)
+
+    const onKeyUp = e => {
+      if (e.key === "Enter" || e.keyCode === 13) {
+        setEditMode(false)
+        UpdateMyData(index, id, value)
+      } else {
+        setValue(e.target.value)
+      }
+    }
+    const onBlur = () => {
+      setEditMode(false)
+      UpdateMyData(index, id, value)
+    }
+    const onEdit = e => {
+      e.preventDefault()
+      setEditMode(true)
+    }
+    React.useEffect(() => {
+      setValue(initialValue)
+    }, [initialValue])
+
+    return (
+      <div
+        onClick={onEdit}
+        className={"d-flex align-items-center cell-editable".concat(
+          editMode ? " cell-editing" : ""
+        )}
+      >
+        {editMode ? (
+          <Form.Control
+            as="input"
+            defaultValue={value}
+            size="lg"
+            className="border-0"
+            autoFocus
+            onKeyUp={onKeyUp}
+            onBlur={onBlur}
+          />
+        ) : (
+          <span>{value}</span>
+        )}
+      </div>
+    )
+  }
+
   function TextFilter({
     column: { filterValue, preFilteredRows, setFilter, id, render },
   }) {
@@ -91,30 +136,11 @@ const ReactTableContainer = props => {
           }}
         >
           <option value="">All</option>
-          <option>single</option>
-          <option>complicated</option>
-          <option>relationship</option>
+          <option>Pending</option>
+          <option>Verified</option>
+          <option>Rejected</option>
         </Form.Control>
       </Form.Group>
-    )
-  }
-
-  const DismissibleChip = ({ label, onClose, ...props }) => {
-    const [show, setShow] = useState(true)
-    const handleClose = useCallback(() => {
-      setShow(!show)
-      onClose()
-    }, [setShow])
-
-    return (
-      <Chip
-        label={label}
-        onClose={handleClose}
-        show={show}
-        variant="outline"
-        type="input"
-        className="m-1"
-      ></Chip>
     )
   }
 
@@ -125,37 +151,60 @@ const ReactTableContainer = props => {
         accessor: "firstName",
         sortBy: true,
         Filter: TextFilter,
+        width: 80,
+        Cell: EditableCell,
       },
       {
         Header: "Last Name",
         accessor: "lastName",
         sortBy: true,
         Filter: TextFilter,
+        width: 80,
       },
       {
         Header: "Age",
         accessor: "age",
-        sortBy: true,
         Filter: SliderFilter,
+        width: 50,
+        sortBy: true,
       },
       {
         Header: "Visits",
         accessor: "visits",
+        width: 50,
+        sortBy: true,
       },
       {
         Header: "Status",
         accessor: "status",
         Filter: SelectFilter,
+        width: 70,
+        sortBy: true,
       },
       {
-        Header: "Profile Progress",
+        Header: "Profile Progress Status",
         accessor: "progress",
+        width: 70,
+        sortBy: true,
       },
     ],
     []
   )
+  const [data, setData] = React.useState(() => makeData(20))
 
-  const data = React.useMemo(() => makeData(125), [])
+  function UpdateMyData(rowIndex, columnId, value) {
+    setData(old =>
+      old.map((row, index) => {
+        if (index === rowIndex) {
+          return {
+            ...old[rowIndex],
+            [columnId]: value,
+          }
+        }
+        return row
+      })
+    )
+  }
 
   return (
     <>
@@ -163,158 +212,192 @@ const ReactTableContainer = props => {
         id="test"
         columns={columns}
         data={data}
-        hasSorting
-        hasPagination
         resizeColumns
-      >
-        {({
-          allColumns,
-          setFilter,
-          filters,
-          setAllFilters,
-          prepareRow,
-          rows,
-          gotoPage,
-          pageIndex,
-          pageSize,
-          setPageSize,
-          pageOptions,
-        }) => {
-          const popover = (
-            <Popover
-              id="popover-basic"
-              style={{ width: "500px", maxWidth: "500px" }}
-            >
-              <Popover.Content>
-                <Container style={{ width: "100%" }} className="p-1">
-                  <Row xs={1} md={2}>
-                    {allColumns
-                      .filter(it => it.canFilter && it.Filter)
-                      .map(column => (
-                        <div key={column.id}>
-                          <Col>{column.render("Filter")}</Col>
-                        </div>
-                      ))}
-                  </Row>
-                  <Row className="d-flex justify-content-end mr-2">
-                    <Button onClick={e => setAllFilters([])}>RESET</Button>
-                  </Row>
-                </Container>
-              </Popover.Content>
-            </Popover>
-          )
-
-          return (
-            <div className="d-flex flex-column">
-              <div className="d-flex align-items-center">
-                <div className="flex-grow-1">
-                  {filters && filters.length > 0 && (
-                    <div>
-                      Active Filters:
-                      {allColumns.map(column => {
-                        const filter = filters.find(f => f.id === column.id)
-                        const value = filter && filter.value
-                        return (
-                          value && (
-                            <DismissibleChip
-                              key={column.id}
-                              label={column
-                                .render("Header")
-                                .concat(": ", filter.value)}
-                              onClose={e => setFilter(column.id, undefined)}
-                            />
-                          )
-                        )
-                      })}
-                    </div>
-                  )}
-                </div>
-                <div style={{ minWidth: "170px", lineHeight: 2 }}>
-                  <OverlayTrigger
-                    trigger="click"
-                    placement="bottom"
-                    overlay={popover}
-                  >
-                    <Nav.Link eventKey="1" className="p-0">
-                      <i
-                        className="modus-icons material-icons left-icon p-1"
-                        style={{ top: "5px", fontSize: "20px" }}
-                      >
-                        filter
-                      </i>
-                      FILTER COLUMNS
-                    </Nav.Link>
-                  </OverlayTrigger>
-                </div>
-              </div>
-              <div className="d-flex align-content-start flex-wrap"></div>
-              <div className="d-flex justify-content-end align-items-center"></div>
-              <div>
-                <TableContainer scrollable style={{ maxHeight: "400px" }}>
-                  <Table bordered hover>
-                    <TableHead className="bg-gray-light sticky-top">
-                      <TableRow className="bg-gray-light">
-                        <TableHeaderCell
-                          accessor="firstName"
-                          className="bg-gray-light"
-                        />
-                        <TableHeaderCell
-                          accessor="lastName"
-                          className="bg-gray-light"
-                        />
-                        <TableHeaderCell
-                          accessor="age"
-                          className="bg-gray-light"
-                        />
-                        <TableHeaderCell
-                          accessor="visits"
-                          className="bg-gray-light"
-                        />
-                        <TableHeaderCell
-                          accessor="status"
-                          className="bg-gray-light"
-                        />
-                        <TableHeaderCell
-                          accessor="progress"
-                          className="bg-gray-light"
-                        />
-                      </TableRow>
-                    </TableHead>
-                    <TableBody>
-                      {rows.map((row, i) => {
-                        prepareRow(row)
-                        return (
-                          <TableRow {...row.getRowProps()}>
-                            {row.cells.map(cell => {
-                              return (
-                                <TableCell {...cell.getCellProps()}>
-                                  {cell.render("Cell")}
-                                </TableCell>
-                              )
-                            })}
-                          </TableRow>
-                        )
-                      })}
-                    </TableBody>
-                  </Table>
-                </TableContainer>
-              </div>
-              <div>
-                <TablePagination
-                  totalPages={pageOptions.length}
-                  pageIndex={pageIndex}
-                  pageSize={pageSize}
-                  onPageChange={gotoPage}
-                  pageSizeOptions={[10, 20, 30, 40, 50]}
-                  onPageSizeChange={setPageSize}
-                  className="border border-tertiary"
-                ></TablePagination>
-              </div>
-            </div>
-          )
-        }}
-      </DataTable>
+        multipleRowSelection
+        checkBoxRowSelection
+        style={{ maxHeight: "400px" }}
+      ></DataTable>
     </>
+  )
+}
+
+const ReactTableBasic = props => {
+  const Styles = styled.div`
+    .container {
+      padding: 0;
+      width: 100%;
+    }
+    table {
+      margin: 0;
+      width: 100%;
+      height: 100%;
+    }
+    th .modus-icons.material-icons.sorted,
+    th .modus-icons.material-icons.unsorted {
+      vertical-align: text-bottom;
+      font-size: 1rem;
+    }
+    th .modus-icons.material-icons.unsorted {
+      opacity: 0.5;
+    }
+    th .modus-icons.material-icons.unsorted:hover {
+      opacity: 1;
+    }
+  `
+  const columns = React.useMemo(
+    () => [
+      {
+        Header: "First Name",
+        accessor: "firstName",
+        width: 80,
+        sortBy: true,
+      },
+      {
+        Header: "Last Name",
+        accessor: "lastName",
+        width: 80,
+        sortBy: true,
+      },
+      {
+        Header: "Age",
+        accessor: "age",
+        width: 50,
+        sortBy: true,
+      },
+      {
+        Header: "Visits",
+        accessor: "visits",
+        width: 50,
+        sortBy: true,
+      },
+      {
+        Header: "Status",
+        accessor: "status",
+        width: 70,
+        sortBy: true,
+      },
+      {
+        Header: "Profile Progress Status",
+        accessor: "progress",
+        width: 70,
+        sortBy: true,
+      },
+    ],
+    []
+  )
+  const data = React.useMemo(() => makeData(175), [])
+  const {
+    getTableProps,
+    headerGroups,
+    prepareRow,
+    rows,
+    allColumns,
+    page,
+    pageOptions,
+    gotoPage,
+    setPageSize,
+    state: { pageIndex, pageSize, filters },
+  } = useTable(
+    {
+      columns,
+      data,
+    },
+    useSortBy,
+    usePagination
+  )
+
+  const modusSortArrows = {
+    asc: {
+      icon: "sort_alpha_up",
+      title: "Sort Descending",
+    },
+    desc: {
+      icon: "sort_alpha_down",
+      title: "Sort Ascending",
+    },
+  }
+  const SortLabel = ({ sort, title, className }) => (
+    <i
+      className={"modus-icons material-icons ".concat(className)}
+      data-toggle="tooltip"
+      data-placement="top"
+      title={title || modusSortArrows[sort].title}
+    >
+      {modusSortArrows[sort].icon}
+    </i>
+  )
+
+  // Render the UI for your table
+  return (
+    <Styles>
+      <div>
+        <Table bordered hover>
+          <thead className="bg-gray-light sticky-top">
+            {headerGroups.map(headerGroup => (
+              <tr
+                {...headerGroup.getHeaderGroupProps()}
+                className="bg-gray-light"
+              >
+                {headerGroup.headers.map(column => (
+                  <th
+                    {...column.getHeaderProps(column.getSortByToggleProps())}
+                    className="bg-gray-light pr-2"
+                    title=""
+                  >
+                    <div className="d-flex" style={{ width: "100%" }}>
+                      <div className="flex-grow-1">
+                        {column.render("Header")}
+                      </div>
+                      <div>
+                        {column.canSort && (
+                          <>
+                            {column.isSorted ? (
+                              <SortLabel
+                                className="sorted"
+                                sort={column.isSortedDesc ? "desc" : "asc"}
+                              />
+                            ) : (
+                              <SortLabel
+                                className="unsorted"
+                                title="Sort Ascending"
+                                sort="asc"
+                              />
+                            )}
+                          </>
+                        )}
+                      </div>
+                    </div>
+                  </th>
+                ))}
+              </tr>
+            ))}
+          </thead>
+          <tbody>
+            {page.map((row, i) => {
+              prepareRow(row)
+              return (
+                <tr {...row.getRowProps()}>
+                  {row.cells.map(cell => {
+                    return (
+                      <td {...cell.getCellProps()}>{cell.render("Cell")}</td>
+                    )
+                  })}
+                </tr>
+              )
+            })}
+          </tbody>
+        </Table>
+      </div>
+      <TablePagination
+        totalPages={pageOptions.length}
+        pageIndex={pageIndex}
+        pageSize={pageSize}
+        onPageChange={gotoPage}
+        pageSizeOptions={[10, 20, 30, 40, 50]}
+        onPageSizeChange={setPageSize}
+        className="border border-tertiary"
+      ></TablePagination>
+    </Styles>
   )
 }
 
@@ -332,7 +415,9 @@ const ReactTablePage = props => {
                   React Table with sorting
                 </LinkedHeading>
                 {/* <CustomReactTable /> */}
-                <ReactTableContainer />
+                {/* <ReactTableContainer /> */}
+                <ReactTableNextGen />
+                <ReactTableBasic />
               </Col>
               <Col className="d-none d-xl-block menu-right" xl={2}>
                 <TableOfContents></TableOfContents>

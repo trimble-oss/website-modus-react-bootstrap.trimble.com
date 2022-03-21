@@ -1,31 +1,20 @@
-import * as React from "react"
-import { useContext, useCallback, useState } from "react"
+import React, { useCallback } from "react"
 import merge from "lodash/merge"
 import PropTypes from "prop-types"
 import classNames from "classnames"
-import { TableContext, TableHeadersContext } from "./TableContext"
+import { ColumnInstance } from "react-table"
 
-export interface TableHeaderCellProps
+export interface DataTableHeaderCellProps
   extends React.HTMLProps<HTMLTableCellElement> {
-  accessor?: string
-  renderer?: (header: any) => React.ReactElement
+  header: any
+  onHeaderContextMenu: (column: ColumnInstance, event) => void
+  onToggleHideColumn: (columnId: string, hide: boolean) => void
 }
 
 const propTypes = {
-  /**
-   * CSS class name
-   */
-  className: PropTypes.string,
-
-  /**
-   * Header Accessor key
-   */
-  accessor: PropTypes.string,
-
-  /**
-   * Custom Header cell renderer function
-   */
-  renderer: PropTypes.func,
+  header: PropTypes.object.isRequired,
+  onHeaderContextMenu: PropTypes.func.isRequired,
+  onToggleHideColumn: PropTypes.func.isRequired,
 }
 
 const modusSortArrows = {
@@ -58,29 +47,32 @@ const SortIcon: React.FunctionComponent<SortIconComponentProps> = ({
   </i>
 )
 
-const TableHeaderCell = React.forwardRef<
+const DataTableHeaderCell = React.forwardRef<
   HTMLTableCellElement,
-  TableHeaderCellProps
->(({ accessor, renderer, children, className, ...props }, ref) => {
-  // get context
-  const headersContext = useContext(TableHeadersContext)
-  const tableContext = useContext(TableContext)
+  DataTableHeaderCellProps
+>(
+  (
+    {
+      header,
+      onHeaderContextMenu,
+      onToggleHideColumn,
+      children,
+      className,
+      ...props
+    },
+    ref
+  ) => {
+    // handle right-click
+    const handleContextMenuClick = useCallback((header, event) => {
+      event.preventDefault()
+      onHeaderContextMenu(event, header)
+    }, [])
 
-  // handle right-click
-  const handleContextMenuClick = useCallback((header, event) => {
-    event.preventDefault()
-    tableContext.onHeaderContextMenu(header, event)
-  }, [])
+    const handleShowHiddenColumn = useCallback(event => {
+      onToggleHideColumn(header.id, false)
+    }, [])
 
-  const handleShowHiddenColumn = useCallback(event => {
-    tableContext.onToggleHiddenColumn(accessor, false)
-  }, [])
-
-  // if header context is present render with header props
-  if (headersContext && accessor) {
-    const header = headersContext && headersContext.find(h => h.id === accessor)
-
-    if (!header) {
+    if (!header.isVisible) {
       return (
         <div className="hidden-column">
           <div
@@ -98,13 +90,22 @@ const TableHeaderCell = React.forwardRef<
       header.getHeaderProps(
         header.getSortByToggleProps && header.getSortByToggleProps()
       ),
-      { title: "" }
+      {
+        style: {
+          flex: header.width ? `${header.width} 0 auto` : undefined,
+        },
+        title: "",
+      }
     )
     const headerLabel = header.render("Header")
 
     return (
       <th
-        className={classNames("pr-2", className)}
+        className={classNames(
+          "pr-2",
+          className,
+          header.id === "selector" && "icon-only"
+        )}
         ref={ref}
         {...headerProps}
         {...props}
@@ -150,15 +151,10 @@ const TableHeaderCell = React.forwardRef<
       </th>
     )
   }
-  return (
-    <th className={className} {...props} ref={ref}>
-      {children}
-    </th>
-  )
-})
+)
 
-TableHeaderCell.propTypes = propTypes
+DataTableHeaderCell.propTypes = propTypes
 
-TableHeaderCell.displayName = "TableHeaderCell"
+DataTableHeaderCell.displayName = "DataTableHeaderCell"
 
-export default TableHeaderCell
+export default DataTableHeaderCell
