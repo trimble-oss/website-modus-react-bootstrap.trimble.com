@@ -336,6 +336,8 @@ function TreeViewWithActionBar() {
               id="example"
               expanded={expanded}
               onNodeSelect={handleSelect}
+              checkBoxSelection
+              multiSelectCheckBox
             >
               {data.map(item => (
                 <CustomTreeViewItem

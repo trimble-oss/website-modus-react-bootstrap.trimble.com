@@ -17,7 +17,12 @@ export interface TreeViewContextType {
   isCheckBoxSelected: (nodeId: number) => boolean
   toggleExpansion: (event: any, nodeId: number) => void
   toggleNodeSelection: (event: any, nodeId: number) => void
-  toggleCheckBoxSelection: (event: any, nodeId: number) => void
+  toggleSingleCheckBoxSelection: (event: any, nodeId: number) => void
+  toggleMultiCheckBoxSelection: (
+    event: any,
+    selected?: number[],
+    unselected?: number[]
+  ) => void
 }
 
 const TreeViewContext = React.createContext<TreeViewContextType>(null)
