@@ -1,5 +1,10 @@
 import * as React from "react"
-import { Container, Form, Row } from "@trimbleinc/modus-react-bootstrap"
+import {
+  Container,
+  Form,
+  FormControl,
+  Row,
+} from "@trimbleinc/modus-react-bootstrap"
 import DefaultLayout from "../layouts/DefaultLayout"
 import {
   ModusIconsScripts,
@@ -20,7 +25,7 @@ const StyledIcon = styled("i")`
   display: inline-block !important;
 `
 function TreeViewWithActionBar() {
-  const [data, setData] = React.useState([
+  const initialData = [
     {
       nodeId: 1,
       label: "Inbox",
@@ -52,7 +57,8 @@ function TreeViewWithActionBar() {
         { nodeId: 12, label: "File3" },
       ],
     },
-  ])
+  ]
+  const [data, setData] = React.useState(initialData)
 
   const [expanded, setExpanded] = React.useState([])
   const [selected, setSelected] = React.useState([])
@@ -151,6 +157,71 @@ function TreeViewWithActionBar() {
       )
     })
     setSelected([])
+  }
+
+  function flattenData(array, parentId) {
+    if (!array) return []
+    return array.reduce((r, { nodeId, label, children }) => {
+      r[nodeId] = { nodeId, label, parentId }
+      r = { ...r, ...flattenData(children, nodeId) }
+      return r
+    }, [])
+  }
+
+  function filterData(nodes, searchResult, searchText, skip) {
+    if (!nodes || !searchResult || searchResult.length === 0 || !searchText)
+      return []
+    let removeNodes = []
+    nodes.forEach((node, i) => {
+      if (searchResult.indexOf(node.nodeId) > -1) {
+        let skipNode = false
+        if (node.label.toLowerCase().indexOf(searchText) > -1) {
+          node.label = <div style={{ color: "#0063a3" }}>{node.label}</div>
+          skipNode = true
+        }
+        node.children = filterData(
+          node.children,
+          searchResult,
+          searchText,
+          skipNode
+        )
+      } else {
+        if (!skip) removeNodes.push(node.nodeId)
+      }
+    })
+    return nodes.filter(node => !removeNodes.includes(node.nodeId))
+  }
+
+  const handleFilter = event => {
+    setExpanded(getNodeIds(initialData))
+
+    if (!event.target.value) {
+      setData(initialData)
+      return
+    }
+    const searchText = event.target.value.toLowerCase()
+    const flatData = flattenData(initialData, null)
+    const searchResult = Object.keys(flatData)
+      .filter(key => {
+        return flatData[key].label.toLowerCase().indexOf(searchText) > -1
+      })
+      .map(i => Number(i))
+
+    let ancestors = []
+    searchResult.forEach(i => {
+      let { parentId } = flatData[i]
+      while (parentId != null) {
+        ancestors.push(parentId)
+        parentId = flatData[parentId].parentId
+      }
+    })
+    debugger
+    const final = filterData(
+      [...initialData],
+      [...searchResult, ...ancestors],
+      searchText
+    )
+    setData(final)
   }
 
   // Tree View Handlers
@@ -284,6 +355,18 @@ function TreeViewWithActionBar() {
       <div className="container" ref={ref}>
         <div className="row row-cols-1">
           <div className="col">
+            <div>
+              <div className="input-with-icon-left">
+                <FormControl
+                  as="input"
+                  placeholder="Search"
+                  onChange={handleFilter}
+                ></FormControl>
+                <div className="input-icon">
+                  <i className="modus-icons material-icons">search</i>
+                </div>
+              </div>
+            </div>
             <div
               className="d-flex justify-content-end align-items-center"
               style={{ minHeight: "3rem" }}
@@ -336,8 +419,6 @@ function TreeViewWithActionBar() {
               id="example"
               expanded={expanded}
               onNodeSelect={handleSelect}
-              checkBoxSelection
-              multiSelectCheckBox
             >
               {data.map(item => (
                 <CustomTreeViewItem
