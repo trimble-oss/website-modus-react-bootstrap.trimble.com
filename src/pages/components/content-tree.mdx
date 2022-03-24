@@ -1,0 +1,116 @@
+---
+title: Content Tree
+description: A content tree provides users with a way to navigate nested hierarchical information using a parent-child relationship model.
+---
+
+import { graphql } from "gatsby"
+import {
+  TreeViewBasic,
+  TreeViewBorderless,
+  TreeViewCondensed,
+  TreeViewMultiSelect,
+  TreeViewWithItemIcon,
+  TreeViewWithActionBar,
+  TreeViewWithFilter,
+  StyledIcon,
+  TreeNode as Node,
+} from "../../examples/components/ContentTree"
+import findIndex from "lodash/findIndex"
+import TreeViewItem from "../../common/Tree/TreeViewItem"
+import TreeView from "../../common/Tree/TreeView"
+import useForceUpdate from "@restart/hooks/useForceUpdate"
+
+<Overview>
+  A content tree provides users with a way to navigate nested hierarchical
+  information using a parent-child relationship model. It is located on the left
+  side of the screen and cannot be combined with Side Navigation or Toolbar.
+</Overview>
+
+<CodeBlock
+  title="Basic"
+  code={TreeViewBasic}
+  scope={{ TreeView, TreeViewItem }}
+>
+  Content Tree can be created using the components <code> TreeView </code> in
+  the root and <code> TreeViewItem </code> for nodes.{" "}
+  <code> TreeViewItem </code> takes <code> nodeId </code> which should be a
+  unique number for each node and the <code> label </code> prop to display the
+  node text.
+  <p>
+    Clicking the collapse/expand button in each content tree item expands or
+    collapse a tree view item and clicking on the label selects it.
+  </p>
+</CodeBlock>
+
+<CodeBlock
+  title="Tree with Icons"
+  code={TreeViewWithItemIcon}
+  scope={{ TreeView, TreeViewItem }}
+  noInline={true}
+>
+  Icons can be configured at the root level and node level and the state can be
+  managed with callback functions <code> onNodeToggle </code> and
+  <code> onNodeSelect</code>. An additional icon can be added through the prop <code>
+    itemIcon
+  </code>.
+</CodeBlock>
+
+<CodeBlock
+  title="Condensed Tree"
+  code={TreeViewCondensed}
+  scope={{ TreeView, TreeViewItem }}
+>
+  Use class <code> list-group-condensed </code> to shrink the size of Tree and
+  its items.
+</CodeBlock>
+
+<CodeBlock
+  title="Borderless Tree"
+  code={TreeViewBorderless}
+  scope={{ TreeView, TreeViewItem }}
+>
+  Add a class of <code>.list-group-borderless</code> to your Tree view for a
+  borderless variant.
+</CodeBlock>
+
+<CodeBlock
+  title="Multi Selection Tree"
+  code={TreeViewMultiSelect}
+  scope={{ TreeView, TreeViewItem }}
+>
+  Multiple node selection can be enabled through prop <code> multiSelect </code>.
+</CodeBlock>
+
+<CodeBlock
+  title="Tree with Actions"
+  code={TreeViewWithActionBar}
+  scope={{ TreeView, TreeViewItem, StyledIcon, findIndex, useForceUpdate }}
+  noInline={true}
+>
+  Using the props and callback functions from the <code> TreeView </code>{" "}
+  component we perform more actions on each node.
+</CodeBlock>
+
+<CodeBlock
+  title="Tree with Filter"
+  code={TreeViewWithFilter}
+  scope={{ TreeView, TreeViewItem, StyledIcon, findIndex, useForceUpdate }}
+  noInline={true}
+></CodeBlock>
+
+<LinkedHeading h="2" className="h1" id="chip-api">
+  API
+</LinkedHeading>
+<ComponentApi metadata={props.data.TreeView} />
+<ComponentApi metadata={props.data.TreeViewItem} />
+
+export const query = graphql`
+  query TreeViewQuery {
+    TreeView: componentMetadata(displayName: { eq: "TreeView" }) {
+      ...ComponentApi_metadata
+    }
+    TreeViewItem: componentMetadata(displayName: { eq: "TreeViewItem" }) {
+      ...ComponentApi_metadata
+    }
+  }
+`
