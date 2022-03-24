@@ -11,6 +11,7 @@ import {
   TreeViewMultiSelect,
   TreeViewWithItemIcon,
   TreeViewWithActionBar,
+  TreeViewWithFilter,
   StyledIcon,
   TreeNode as Node,
 } from "../../examples/components/ContentTree"
@@ -77,8 +78,7 @@ import useForceUpdate from "@restart/hooks/useForceUpdate"
   code={TreeViewMultiSelect}
   scope={{ TreeView, TreeViewItem }}
 >
-  Multiple node selection can be enabled through prop <code> multiSelect </code>
-  .
+  Multiple node selection can be enabled through prop <code> multiSelect </code>.
 </CodeBlock>
 
 <CodeBlock
@@ -90,6 +90,13 @@ import useForceUpdate from "@restart/hooks/useForceUpdate"
   Using the props and callback functions from the <code> TreeView </code>{" "}
   component we perform more actions on each node.
 </CodeBlock>
+
+<CodeBlock
+  title="Tree with Filter"
+  code={TreeViewWithFilter}
+  scope={{ TreeView, TreeViewItem, StyledIcon, findIndex, useForceUpdate }}
+  noInline={true}
+></CodeBlock>
 
 <LinkedHeading h="2" className="h1" id="chip-api">
   API
