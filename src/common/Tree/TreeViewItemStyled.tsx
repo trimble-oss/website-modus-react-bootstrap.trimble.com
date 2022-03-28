@@ -6,6 +6,7 @@ interface TreeViewItemStyleWrapperProps
   level: number
   checkBoxSelection: string
   itemIcon: string
+  isDraggable: string
 }
 
 interface TreeViewItemGroupStyleWrapperProps
@@ -36,12 +37,14 @@ const TreeViewItemGroupStyleWrapper = React.forwardRef<
 })
 
 const TreeViewItemStyled = styled(TreeViewItemStyleWrapper)`
+  position: relative;
   li.modus-tree-view-item {
     padding: 5px 8px !important;
     cursor: pointer;
     padding-left: ${props => props.level * 20}px !important;
 
-    grid-template-columns: min-content ${props =>
+    grid-template-columns: ${props =>
+        props.isDraggable == "true" && "min-content"} min-content ${props =>
         props.checkBoxSelection == "true" && "min-content"} ${props =>
         props.itemIcon == "true" && "min-content"} auto min-content !important;
 

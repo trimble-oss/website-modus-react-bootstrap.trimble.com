@@ -1,4 +1,4 @@
-import * as React from "react"
+import React, { useEffect, useState, useMemo, useCallback, useRef } from "react"
 import {
   Container,
   Form,
@@ -15,8 +15,9 @@ import TreeView from "../common/Tree/TreeView"
 import styled from "styled-components"
 import findIndex from "lodash/findIndex"
 import { TreeNode as Node } from "../examples/components/ContentTree"
-import { useEffect } from "react"
+
 import useForceUpdate from "@restart/hooks/useForceUpdate"
+import { transform } from "lodash"
 
 const StyledIcon = styled("i")`
   line-height: 0.8 !important;
@@ -24,6 +25,114 @@ const StyledIcon = styled("i")`
   position: relative !important;
   display: inline-block !important;
 `
+
+const POSITION = { x: 0, y: 0 }
+
+const Draggable = ({ children, id }) => {
+  const parentRef = useRef(null)
+  const treeItemRef = useRef(null)
+
+  const [state, setState] = useState({
+    isDragging: false,
+    origin: POSITION,
+    translation: POSITION,
+  })
+
+  const styles = useMemo(
+    () => ({
+      cursor: state.isDragging ? "-webkit-grabbing" : "-webkit-grab",
+      transform: `translate(${state.translation.x}px, ${state.translation.y}px)`,
+      transition: state.isDragging ? "none" : "transform 500ms",
+      zIndex: state.isDragging ? 2 : 1,
+      position: state.isDragging ? "absolute" : "relative",
+    }),
+    [state.isDragging, state.translation]
+  )
+
+  const handleMouseDown = useCallback(event => {
+    if (treeItemRef.current && !treeItemRef.current.contains(event.target))
+      return
+
+    const { clientX, clientY } = event
+    setState(prevState => ({
+      ...prevState,
+      isDragging: true,
+      origin: { x: clientX, y: clientY },
+    }))
+  }, [])
+
+  const handleMouseMove = useCallback(
+    ({ clientX, clientY }) => {
+      const translation = {
+        x: clientX - state.origin.x,
+        y: clientY - state.origin.y,
+      }
+      setState(prevState => ({
+        ...prevState,
+        translation,
+      }))
+      // if (onDrag) onDrag({ translation, id })
+    },
+    [state.origin, id]
+  )
+
+  const handleMouseUp = useCallback(() => {
+    setState(prevState => ({
+      ...prevState,
+      isDragging: false,
+    }))
+
+    // if (onDragEnd) onDragEnd()
+  }, [])
+
+  useEffect(() => {
+    if (state.isDragging) {
+      // window.addEventListener("mousemove", handleMouseMove)
+      // window.addEventListener("mouseup", handleMouseUp)
+    } else {
+      // window.removeEventListener("mousemove", handleMouseMove)
+      // window.removeEventListener("mouseup", handleMouseUp)
+
+      setState(prevState => ({
+        ...prevState,
+        translation: POSITION,
+      }))
+    }
+  }, [state.isDragging, handleMouseMove, handleMouseUp])
+
+  useEffect(() => {
+    if (parentRef.current && parentRef.current.childNodes) {
+      const treeItem = parentRef.current.childNodes[0]
+      if (treeItem && treeItem.getAttribute("role") == "treeitem") {
+        treeItemRef.current = treeItem
+      }
+    }
+  }, [parentRef])
+
+  useEffect(() => {
+    if (treeItemRef.current) {
+      let node = treeItemRef.current
+      node.style.cursor = state.isDragging ? "-webkit-grabbing" : "-webkit-grab"
+      node.style.transform = `translate(${state.translation.x}px, ${state.translation.y}px)`
+      node.style.transition = state.isDragging ? "none" : "transform 500ms"
+      node.style.zIndex = state.isDragging ? 9999 : 1
+      // node.style.position = state.isDragging ? "absolute" : "relative"
+    }
+  }, [treeItemRef, state.isDragging, state.translation])
+
+  return (
+    <div
+      ref={parentRef}
+      onDragStart={handleMouseDown}
+      onDrag={handleMouseMove}
+      onDragEnd={handleMouseUp}
+      draggable
+    >
+      {children}
+    </div>
+  )
+}
+
 function TreeViewWithFilter() {
   const initialData = [
     {
@@ -60,73 +169,12 @@ function TreeViewWithFilter() {
   ]
   const [data, setData] = React.useState(initialData)
   const [expanded, setExpanded] = React.useState([])
+  const [dragItem, setdragItem] = React.useState({})
 
   // Action Bar Handlers
   const handleExpandAllClick = () => {
     setExpanded(oldExpanded =>
       oldExpanded.length === 0 ? getNodeIds(data) : []
-    )
-  }
-
-  function flattenData(array, parentId) {
-    if (!array) return []
-    return array.reduce((r, { nodeId, label, children }) => {
-      r[nodeId] = { nodeId, label, parentId }
-      r = { ...r, ...flattenData(children, nodeId) }
-      return r
-    }, [])
-  }
-
-  function filterData(nodes, searchResult, searchText, skip) {
-    if (!nodes || !searchResult || searchResult.length === 0 || !searchText)
-      return []
-    let removeNodes = []
-    nodes.forEach((node, i) => {
-      if (searchResult.indexOf(node.nodeId) > -1) {
-        let skipNode = false
-        if (node.label.toLowerCase().indexOf(searchText) > -1) {
-          node.label = <div style={{ color: "#0063a3" }}>{node.label}</div>
-          skipNode = true
-        }
-        node.children = filterData(
-          node.children,
-          searchResult,
-          searchText,
-          skipNode
-        )
-      } else {
-        if (!skip) removeNodes.push(node.nodeId)
-      }
-    })
-    return nodes.filter(node => !removeNodes.includes(node.nodeId))
-  }
-
-  const handleFilter = event => {
-    setExpanded(getNodeIds(initialData))
-
-    if (!event.target.value) {
-      setData(initialData)
-      return
-    }
-    const searchText = event.target.value.toLowerCase()
-    const flatData = flattenData(initialData, null)
-    const searchResult = Object.keys(flatData)
-      .filter(key => {
-        return flatData[key].label.toLowerCase().indexOf(searchText) > -1
-      })
-      .map(i => Number(i))
-
-    let ancestors = []
-    searchResult.forEach(i => {
-      let { parentId } = flatData[i]
-      while (parentId != null) {
-        ancestors.push(parentId)
-        parentId = flatData[parentId].parentId
-      }
-    })
-    debugger
-    setData(
-      filterData([...initialData], [...searchResult, ...ancestors], searchText)
     )
   }
 
@@ -150,19 +198,17 @@ function TreeViewWithFilter() {
     ...props
   }) => {
     return (
-      <>
-        <TreeViewItem nodeId={nodeId} label={label} {...props}>
-          {children &&
-            children.map(item => (
-              <CustomTreeViewItem
-                nodeId={item.nodeId}
-                children={item.children}
-                label={item.label}
-                key={item.nodeId}
-              />
-            ))}
-        </TreeViewItem>
-      </>
+      <TreeViewItem nodeId={nodeId} label={label} {...props}>
+        {children &&
+          children.map(item => (
+            <CustomTreeViewItem
+              nodeId={item.nodeId}
+              children={item.children}
+              label={item.label}
+              key={item.nodeId}
+            />
+          ))}
+      </TreeViewItem>
     )
   }
 
@@ -171,18 +217,6 @@ function TreeViewWithFilter() {
       <div className="container">
         <div className="row row-cols-1">
           <div className="col">
-            <div>
-              <div className="input-with-icon-left">
-                <FormControl
-                  as="input"
-                  placeholder="Search"
-                  onChange={handleFilter}
-                ></FormControl>
-                <div className="input-icon">
-                  <i className="modus-icons material-icons">search</i>
-                </div>
-              </div>
-            </div>
             <div
               className="d-flex justify-content-end align-items-center"
               style={{ minHeight: "3rem" }}
