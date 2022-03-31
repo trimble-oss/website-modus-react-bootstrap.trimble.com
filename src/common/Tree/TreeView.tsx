@@ -4,6 +4,7 @@ import TreeViewContext from "./TreeViewContext"
 import { TreeItem } from "./types"
 import TreeViewItemContext from "./TreeViewItemContext"
 import classNames from "classnames"
+import _merge from "lodash/merge"
 
 export interface TreeViewProps
   extends Omit<React.HTMLProps<HTMLUListElement>, "expanded" | "selected"> {
@@ -126,6 +127,7 @@ const TreeView = React.forwardRef<HTMLUListElement, TreeViewProps>(
       number[]
     >([])
 
+    // Update nodesExpanded state only when the API expanded value changes
     React.useEffect(() => {
       if (expanded !== undefined && expandedProp.current !== expanded) {
         expandedProp.current = expanded
@@ -170,15 +172,29 @@ const TreeView = React.forwardRef<HTMLUListElement, TreeViewProps>(
       []
     )
 
-    const toggleCheckBoxSelection = React.useCallback(
+    const toggleSingleCheckBoxSelection = React.useCallback(
       (event: any, nodeId: number) => {
         handleSelection(
           event,
           nodeId,
           setNodeCheckBoxSelected,
           onCheckBoxSelect,
-          multiSelectCheckBox
+          false
         )
+      },
+      []
+    )
+
+    const toggleMultiCheckBoxSelection = React.useCallback(
+      (event: any, selected: number[], unselected: number[]) => {
+        setNodeCheckBoxSelected(oldItems => {
+          const newItems = [
+            ...oldItems.filter(node => unselected.indexOf(node) < 0),
+            ...selected,
+          ]
+          if (onCheckBoxSelect) onCheckBoxSelect(event, newItems)
+          return newItems
+        })
       },
       []
     )
@@ -205,10 +221,9 @@ const TreeView = React.forwardRef<HTMLUListElement, TreeViewProps>(
     )
 
     const isNodeSelected = React.useCallback(
-      (nodeId: number) =>
-        Array.isArray(nodesSelected)
-          ? nodesSelected.indexOf(nodeId) !== -1
-          : nodesSelected === nodeId,
+      (nodeId: number) => {
+        return nodesSelected.indexOf(nodeId) !== -1
+      },
       [nodesSelected]
     )
 
@@ -351,7 +366,8 @@ const TreeView = React.forwardRef<HTMLUListElement, TreeViewProps>(
           isIndeterminate,
           toggleExpansion,
           toggleNodeSelection,
-          toggleCheckBoxSelection,
+          toggleSingleCheckBoxSelection,
+          toggleMultiCheckBoxSelection,
           checkBoxSelection: checkBoxSelection || multiSelectCheckBox,
           multiSelectCheckBox,
           multiSelectNode,
