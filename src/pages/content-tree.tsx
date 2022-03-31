@@ -217,6 +217,18 @@ function TreeViewWithFilter() {
       <div className="container">
         <div className="row row-cols-1">
           <div className="col">
+            <div>
+              <div className="input-with-icon-left">
+                <FormControl
+                  as="input"
+                  placeholder="Search"
+                  onChange={handleFilter}
+                ></FormControl>
+                <div className="input-icon">
+                  <i className="modus-icons material-icons">search</i>
+                </div>
+              </div>
+            </div>
             <div
               className="d-flex justify-content-end align-items-center"
               style={{ minHeight: "3rem" }}
