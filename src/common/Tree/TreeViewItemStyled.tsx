@@ -38,6 +38,7 @@ const TreeViewItemGroupStyleWrapper = React.forwardRef<
 
 const TreeViewItemStyled = styled(TreeViewItemStyleWrapper)`
   position: relative;
+  width: 100%;
   li.modus-tree-view-item {
     padding: 5px 8px !important;
     cursor: pointer;

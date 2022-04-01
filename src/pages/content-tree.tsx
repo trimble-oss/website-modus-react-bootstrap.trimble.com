@@ -219,11 +219,7 @@ function TreeViewWithFilter() {
           <div className="col">
             <div>
               <div className="input-with-icon-left">
-                <FormControl
-                  as="input"
-                  placeholder="Search"
-                  onChange={handleFilter}
-                ></FormControl>
+                <FormControl as="input" placeholder="Search"></FormControl>
                 <div className="input-icon">
                   <i className="modus-icons material-icons">search</i>
                 </div>

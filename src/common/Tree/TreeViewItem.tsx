@@ -6,6 +6,7 @@ import React, {
   useMemo,
   useCallback,
 } from "react"
+import { createPortal } from "react-dom"
 import PropTypes, { node } from "prop-types"
 import TreeViewContext from "./TreeViewContext"
 import TreeViewItemContext from "./TreeViewItemContext"
@@ -224,6 +225,7 @@ function TreeViewItem(
   })
   const dragRef = useRef(null)
   const dragCopyRef = useRef(null)
+  const treeViewItemRef = useRef(null)
 
   const styles = useMemo(
     () => ({
@@ -233,9 +235,21 @@ function TreeViewItem(
       transform: `translate(${dragNDrop.translation.x}px, ${dragNDrop.translation.y}px)`,
       transition: dragNDrop.isDragging ? "none" : "transform 500ms",
       zIndex: dragNDrop.isDragging ? 2 : 1,
-      position: "absolute",
+      position: "fixed",
     }),
     [dragNDrop.isDragging, dragNDrop.translation]
+  )
+
+  const newStyles = useMemo(
+    () => ({
+      width: treeViewItemRef.current ? treeViewItemRef.current.width : "400px",
+      transform: `translate(calc(${dragNDrop.translation.x}px - 50%), calc(${dragNDrop.translation.y}px - 50%))`,
+      msTransform: `translateX(${dragNDrop.translation.x}px) translateX(-50%) translateY(${dragNDrop.translation.y}px) translateY(-50%)`,
+      zIndex: 1000,
+      left: 0,
+      top: 0,
+    }),
+    [treeViewItemRef.current, dragNDrop.isDragging, dragNDrop.translation]
   )
 
   const handleDragStart = useCallback(event => {
@@ -254,8 +268,8 @@ function TreeViewItem(
   const handleDrag = useCallback(
     ({ clientX, clientY }) => {
       const translation = {
-        x: clientX - dragNDrop.origin.x,
-        y: clientY - dragNDrop.origin.y,
+        x: clientX, // - dragNDrop.origin.x,
+        y: clientY, // - dragNDrop.origin.y,
       }
       setDragNDrop(prevState => ({
         ...prevState,
@@ -267,11 +281,10 @@ function TreeViewItem(
   )
 
   const handleDragEnd = useCallback(() => {
-    setDragNDrop(prevState => ({
-      ...prevState,
-      isDragging: false,
-    }))
-
+    // setDragNDrop(prevState => ({
+    //   ...prevState,
+    //   isDragging: false,
+    // }))
     // if (onDragEnd) onDragEnd()
   }, [])
 
@@ -286,13 +299,18 @@ function TreeViewItem(
 
   useEffect(() => {
     if (dragRef.current) {
-      debugger
       setDragNDrop(prevState => ({
         ...prevState,
         translation: POSITION,
       }))
     }
   }, [dragRef])
+
+  useEffect(() => {
+    if (treeViewItemRef.current) {
+      debugger
+    }
+  }, [treeViewItemRef.current])
 
   return (
     <>
@@ -304,6 +322,7 @@ function TreeViewItem(
         aria-expanded={expandable ? expanded : null}
         aria-selected={nodeSelected}
         isDraggable="true"
+        ref={treeViewItemRef}
       >
         <li
           className={classNames(
@@ -357,9 +376,73 @@ function TreeViewItem(
             {label}
           </div>
         </li>
-        <div id="dummy" ref={dragCopyRef} style={styles}>
+        {/* <div id="dummy" ref={dragCopyRef} style={styles}>
           <div style={{ background: "red" }}>Test</div>
-        </div>
+        </div> */}
+        {dragNDrop.isDragging &&
+          createPortal(
+            <div
+              id="clone"
+              style={newStyles}
+              className="list-group d-inline-block position-fixed"
+            >
+              <li
+                className={classNames(
+                  "modus-tree-view-item list-group-item list-item-leftright-control",
+                  nodeSelected && "active",
+                  className
+                )}
+                {...rest}
+                ref={ref}
+              >
+                <div
+                  className="d-flex align-items-center"
+                  // style={styles}
+                  onDragStart={handleDragStart}
+                  onDrag={handleDrag}
+                  onDragEnd={handleDragEnd}
+                  draggable
+                  ref={dragRef}
+                >
+                  <i className="modus-icons">menu</i>
+                </div>
+                {expandable ? (
+                  <div
+                    onClick={handleExpansion}
+                    className="d-flex align-items-center"
+                  >
+                    {expanded ? finalExpandIcon : finalCollapseIcon}
+                  </div>
+                ) : (
+                  blankIcon
+                )}
+
+                {checkBoxSelection && (
+                  <div className="d-flex align-items-center">
+                    <IndeterminateCheckbox
+                      checked={checkBoxSelected}
+                      id={`${rootId}_cbselection_${nodeId}`}
+                      onClick={handleCheckBoxSelection}
+                      indeterminate={checkBoxIndeterminate}
+                    />
+                  </div>
+                )}
+
+                {finalItemIcon && (
+                  <div className="d-flex align-items-center">
+                    {finalItemIcon}
+                  </div>
+                )}
+                <div
+                  onClick={handleNodeSelection}
+                  className="d-flex align-items-center"
+                >
+                  {label}
+                </div>
+              </li>
+            </div>,
+            document.body
+          )}
       </TreeViewItemStyled>
 
       {children && (
