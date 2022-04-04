@@ -6,6 +6,7 @@ export interface TreeViewContextType {
   checkBoxSelection?: boolean
   multiSelectNode?: boolean
   multiSelectCheckBox?: boolean
+  droppable?: boolean
   collapseIcon?: React.ReactElement
   expandIcon?: React.ReactElement
   itemIcon?: React.ReactElement

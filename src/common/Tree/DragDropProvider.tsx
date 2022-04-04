@@ -7,6 +7,7 @@ import React, {
   useCallback,
 } from "react"
 import { createPortal } from "react-dom"
+import styled, { css } from "styled-components"
 
 type DragDropProviderProps = {
   styles: any
@@ -14,6 +15,9 @@ type DragDropProviderProps = {
 }
 
 const POSITION = { x: 0, y: 0 }
+const StyledDiv = styled.div`
+  cursor: -webkit-grabbing !important;
+`
 const DragDropProvider: React.FunctionComponent<
   React.PropsWithChildren<DragDropProviderProps>
 > = ({ styles, isDragging, children }) => {
@@ -22,15 +26,19 @@ const DragDropProvider: React.FunctionComponent<
     bodyRef.current = document.body
   }, [])
   // Drag-and-drop
-
+  debugger
   return (
     <>
       {children}
       {isDragging &&
         bodyRef.current &&
         createPortal(
-          <div style={styles}>
-            <div style={{ backgroundColor: "red", width: "400px" }}>Test</div>
+          <div
+            id="clone"
+            style={styles}
+            className="list-group d-inline-block position-fixed"
+          >
+            {children}
           </div>,
           bodyRef.current
         )}

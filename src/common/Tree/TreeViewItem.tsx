@@ -21,6 +21,7 @@ import _every from "lodash/every"
 import _merge from "lodash/merge"
 import useForceUpdate from "@restart/hooks/useForceUpdate"
 import { useDescendant } from "./useDescendant"
+import DragDropProvider from "./DragDropProvider"
 
 export interface TreeViewItemProps
   extends Omit<React.HTMLProps<HTMLLIElement>, "label"> {
@@ -222,51 +223,57 @@ function TreeViewItem(
     isDragging: false,
     origin: POSITION,
     translation: POSITION,
+    width: "0px",
+    height: "0px",
   })
   const dragRef = useRef(null)
-  const dragCopyRef = useRef(null)
-  const treeViewItemRef = useRef(null)
-
-  const styles = useMemo(
-    () => ({
-      width: "100%",
-      display: dragNDrop.isDragging ? "inline-block" : "none",
-      cursor: dragNDrop.isDragging ? "-webkit-grabbing" : "-webkit-grab",
-      transform: `translate(${dragNDrop.translation.x}px, ${dragNDrop.translation.y}px)`,
-      transition: dragNDrop.isDragging ? "none" : "transform 500ms",
-      zIndex: dragNDrop.isDragging ? 2 : 1,
-      position: "fixed",
-    }),
-    [dragNDrop.isDragging, dragNDrop.translation]
-  )
 
   const newStyles = useMemo(
     () => ({
-      width: treeViewItemRef.current ? treeViewItemRef.current.width : "400px",
-      transform: `translate(calc(${dragNDrop.translation.x}px - 50%), calc(${dragNDrop.translation.y}px - 50%))`,
+      width: dragNDrop.width,
+      height: dragNDrop.height,
+      transform: `translate(calc(${dragNDrop.translation.x}px - 10%), calc(${dragNDrop.translation.y}px - 50%))`,
       msTransform: `translateX(${dragNDrop.translation.x}px) translateX(-50%) translateY(${dragNDrop.translation.y}px) translateY(-50%)`,
       zIndex: 1000,
       left: 0,
       top: 0,
+      cursor: dragNDrop.isDragging ? "-webkit-grabbing" : "-webkit-grab",
     }),
-    [treeViewItemRef.current, dragNDrop.isDragging, dragNDrop.translation]
+    [dragNDrop.isDragging, dragNDrop.translation, dragNDrop.width]
   )
 
+  const handleDragEnter = useCallback(event => {
+    event.dataTransfer.effectAllowed = "move"
+  }, [])
+  const handleDragOver = useCallback(event => {
+    event.dataTransfer.dropEffect = "move"
+  }, [])
+  const handleDrop = useCallback(event => {
+    event.dataTransfer.dropEffect = "move"
+  }, [])
+
   const handleDragStart = useCallback(event => {
-    const { clientX, clientY } = event
+    const { clientX, clientY, target } = event
+    // console.log(event)
     setDragNDrop(prevState => ({
       ...prevState,
       isDragging: true,
       origin: { x: clientX, y: clientY },
+      width:
+        (target && target.offsetParent && target.offsetParent.width) || "400px",
+      height:
+        (target && target.offsetParent && target.offsetParent.height) || "40px",
     }))
 
     const dummyImage = new Image()
-    event.dataTransfer.effectAllowed = "move"
+    event.dataTransfer.effectAllowed = "copyMove"
     event.dataTransfer.setDragImage(dummyImage, 0, 0)
   }, [])
 
   const handleDrag = useCallback(
-    ({ clientX, clientY }) => {
+    event => {
+      const { clientX, clientY } = event
+      debugger
       const translation = {
         x: clientX, // - dragNDrop.origin.x,
         y: clientY, // - dragNDrop.origin.y,
@@ -281,10 +288,10 @@ function TreeViewItem(
   )
 
   const handleDragEnd = useCallback(() => {
-    // setDragNDrop(prevState => ({
-    //   ...prevState,
-    //   isDragging: false,
-    // }))
+    setDragNDrop(prevState => ({
+      ...prevState,
+      isDragging: false,
+    }))
     // if (onDragEnd) onDragEnd()
   }, [])
 
@@ -306,144 +313,75 @@ function TreeViewItem(
     }
   }, [dragRef])
 
-  useEffect(() => {
-    if (treeViewItemRef.current) {
-      debugger
-    }
-  }, [treeViewItemRef.current])
-
   return (
     <>
-      <TreeViewItemStyled
-        level={level}
-        checkBoxSelection={checkBoxSelection ? "true" : "false"}
-        itemIcon={finalItemIcon ? "true" : "false"}
-        role="treeitem"
-        aria-expanded={expandable ? expanded : null}
-        aria-selected={nodeSelected}
-        isDraggable="true"
-        ref={treeViewItemRef}
-      >
-        <li
-          className={classNames(
-            "modus-tree-view-item list-group-item list-item-leftright-control",
-            nodeSelected && "active",
-            className
-          )}
-          {...rest}
-          ref={ref}
+      <DragDropProvider isDragging={dragNDrop.isDragging} styles={newStyles}>
+        <TreeViewItemStyled
+          level={level}
+          checkBoxSelection={checkBoxSelection ? "true" : "false"}
+          itemIcon={finalItemIcon ? "true" : "false"}
+          role="treeitem"
+          aria-expanded={expandable ? expanded : null}
+          aria-selected={nodeSelected}
+          isDraggable="true"
+          onDrop={handleDrop}
         >
-          <div
-            className="d-flex align-items-center"
-            // style={styles}
-            onDragStart={handleDragStart}
-            onDrag={handleDrag}
-            onDragEnd={handleDragEnd}
-            draggable
-            ref={dragRef}
+          <li
+            className={classNames(
+              "modus-tree-view-item list-group-item list-item-leftright-control",
+              nodeSelected && "active",
+              className
+            )}
+            {...rest}
+            ref={ref}
           >
-            <i className="modus-icons">menu</i>
-          </div>
-          {expandable ? (
             <div
-              onClick={handleExpansion}
+              className="d-flex align-items-center"
+              // style={styles}
+              onDragStart={handleDragStart}
+              onDrag={handleDrag}
+              onDragEnd={handleDragEnd}
+              onDragEnter={handleDragEnter}
+              onDragOver={handleDragOver}
+              draggable
+              ref={dragRef}
+            >
+              <i className="modus-icons">menu</i>
+            </div>
+            {expandable ? (
+              <div
+                onClick={handleExpansion}
+                className="d-flex align-items-center"
+              >
+                {expanded ? finalExpandIcon : finalCollapseIcon}
+              </div>
+            ) : (
+              blankIcon
+            )}
+
+            {checkBoxSelection && (
+              <div className="d-flex align-items-center">
+                <IndeterminateCheckbox
+                  checked={checkBoxSelected}
+                  id={`${rootId}_cbselection_${nodeId}`}
+                  onClick={handleCheckBoxSelection}
+                  indeterminate={checkBoxIndeterminate}
+                />
+              </div>
+            )}
+
+            {finalItemIcon && (
+              <div className="d-flex align-items-center">{finalItemIcon}</div>
+            )}
+            <div
+              onClick={handleNodeSelection}
               className="d-flex align-items-center"
             >
-              {expanded ? finalExpandIcon : finalCollapseIcon}
+              {label}
             </div>
-          ) : (
-            blankIcon
-          )}
-
-          {checkBoxSelection && (
-            <div className="d-flex align-items-center">
-              <IndeterminateCheckbox
-                checked={checkBoxSelected}
-                id={`${rootId}_cbselection_${nodeId}`}
-                onClick={handleCheckBoxSelection}
-                indeterminate={checkBoxIndeterminate}
-              />
-            </div>
-          )}
-
-          {finalItemIcon && (
-            <div className="d-flex align-items-center">{finalItemIcon}</div>
-          )}
-          <div
-            onClick={handleNodeSelection}
-            className="d-flex align-items-center"
-          >
-            {label}
-          </div>
-        </li>
-        {/* <div id="dummy" ref={dragCopyRef} style={styles}>
-          <div style={{ background: "red" }}>Test</div>
-        </div> */}
-        {dragNDrop.isDragging &&
-          createPortal(
-            <div
-              id="clone"
-              style={newStyles}
-              className="list-group d-inline-block position-fixed"
-            >
-              <li
-                className={classNames(
-                  "modus-tree-view-item list-group-item list-item-leftright-control",
-                  nodeSelected && "active",
-                  className
-                )}
-                {...rest}
-                ref={ref}
-              >
-                <div
-                  className="d-flex align-items-center"
-                  // style={styles}
-                  onDragStart={handleDragStart}
-                  onDrag={handleDrag}
-                  onDragEnd={handleDragEnd}
-                  draggable
-                  ref={dragRef}
-                >
-                  <i className="modus-icons">menu</i>
-                </div>
-                {expandable ? (
-                  <div
-                    onClick={handleExpansion}
-                    className="d-flex align-items-center"
-                  >
-                    {expanded ? finalExpandIcon : finalCollapseIcon}
-                  </div>
-                ) : (
-                  blankIcon
-                )}
-
-                {checkBoxSelection && (
-                  <div className="d-flex align-items-center">
-                    <IndeterminateCheckbox
-                      checked={checkBoxSelected}
-                      id={`${rootId}_cbselection_${nodeId}`}
-                      onClick={handleCheckBoxSelection}
-                      indeterminate={checkBoxIndeterminate}
-                    />
-                  </div>
-                )}
-
-                {finalItemIcon && (
-                  <div className="d-flex align-items-center">
-                    {finalItemIcon}
-                  </div>
-                )}
-                <div
-                  onClick={handleNodeSelection}
-                  className="d-flex align-items-center"
-                >
-                  {label}
-                </div>
-              </li>
-            </div>,
-            document.body
-          )}
-      </TreeViewItemStyled>
+          </li>
+        </TreeViewItemStyled>
+      </DragDropProvider>
 
       {children && (
         <TreeViewItemContext.Provider
