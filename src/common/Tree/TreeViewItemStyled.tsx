@@ -4,10 +4,10 @@ import styled, { css } from "styled-components"
 interface TreeViewItemStyleWrapperProps
   extends React.HTMLProps<HTMLDivElement> {
   level: number
-  checkBoxSelection: string
-  itemIcon: string
-  nodeId: number
+  checkBoxSelection?: string
+  itemIcon?: string
   isDraggable?: string
+  overrides?: string
 }
 
 interface TreeViewItemGroupStyleWrapperProps
@@ -18,13 +18,18 @@ interface TreeViewItemGroupStyleWrapperProps
 const TreeViewItemStyleWrapper = React.forwardRef<
   HTMLDivElement,
   TreeViewItemStyleWrapperProps
->(({ level, checkBoxSelection, itemIcon, children, ...props }, ref) => {
-  return (
-    <div ref={ref} {...props}>
-      {children}
-    </div>
-  )
-})
+>(
+  (
+    { level, checkBoxSelection, itemIcon, overrides, children, ...props },
+    ref
+  ) => {
+    return (
+      <div ref={ref} {...props}>
+        {children}
+      </div>
+    )
+  }
+)
 
 const TreeViewItemGroupStyleWrapper = React.forwardRef<
   HTMLDivElement,
@@ -57,7 +62,15 @@ const TreeViewItemStyled = styled(TreeViewItemStyleWrapper)`
     }
 
     align-items: stretch !important;
+
+    &.drop-allow {
+      border-top: 1px solid #0063a3 !important;
+    }
+    &.drop-block {
+      border-top: 1px solid red !important;
+    }
   }
+  ${props => props.overrides}
 `
 export const TreeViewItemGroupStyled = styled(TreeViewItemGroupStyleWrapper)`
   display: ${props => (props.expanded == "true" ? "block" : "none")};

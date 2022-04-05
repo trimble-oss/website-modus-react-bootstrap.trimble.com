@@ -8,7 +8,7 @@ import React, {
 } from "react"
 import { createPortal } from "react-dom"
 import PropTypes, { node } from "prop-types"
-import TreeViewContext from "./TreeViewContext"
+import TreeViewContext, { TreeViewDragContext } from "./TreeViewContext"
 import TreeViewItemContext from "./TreeViewItemContext"
 import classNames from "classnames"
 import { Form } from "@trimbleinc/modus-react-bootstrap"
@@ -129,8 +129,7 @@ function TreeViewItem(
     toggleNodeSelection,
     toggleSingleCheckBoxSelection,
     toggleMultiCheckBoxSelection,
-    pushDroppableNode,
-    popDroppableNode,
+    updateDroppableNode,
     getDroppableNode,
     isIndeterminate,
     checkBoxSelection,
@@ -172,6 +171,8 @@ function TreeViewItem(
     onDescendantToggleCbSelectionOnParent,
   } = useDescendant(nodeId, isCheckBoxSelected, toggleMultiCheckBoxSelection)
   const treeItemContainer = useRef(null)
+
+  const droppableNode = useContext(TreeViewDragContext)
 
   const handleNodeSelection = React.useCallback(
     (e: any) => {
@@ -284,6 +285,8 @@ function TreeViewItem(
       height:
         (target && target.offsetParent && target.offsetParent.height) || "40px",
     }))
+
+    updateDroppableNode(null)
   }, [])
 
   const handleMouseMove = useCallback(
@@ -299,8 +302,8 @@ function TreeViewItem(
         translation,
       }))
 
-      const droppableZone = getDroppableNode(clientX, clientY)
-      if (droppableZone) console.log("entered node: " + droppableZone.id)
+      const dropNode = getDroppableNode(clientX, clientY)
+      if (dropNode) updateDroppableNode(dropNode.id)
     },
     [draggingState.origin]
   )
@@ -323,6 +326,11 @@ function TreeViewItem(
     } else {
       window.removeEventListener("mousemove", handleMouseMove)
       window.removeEventListener("mouseup", handleMouseUp)
+
+      setDraggingState(prevState => ({
+        ...prevState,
+        translation: POSITION,
+      }))
     }
   }, [draggingState.isDragging])
 
@@ -331,91 +339,77 @@ function TreeViewItem(
   // As it fires the drop event on the custom dragging element
   return (
     <>
-      <TreeViewItemStyled
+      <DragDropProvider
         level={level}
-        checkBoxSelection={checkBoxSelection ? "true" : "false"}
-        itemIcon={finalItemIcon ? "true" : "false"}
-        role="treeitem"
-        aria-expanded={expandable ? expanded : null}
-        aria-selected={nodeSelected}
-        isDraggable="true"
-        nodeId={nodeId}
-        className="modus-tree-view-item-container"
-        ref={treeItemContainer}
+        label={label}
+        styles={dragItemStyle}
+        isDragging={draggingState.isDragging}
       >
-        <li
-          className={classNames(
-            "modus-tree-view-item list-group-item list-item-leftright-control",
-            nodeSelected && "active",
-            className
-          )}
-          {...rest}
-          ref={ref}
-          id={`treeitem_${nodeId}`}
+        <TreeViewItemStyled
+          level={level}
+          checkBoxSelection={checkBoxSelection ? "true" : "false"}
+          itemIcon={finalItemIcon ? "true" : "false"}
+          role="treeitem"
+          aria-expanded={expandable ? expanded : null}
+          aria-selected={nodeSelected}
+          isDraggable="true"
+          ref={treeItemContainer}
         >
-          <div
-            className="d-flex align-items-center"
-            ref={dragRef}
-            onMouseDown={handleMouseDown}
+          <li
+            className={classNames(
+              "modus-tree-view-item list-group-item list-item-leftright-control",
+              nodeSelected && "active",
+              className,
+              draggingState.isDragging && droppableNode === nodeId
+                ? enableDrop
+                  ? "drop-allow"
+                  : "drop-block"
+                : ""
+            )}
+            {...rest}
+            ref={ref}
+            id={`treeitem_${nodeId}`}
           >
-            <i className="material-icons">drag_indicator</i>
-          </div>
-          {expandable ? (
             <div
-              onClick={handleExpansion}
+              className="d-flex align-items-center"
+              ref={dragRef}
+              onMouseDown={handleMouseDown}
+            >
+              <i className="material-icons">drag_indicator</i>
+            </div>
+            {expandable ? (
+              <div
+                onClick={handleExpansion}
+                className="d-flex align-items-center"
+              >
+                {expanded ? finalExpandIcon : finalCollapseIcon}
+              </div>
+            ) : (
+              blankIcon
+            )}
+            {checkBoxSelection && (
+              <div className="d-flex align-items-center">
+                <IndeterminateCheckbox
+                  checked={checkBoxSelected}
+                  id={`${rootId}_cbselection_${nodeId}`}
+                  onClick={handleCheckBoxSelection}
+                  indeterminate={checkBoxIndeterminate}
+                />
+              </div>
+            )}
+
+            {finalItemIcon && (
+              <div className="d-flex align-items-center">{finalItemIcon}</div>
+            )}
+            <div
+              onClick={handleNodeSelection}
               className="d-flex align-items-center"
             >
-              {expanded ? finalExpandIcon : finalCollapseIcon}
+              {label}
             </div>
-          ) : (
-            blankIcon
-          )}
-          {checkBoxSelection && (
-            <div className="d-flex align-items-center">
-              <IndeterminateCheckbox
-                checked={checkBoxSelected}
-                id={`${rootId}_cbselection_${nodeId}`}
-                onClick={handleCheckBoxSelection}
-                indeterminate={checkBoxIndeterminate}
-              />
-            </div>
-          )}
-
-          {finalItemIcon && (
-            <div className="d-flex align-items-center">{finalItemIcon}</div>
-          )}
-          <div
-            onClick={handleNodeSelection}
-            className="d-flex align-items-center"
-          >
-            {label}
-          </div>
-        </li>
-        {draggingState.isDragging &&
-          bodyRef.current &&
-          createPortal(
-            <div
-              id="drag_container"
-              className={classNames("list-group d-inline-block position-fixed")}
-              style={dragItemStyle}
-            >
-              <li
-                className={classNames(
-                  "modus-tree-view-item list-group-item list-item-leftright-control",
-                  className
-                )}
-                {...rest}
-                id={`drag_treeitem_${nodeId}`}
-              >
-                <div className="d-flex align-items-center">
-                  <i className="material-icons">drag_indicator</i>
-                </div>
-                <div className="d-flex align-items-center">{label}</div>
-              </li>
-            </div>,
-            bodyRef.current
-          )}
-      </TreeViewItemStyled>
+          </li>
+        </TreeViewItemStyled>
+      </DragDropProvider>
 
       {children && (
         <TreeViewItemContext.Provider

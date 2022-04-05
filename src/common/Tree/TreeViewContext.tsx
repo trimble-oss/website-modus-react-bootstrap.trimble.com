@@ -16,8 +16,7 @@ export interface TreeViewContextType {
   isNodeSelected: (nodeId: number) => boolean
   isIndeterminate: (nodeId: number) => boolean
   isCheckBoxSelected: (nodeId: number) => boolean
-  pushDroppableNode: (event: any, nodeId: number) => void
-  popDroppableNode: (event: any, nodeId: number) => void
+  updateDroppableNode: (nodeId: number | null) => void
   getDroppableNode: (x: any, y: any) => TreeItem
   toggleExpansion: (event: any, nodeId: number) => void
   toggleNodeSelection: (event: any, nodeId: number) => void
@@ -31,6 +30,6 @@ export interface TreeViewContextType {
 
 const TreeViewContext = React.createContext<TreeViewContextType>(null)
 
-export const TreeViewDragContext = React.createContext<boolean>(false)
+export const TreeViewDragContext = React.createContext<number>(null)
 
 export default TreeViewContext

@@ -126,7 +126,7 @@ const TreeView = React.forwardRef<HTMLUListElement, TreeViewProps>(
     const [nodeCheckBoxSelected, setNodeCheckBoxSelected] = React.useState<
       number[]
     >([])
-    const [droppableNodes, setDroppableNodes] = useState<number[]>([])
+    const [droppableNode, setDroppableNode] = useState<number>()
 
     // Update nodesExpanded state only when the API expanded value changes
     React.useEffect(() => {
@@ -200,20 +200,8 @@ const TreeView = React.forwardRef<HTMLUListElement, TreeViewProps>(
       []
     )
 
-    const pushDroppableNode = React.useCallback(
-      (event: any, nodeId: number) => {
-        setDroppableNodes(array => {
-          if (!array.includes(nodeId)) array.push(nodeId)
-          return array
-        })
-      },
-      []
-    )
-
-    const popDroppableNode = React.useCallback((event: any, nodeId: number) => {
-      setDroppableNodes(array => {
-        return array.filter(node => node === nodeId)
-      })
+    const updateDroppableNode = React.useCallback((nodeId: number | null) => {
+      setDroppableNode(nodeId)
     }, [])
 
     const getDroppableNode = React.useCallback((x: any, y: any) => {
@@ -386,8 +374,7 @@ const TreeView = React.forwardRef<HTMLUListElement, TreeViewProps>(
           toggleNodeSelection,
           toggleSingleCheckBoxSelection,
           toggleMultiCheckBoxSelection,
-          pushDroppableNode,
-          popDroppableNode,
+          updateDroppableNode,
           getDroppableNode,
           checkBoxSelection: checkBoxSelection || multiSelectCheckBox,
           multiSelectCheckBox,
@@ -397,7 +384,7 @@ const TreeView = React.forwardRef<HTMLUListElement, TreeViewProps>(
           itemIcon,
         }}
       >
-        <TreeViewDragContext.Provider value={droppableNodes.length > 0}>
+        <TreeViewDragContext.Provider value={droppableNode}>
           <TreeViewItemContext.Provider value={{ parentId: null, level: 1 }}>
             <ul
               className={classNames("list-group", className)}
