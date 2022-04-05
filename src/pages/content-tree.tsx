@@ -15,8 +15,9 @@ import TreeView from "../common/Tree/TreeView"
 import styled from "styled-components"
 import findIndex from "lodash/findIndex"
 import { TreeNode as Node } from "../examples/components/ContentTree"
-import { useEffect } from "react"
+import { useEffect, useCallback, useState, useMemo, useRef } from "react"
 import useForceUpdate from "@restart/hooks/useForceUpdate"
+import { createPortal } from "react-dom"
 
 const StyledIcon = styled("i")`
   line-height: 0.8 !important;
@@ -60,75 +61,99 @@ function TreeViewWithFilter() {
   ]
   const [data, setData] = React.useState(initialData)
   const [expanded, setExpanded] = React.useState([])
+  const POSITION = { x: 0, y: 0 }
+  const [draggingState, setDraggingState] = React.useState({
+    isDragging: false,
+    origin: POSITION,
+    translation: POSITION,
+    width: "0px",
+    height: "0px",
+    node: {},
+  })
+  const [droppableNode, setDroppableNode] = useState()
+  const [draggingNode, setDraggingNode] = useState()
+  const treeItemRefs = useRef([])
+  const bodyRef = useRef(null)
+  useEffect(() => {
+    bodyRef.current = document.body
+  }, [])
 
   // Action Bar Handlers
+  const registerTreeItem = (node, ref) => {
+    treeItemRefs.current.push({ ...node, ref })
+  }
+
+  const unRegisterTreeItem = nodeId => {
+    treeItemRefs.current = treeItemRefs.current.filter(
+      node => node.nodeId !== nodeId
+    )
+  }
+
   const handleExpandAllClick = () => {
     setExpanded(oldExpanded =>
       oldExpanded.length === 0 ? getNodeIds(data) : []
     )
   }
 
-  function flattenData(array, parentId) {
-    if (!array) return []
-    return array.reduce((r, { nodeId, label, children }) => {
-      r[nodeId] = { nodeId, label, parentId }
-      r = { ...r, ...flattenData(children, nodeId) }
-      return r
-    }, [])
+  const handleMouseDown = (event, node) => {
+    const { clientX, clientY, target } = event
+    setDroppableNode(null)
+
+    setDraggingState(prevState => ({
+      ...prevState,
+      isDragging: true,
+      origin: { x: clientX, y: clientY },
+      node,
+      width:
+        (target && target.offsetParent && target.offsetParent.width) || "400px",
+      height:
+        (target && target.offsetParent && target.offsetParent.height) || "40px",
+    }))
   }
 
-  function filterData(nodes, searchResult, searchText, skip) {
-    if (!nodes || !searchResult || searchResult.length === 0 || !searchText)
-      return []
-    let removeNodes = []
-    nodes.forEach((node, i) => {
-      if (searchResult.indexOf(node.nodeId) > -1) {
-        let skipNode = false
-        if (node.label.toLowerCase().indexOf(searchText) > -1) {
-          node.label = <div style={{ color: "#0063a3" }}>{node.label}</div>
-          skipNode = true
-        }
-        node.children = filterData(
-          node.children,
-          searchResult,
-          searchText,
-          skipNode
-        )
-      } else {
-        if (!skip) removeNodes.push(node.nodeId)
+  const handleMouseMove = useCallback(
+    event => {
+      const { clientX, clientY, target } = event
+
+      const translation = {
+        x: clientX,
+        y: clientY,
       }
-    })
-    return nodes.filter(node => !removeNodes.includes(node.nodeId))
-  }
+      setDraggingState(prevState => ({
+        ...prevState,
+        translation,
+      }))
 
-  const handleFilter = event => {
-    setExpanded(getNodeIds(initialData))
+      const dropNode = getDroppableNode(clientX, clientY)
+      if (dropNode) setDroppableNode(dropNode.id)
+      else setDroppableNode(null)
+    },
+    [draggingState.origin]
+  )
 
-    if (!event.target.value) {
-      setData(initialData)
-      return
+  const handleMouseUp = useCallback(event => {
+    setDraggingState(prevState => ({
+      ...prevState,
+      isDragging: false,
+    }))
+
+    setDroppableNode(null)
+  }, [])
+
+  useEffect(() => {
+    if (draggingState.isDragging) {
+      window.addEventListener("mousemove", handleMouseMove)
+      window.addEventListener("mouseup", handleMouseUp)
+    } else {
+      window.removeEventListener("mousemove", handleMouseMove)
+      window.removeEventListener("mouseup", handleMouseUp)
+
+      setDraggingState(prevState => ({
+        ...prevState,
+        translation: POSITION,
+      }))
     }
-    const searchText = event.target.value.toLowerCase()
-    const flatData = flattenData(initialData, null)
-    const searchResult = Object.keys(flatData)
-      .filter(key => {
-        return flatData[key].label.toLowerCase().indexOf(searchText) > -1
-      })
-      .map(i => Number(i))
-
-    let ancestors = []
-    searchResult.forEach(i => {
-      let { parentId } = flatData[i]
-      while (parentId != null) {
-        ancestors.push(parentId)
-        parentId = flatData[parentId].parentId
-      }
-    })
-    debugger
-    setData(
-      filterData([...initialData], [...searchResult, ...ancestors], searchText)
-    )
-  }
+  }, [draggingState.isDragging])
 
   // Helpers
   function getNodeIds(array) {
@@ -137,6 +162,35 @@ function TreeViewWithFilter() {
       return r
     }, [])
   }
+
+  const getDroppableNode = React.useCallback((x: any, y: any) => {
+    const node = treeItemRefs.current.find(({ nodeId, ref, isDroppable }) => {
+      if (!isDroppable) return false
+
+      const rect = ref.getBoundingClientRect()
+      if (rect) {
+        const inVerticalBounds = y >= rect.top && y <= rect.bottom
+        const inHorizontalBounds = x >= rect.left && x <= rect.right
+        return inVerticalBounds && inHorizontalBounds
+      }
+      return false
+    })
+    return node
+  }, [])
+
+  const dragItemStyle = useMemo(
+    () => ({
+      width: draggingState.width,
+      height: draggingState.height,
+      transform: `translate(calc(${draggingState.translation.x}px - 10%), calc(${draggingState.translation.y}px - 50%))`,
+      msTransform: `translateX(${draggingState.translation.x}px) translateX(-10%) translateY(${draggingState.translation.y}px) translateY(-50%)`,
+      zIndex: 1000,
+      left: 0,
+      top: 0,
+      cursor: draggingState.isDragging ? "-webkit-grabbing" : "-webkit-grab",
+    }),
+    [draggingState]
+  )
 
   // Components
   const CustomTreeViewItem = ({
@@ -149,9 +203,30 @@ function TreeViewWithFilter() {
     onChange,
     ...props
   }) => {
+    const ref = useRef(null)
+    useEffect(() => {
+      registerTreeItem({ nodeId, label }, ref.current)
+      return () => {
+        unRegisterTreeItem(nodeId)
+      }
+    }, [ref.current])
+
     return (
       <>
-        <TreeViewItem nodeId={nodeId} label={label} {...props}>
+        <TreeViewItem
+          nodeId={nodeId}
+          label={label}
+          {...props}
+          ref={ref}
+          dragIcon={
+            <i
+              className="material-icons"
+              onMouseDown={e => handleMouseDown(e, nodeId)}
+            >
+              drag_indicator
+            </i>
+          }
+        >
           {children &&
             children.map(item => (
               <CustomTreeViewItem
@@ -171,18 +246,6 @@ function TreeViewWithFilter() {
       <div className="container">
         <div className="row row-cols-1">
           <div className="col">
-            <div>
-              <div className="input-with-icon-left">
-                <FormControl
-                  as="input"
-                  placeholder="Search"
-                  onChange={handleFilter}
-                ></FormControl>
-                <div className="input-icon">
-                  <i className="modus-icons material-icons">search</i>
-                </div>
-              </div>
-            </div>
             <div
               className="d-flex justify-content-end align-items-center"
               style={{ minHeight: "3rem" }}
@@ -228,6 +291,24 @@ function TreeViewWithFilter() {
           </div>
         </div>
       </div>
+      {draggingState.isDragging &&
+        bodyRef.current &&
+        createPortal(
+          <div
+            className="list-group d-inline-block position-fixed"
+            style={dragItemStyle}
+          >
+            <li className="modus-tree-view-item list-group-item list-item-left-control">
+              <div className="d-flex align-items-center">
+                <i className="material-icons">drag_indicator</i>
+              </div>
+              <div className="d-flex align-items-center">
+                {draggingState.node.label}
+              </div>
+            </li>
+          </div>,
+          bodyRef.current
+        )}
     </div>
   )
 }

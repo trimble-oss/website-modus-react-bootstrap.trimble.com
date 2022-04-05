@@ -9,6 +9,7 @@ export interface TreeViewContextType {
   collapseIcon?: React.ReactElement
   expandIcon?: React.ReactElement
   itemIcon?: React.ReactElement
+  dragIcon?: React.ReactElement
   registerNode: (node: TreeItem) => void
   unRegisterNode: (nodeId: number) => void
   isExpanded: (nodeId: number) => boolean

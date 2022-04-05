@@ -21,6 +21,7 @@ export interface TreeViewItemProps
   collapseIcon?: React.ReactElement
   expandIcon?: React.ReactElement
   itemIcon?: React.ReactElement
+  dragIcon?: React.ReactElement
   disableSelection?: boolean
 }
 
@@ -49,6 +50,11 @@ const propTypes = {
    * Icon to appear before the label.
    */
   itemIcon: PropTypes.element,
+
+  /**
+   * Drag icon to appear before collapse/expand icon.
+   */
+  dragIcon: PropTypes.element,
 }
 
 const IndeterminateCheckbox = React.forwardRef<
@@ -94,6 +100,7 @@ function TreeViewItem(
     collapseIcon,
     expandIcon,
     itemIcon,
+    dragIcon,
     ref,
     ...rest
   } = props
@@ -114,6 +121,7 @@ function TreeViewItem(
     collapseIcon: defaultCollapseIcon,
     expandIcon: defaultExpandIcon,
     itemIcon: defaultItemIcon,
+    dragIcon: defaultDragIcon,
   } = useContext(TreeViewContext)
 
   const expandable = Boolean(
@@ -136,6 +144,7 @@ function TreeViewItem(
     <i className="modus-icons">chevron_right</i>
   )
   const finalItemIcon = itemIcon || defaultItemIcon
+  const finalDragIcon = dragIcon || defaultDragIcon
   const blankIcon = <i className="modus-icons">blank</i>
   const {
     parentId,
@@ -214,6 +223,7 @@ function TreeViewItem(
         level={level}
         checkBoxSelection={checkBoxSelection ? "true" : "false"}
         itemIcon={finalItemIcon ? "true" : "false"}
+        dragIcon={finalDragIcon ? "true" : "false"}
         role="treeitem"
         aria-expanded={expandable ? expanded : null}
         aria-selected={nodeSelected}
@@ -227,6 +237,10 @@ function TreeViewItem(
           {...rest}
           ref={ref}
         >
+          {finalDragIcon && (
+            <div className="d-flex align-items-center">{finalDragIcon}</div>
+          )}
+
           {expandable ? (
             <div
               onClick={handleExpansion}
