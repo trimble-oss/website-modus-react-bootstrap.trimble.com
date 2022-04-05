@@ -24,17 +24,21 @@ const DragDropProvider: React.FunctionComponent<
   React.PropsWithChildren<DragDropProviderProps>
 > = ({ styles, isDragging, children }) => {
   const isDroppable = useContext(TreeViewDragContext)
+  const [draggingState, setDraggingState] = useState(isDragging)
 
   const bodyRef = useRef(null)
   useEffect(() => {
     bodyRef.current = document.body
   }, [])
+  useEffect(() => {
+    setDraggingState(isDragging)
+  }, [isDragging])
   // Drag-and-drop
 
   return (
     <>
       {children}
-      {isDragging &&
+      {draggingState &&
         bodyRef.current &&
         createPortal(
           <div

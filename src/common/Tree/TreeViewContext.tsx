@@ -16,8 +16,9 @@ export interface TreeViewContextType {
   isNodeSelected: (nodeId: number) => boolean
   isIndeterminate: (nodeId: number) => boolean
   isCheckBoxSelected: (nodeId: number) => boolean
-  pushDroppableZone: (event: any, nodeId: number) => void
-  popDroppableZone: (event: any, nodeId: number) => void
+  pushDroppableNode: (event: any, nodeId: number) => void
+  popDroppableNode: (event: any, nodeId: number) => void
+  getDroppableNode: (x: any, y: any) => TreeItem
   toggleExpansion: (event: any, nodeId: number) => void
   toggleNodeSelection: (event: any, nodeId: number) => void
   toggleSingleCheckBoxSelection: (event: any, nodeId: number) => void

@@ -220,7 +220,7 @@ function TreeViewWithFilter() {
 
   return (
     <div style={{ width: "400px" }}>
-      <div className="container">
+      <div className="container p-0">
         <div className="row row-cols-1">
           <div className="col">
             <div>
@@ -284,8 +284,8 @@ const ContentTreePage = props => {
   return (
     <DefaultLayout location={props.location}>
       <main id="main">
-        <Container fluid className="pt-5">
-          <Container>
+        <Container fluid className="p-0 pt-5">
+          <Container className="p-0">
             <Row>
               <div className="col-12 col-lg-6 pt-5 mt-xl-5">
                 <h1 className=" mt-4 ">

@@ -129,8 +129,9 @@ function TreeViewItem(
     toggleNodeSelection,
     toggleSingleCheckBoxSelection,
     toggleMultiCheckBoxSelection,
-    pushDroppableZone,
-    popDroppableZone,
+    pushDroppableNode,
+    popDroppableNode,
+    getDroppableNode,
     isIndeterminate,
     checkBoxSelection,
     multiSelectCheckBox,
@@ -170,6 +171,7 @@ function TreeViewItem(
     onDescendantToggleCbSelection,
     onDescendantToggleCbSelectionOnParent,
   } = useDescendant(nodeId, isCheckBoxSelected, toggleMultiCheckBoxSelection)
+  const treeItemContainer = useRef(null)
 
   const handleNodeSelection = React.useCallback(
     (e: any) => {
@@ -215,13 +217,28 @@ function TreeViewItem(
   )
 
   useEffect(() => {
-    const node = { id: nodeId, parentId, label }
-    registerNode && registerNode(node)
+    if (treeItemContainer.current && registerNode) {
+      const node = {
+        id: nodeId,
+        parentId,
+        label,
+        ref: treeItemContainer.current,
+      }
+
+      registerNode(node)
+    }
 
     return () => {
       unRegisterNode && unRegisterNode(nodeId)
     }
-  }, [registerNode, unRegisterNode, nodeId, parentId, label])
+  }, [
+    registerNode,
+    unRegisterNode,
+    nodeId,
+    parentId,
+    label,
+    treeItemContainer.current,
+  ])
 
   function getChildren(array: TreeItem[]): number[] {
     if (!array) return []
@@ -241,7 +258,9 @@ function TreeViewItem(
     height: "0px",
   })
   const bodyRef = useRef(null)
-  const newStyles = useMemo(
+  const dragRef = useRef(null)
+
+  const dragItemStyle = useMemo(
     () => ({
       width: draggingState.width,
       height: draggingState.height,
@@ -254,7 +273,7 @@ function TreeViewItem(
     }),
     [draggingState]
   )
-  const handleDragStart = useCallback(event => {
+  const handleMouseDown = useCallback(event => {
     const { clientX, clientY, target } = event
     setDraggingState(prevState => ({
       ...prevState,
@@ -265,16 +284,11 @@ function TreeViewItem(
       height:
         (target && target.offsetParent && target.offsetParent.height) || "40px",
     }))
-
-    // prevent default drag image
-    const dummyImage = new Image()
-    event.dataTransfer.setDragImage(dummyImage, 0, 0)
-    event.dataTransfer.setData("text/plain", nodeId)
   }, [])
 
-  const handleDrag = useCallback(
+  const handleMouseMove = useCallback(
     event => {
-      const { clientX, clientY } = event
+      const { clientX, clientY, target } = event
 
       const translation = {
         x: clientX,
@@ -284,31 +298,37 @@ function TreeViewItem(
         ...prevState,
         translation,
       }))
+
+      const droppableZone = getDroppableNode(clientX, clientY)
+      if (droppableZone) console.log("entered node: " + droppableZone.id)
     },
     [draggingState.origin]
   )
 
-  const handleDragEnd = useCallback(event => {
+  const handleMouseUp = useCallback(event => {
     setDraggingState(prevState => ({
       ...prevState,
       isDragging: false,
     }))
   }, [])
 
-  const handleDragOver = useCallback(event => {
-    console.log("am dragged over " + nodeId)
-    event.preventDefault()
-  }, [])
-  const handleDrop = useCallback(event => {
-    const dropNodeId = event.dataTransfer.getData("text/plain")
-    console.log(dropNodeId + " at drop zone over " + nodeId)
-    event.preventDefault()
-  }, [])
-
   useEffect(() => {
     bodyRef.current = document.body
   }, [])
 
+  useEffect(() => {
+    if (draggingState.isDragging) {
+      window.addEventListener("mousemove", handleMouseMove)
+      window.addEventListener("mouseup", handleMouseUp)
+    } else {
+      window.removeEventListener("mousemove", handleMouseMove)
+      window.removeEventListener("mouseup", handleMouseUp)
+    }
+  }, [draggingState.isDragging])
+
+  // Issue with Drag and Drop API -
+  // ondrop event on a droppable zone is not getting fired when the custom dragging element is displayed over it
+  // As it fires the drop event on the custom dragging element
   return (
     <>
       <TreeViewItemStyled
@@ -319,6 +339,9 @@ function TreeViewItem(
         aria-expanded={expandable ? expanded : null}
         aria-selected={nodeSelected}
         isDraggable="true"
+        nodeId={nodeId}
+        className="modus-tree-view-item-container"
+        ref={treeItemContainer}
       >
         <li
           className={classNames(
@@ -328,16 +351,12 @@ function TreeViewItem(
           )}
           {...rest}
           ref={ref}
-          onDragOver={handleDragOver}
-          onDrop={handleDrop}
           id={`treeitem_${nodeId}`}
         >
           <div
             className="d-flex align-items-center"
-            draggable
-            onDragStart={handleDragStart}
-            onDragEnd={handleDragEnd}
-            onDrag={handleDrag}
+            ref={dragRef}
+            onMouseDown={handleMouseDown}
           >
             <i className="material-icons">drag_indicator</i>
           </div>
@@ -372,19 +391,31 @@ function TreeViewItem(
             {label}
           </div>
         </li>
+        {draggingState.isDragging &&
+          bodyRef.current &&
+          createPortal(
+            <div
+              id="drag_container"
+              className={classNames("list-group d-inline-block position-fixed")}
+              style={dragItemStyle}
+            >
+              <li
+                className={classNames(
+                  "modus-tree-view-item list-group-item list-item-leftright-control",
+                  className
+                )}
+                {...rest}
+                id={`drag_treeitem_${nodeId}`}
+              >
+                <div className="d-flex align-items-center">
+                  <i className="material-icons">drag_indicator</i>
+                </div>
+                <div className="d-flex align-items-center">{label}</div>
+              </li>
+            </div>,
+            bodyRef.current
+          )}
       </TreeViewItemStyled>
-
-      {draggingState.isDragging &&
-        bodyRef.current &&
-        createPortal(
-          <div
-            id="clone"
-            className={classNames("list-group d-inline-block position-fixed")}
-          >
-            <div>Test</div>
-          </div>,
-          bodyRef.current
-        )}
 
       {children && (
         <TreeViewItemContext.Provider

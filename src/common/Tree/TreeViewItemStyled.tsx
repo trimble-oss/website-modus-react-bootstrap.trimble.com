@@ -6,7 +6,8 @@ interface TreeViewItemStyleWrapperProps
   level: number
   checkBoxSelection: string
   itemIcon: string
-  isDraggable: string
+  nodeId: number
+  isDraggable?: string
 }
 
 interface TreeViewItemGroupStyleWrapperProps
