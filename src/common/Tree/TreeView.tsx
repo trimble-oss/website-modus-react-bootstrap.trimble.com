@@ -1,10 +1,12 @@
-import React, { useState } from "react"
+import React, { useState, useCallback, useEffect, useRef, useMemo } from "react"
 import PropTypes from "prop-types"
 import TreeViewContext, { TreeViewDragContext } from "./TreeViewContext"
 import { TreeItem } from "./types"
 import TreeViewItemContext from "./TreeViewItemContext"
 import classNames from "classnames"
 import _merge from "lodash/merge"
+import DragDropProvider from "./DragDropProvider"
+import TreeViewItemStyled from "./TreeViewItemStyled"
 
 export interface TreeViewProps
   extends Omit<React.HTMLProps<HTMLUListElement>, "expanded" | "selected"> {
@@ -127,6 +129,7 @@ const TreeView = React.forwardRef<HTMLUListElement, TreeViewProps>(
       number[]
     >([])
     const [droppableNode, setDroppableNode] = useState<number>()
+    const [draggingNode, setDraggingNode] = useState<TreeItem>()
 
     // Update nodesExpanded state only when the API expanded value changes
     React.useEffect(() => {
@@ -360,6 +363,80 @@ const TreeView = React.forwardRef<HTMLUListElement, TreeViewProps>(
       [nodes]
     )
 
+    // Drag-and-drop
+    const POSITION = { x: 0, y: 0 }
+    const [draggingState, setDraggingState] = useState({
+      isDragging: false,
+      origin: POSITION,
+      translation: POSITION,
+      width: "0px",
+      height: "0px",
+      node: {} as TreeItem,
+    })
+
+    const handleMouseDown = useCallback((event, nodeId) => {
+      console.log("drag started: " + nodeId)
+      const { clientX, clientY, target } = event
+      updateDroppableNode(null)
+
+      debugger
+      setDraggingState(prevState => ({
+        ...prevState,
+        isDragging: true,
+        origin: { x: clientX, y: clientY },
+        node: nodes.current[nodeId],
+        width:
+          (target && target.offsetParent && target.offsetParent.width) ||
+          "400px",
+        height:
+          (target && target.offsetParent && target.offsetParent.height) ||
+          "40px",
+      }))
+    }, [])
+
+    const handleMouseMove = useCallback(
+      event => {
+        const { clientX, clientY, target } = event
+
+        const translation = {
+          x: clientX,
+          y: clientY,
+        }
+        setDraggingState(prevState => ({
+          ...prevState,
+          translation,
+        }))
+
+        const dropNode = getDroppableNode(clientX, clientY)
+        if (dropNode) updateDroppableNode(dropNode.id)
+      },
+      [draggingState.origin]
+    )
+
+    const handleMouseUp = useCallback(event => {
+      setDraggingState(prevState => ({
+        ...prevState,
+        isDragging: false,
+      }))
+
+      updateDroppableNode(null)
+    }, [])
+
+    useEffect(() => {
+      if (draggingState.isDragging) {
+        window.addEventListener("mousemove", handleMouseMove)
+        window.addEventListener("mouseup", handleMouseUp)
+      } else {
+        window.removeEventListener("mousemove", handleMouseMove)
+        window.removeEventListener("mouseup", handleMouseUp)
+
+        setDraggingState(prevState => ({
+          ...prevState,
+          translation: POSITION,
+        }))
+      }
+    }, [draggingState.isDragging])
+
     return (
       <TreeViewContext.Provider
         value={{
@@ -374,6 +451,7 @@ const TreeView = React.forwardRef<HTMLUListElement, TreeViewProps>(
           toggleNodeSelection,
           toggleSingleCheckBoxSelection,
           toggleMultiCheckBoxSelection,
+          handleMouseDown,
           updateDroppableNode,
           getDroppableNode,
           checkBoxSelection: checkBoxSelection || multiSelectCheckBox,
@@ -385,6 +463,48 @@ const TreeView = React.forwardRef<HTMLUListElement, TreeViewProps>(
         }}
       >
         <TreeViewDragContext.Provider value={droppableNode}>
+          <DragDropProvider
+            isDragging={draggingState.isDragging}
+            width={draggingState.width}
+            height={draggingState.height}
+            clientX={draggingState.translation.x}
+            clientY={draggingState.translation.y}
+          >
+            {draggingState.node && (
+              <TreeViewItemStyled
+                level={draggingState.node.level}
+                isDraggable="true"
+                id="drag-Item"
+                overrides={`
+                opacity: 0.9;
+                li.modus-tree-view-item {
+                  border: 1px dashed red !important;
+                  :hover{
+                    background: white;
+                  }
+                  &.droppable{
+                    border: 1px dashed #0063a3 !important;
+                  }
+                }
+                `}
+              >
+                <li
+                  className={classNames(
+                    "modus-tree-view-item list-group-item list-item-leftright-control",
+                    droppableNode ? "droppable" : ""
+                  )}
+                >
+                  <div className="d-flex align-items-center">
+                    <i className="material-icons">drag_indicator</i>
+                  </div>
+                  {<i className="modus-icons">blank</i>}
+                  <div className="d-flex align-items-center">
+                    {draggingState.node.label}
+                  </div>
+                </li>
+              </TreeViewItemStyled>
+            )}
+          </DragDropProvider>
           <TreeViewItemContext.Provider value={{ parentId: null, level: 1 }}>
             <ul
               className={classNames("list-group", className)}

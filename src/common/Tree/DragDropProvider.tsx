@@ -11,67 +11,47 @@ import { createPortal } from "react-dom"
 import styled, { css } from "styled-components"
 import { TreeViewDragContext } from "./TreeViewContext"
 import TreeViewItemStyled from "./TreeViewItemStyled"
+import { TreeItem } from "./types"
 
 type DragDropProviderProps = {
-  level: number
-  styles: any
   isDragging: boolean
-  label: React.ReactNode | React.ReactElement | string
+  width: string
+  height: string
+  clientX: any
+  clientY: any
 }
 
-const POSITION = { x: 0, y: 0 }
-const StyledDiv = styled.div`
-  cursor: -webkit-grabbing !important;
-`
 const DragDropProvider: React.FunctionComponent<
   React.PropsWithChildren<DragDropProviderProps>
-> = ({ level, styles, label, isDragging, children }) => {
-  const isDroppable = useContext(TreeViewDragContext)
-
+> = ({ width, height, clientX, clientY, isDragging, children }) => {
   const bodyRef = useRef(null)
   useEffect(() => {
     bodyRef.current = document.body
   }, [])
-  // Drag-and-drop
+
+  const dragItemStyle = {
+    width,
+    height,
+    transform: `translate(calc(${clientX}px - 10%), calc(${clientY}px - 50%))`,
+    msTransform: `translateX(${clientX}px) translateX(-10%) translateY(${clientY}px) translateY(-50%)`,
+    zIndex: 1000,
+    left: 0,
+    top: 0,
+    cursor: isDragging ? "-webkit-grabbing" : "-webkit-grab",
+  }
 
   return (
     <>
-      {children}
+      {/* {children} */}
       {isDragging &&
         bodyRef.current &&
         createPortal(
-          <TreeViewItemStyled
-            level={level}
-            isDraggable="true"
-            id="drag-Item"
+          <div
             className={classNames("list-group d-inline-block position-fixed")}
-            style={styles}
-            overrides={`
-            opacity: 0.9;
-            li.modus-tree-view-item {
-              border: 1px dashed red !important;
-              :hover{
-                background: white;
-              }
-              &.droppable{
-                border: 1px dashed #0063a3 !important;
-              }
-            }
-            `}
+            style={dragItemStyle}
           >
-            <li
-              className={classNames(
-                "modus-tree-view-item list-group-item list-item-leftright-control",
-                isDroppable ? "droppable" : ""
-              )}
-            >
-              <div className="d-flex align-items-center">
-                <i className="material-icons">drag_indicator</i>
-              </div>
-              {<i className="modus-icons">blank</i>}
-              <div className="d-flex align-items-center">{label}</div>
-            </li>
-          </TreeViewItemStyled>,
+            {children}
+          </div>,
           bodyRef.current
         )}
     </>

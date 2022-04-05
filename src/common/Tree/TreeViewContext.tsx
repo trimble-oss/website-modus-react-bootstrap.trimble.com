@@ -26,6 +26,7 @@ export interface TreeViewContextType {
     selected?: number[],
     unselected?: number[]
   ) => void
+  handleMouseDown: (event: any, nodeId: number) => void
 }
 
 const TreeViewContext = React.createContext<TreeViewContextType>(null)

@@ -131,6 +131,7 @@ function TreeViewItem(
     toggleMultiCheckBoxSelection,
     updateDroppableNode,
     getDroppableNode,
+    handleMouseDown,
     isIndeterminate,
     checkBoxSelection,
     multiSelectCheckBox,
@@ -223,6 +224,7 @@ function TreeViewItem(
         id: nodeId,
         parentId,
         label,
+        level,
         ref: treeItemContainer.current,
       }
 
@@ -249,167 +251,74 @@ function TreeViewItem(
     }, [])
   }
 
-  // Drag-and-drop
-  const POSITION = { x: 0, y: 0 }
-  const [draggingState, setDraggingState] = useState({
-    isDragging: false,
-    origin: POSITION,
-    translation: POSITION,
-    width: "0px",
-    height: "0px",
-  })
-  const bodyRef = useRef(null)
-  const dragRef = useRef(null)
-
-  const dragItemStyle = useMemo(
-    () => ({
-      width: draggingState.width,
-      height: draggingState.height,
-      transform: `translate(calc(${draggingState.translation.x}px - 10%), calc(${draggingState.translation.y}px - 50%))`,
-      msTransform: `translateX(${draggingState.translation.x}px) translateX(-50%) translateY(${draggingState.translation.y}px) translateY(-50%)`,
-      zIndex: 1000,
-      left: 0,
-      top: 0,
-      cursor: draggingState.isDragging ? "-webkit-grabbing" : "-webkit-grab",
-    }),
-    [draggingState]
-  )
-  const handleMouseDown = useCallback(event => {
-    const { clientX, clientY, target } = event
-    setDraggingState(prevState => ({
-      ...prevState,
-      isDragging: true,
-      origin: { x: clientX, y: clientY },
-      width:
-        (target && target.offsetParent && target.offsetParent.width) || "400px",
-      height:
-        (target && target.offsetParent && target.offsetParent.height) || "40px",
-    }))
-
-    updateDroppableNode(null)
-  }, [])
-
-  const handleMouseMove = useCallback(
-    event => {
-      const { clientX, clientY, target } = event
-
-      const translation = {
-        x: clientX,
-        y: clientY,
-      }
-      setDraggingState(prevState => ({
-        ...prevState,
-        translation,
-      }))
-
-      const dropNode = getDroppableNode(clientX, clientY)
-      if (dropNode) updateDroppableNode(dropNode.id)
-    },
-    [draggingState.origin]
-  )
-
-  const handleMouseUp = useCallback(event => {
-    setDraggingState(prevState => ({
-      ...prevState,
-      isDragging: false,
-    }))
-  }, [])
-
-  useEffect(() => {
-    bodyRef.current = document.body
-  }, [])
-
-  useEffect(() => {
-    if (draggingState.isDragging) {
-      window.addEventListener("mousemove", handleMouseMove)
-      window.addEventListener("mouseup", handleMouseUp)
-    } else {
-      window.removeEventListener("mousemove", handleMouseMove)
-      window.removeEventListener("mouseup", handleMouseUp)
-
-      setDraggingState(prevState => ({
-        ...prevState,
-        translation: POSITION,
-      }))
-    }
-  }, [draggingState.isDragging])
-
   // Issue with Drag and Drop API -
   // ondrop event on a droppable zone is not getting fired when the custom dragging element is displayed over it
   // As it fires the drop event on the custom dragging element
   return (
     <>
-      <DragDropProvider
+      <TreeViewItemStyled
         level={level}
-        label={label}
-        styles={dragItemStyle}
-        isDragging={draggingState.isDragging}
+        checkBoxSelection={checkBoxSelection ? "true" : "false"}
+        itemIcon={finalItemIcon ? "true" : "false"}
+        role="treeitem"
+        aria-expanded={expandable ? expanded : null}
+        aria-selected={nodeSelected}
+        isDraggable="true"
+        ref={treeItemContainer}
       >
-        <TreeViewItemStyled
-          level={level}
-          checkBoxSelection={checkBoxSelection ? "true" : "false"}
-          itemIcon={finalItemIcon ? "true" : "false"}
-          role="treeitem"
-          aria-expanded={expandable ? expanded : null}
-          aria-selected={nodeSelected}
-          isDraggable="true"
-          ref={treeItemContainer}
+        <li
+          className={classNames(
+            "modus-tree-view-item list-group-item list-item-leftright-control",
+            nodeSelected && "active",
+            className
+            // draggingState.isDragging && droppableNode === nodeId
+            //   ? enableDrop
+            //     ? "drop-allow"
+            //     : "drop-block"
+            //   : ""
+          )}
+          {...rest}
+          ref={ref}
+          id={`treeitem_${nodeId}`}
         >
-          <li
-            className={classNames(
-              "modus-tree-view-item list-group-item list-item-leftright-control",
-              nodeSelected && "active",
-              className,
-              draggingState.isDragging && droppableNode === nodeId
-                ? enableDrop
-                  ? "drop-allow"
-                  : "drop-block"
-                : ""
-            )}
-            {...rest}
-            ref={ref}
-            id={`treeitem_${nodeId}`}
+          <div
+            className="d-flex align-items-center"
+            onMouseDown={e => handleMouseDown(e, nodeId)}
           >
+            <i className="material-icons">drag_indicator</i>
+          </div>
+          {expandable ? (
             <div
+              onClick={handleExpansion}
               className="d-flex align-items-center"
-              ref={dragRef}
-              onMouseDown={handleMouseDown}
             >
-              <i className="material-icons">drag_indicator</i>
+              {expanded ? finalExpandIcon : finalCollapseIcon}
             </div>
-            {expandable ? (
-              <div
-                onClick={handleExpansion}
-                className="d-flex align-items-center"
-              >
-                {expanded ? finalExpandIcon : finalCollapseIcon}
-              </div>
-            ) : (
-              blankIcon
-            )}
-            {checkBoxSelection && (
-              <div className="d-flex align-items-center">
-                <IndeterminateCheckbox
-                  checked={checkBoxSelected}
-                  id={`${rootId}_cbselection_${nodeId}`}
-                  onClick={handleCheckBoxSelection}
-                  indeterminate={checkBoxIndeterminate}
-                />
-              </div>
-            )}
+          ) : (
+            blankIcon
+          )}
+          {checkBoxSelection && (
+            <div className="d-flex align-items-center">
+              <IndeterminateCheckbox
+                checked={checkBoxSelected}
+                id={`${rootId}_cbselection_${nodeId}`}
+                onClick={handleCheckBoxSelection}
+                indeterminate={checkBoxIndeterminate}
+              />
+            </div>
+          )}
 
-            {finalItemIcon && (
-              <div className="d-flex align-items-center">{finalItemIcon}</div>
-            )}
-            <div
-              onClick={handleNodeSelection}
-              className="d-flex align-items-center"
-            >
-              {label}
-            </div>
-          </li>
-        </TreeViewItemStyled>
-      </DragDropProvider>
+          {finalItemIcon && (
+            <div className="d-flex align-items-center">{finalItemIcon}</div>
+          )}
+          <div
+            onClick={handleNodeSelection}
+            className="d-flex align-items-center"
+          >
+            {label}
+          </div>
+        </li>
+      </TreeViewItemStyled>
 
       {children && (
         <TreeViewItemContext.Provider
