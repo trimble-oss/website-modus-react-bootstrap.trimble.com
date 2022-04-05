@@ -115,6 +115,7 @@ function TreeViewItem(
     expandIcon,
     itemIcon,
     enableDrop,
+    enableDrag,
     ref,
     ...rest
   } = props
@@ -225,6 +226,7 @@ function TreeViewItem(
         parentId,
         label,
         level,
+        isDroppable: enableDrop,
         ref: treeItemContainer.current,
       }
 
@@ -258,13 +260,13 @@ function TreeViewItem(
     <>
       <TreeViewItemStyled
         level={level}
-        checkBoxSelection={checkBoxSelection ? "true" : "false"}
-        itemIcon={finalItemIcon ? "true" : "false"}
+        ref={treeItemContainer}
         role="treeitem"
         aria-expanded={expandable ? expanded : null}
         aria-selected={nodeSelected}
-        isDraggable="true"
-        ref={treeItemContainer}
+        isDraggable={enableDrag ? "true" : "false"}
+        checkBoxSelection={checkBoxSelection ? "true" : "false"}
+        itemIcon={finalItemIcon ? "true" : "false"}
       >
         <li
           className={classNames(
@@ -281,12 +283,15 @@ function TreeViewItem(
           ref={ref}
           id={`treeitem_${nodeId}`}
         >
-          <div
-            className="d-flex align-items-center"
-            onMouseDown={e => handleMouseDown(e, nodeId)}
-          >
-            <i className="material-icons">drag_indicator</i>
-          </div>
+          {enableDrag && (
+            <div
+              className="d-flex align-items-center"
+              onMouseDown={e => handleMouseDown(e, nodeId)}
+            >
+              <i className="material-icons">drag_indicator</i>
+            </div>
+          )}
+
           {expandable ? (
             <div
               onClick={handleExpansion}

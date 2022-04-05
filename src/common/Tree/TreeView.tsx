@@ -208,7 +208,9 @@ const TreeView = React.forwardRef<HTMLUListElement, TreeViewProps>(
     }, [])
 
     const getDroppableNode = React.useCallback((x: any, y: any) => {
-      const node = getNodesArray().find(({ id, ref }) => {
+      const node = getNodesArray().find(({ id, ref, isDroppable }) => {
+        if (!isDroppable) return false
+
         const rect = ref.getBoundingClientRect()
         if (rect) {
           const inVerticalBounds = y >= rect.top && y <= rect.bottom
@@ -409,6 +411,7 @@ const TreeView = React.forwardRef<HTMLUListElement, TreeViewProps>(
 
         const dropNode = getDroppableNode(clientX, clientY)
         if (dropNode) updateDroppableNode(dropNode.id)
+        else updateDroppableNode(null)
       },
       [draggingState.origin]
     )

@@ -5,6 +5,7 @@ export type TreeItem = {
   parentId: number
   label?: React.ReactNode | React.ReactElement | string
   level?: number
+  isDroppable?: boolean
   ref?: any
   children?: TreeItem[]
 }

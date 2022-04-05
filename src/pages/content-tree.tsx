@@ -202,6 +202,7 @@ function TreeViewWithFilter() {
       <TreeViewItem
         nodeId={nodeId}
         enableDrop={!disabledNodeIds.includes(nodeId)}
+        enableDrag={true}
         label={label}
         {...props}
       >
