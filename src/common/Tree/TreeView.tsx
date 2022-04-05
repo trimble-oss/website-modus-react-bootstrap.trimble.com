@@ -1,6 +1,6 @@
 import React, { useState } from "react"
 import PropTypes from "prop-types"
-import TreeViewContext from "./TreeViewContext"
+import TreeViewContext, { TreeViewDragContext } from "./TreeViewContext"
 import { TreeItem } from "./types"
 import TreeViewItemContext from "./TreeViewItemContext"
 import classNames from "classnames"
@@ -126,6 +126,7 @@ const TreeView = React.forwardRef<HTMLUListElement, TreeViewProps>(
     const [nodeCheckBoxSelected, setNodeCheckBoxSelected] = React.useState<
       number[]
     >([])
+    const [droppableZones, setDroppableZones] = useState<number[]>([])
 
     // Update nodesExpanded state only when the API expanded value changes
     React.useEffect(() => {
@@ -199,17 +200,21 @@ const TreeView = React.forwardRef<HTMLUListElement, TreeViewProps>(
       []
     )
 
-    const expandAllSiblings = (event, id) => {
-      const siblings = getChildren(getNodesArray(), id)
+    const pushDroppableZone = React.useCallback(
+      (event: any, nodeId: number) => {
+        setDroppableZones(array => {
+          if (!array.includes(nodeId)) array.push(nodeId)
+          return array
+        })
+      },
+      []
+    )
 
-      const diff = siblings.filter(child => !isExpanded(child))
-
-      const newExpanded = nodesExpanded.concat(diff)
-
-      if (diff.length > 0) {
-        setExpanded(newExpanded)
-      }
-    }
+    const popDroppableZone = React.useCallback((event: any, nodeId: number) => {
+      setDroppableZones(array => {
+        return array.filter(node => node === nodeId)
+      })
+    }, [])
 
     // Verifiers
     const isExpanded = React.useCallback(
@@ -368,6 +373,8 @@ const TreeView = React.forwardRef<HTMLUListElement, TreeViewProps>(
           toggleNodeSelection,
           toggleSingleCheckBoxSelection,
           toggleMultiCheckBoxSelection,
+          pushDroppableZone,
+          popDroppableZone,
           checkBoxSelection: checkBoxSelection || multiSelectCheckBox,
           multiSelectCheckBox,
           multiSelectNode,
@@ -376,17 +383,19 @@ const TreeView = React.forwardRef<HTMLUListElement, TreeViewProps>(
           itemIcon,
         }}
       >
-        <TreeViewItemContext.Provider value={{ parentId: null, level: 1 }}>
-          <ul
-            className={classNames("list-group", className)}
-            {...props}
-            id={id}
-            ref={ref}
-            role="tree"
-          >
-            {children}
-          </ul>
-        </TreeViewItemContext.Provider>
+        <TreeViewDragContext.Provider value={droppableZones.length > 0}>
+          <TreeViewItemContext.Provider value={{ parentId: null, level: 1 }}>
+            <ul
+              className={classNames("list-group", className)}
+              {...props}
+              id={id}
+              ref={ref}
+              role="tree"
+            >
+              {children}
+            </ul>
+          </TreeViewItemContext.Provider>
+        </TreeViewDragContext.Provider>
       </TreeViewContext.Provider>
     )
   }

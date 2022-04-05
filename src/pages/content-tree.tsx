@@ -185,6 +185,7 @@ function TreeViewWithFilter() {
       return r
     }, [])
   }
+  const disabledNodeIds = [2, 4, 6]
 
   // Components
   const CustomTreeViewItem = ({
@@ -198,7 +199,12 @@ function TreeViewWithFilter() {
     ...props
   }) => {
     return (
-      <TreeViewItem nodeId={nodeId} label={label} {...props}>
+      <TreeViewItem
+        nodeId={nodeId}
+        enableDrop={!disabledNodeIds.includes(nodeId)}
+        label={label}
+        {...props}
+      >
         {children &&
           children.map(item => (
             <CustomTreeViewItem

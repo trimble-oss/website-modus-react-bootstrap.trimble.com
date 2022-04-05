@@ -1,3 +1,4 @@
+import classNames from "classnames"
 import React, {
   useContext,
   useState,
@@ -8,6 +9,7 @@ import React, {
 } from "react"
 import { createPortal } from "react-dom"
 import styled, { css } from "styled-components"
+import { TreeViewDragContext } from "./TreeViewContext"
 
 type DragDropProviderProps = {
   styles: any
@@ -21,12 +23,14 @@ const StyledDiv = styled.div`
 const DragDropProvider: React.FunctionComponent<
   React.PropsWithChildren<DragDropProviderProps>
 > = ({ styles, isDragging, children }) => {
+  const isDroppable = useContext(TreeViewDragContext)
+
   const bodyRef = useRef(null)
   useEffect(() => {
     bodyRef.current = document.body
   }, [])
   // Drag-and-drop
-  debugger
+
   return (
     <>
       {children}
@@ -36,9 +40,12 @@ const DragDropProvider: React.FunctionComponent<
           <div
             id="clone"
             style={styles}
-            className="list-group d-inline-block position-fixed"
+            className={classNames(
+              "list-group d-inline-block position-fixed",
+              isDroppable ? "w-10" : ""
+            )}
           >
-            {children}
+            <div>Test</div>
           </div>,
           bodyRef.current
         )}
