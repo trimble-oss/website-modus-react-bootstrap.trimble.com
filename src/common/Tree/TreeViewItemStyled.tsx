@@ -48,13 +48,15 @@ const TreeViewItemStyled = styled(TreeViewItemStyleWrapper)`
   li.modus-tree-view-item {
     padding: 5px 8px !important;
     cursor: pointer;
-    padding-left: ${props => props.level * 20}px !important;
 
     grid-template-columns: ${props =>
         props.isDraggable == "true" && "min-content"} min-content ${props =>
         props.checkBoxSelection == "true" && "min-content"} ${props =>
         props.itemIcon == "true" && "min-content"} auto min-content !important;
 
+    .expand-icon {
+      padding-left: ${props => props.level * 1}rem !important;
+    }
     .modus-icons,
     .material-icons {
       cursor: pointer;
@@ -68,6 +70,10 @@ const TreeViewItemStyled = styled(TreeViewItemStyleWrapper)`
     }
     &.drop-block {
       border-top: 1px solid red !important;
+    }
+
+    .drag-icon > * {
+      font-size: 1rem !important;
     }
   }
   ${props => props.overrides}

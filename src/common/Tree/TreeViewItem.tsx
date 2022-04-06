@@ -285,7 +285,7 @@ function TreeViewItem(
         >
           {enableDrag && (
             <div
-              className="d-flex align-items-center"
+              className="d-flex align-items-center drag-icon"
               onMouseDown={e => handleMouseDown(e, nodeId)}
             >
               <i className="material-icons">drag_indicator</i>
@@ -295,7 +295,7 @@ function TreeViewItem(
           {expandable ? (
             <div
               onClick={handleExpansion}
-              className="d-flex align-items-center"
+              className="d-flex align-items-center expand-icon"
             >
               {expanded ? finalExpandIcon : finalCollapseIcon}
             </div>

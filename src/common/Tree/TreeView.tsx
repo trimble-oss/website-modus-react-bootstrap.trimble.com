@@ -497,7 +497,7 @@ const TreeView = React.forwardRef<HTMLUListElement, TreeViewProps>(
                     droppableNode ? "droppable" : ""
                   )}
                 >
-                  <div className="d-flex align-items-center">
+                  <div className="d-flex align-items-center drag_indicator">
                     <i className="material-icons">drag_indicator</i>
                   </div>
                   {<i className="modus-icons">blank</i>}
@@ -508,7 +508,7 @@ const TreeView = React.forwardRef<HTMLUListElement, TreeViewProps>(
               </TreeViewItemStyled>
             )}
           </DragDropProvider>
-          <TreeViewItemContext.Provider value={{ parentId: null, level: 1 }}>
+          <TreeViewItemContext.Provider value={{ parentId: null, level: 0 }}>
             <ul
               className={classNames("list-group", className)}
               {...props}
