@@ -18,6 +18,7 @@ import { TreeNode as Node } from "../examples/components/ContentTree"
 import { useEffect, useCallback, useState, useMemo, useRef } from "react"
 import useForceUpdate from "@restart/hooks/useForceUpdate"
 import { createPortal } from "react-dom"
+import classNames from "classnames"
 
 const StyledIcon = styled("i")`
   line-height: 0.8 !important;
@@ -25,6 +26,98 @@ const StyledIcon = styled("i")`
   position: relative !important;
   display: inline-block !important;
 `
+const StyledDragItem = styled.div`
+  opacity: 0.9;
+  li {
+    :hover {
+      background: white;
+    }
+    &.drop-allow {
+      border: 2px dashed #0063a3 !important;
+    }
+    &.drop-block {
+      border: 2px dashed red !important;
+    }
+  }
+`
+
+const StyledCustomTreeViewItem = styled.div`
+  .drop-allow {
+    li:first-child {
+      border-top: 2px solid #0063a3 !important;
+    }
+  }
+  .drop-block {
+    li:first-child {
+      border-top: 2px solid red !important;
+    }
+  }
+`
+const excludedDragNodes = [1, 8]
+const exclduedDropNodes = [9]
+// Components
+const CustomTreeViewItem = ({
+  nodeId,
+  isNew,
+  label,
+  parentId,
+  children,
+  onNodeAdd,
+  onNodeEdit,
+  onChange,
+  registerTreeItem,
+  unRegisterTreeItem,
+  handleMouseDown,
+  ...props
+}) => {
+  const ref = useRef(null)
+  const draggable = !excludedDragNodes.includes(nodeId)
+  const droppable = !exclduedDropNodes.includes(nodeId)
+
+  useEffect(() => {
+    registerTreeItem({ nodeId, label, draggable, droppable }, ref.current)
+    return () => {
+      unRegisterTreeItem(nodeId)
+    }
+  }, [nodeId, label, ref.current])
+
+  return (
+    <>
+      <TreeViewItem
+        nodeId={nodeId}
+        label={label}
+        {...props}
+        ref={ref}
+        dragIcon={
+          <i
+            className="material-icons"
+            onMouseDown={e => {
+              if (!draggable) return
+              handleMouseDown(e, { nodeId, label })
+            }}
+          >
+            drag_indicator
+          </i>
+        }
+      >
+        {children &&
+          children.map(item => (
+            <CustomTreeViewItem
+              nodeId={item.nodeId}
+              children={item.children}
+              parentId={nodeId}
+              label={item.label}
+              key={item.nodeId}
+              registerTreeItem={registerTreeItem}
+              unRegisterTreeItem={unRegisterTreeItem}
+              handleMouseDown={handleMouseDown}
+            />
+          ))}
+      </TreeViewItem>
+    </>
+  )
+}
+
 function TreeViewWithFilter() {
   const initialData = [
     {
@@ -71,7 +164,6 @@ function TreeViewWithFilter() {
     node: {},
   })
   const [droppableNode, setDroppableNode] = useState()
-  const [draggingNode, setDraggingNode] = useState()
   const treeItemRefs = useRef([])
   const bodyRef = useRef(null)
   useEffect(() => {
@@ -124,9 +216,25 @@ function TreeViewWithFilter() {
         translation,
       }))
 
+      setDroppableNode(prevState => {
+        if (prevState) {
+          const node = treeItemRefs.current.find(
+            node => node.nodeId === prevState
+          )
+          node.ref.classList.remove("drop-block")
+          node.ref.classList.remove("drop-allow")
+        }
+        return null
+      })
       const dropNode = getDroppableNode(clientX, clientY)
-      if (dropNode) setDroppableNode(dropNode.id)
-      else setDroppableNode(null)
+      if (dropNode) {
+        setDroppableNode(dropNode.nodeId)
+        if (dropNode.droppable) dropNode.ref.classList.add("drop-allow")
+        else dropNode.ref.classList.add("drop-block")
+      }
+      // const dragItemChildren = getChildren(data, draggingState.node.nodeId)
+      // if (dragItemChildren && dragItemChildren.includes(dropNode.nodeId))
+      //   setDroppableNode(null)
     },
     [draggingState.origin]
   )
@@ -137,7 +245,16 @@ function TreeViewWithFilter() {
       isDragging: false,
     }))
 
-    setDroppableNode(null)
+    setDroppableNode(prevState => {
+      if (prevState) {
+        const node = treeItemRefs.current.find(
+          node => node.nodeId === prevState
+        )
+        node.ref.classList.remove("drop-block")
+        node.ref.classList.remove("drop-allow")
+      }
+      return null
+    })
   }, [])
 
   useEffect(() => {
@@ -163,10 +280,19 @@ function TreeViewWithFilter() {
     }, [])
   }
 
-  const getDroppableNode = React.useCallback((x: any, y: any) => {
-    const node = treeItemRefs.current.find(({ nodeId, ref, isDroppable }) => {
-      if (!isDroppable) return false
+  function getChildren(array, id) {
+    for (let i = 0; i < array.length; i++) {
+      if (array[i].children) {
+        if (array[i].nodeId === id) return getNodeIds(array[i].children)
+        let childNodes = getChildren(array[i].children, id)
+        if (childNodes.length) return childNodes
+      }
+    }
+    return []
+  }
 
+  const getDroppableNode = React.useCallback((x: any, y: any) => {
+    const node = treeItemRefs.current.find(({ nodeId, ref }) => {
       const rect = ref.getBoundingClientRect()
       if (rect) {
         const inVerticalBounds = y >= rect.top && y <= rect.bottom
@@ -191,55 +317,6 @@ function TreeViewWithFilter() {
     }),
     [draggingState]
   )
-
-  // Components
-  const CustomTreeViewItem = ({
-    nodeId,
-    isNew,
-    label,
-    children,
-    onNodeAdd,
-    onNodeEdit,
-    onChange,
-    ...props
-  }) => {
-    const ref = useRef(null)
-    useEffect(() => {
-      registerTreeItem({ nodeId, label }, ref.current)
-      return () => {
-        unRegisterTreeItem(nodeId)
-      }
-    }, [ref.current])
-
-    return (
-      <>
-        <TreeViewItem
-          nodeId={nodeId}
-          label={label}
-          {...props}
-          ref={ref}
-          dragIcon={
-            <i
-              className="material-icons"
-              onMouseDown={e => handleMouseDown(e, { nodeId, label })}
-            >
-              drag_indicator
-            </i>
-          }
-        >
-          {children &&
-            children.map(item => (
-              <CustomTreeViewItem
-                nodeId={item.nodeId}
-                children={item.children}
-                label={item.label}
-                key={item.nodeId}
-              />
-            ))}
-        </TreeViewItem>
-      </>
-    )
-  }
 
   return (
     <div style={{ width: "400px" }}>
@@ -279,14 +356,19 @@ function TreeViewWithFilter() {
           </div>
           <div className="col">
             <TreeView id="example" expanded={expanded}>
-              {data.map(item => (
-                <CustomTreeViewItem
-                  nodeId={item.nodeId}
-                  children={item.children}
-                  label={item.label}
-                  key={item.nodeId}
-                />
-              ))}
+              <StyledCustomTreeViewItem>
+                {data.map(item => (
+                  <CustomTreeViewItem
+                    nodeId={item.nodeId}
+                    children={item.children}
+                    label={item.label}
+                    key={item.nodeId}
+                    registerTreeItem={registerTreeItem}
+                    unRegisterTreeItem={unRegisterTreeItem}
+                    handleMouseDown={handleMouseDown}
+                  />
+                ))}
+              </StyledCustomTreeViewItem>
             </TreeView>
           </div>
         </div>
@@ -294,19 +376,28 @@ function TreeViewWithFilter() {
       {draggingState.isDragging &&
         bodyRef.current &&
         createPortal(
-          <div
+          <StyledDragItem
             className="list-group d-inline-block position-fixed"
             style={dragItemStyle}
           >
-            <li className="modus-tree-view-item list-group-item list-item-left-control">
+            <li
+              className={classNames(
+                "list-group-item list-item-left-control",
+                exclduedDropNodes.includes(droppableNode)
+                  ? "drop-block"
+                  : "drop-allow"
+              )}
+            >
               <div className="d-flex align-items-center">
-                <i className="material-icons">drag_indicator</i>
+                <i className="material-icons" style={{ fontSize: "1rem" }}>
+                  drag_indicator
+                </i>
               </div>
               <div className="d-flex align-items-center">
                 {draggingState.node.label}
               </div>
             </li>
-          </div>,
+          </StyledDragItem>,
           bodyRef.current
         )}
     </div>
