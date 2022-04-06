@@ -221,7 +221,7 @@ function TreeViewWithFilter() {
           dragIcon={
             <i
               className="material-icons"
-              onMouseDown={e => handleMouseDown(e, nodeId)}
+              onMouseDown={e => handleMouseDown(e, { nodeId, label })}
             >
               drag_indicator
             </i>
