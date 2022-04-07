@@ -367,7 +367,7 @@ const TreeView = React.forwardRef<HTMLUListElement, TreeViewProps>(
           dragIcon,
         }}
       >
-        <TreeViewItemContext.Provider value={{ parentId: null, level: 0 }}>
+        <TreeViewItemContext.Provider value={{ parentId: null, level: 1 }}>
           <ul
             className={classNames("list-group", className)}
             {...props}

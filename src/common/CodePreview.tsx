@@ -1,7 +1,14 @@
 import { LiveProvider, LiveEditor, LiveError, LivePreview } from "react-live"
 import theme from "prism-react-renderer/themes/github"
 import { Container } from "@trimbleinc/modus-react-bootstrap"
-import React, { useContext, useEffect, useRef, useState } from "react"
+import React, {
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+  useCallback,
+  useMemo,
+} from "react"
 import * as ReactBootstrap from "@trimbleinc/modus-react-bootstrap"
 import ReactDOM from "react-dom"
 
@@ -11,6 +18,8 @@ const CodePreview = props => {
     useRef,
     useState,
     useContext,
+    useCallback,
+    useMemo,
     ...ReactBootstrap,
     ReactDOM,
     ...props.scope,

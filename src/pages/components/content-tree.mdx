@@ -13,12 +13,16 @@ import {
   TreeViewWithActionBar,
   TreeViewWithFilter,
   StyledIcon,
-  TreeNode as Node,
+  StyledDragItem,
+  StyledCustomTreeViewItem,
+  TreeViewWithDragDrop,
 } from "../../examples/components/ContentTree"
 import findIndex from "lodash/findIndex"
 import TreeViewItem from "../../common/Tree/TreeViewItem"
 import TreeView from "../../common/Tree/TreeView"
 import useForceUpdate from "@restart/hooks/useForceUpdate"
+import { createPortal } from "react-dom"
+import classNames from "classnames"
 
 <Overview>
   A content tree provides users with a way to navigate nested hierarchical
@@ -78,7 +82,8 @@ import useForceUpdate from "@restart/hooks/useForceUpdate"
   code={TreeViewMultiSelect}
   scope={{ TreeView, TreeViewItem }}
 >
-  Multiple node selection can be enabled through prop <code> multiSelect </code>.
+  Multiple node selection can be enabled through prop <code> multiSelect </code>
+  .
 </CodeBlock>
 
 <CodeBlock
@@ -95,6 +100,23 @@ import useForceUpdate from "@restart/hooks/useForceUpdate"
   title="Tree with Filter"
   code={TreeViewWithFilter}
   scope={{ TreeView, TreeViewItem, StyledIcon, findIndex, useForceUpdate }}
+  noInline={true}
+></CodeBlock>
+
+<CodeBlock
+  title="Tree with Drag and Drop"
+  code={TreeViewWithDragDrop}
+  scope={{
+    TreeView,
+    TreeViewItem,
+    StyledIcon,
+    useForceUpdate,
+    StyledDragItem,
+    StyledCustomTreeViewItem,
+    createPortal,
+    classNames,
+    findIndex,
+  }}
   noInline={true}
 ></CodeBlock>
 
