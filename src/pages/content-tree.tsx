@@ -53,8 +53,7 @@ const StyledCustomTreeViewItem = styled.div`
     }
   }
 `
-const excludedDragNodes = [1, 8]
-const exclduedDropNodes = [9]
+const disabledNodes = [14]
 // Components
 const CustomTreeViewItem = ({
   nodeId,
@@ -68,18 +67,27 @@ const CustomTreeViewItem = ({
   registerTreeItem,
   unRegisterTreeItem,
   handleMouseDown,
+  draggable: draggableProp,
   ...props
 }) => {
   const ref = useRef(null)
-  const draggable = !excludedDragNodes.includes(nodeId)
-  const droppable = !exclduedDropNodes.includes(nodeId)
-
+  const [draggableOnHover, setDraggableOnHover] = useState(false)
+  const isDisabled = disabledNodes.includes(nodeId)
   useEffect(() => {
-    registerTreeItem({ nodeId, label, draggable, droppable }, ref.current)
+    registerTreeItem(
+      {
+        nodeId,
+        label,
+        draggable: draggableProp && !isDisabled,
+        droppable: !isDisabled,
+        parentId,
+      },
+      ref.current
+    )
     return () => {
       unRegisterTreeItem(nodeId)
     }
-  }, [nodeId, label, ref.current])
+  }, [nodeId, label, draggableProp, isDisabled, ref.current])
 
   return (
     <>
@@ -88,16 +96,18 @@ const CustomTreeViewItem = ({
         label={label}
         {...props}
         ref={ref}
+        disabled={isDisabled}
         dragIcon={
-          <i
-            className="material-icons"
-            onMouseDown={e => {
-              if (!draggable) return
-              handleMouseDown(e, { nodeId, label })
-            }}
-          >
-            drag_indicator
-          </i>
+          draggableProp ? (
+            <i
+              className="material-icons"
+              onMouseDown={e => handleMouseDown(e, { nodeId, label })}
+            >
+              drag_indicator
+            </i>
+          ) : (
+            <></>
+          )
         }
       >
         {children &&
@@ -111,6 +121,7 @@ const CustomTreeViewItem = ({
               registerTreeItem={registerTreeItem}
               unRegisterTreeItem={unRegisterTreeItem}
               handleMouseDown={handleMouseDown}
+              draggable={draggableProp}
             />
           ))}
       </TreeViewItem>
@@ -119,6 +130,7 @@ const CustomTreeViewItem = ({
 }
 
 function TreeViewWithFilter() {
+  const POSITION = { x: 0, y: 0 }
   const initialData = [
     {
       nodeId: 1,
@@ -151,21 +163,28 @@ function TreeViewWithFilter() {
         { nodeId: 12, label: "File3" },
       ],
     },
+    {
+      nodeId: 14,
+      label: "Disabled Node",
+    },
   ]
   const [data, setData] = React.useState(initialData)
   const [expanded, setExpanded] = React.useState([])
-  const POSITION = { x: 0, y: 0 }
-  const [draggingState, setDraggingState] = React.useState({
+  const [drag, setDrag] = useState(false)
+  const forceUpdate = useForceUpdate()
+
+  const draggingState = useRef({
     isDragging: false,
     origin: POSITION,
     translation: POSITION,
     width: "0px",
     height: "0px",
-    node: {},
+    node: null,
   })
-  const [droppableNode, setDroppableNode] = useState()
+  const droppingState = useRef({ node: null, validTarget: null })
   const treeItemRefs = useRef([])
   const bodyRef = useRef(null)
+
   useEffect(() => {
     bodyRef.current = document.body
   }, [])
@@ -189,9 +208,10 @@ function TreeViewWithFilter() {
 
   const handleMouseDown = (event, node) => {
     const { clientX, clientY, target } = event
-    setDroppableNode(null)
+    clearDroppingState()
 
-    setDraggingState(prevState => ({
+    const prevState = draggingState.current
+    draggingState.current = {
       ...prevState,
       isDragging: true,
       origin: { x: clientX, y: clientY },
@@ -200,77 +220,124 @@ function TreeViewWithFilter() {
         (target && target.offsetParent && target.offsetParent.width) || "400px",
       height:
         (target && target.offsetParent && target.offsetParent.height) || "40px",
-    }))
+    }
+    forceUpdate()
   }
 
   const handleMouseMove = useCallback(
     event => {
+      clearDroppingState()
       const { clientX, clientY, target } = event
 
       const translation = {
         x: clientX,
         y: clientY,
       }
-      setDraggingState(prevState => ({
+
+      const prevState = draggingState.current
+      draggingState.current = {
         ...prevState,
         translation,
-      }))
+      }
 
-      setDroppableNode(prevState => {
-        if (prevState) {
-          const node = treeItemRefs.current.find(
-            node => node.nodeId === prevState
-          )
-          node.ref.classList.remove("drop-block")
-          node.ref.classList.remove("drop-allow")
-        }
-        return null
-      })
       const dropNode = getDroppableNode(clientX, clientY)
       if (dropNode) {
-        setDroppableNode(dropNode.nodeId)
-        if (dropNode.droppable) dropNode.ref.classList.add("drop-allow")
-        else dropNode.ref.classList.add("drop-block")
+        droppingState.current.node = dropNode
+
+        if (
+          dropNode.droppable &&
+          dropNode.parentId !== draggingState.current.node.nodeId
+        ) {
+          droppingState.current.validTarget = true
+          dropNode.ref.classList.add("drop-allow")
+        } else {
+          droppingState.current.validTarget = false
+          dropNode.ref.classList.add("drop-block")
+        }
       }
-      // const dragItemChildren = getChildren(data, draggingState.node.nodeId)
-      // if (dragItemChildren && dragItemChildren.includes(dropNode.nodeId))
-      //   setDroppableNode(null)
+      forceUpdate()
     },
-    [draggingState.origin]
+    [draggingState.current.origin]
   )
 
   const handleMouseUp = useCallback(event => {
-    setDraggingState(prevState => ({
-      ...prevState,
-      isDragging: false,
-    }))
+    const prevDragState = draggingState.current
 
-    setDroppableNode(prevState => {
-      if (prevState) {
-        const node = treeItemRefs.current.find(
-          node => node.nodeId === prevState
+    if (
+      droppingState.current.validTarget &&
+      droppingState.current.node &&
+      draggingState.current.node
+    ) {
+      const dropNode = droppingState.current.node.nodeId
+      const dragNode = draggingState.current.node.nodeId
+
+      setData(prevState => {
+        let dragNodeOriginal = {}
+        const newData = updateNodes(
+          [...prevState],
+          dragNode,
+          (nodeIndex, nodes) => {
+            dragNodeOriginal = nodes[nodeIndex]
+            nodes.splice(nodeIndex, 1)
+          }
         )
-        node.ref.classList.remove("drop-block")
-        node.ref.classList.remove("drop-allow")
-      }
-      return null
-    })
+
+        return updateNodes(newData, dropNode, (nodeIndex, nodes) =>
+          nodes.splice(nodeIndex, 0, dragNodeOriginal)
+        )
+      })
+    }
+
+    draggingState.current = {
+      ...prevDragState,
+      isDragging: false,
+    }
   }, [])
 
+  const handleDrag = useCallback(event => {
+    setDrag(prevState => !prevState)
+  }, [])
+
+  function updateNodes(nodes, nodeId, action) {
+    if (!nodes) return nodes
+    let nodeIndex = findIndex(nodes, node => node.nodeId === nodeId)
+    if (nodeIndex >= 0) {
+      action(nodeIndex, nodes)
+    } else {
+      for (let i = 0; i < nodes.length; i++) {
+        nodes[i].children = updateNodes(nodes[i].children, nodeId, action)
+      }
+    }
+    return nodes
+  }
+
   useEffect(() => {
-    if (draggingState.isDragging) {
+    if (draggingState.current.isDragging) {
       window.addEventListener("mousemove", handleMouseMove)
       window.addEventListener("mouseup", handleMouseUp)
     } else {
       window.removeEventListener("mousemove", handleMouseMove)
       window.removeEventListener("mouseup", handleMouseUp)
 
-      setDraggingState(prevState => ({
+      const prevState = draggingState.current
+      draggingState.current = {
         ...prevState,
         translation: POSITION,
-      }))
+        node: null,
+      }
+      clearDroppingState()
+      forceUpdate()
     }
-  }, [draggingState.isDragging])
+  }, [draggingState.current.isDragging])
+
+  function clearDroppingState() {
+    if (droppingState.current.node) {
+      droppingState.current.node.ref.classList.remove("drop-allow")
+      droppingState.current.node.ref.classList.remove("drop-block")
+      droppingState.current.validTarget = null
+    }
+    droppingState.current.node = null
+  }
 
   // Helpers
   function getNodeIds(array) {
@@ -306,16 +373,18 @@ function TreeViewWithFilter() {
 
   const dragItemStyle = useMemo(
     () => ({
-      width: draggingState.width,
-      height: draggingState.height,
-      transform: `translate(calc(${draggingState.translation.x}px - 10%), calc(${draggingState.translation.y}px - 50%))`,
-      msTransform: `translateX(${draggingState.translation.x}px) translateX(-10%) translateY(${draggingState.translation.y}px) translateY(-50%)`,
+      width: draggingState.current.width,
+      height: draggingState.current.height,
+      transform: `translate(calc(${draggingState.current.translation.x}px - 10%), calc(${draggingState.current.translation.y}px - 50%))`,
+      msTransform: `translateX(${draggingState.current.translation.x}px) translateX(-10%) translateY(${draggingState.current.translation.y}px) translateY(-50%)`,
       zIndex: 1000,
       left: 0,
       top: 0,
-      cursor: draggingState.isDragging ? "-webkit-grabbing" : "-webkit-grab",
+      cursor: draggingState.current.isDragging
+        ? "-webkit-grabbing"
+        : "-webkit-grab",
     }),
-    [draggingState]
+    [draggingState.current]
   )
 
   return (
@@ -339,7 +408,10 @@ function TreeViewWithFilter() {
               <button className="btn btn-icon-only btn-text-dark" disabled>
                 <StyledIcon className="material-icons">add</StyledIcon>
               </button>
-              <button className="btn btn-icon-only btn-text-dark" disabled>
+              <button
+                className="btn btn-icon-only btn-text-dark"
+                onClick={handleDrag}
+              >
                 <StyledIcon className="material-icons">
                   drag_indicator
                 </StyledIcon>
@@ -366,6 +438,7 @@ function TreeViewWithFilter() {
                     registerTreeItem={registerTreeItem}
                     unRegisterTreeItem={unRegisterTreeItem}
                     handleMouseDown={handleMouseDown}
+                    draggable={drag}
                   />
                 ))}
               </StyledCustomTreeViewItem>
@@ -373,7 +446,7 @@ function TreeViewWithFilter() {
           </div>
         </div>
       </div>
-      {draggingState.isDragging &&
+      {draggingState.current.isDragging &&
         bodyRef.current &&
         createPortal(
           <StyledDragItem
@@ -383,9 +456,7 @@ function TreeViewWithFilter() {
             <li
               className={classNames(
                 "list-group-item list-item-left-control",
-                exclduedDropNodes.includes(droppableNode)
-                  ? "drop-block"
-                  : "drop-allow"
+                droppingState.current.validTarget ? "drop-allow" : "drop-block"
               )}
             >
               <div className="d-flex align-items-center">
@@ -394,7 +465,9 @@ function TreeViewWithFilter() {
                 </i>
               </div>
               <div className="d-flex align-items-center">
-                {draggingState.node.label}
+                {draggingState.current.node
+                  ? draggingState.current.node.label
+                  : ""}
               </div>
             </li>
           </StyledDragItem>,

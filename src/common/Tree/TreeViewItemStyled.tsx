@@ -36,26 +36,29 @@ const TreeViewItemGroupStyleWrapper = React.forwardRef<
 })
 
 const TreeViewItemStyled = styled(TreeViewItemStyleWrapper)`
-  li.modus-tree-view-item {
-    padding: 5px 8px !important;
-    cursor: pointer;
-
-    grid-template-columns: min-content min-content ${props =>
-        props.checkBoxSelection == "true" && "min-content"} ${props =>
-        props.itemIcon == "true" && "min-content"} auto min-content !important;
-
-    .modus-icons,
-    .material-icons {
+  li.list-group-item {
+    :first-child {
+      padding: 5px 8px !important;
       cursor: pointer;
-      font-size: 1.25rem !important;
+
+      grid-template-columns: min-content min-content ${props =>
+          props.checkBoxSelection == "true" && "min-content"} ${props =>
+          props.itemIcon == "true" &&
+          "min-content"} auto min-content !important;
+
+      .modus-icons,
+      .material-icons {
+        cursor: pointer;
+        font-size: 1.25rem !important;
+      }
+      .drag-icon > * {
+        font-size: 1rem !important;
+      }
+      .expand-icon {
+        padding-left: ${props => props.level * 0.5}rem !important;
+      }
+      align-items: stretch !important;
     }
-    .drag-icon > * {
-      font-size: 1rem !important;
-    }
-    .expand-icon {
-      padding-left: ${props => props.level * 0.5}rem !important;
-    }
-    align-items: stretch !important;
   }
 `
 export const TreeViewItemGroupStyled = styled(TreeViewItemGroupStyleWrapper)`

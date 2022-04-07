@@ -15,7 +15,7 @@ import useForceUpdate from "@restart/hooks/useForceUpdate"
 import { useDescendant } from "./useDescendant"
 
 export interface TreeViewItemProps
-  extends Omit<React.HTMLProps<HTMLLIElement>, "label"> {
+  extends Omit<React.HTMLAttributes<HTMLElement>, "label"> {
   nodeId: number
   label: React.ReactNode | React.ReactElement | string
   collapseIcon?: React.ReactElement
@@ -23,6 +23,7 @@ export interface TreeViewItemProps
   itemIcon?: React.ReactElement
   dragIcon?: React.ReactElement
   disableSelection?: boolean
+  disabled?: boolean
 }
 
 const propTypes = {
@@ -98,6 +99,7 @@ const TreeViewItem = React.forwardRef<HTMLDivElement, TreeViewItemProps>(
       expandIcon,
       itemIcon,
       dragIcon,
+      disabled,
       ...rest
     }: TreeViewItemProps,
     ref
@@ -229,15 +231,17 @@ const TreeViewItem = React.forwardRef<HTMLDivElement, TreeViewItemProps>(
           role="treeitem"
           aria-expanded={expandable ? expanded : null}
           aria-selected={nodeSelected}
+          aria-disabled={disabled}
           ref={ref}
+          {...rest}
+          className={classNames(disabled && "disabled", className)}
         >
           <li
             className={classNames(
-              "modus-tree-view-item list-group-item list-item-leftright-control",
+              "list-group-item list-item-leftright-control",
               nodeSelected && "active",
-              className
+              disabled && "disabled"
             )}
-            {...rest}
           >
             <div className="d-flex align-items-center drag-icon">
               {finalDragIcon || blankIcon}
