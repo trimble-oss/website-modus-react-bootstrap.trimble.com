@@ -212,6 +212,21 @@ export type TreeNode = {
   isNew?: boolean
 }
 export const TreeViewWithActionBar = `
+const ActionBarButton = ({ icon, tooltip, disabled, onClick, ...props }) => {
+  return (
+    <button
+      className="btn btn-icon-only btn-text-dark"
+      data-toggle="tooltip"
+      data-placement="top"
+      disabled={disabled}
+      title={tooltip}
+      onClick={onClick}
+    >
+      <StyledIcon className="material-icons">{icon}</StyledIcon>
+    </button>
+  )
+}
+
 function TreeViewWithActionBar() {
   const [data, setData] = React.useState([
     {
@@ -481,47 +496,20 @@ function TreeViewWithActionBar() {
               className="d-flex justify-content-end align-items-center"
               style={{ minHeight: "3rem" }}
             >
-              <button
-                className="btn btn-icon-only btn-text-dark"
-                onClick={handleDeleteClick}
-                disabled={!selected.length}
-              >
-                <StyledIcon className="material-icons">delete</StyledIcon>
-              </button>
-              <button
-                className="btn btn-icon-only btn-text-dark"
-                disabled={!selected.length}
-                onClick={handleDuplicateClick}
-              >
-                <StyledIcon className="material-icons">content_copy</StyledIcon>
-              </button>
-              <button
-                className="btn btn-icon-only btn-text-dark"
-                onClick={handleEditClick}
-                disabled={!selected.length || editableNode.current}
-              >
-                <StyledIcon className="material-icons">edit</StyledIcon>
-              </button>
-              <button
-                className="btn btn-icon-only btn-text-dark"
-                onClick={handleAddClick}
-                disabled={editableNode.current}
-              >
-                <StyledIcon className="material-icons">add</StyledIcon>
-              </button>
-              <button className="btn btn-icon-only btn-text-dark" disabled>
-                <StyledIcon className="material-icons">
-                  drag_indicator
-                </StyledIcon>
-              </button>
-              <button
-                className="btn btn-icon-only btn-text-dark"
+             <ActionBarButton icon="delete"  tooltip="Delete" onClick={handleDeleteClick}
+                disabled={!selected.length} />
+              <ActionBarButton icon="content_copy" disabled={!selected.length}
+                onClick={handleDuplicateClick} tooltip="Duplicate" />
+              <ActionBarButton icon="edit" onClick={handleEditClick}
+                disabled={!selected.length || editableNode.current} tooltip="Edit" />
+              <ActionBarButton icon="add" onClick={handleAddClick}
+                disabled={editableNode.current} tooltip="Add" />
+              <ActionBarButton icon="drag_indicator" disabled tooltip="Drag" />
+              <ActionBarButton
+                icon={expanded.length === 0 ? "unfold_more" : "unfold_less"}
+                tooltip={expanded.length === 0 ? "Expand" : "Collapse"}
                 onClick={handleExpandAllClick}
-              >
-                <StyledIcon className="material-icons">
-                  {expanded.length === 0 ? "unfold_more" : "unfold_less"}
-                </StyledIcon>
-              </button>
+              />
             </div>
           </div>
           <div className="col">
@@ -554,6 +542,21 @@ render(<TreeViewWithActionBar />);
 `
 
 export const TreeViewWithFilter = `
+const ActionBarButton = ({ icon, tooltip, disabled, onClick, ...props }) => {
+  return (
+    <button
+      className="btn btn-icon-only btn-text-dark"
+      data-toggle="tooltip"
+      data-placement="top"
+      disabled={disabled}
+      title={tooltip}
+      onClick={onClick}
+    >
+      <StyledIcon className="material-icons">{icon}</StyledIcon>
+    </button>
+  )
+}
+
 function TreeViewWithFilter() {
   const initialData = [
     {
@@ -716,31 +719,16 @@ function TreeViewWithFilter() {
               className="d-flex justify-content-end align-items-center"
               style={{ minHeight: "3rem" }}
             >
-              <button className="btn btn-icon-only btn-text-dark" disabled>
-                <StyledIcon className="material-icons">delete</StyledIcon>
-              </button>
-              <button className="btn btn-icon-only btn-text-dark" disabled>
-                <StyledIcon className="material-icons">content_copy</StyledIcon>
-              </button>
-              <button className="btn btn-icon-only btn-text-dark" disabled>
-                <StyledIcon className="material-icons">edit</StyledIcon>
-              </button>
-              <button className="btn btn-icon-only btn-text-dark" disabled>
-                <StyledIcon className="material-icons">add</StyledIcon>
-              </button>
-              <button className="btn btn-icon-only btn-text-dark" disabled>
-                <StyledIcon className="material-icons">
-                  drag_indicator
-                </StyledIcon>
-              </button>
-              <button
-                className="btn btn-icon-only btn-text-dark"
+             <ActionBarButton icon="delete" disabled tooltip="Delete" />
+              <ActionBarButton icon="content_copy" disabled tooltip="Duplicate"/>
+              <ActionBarButton icon="edit" disabled tooltip="Edit"/>
+              <ActionBarButton icon="add" disabled tooltip="Add"/>
+              <ActionBarButton icon="drag_indicator" disabled tooltip="Drag" />
+              <ActionBarButton
+                icon={expanded.length === 0 ? "unfold_more" : "unfold_less"}
+                tooltip={expanded.length === 0 ? "Expand" : "Collapse"}
                 onClick={handleExpandAllClick}
-              >
-                <StyledIcon className="material-icons">
-                  {expanded.length === 0 ? "unfold_more" : "unfold_less"}
-                </StyledIcon>
-              </button>
+              />
             </div>
           </div>
           <div className="col">
@@ -1123,14 +1111,11 @@ function TreeViewWithDrag() {
               className="d-flex justify-content-end align-items-center"
               style={{ minHeight: "3rem" }}
             >
-              <ActionBarButton icon="delete" disabled />
-              <ActionBarButton icon="content_copy" disabled />
-              <ActionBarButton icon="edit" disabled />
-              <ActionBarButton icon="add" disabled />
-              <ActionBarButton
-                icon="drag_indicator"
-                tooltip="drag"
-                onClick={handleDrag}
+              <ActionBarButton icon="delete" disabled tooltip="Delete"/>
+              <ActionBarButton icon="content_copy" disabled tooltip="Duplicate"/>
+              <ActionBarButton icon="edit" disabled tooltip="Edit"/>
+              <ActionBarButton icon="add" disabled tooltip="Add"/>
+              <ActionBarButton icon="drag_indicator" tooltip="Drag" onClick={handleDrag}
               />
               <ActionBarButton
                 icon={expanded.length === 0 ? "unfold_more" : "unfold_less"}
