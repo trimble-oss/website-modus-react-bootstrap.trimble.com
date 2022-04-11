@@ -757,7 +757,7 @@ const CustomTreeViewItem = ({
   nodeId,
   isNew,
   label,
-  parentId,
+  parentIds,
   children,
   onNodeAdd,
   onNodeEdit,
@@ -786,7 +786,7 @@ const CustomTreeViewItem = ({
         label,
         draggable: draggableProp && !isDisabled,
         droppable: !isDisabled,
-        parentId,
+        parentIds,
       },
       ref.current
     )
@@ -811,9 +811,7 @@ const CustomTreeViewItem = ({
             >
               drag_indicator
             </i>
-          ) : (
-            <></>
-          )
+          ) : undefined
         }
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
@@ -823,7 +821,7 @@ const CustomTreeViewItem = ({
             <CustomTreeViewItem
               nodeId={item.nodeId}
               children={item.children}
-              parentId={nodeId}
+              parentIds={[...(parentIds || []), nodeId]}
               label={item.label}
               key={item.nodeId}
               registerTreeItem={registerTreeItem}
@@ -966,7 +964,7 @@ function TreeViewWithDrag() {
         droppingState.current.node = dropNode
         if (
           dropNode.droppable &&
-          dropNode.parentId !== draggingState.current.node.nodeId
+          !(dropNode.parentIds && dropNode.parentIds.includes(draggingState.current.node.nodeId))
         ) {
           droppingState.current.validTarget = true
           dropNode.ref.classList.add("drop-allow")
@@ -1192,13 +1190,16 @@ export const StyledDragItem = styled.div`
   }
 `
 export const StyledCustomTreeViewItem = styled.div`
+  li {
+    padding: 5px 16px 5px 0 !important;
+  }
   .drop-allow {
-    li:first-child {
+    li {
       border-top: 2px solid #0063a3 !important;
     }
   }
   .drop-block {
-    li:first-child {
+    li {
       border-top: 2px solid red !important;
     }
   }

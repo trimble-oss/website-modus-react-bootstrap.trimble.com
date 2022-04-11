@@ -228,7 +228,6 @@ const TreeViewItem = React.forwardRef<HTMLDivElement, TreeViewItemProps>(
           level={level}
           checkBoxSelection={checkBoxSelection ? "true" : "false"}
           itemIcon={finalItemIcon ? "true" : "false"}
-          dragIcon={finalDragIcon ? "true" : "false"}
           role="treeitem"
           aria-expanded={expandable ? expanded : null}
           aria-selected={nodeSelected}
@@ -245,21 +244,20 @@ const TreeViewItem = React.forwardRef<HTMLDivElement, TreeViewItemProps>(
               disabled && "disabled"
             )}
           >
-            {finalDragIcon && (
+            <div className="d-flex">
               <div className="d-flex align-items-center drag-icon">
-                {finalDragIcon}
+                {finalDragIcon || blankIcon}
               </div>
-            )}
-
-            <div
-              onClick={expandable ? handleExpansion : () => {}}
-              className="d-flex align-items-center expand-icon"
-            >
-              {expandable
-                ? expanded
-                  ? finalExpandIcon
-                  : finalCollapseIcon
-                : blankIcon}
+              <div
+                onClick={expandable ? handleExpansion : () => {}}
+                className="d-flex align-items-center expand-icon"
+              >
+                {expandable
+                  ? expanded
+                    ? finalExpandIcon
+                    : finalCollapseIcon
+                  : blankIcon}
+              </div>
             </div>
 
             {checkBoxSelection && (

@@ -6,7 +6,6 @@ interface TreeViewItemStyleWrapperProps
   level: number
   checkBoxSelection?: string
   itemIcon?: string
-  dragIcon?: string
 }
 
 interface TreeViewItemGroupStyleWrapperProps
@@ -17,18 +16,13 @@ interface TreeViewItemGroupStyleWrapperProps
 const TreeViewItemStyleWrapper = React.forwardRef<
   HTMLDivElement,
   TreeViewItemStyleWrapperProps
->(
-  (
-    { level, checkBoxSelection, itemIcon, dragIcon, children, ...props },
-    ref
-  ) => {
-    return (
-      <div ref={ref} {...props}>
-        {children}
-      </div>
-    )
-  }
-)
+>(({ level, checkBoxSelection, itemIcon, children, ...props }, ref) => {
+  return (
+    <div ref={ref} {...props}>
+      {children}
+    </div>
+  )
+})
 
 const TreeViewItemGroupStyleWrapper = React.forwardRef<
   HTMLDivElement,
@@ -44,11 +38,10 @@ const TreeViewItemGroupStyleWrapper = React.forwardRef<
 const TreeViewItemStyled = styled(TreeViewItemStyleWrapper)`
   li.list-group-item {
     :first-child {
-      padding: 5px 8px !important;
+      padding: 5px 16px 5px 0 !important;
       cursor: pointer;
 
-      grid-template-columns: ${props =>
-          props.dragIcon == "true" && "min-content"} min-content ${props =>
+      grid-template-columns: min-content ${props =>
           props.checkBoxSelection == "true" && "min-content"} ${props =>
           props.itemIcon == "true" &&
           "min-content"} auto min-content !important;

@@ -114,9 +114,7 @@ function RenderTreeViewWithDrag() {
               >
                 drag_indicator
               </i>
-            ) : (
-              <></>
-            )
+            ) : undefined
           }
           onMouseEnter={handleMouseEnter}
           onMouseLeave={handleMouseLeave}
