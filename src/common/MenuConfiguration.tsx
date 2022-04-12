@@ -69,13 +69,6 @@ const gettingStartedMenu: Menu = {
       subtitle:
         "Demonstrate how to import and use the Modus React Bootstrap components.",
     },
-
-    {
-      key: "status",
-      title: "Status",
-      subtitle: "Status of each Modus React Bootstrap component.",
-    },
-
     {
       key: "changelog",
       title: "Changelog",
