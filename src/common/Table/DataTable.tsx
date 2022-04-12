@@ -23,7 +23,6 @@ import Table from "./Table"
 import TablePagination from "./TablePagination"
 import DataTableHeaderCell from "./DataTableHeaderCell"
 import DataTableStyled from "./DataTableStyled"
-import DataTableFilterPanel from "./DataTableFilterPanel"
 import ContextMenu from "./ContextMenu"
 import useDataTableContextMenu from "./useDataTableContextMenu"
 import {
