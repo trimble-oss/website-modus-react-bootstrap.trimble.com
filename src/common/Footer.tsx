@@ -37,7 +37,12 @@ const Footer = () => {
                 </a>
               </li>
               <li className="my-3 my-sm-2">
-                <a href="/getting-started/status/" className="py-2">
+                <a
+                  href="https://modus.trimble.com/status/"
+                  className="py-2"
+                  target="_blank"
+                  rel="noopener"
+                >
                   Status
                 </a>
               </li>
@@ -50,7 +55,7 @@ const Footer = () => {
             <ul className="list-unstyled">
               <li className="my-3 my-sm-2">
                 <a
-                  href="https://modus.trimble.com/community/contribute/"
+                  href="https://github.com/orgs/trimble-oss/repositories?q=react&type=source&language=&sort="
                   target="_blank"
                   rel="noopener"
                   className="py-2"
