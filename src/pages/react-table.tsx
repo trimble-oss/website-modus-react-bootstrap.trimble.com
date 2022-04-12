@@ -9,6 +9,7 @@ import {
   DropdownButton,
   Form,
   FormControl,
+  InputGroup,
   Nav,
   OverlayTrigger,
   Popover,
@@ -24,126 +25,195 @@ import styled from "styled-components"
 
 import { useTable, useSortBy, usePagination } from "react-table"
 
-const ReactTableNextGen = props => {
-  const EditableCell = ({
-    value: initialValue,
-    row: { index },
-    column: { id },
-  }) => {
-    const [value, setValue] = React.useState(initialValue)
-    const [editMode, setEditMode] = React.useState(false)
-
-    const onKeyUp = e => {
-      if (e.key === "Enter" || e.keyCode === 13) {
-        setEditMode(false)
-        UpdateMyData(index, id, value)
-      } else {
-        setValue(e.target.value)
-      }
-    }
-    const onBlur = () => {
-      setEditMode(false)
-      UpdateMyData(index, id, value)
-    }
-    const onEdit = e => {
-      e.preventDefault()
-      setEditMode(true)
-    }
-    React.useEffect(() => {
-      setValue(initialValue)
-    }, [initialValue])
-
-    return (
-      <div
-        onClick={onEdit}
-        className={"d-flex align-items-center cell-editable".concat(
-          editMode ? " cell-editing" : ""
-        )}
-      >
-        {editMode ? (
-          <Form.Control
-            as="input"
-            defaultValue={value}
-            size="lg"
-            className="border-0"
-            autoFocus
-            onKeyUp={onKeyUp}
-            onBlur={onBlur}
-          />
-        ) : (
-          <span>{value}</span>
-        )}
-      </div>
-    )
-  }
-
-  function TextFilter({
-    column: { filterValue, preFilteredRows, setFilter, id, render },
-  }) {
-    const count = preFilteredRows.length
-    return (
-      <Form.Group controlId="formBasicEmail">
-        <Form.Label>{render("Header")}</Form.Label>
-        <div className="input-with-icon-left">
-          <Form.Control
-            as="input"
-            placeholder={render("Header")}
-            value={filterValue || ""}
-            onChange={e => {
-              setFilter(e.target.value || undefined)
-            }}
-          ></Form.Control>
-          <div className="input-icon">
-            <i className="modus-icons material-icons">search</i>
-          </div>
-        </div>
-      </Form.Group>
-    )
-  }
-
-  function SliderFilter({
-    column: { filterValue, preFilteredRows, setFilter, id, render },
-  }) {
-    return (
-      <Form.Group controlId="formBasicRangeCustom" custom>
-        <Form.Label>{render("Header")}</Form.Label>
+function TextFilter({
+  column: { filterValue, preFilteredRows, setFilter, id, render },
+}) {
+  const count = preFilteredRows.length
+  return (
+    <Form.Group controlId="textFilter">
+      <Form.Label>{render("Header")}</Form.Label>
+      <div className="input-with-icon-left">
         <Form.Control
-          type="range"
-          min={0}
-          max={100}
-          value={filterValue || 0}
-          onChange={e => {
-            setFilter(parseInt(e.target.value, 10))
-          }}
-          custom
-        />
-      </Form.Group>
-    )
-  }
-
-  function SelectFilter({
-    column: { filterValue, preFilteredRows, setFilter, id, render },
-  }) {
-    return (
-      <Form.Group controlId="exampleForm.SelectCustom">
-        <Form.Label>{render("Header")}</Form.Label>
-        <Form.Control
-          as="select"
-          custom
-          value={filterValue}
+          as="input"
+          placeholder={render("Header")}
+          value={filterValue || ""}
           onChange={e => {
             setFilter(e.target.value || undefined)
           }}
-        >
-          <option value="">All</option>
-          <option>Pending</option>
-          <option>Verified</option>
-          <option>Rejected</option>
-        </Form.Control>
-      </Form.Group>
+        ></Form.Control>
+        <div className="input-icon">
+          <i className="modus-icons material-icons">search</i>
+        </div>
+      </div>
+    </Form.Group>
+  )
+}
+
+function SliderFilter({
+  column: { filterValue, preFilteredRows, setFilter, id, render },
+}) {
+  return (
+    <Form.Group controlId="sliderFilter" custom>
+      <Form.Label>{render("Header")}</Form.Label>
+      <Form.Control
+        type="range"
+        min={0}
+        max={100}
+        value={filterValue || 0}
+        onChange={e => {
+          setFilter(parseInt(e.target.value, 10))
+        }}
+        custom
+      />
+    </Form.Group>
+  )
+}
+
+function SelectFilter({
+  column: { filterValue, preFilteredRows, setFilter, id, render },
+}) {
+  return (
+    <Form.Group controlId="selectFilter">
+      <Form.Label>{render("Header")}</Form.Label>
+      <Form.Control
+        as="select"
+        custom
+        value={filterValue || ""}
+        onChange={e => {
+          setFilter(e.target.value || undefined)
+        }}
+      >
+        <option value="">All</option>
+        <option>Pending</option>
+        <option>Verified</option>
+        <option>Rejected</option>
+      </Form.Control>
+    </Form.Group>
+  )
+}
+
+function FilterPanel(
+  allColumns,
+  activeFilters,
+  setFilter,
+  setAllFilters,
+  globalFilter,
+  setGlobalFilter
+) {
+  const popover = (
+    <Popover id="popover-basic" style={{ width: "500px", maxWidth: "500px" }}>
+      <Popover.Content>
+        <Container style={{ width: "100%" }} className="p-1">
+          <Row xs={1} md={2}>
+            {allColumns
+              .filter(it => it.canFilter && it.Filter)
+              .map(column => (
+                <div key={column.id}>
+                  <Col>{column.render("Filter")}</Col>
+                </div>
+              ))}
+          </Row>
+          <Row className="d-flex justify-content-end mr-2">
+            <Button onClick={e => setAllFilters([])}>RESET</Button>
+          </Row>
+        </Container>
+      </Popover.Content>
+    </Popover>
+  )
+
+  const DismissibleChip = ({ label, onClose, ...props }) => {
+    const [show, setShow] = useState(true)
+    const handleClose = useCallback(() => {
+      setShow(!show)
+      onClose()
+    }, [setShow])
+    return (
+      <Chip
+        label={label}
+        onClose={handleClose}
+        show={show}
+        variant="outline"
+        type="input"
+        className="m-1"
+      ></Chip>
     )
   }
 
+  return (
+    <div className="d-flex align-items-center">
+      <div className="flex-grow-1">
+        {activeFilters && activeFilters.length > 0 && (
+          <div>
+            Active Filters:
+            {allColumns.map(column => {
+              const filter = activeFilters.find(f => f.id === column.id)
+              const value = filter && filter.value
+              return (
+                value && (
+                  <DismissibleChip
+                    key={column.id}
+                    label={column
+                      .render("Header")
+                      .toString()
+                      .concat(": ", filter.value)}
+                    onClose={e => setFilter(column.id, undefined)}
+                  />
+                )
+              )
+            })}
+          </div>
+        )}
+      </div>
+      <div style={{ minWidth: "170px", lineHeight: 2 }}>
+        <OverlayTrigger
+          trigger="click"
+          placement="bottom"
+          overlay={popover}
+          rootClose
+        >
+          <Nav.Link eventKey="1" className="p-0">
+            <i
+              className="modus-icons material-icons left-icon p-1"
+              style={{ top: "5px", fontSize: "20px" }}
+            >
+              filter
+            </i>
+            FILTER COLUMNS
+          </Nav.Link>
+        </OverlayTrigger>
+      </div>
+    </div>
+  )
+}
+
+function GlobalFilterPanel(
+  allColumns,
+  filters,
+  setFilter,
+  setAllFilters,
+  globalFilter,
+  setGlobalFilter
+) {
+  return (
+    <Form.Group controlId="globalFilter" className="w-50">
+      <div className="d-flex input-with-icon-left">
+        <Form.Control
+          as="input"
+          type="search"
+          placeholder="Search"
+          value={globalFilter || ""}
+          size="lg"
+          onChange={e => setGlobalFilter(e.target.value || undefined)}
+        ></Form.Control>
+        <div className="input-icon">
+          <i className="material-icons">search</i>
+        </div>
+      </div>
+    </Form.Group>
+  )
+}
+
+function ReactTableNextGen() {
   const columns = React.useMemo(
     () => [
       {
@@ -152,7 +222,6 @@ const ReactTableNextGen = props => {
         sortBy: true,
         Filter: TextFilter,
         width: 80,
-        Cell: EditableCell,
       },
       {
         Header: "Last Name",
@@ -190,34 +259,19 @@ const ReactTableNextGen = props => {
     ],
     []
   )
-  const [data, setData] = React.useState(() => makeData(20))
 
-  function UpdateMyData(rowIndex, columnId, value) {
-    setData(old =>
-      old.map((row, index) => {
-        if (index === rowIndex) {
-          return {
-            ...old[rowIndex],
-            [columnId]: value,
-          }
-        }
-        return row
-      })
-    )
-  }
+  const data = React.useMemo(() => makeData(10000), [])
 
   return (
-    <>
-      <DataTable
-        id="test"
-        columns={columns}
-        data={data}
-        resizeColumns
-        multipleRowSelection
-        checkBoxRowSelection
-        style={{ maxHeight: "400px" }}
-      ></DataTable>
-    </>
+    <DataTable
+      id="dt_filter"
+      columns={columns}
+      bordered
+      hover
+      data={data}
+      // filterPanel={FilterPanel}
+      filterPanel={GlobalFilterPanel}
+    ></DataTable>
   )
 }
 
@@ -417,7 +471,7 @@ const ReactTablePage = props => {
                 {/* <CustomReactTable /> */}
                 {/* <ReactTableContainer /> */}
                 <ReactTableNextGen />
-                <ReactTableBasic />
+                {/* <ReactTableBasic /> */}
               </Col>
               <Col className="d-none d-xl-block menu-right" xl={2}>
                 <TableOfContents></TableOfContents>

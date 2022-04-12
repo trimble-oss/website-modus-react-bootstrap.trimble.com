@@ -24,6 +24,7 @@ import {
   DataTableWithColumnFilter,
   Editable,
   DataTableWithCellEditable,
+  DataTableWithGlobalFilter,
 } from "../../examples/components/Table"
 import { useTable, useSortBy, usePagination } from "react-table"
 import Badge from "@trimbleinc/modus-react-bootstrap/Badge"
@@ -240,9 +241,21 @@ import Badge from "@trimbleinc/modus-react-bootstrap/Badge"
   code={DataTableWithColumnFilter}
   noInline={true}
 >
-  Filtering on each column can be set through <code> Filter </code> prop which
-  is a callback to create and return custom filter control, refer the example
-  below for implementation.
+  To enable filter on columns, use the field <code> Filter </code> on columns
+  object to configure a custom filter control for each column and use the prop{" "}
+  <code> FilterPanel </code> to render it above the Table.
+</CodeBlock>
+
+<CodeBlock
+  title="Global Search"
+  scope={{
+    makeData,
+  }}
+  code={DataTableWithGlobalFilter}
+  noInline={true}
+>
+  Using the prop <code> FilterPanel </code> a global search control can be
+  created.
 </CodeBlock>
 
 <CodeBlock
