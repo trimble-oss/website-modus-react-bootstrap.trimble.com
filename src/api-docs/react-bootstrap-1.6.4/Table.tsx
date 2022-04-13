@@ -7,7 +7,6 @@ import {
   BsPrefixAndClassNameOnlyProps,
   BsPrefixRefForwardingComponent,
 } from "./helpers"
-import { TableContext } from "./TableContext"
 import TableStyled from "./TableStyled"
 
 export interface TableProps extends BsPrefixAndClassNameOnlyProps {
@@ -100,12 +99,7 @@ const Table: Table = React.forwardRef<HTMLTableElement, TableProps>(
       hover && `${decoratedBsPrefix}-hover`
     )
 
-    const tableInstance = useContext(TableContext)
-    const tableProps = tableInstance && tableInstance.getTableProps()
-
-    const table = (
-      <TableStyled {...tableProps} {...props} className={classes} ref={ref} />
-    )
+    const table = <TableStyled {...props} className={classes} ref={ref} />
     if (responsive) {
       let responsiveClass = `${decoratedBsPrefix}-responsive`
       if (typeof responsive === "string") {

@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef } from "react"
+import React, { useCallback, useEffect, useMemo, useRef } from "react"
 import PropTypes from "prop-types"
 import {
   useTable,
@@ -10,15 +10,19 @@ import {
   TableState,
   useRowSelect,
   useFilters,
+  useGlobalFilter,
+  useAsyncDebounce,
   HeaderGroup,
   Row,
+  ColumnInstance,
+  Filters,
+  FilterValue,
 } from "react-table"
 import classNames from "classnames"
 import Table from "./Table"
 import TablePagination from "./TablePagination"
 import DataTableHeaderCell from "./DataTableHeaderCell"
 import DataTableStyled from "./DataTableStyled"
-import DataTableFilterPanel from "./DataTableFilterPanel"
 import ContextMenu from "./ContextMenu"
 import useDataTableContextMenu from "./useDataTableContextMenu"
 import {
@@ -49,6 +53,19 @@ export interface DataTableProps
   disablePagination?: boolean
   disableSorting?: boolean
   disableFiltering?: boolean
+  filterPanel?: (
+    allColumns: ColumnInstance<any>[],
+    filters: Filters<any>,
+    setFilter: (
+      columnId: string,
+      updater: ((filterValue: FilterValue) => FilterValue) | FilterValue
+    ) => void,
+    setAllFilters: (
+      updater: Filters<any> | ((filters: Filters<any>) => Filters<any>)
+    ) => void,
+    globalFilter: any,
+    setGlobalFilter: (filterValue: FilterValue) => void
+  ) => React.ReactElement
   onRowSelection?: (rows: Array<Row>) => void
 }
 
@@ -162,6 +179,11 @@ const propTypes = {
    * Callback when a row is selected. If multipleRowSelection is enabled all rows selected will be available in the callback.
    */
   onRowSelection: PropTypes.bool,
+
+  /**
+   * Custom Filter panel function.
+   */
+  filterPanel: PropTypes.element,
 }
 
 export function DataTable(
@@ -192,11 +214,11 @@ export function DataTable(
     onRowSelection,
     ref,
     className,
+    filterPanel,
     ...rest
   } = props
 
-  const filterColumns =
-    columns.find(col => col.Filter != null) && !disableFiltering ? true : false
+  const filterColumns = filterPanel && !disableFiltering ? true : false
   // To convert custom column props: sortBy
   const normalizedColumns = React.useMemo(
     () =>
@@ -210,7 +232,7 @@ export function DataTable(
 
   // Conditional Table Hooks Array
   const conditionalHooks: any = [useFlexLayout]
-  if (filterColumns) conditionalHooks.push(useFilters)
+  if (filterColumns) conditionalHooks.push(useFilters, useGlobalFilter)
   if (!disableSorting) conditionalHooks.push(useSortBy)
   if (!disablePagination) conditionalHooks.push(usePagination)
   if (resizeColumns) conditionalHooks.push(useResizeColumns)
@@ -247,13 +269,14 @@ export function DataTable(
     allColumns,
     setFilter,
     setAllFilters,
+    setGlobalFilter,
     toggleHideColumn,
     page,
     pageOptions,
     gotoPage,
     setPageSize,
     selectedFlatRows,
-    state: { pageIndex, pageSize, filters },
+    state: { pageIndex, pageSize, filters, globalFilter },
   } = tableInstance
 
   // Context Menu
@@ -295,6 +318,11 @@ export function DataTable(
   // Row selection by mouse click
   const rowSelectionByClick = !disableRowSelection && !checkBoxRowSelection
 
+  // Use useAsyncDebounce for Global filter https://react-table.tanstack.com/docs/faq#how-can-i-debounce-rapid-table-state-changes
+  const setGlobalFilterCustom = useAsyncDebounce(value => {
+    setGlobalFilter(value || undefined)
+  }, 50)
+
   return (
     <>
       <DataTableStyled ref={containerRef}>
@@ -304,14 +332,15 @@ export function DataTable(
           style={{ overflow: "hidden" }}
           {...rest}
         >
-          {filterColumns && (
-            <DataTableFilterPanel
-              allColumns={allColumns}
-              filters={filters}
-              setFilter={setFilter}
-              setAllFilters={setAllFilters}
-            />
-          )}
+          {filterColumns &&
+            filterPanel(
+              allColumns,
+              filters,
+              setFilter,
+              setAllFilters,
+              globalFilter,
+              setGlobalFilterCustom
+            )}
           <div style={{ overflow: "hidden" }} className="d-flex">
             <div className={classNames("scrollable", "container")}>
               <Table

@@ -26,6 +26,9 @@ import {
   UseFiltersInstanceProps,
   UseFiltersOptions,
   UseFiltersState,
+  UseGlobalFiltersInstanceProps,
+  UseGlobalFiltersOptions,
+  UseGlobalFiltersState,
 } from "react-table"
 
 declare module "react-table" {
@@ -42,6 +45,7 @@ declare module "react-table" {
       UseResizeColumnsOptions<D>,
       UseRowSelectOptions<D>,
       UseFiltersOptions<D>,
+      UseGlobalFiltersOptions<D>,
       UseSortByOptions<D> {}
 
   export interface Hooks<D extends object = {}>
@@ -55,6 +59,7 @@ declare module "react-table" {
       UseFlexLayoutInstanceProps<D>,
       UsePaginationInstanceProps<D>,
       UseFiltersInstanceProps<D>,
+      UseGlobalFiltersInstanceProps<D>,
       UseSortByInstanceProps<D> {}
 
   export interface TableState<D extends object = {}>
@@ -63,6 +68,7 @@ declare module "react-table" {
       UseResizeColumnsState<D>,
       UseRowSelectState<D>,
       UseFiltersState<D>,
+      UseGlobalFiltersState<D>,
       UseSortByState<D> {
     rowCount: number
   }
