@@ -13,12 +13,16 @@ import {
   TreeViewWithActionBar,
   TreeViewWithFilter,
   StyledIcon,
-  TreeNode as Node,
+  StyledDragItem,
+  StyledCustomTreeViewItem,
+  TreeViewWithDragDrop,
 } from "../../examples/components/ContentTree"
 import findIndex from "lodash/findIndex"
 import TreeViewItem from "../../common/Tree/TreeViewItem"
 import TreeView from "../../common/Tree/TreeView"
 import useForceUpdate from "@restart/hooks/useForceUpdate"
+import { createPortal } from "react-dom"
+import classNames from "classnames"
 
 <Overview>
   A content tree provides users with a way to navigate nested hierarchical
@@ -86,6 +90,7 @@ import useForceUpdate from "@restart/hooks/useForceUpdate"
   code={TreeViewWithActionBar}
   scope={{ TreeView, TreeViewItem, StyledIcon, findIndex, useForceUpdate }}
   noInline={true}
+  hideCode={true}
 >
   Using the props and callback functions from the <code> TreeView </code>{" "}
   component we perform more actions on each node.
@@ -96,6 +101,25 @@ import useForceUpdate from "@restart/hooks/useForceUpdate"
   code={TreeViewWithFilter}
   scope={{ TreeView, TreeViewItem, StyledIcon, findIndex, useForceUpdate }}
   noInline={true}
+  hideCode={true}
+></CodeBlock>
+
+<CodeBlock
+  title="Tree with Drag and Drop"
+  code={TreeViewWithDragDrop}
+  scope={{
+    TreeView,
+    TreeViewItem,
+    StyledIcon,
+    useForceUpdate,
+    StyledDragItem,
+    StyledCustomTreeViewItem,
+    createPortal,
+    classNames,
+    findIndex,
+  }}
+  noInline={true}
+  hideCode={true}
 ></CodeBlock>
 
 <LinkedHeading h="2" className="h1" id="chip-api">

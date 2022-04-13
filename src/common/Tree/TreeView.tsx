@@ -12,6 +12,7 @@ export interface TreeViewProps
   collapseIcon?: React.ReactElement
   expandIcon?: React.ReactElement
   itemIcon?: React.ReactElement
+  dragIcon?: React.ReactElement
   checkBoxSelection?: boolean
   multiSelectNode?: boolean
   multiSelectCheckBox?: boolean
@@ -42,6 +43,11 @@ const propTypes = {
    * Icon to appear before the label.
    */
   itemIcon: PropTypes.element,
+
+  /**
+   * Drag icon to appear before collapse/expand icon.
+   */
+  dragIcon: PropTypes.element,
 
   /**
    * Enables checkbox selection on nodes.
@@ -96,6 +102,7 @@ const TreeView = React.forwardRef<HTMLUListElement, TreeViewProps>(
       collapseIcon,
       expandIcon,
       itemIcon,
+      dragIcon,
       onNodeToggle,
       onNodeSelect,
       onCheckBoxSelect,
@@ -199,18 +206,6 @@ const TreeView = React.forwardRef<HTMLUListElement, TreeViewProps>(
       []
     )
 
-    const expandAllSiblings = (event, id) => {
-      const siblings = getChildren(getNodesArray(), id)
-
-      const diff = siblings.filter(child => !isExpanded(child))
-
-      const newExpanded = nodesExpanded.concat(diff)
-
-      if (diff.length > 0) {
-        setExpanded(newExpanded)
-      }
-    }
-
     // Verifiers
     const isExpanded = React.useCallback(
       (nodeId: number) =>
@@ -299,11 +294,6 @@ const TreeView = React.forwardRef<HTMLUListElement, TreeViewProps>(
         else {
           let filtered = oldSelected.filter(id => childNodes.indexOf(id) < 0)
           newSelected = filtered.concat([value], childNodes)
-
-          // let parentId = nodes[value].parentId
-          // while(parentId){
-          //   let siblings = getChildren
-          // }
         }
 
         return newSelected
@@ -374,6 +364,7 @@ const TreeView = React.forwardRef<HTMLUListElement, TreeViewProps>(
           collapseIcon,
           expandIcon,
           itemIcon,
+          dragIcon,
         }}
       >
         <TreeViewItemContext.Provider value={{ parentId: null, level: 1 }}>
