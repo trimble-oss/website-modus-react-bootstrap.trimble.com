@@ -21,6 +21,7 @@
     "clean": "gatsby clean",
     "develop": "gatsby build && gatsby develop",
     "format": "prettier --write \"**/*.{js,jsx,ts,tsx,json,md}\"",
+    "lint": "npm run lint-css",
     "lint-css": "stylelint \"src/assets/css/*.scss\"",
     "serve": "gatsby serve",
     "start": "gatsby develop",
