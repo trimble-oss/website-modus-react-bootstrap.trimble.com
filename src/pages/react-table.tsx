@@ -222,6 +222,8 @@ function ReactTableNextGen() {
         sortBy: true,
         Filter: TextFilter,
         width: 80,
+        allowDrag: true,
+        allowDrop: true,
       },
       {
         Header: "Last Name",
@@ -229,6 +231,8 @@ function ReactTableNextGen() {
         sortBy: true,
         Filter: TextFilter,
         width: 80,
+        allowDrag: true,
+        allowDrop: true,
       },
       {
         Header: "Age",
@@ -236,12 +240,16 @@ function ReactTableNextGen() {
         Filter: SliderFilter,
         width: 50,
         sortBy: true,
+        allowDrag: true,
+        allowDrop: true,
       },
       {
         Header: "Visits",
         accessor: "visits",
         width: 50,
         sortBy: true,
+        allowDrag: true,
+        allowDrop: true,
       },
       {
         Header: "Status",
@@ -249,12 +257,16 @@ function ReactTableNextGen() {
         Filter: SelectFilter,
         width: 70,
         sortBy: true,
+        allowDrag: true,
+        allowDrop: true,
       },
       {
         Header: "Profile Progress Status",
         accessor: "progress",
         width: 70,
         sortBy: true,
+        allowDrag: true,
+        allowDrop: true,
       },
     ],
     []

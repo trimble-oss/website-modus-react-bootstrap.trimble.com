@@ -83,6 +83,15 @@ const DataTableStyled = styled(StyledDivWrapper)`
       tr.selected {
         background-color: #dcedf9;
       }
+
+      th {
+        &.drop-allow {
+          border-left: 2px solid #0063a3 !important;
+        }
+        &.drop-block {
+          border-left: 2px solid red !important;
+        }
+      }
     }
   }
 
