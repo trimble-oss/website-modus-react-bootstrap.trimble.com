@@ -17,6 +17,7 @@ import {
   ColumnInstance,
   Filters,
   FilterValue,
+  useColumnOrder,
 } from "react-table"
 import classNames from "classnames"
 import Table from "./Table"
@@ -31,6 +32,8 @@ import {
   stateReducer,
 } from "./DataTableHelpers"
 import { TableColumn } from "."
+import useForceUpdate from "@restart/hooks/useForceUpdate"
+import { createPortal } from "react-dom"
 
 export interface DataTableProps
   extends Omit<React.HTMLProps<HTMLDivElement>, "data" | "size">,
@@ -53,6 +56,7 @@ export interface DataTableProps
   disablePagination?: boolean
   disableSorting?: boolean
   disableFiltering?: boolean
+  disableDragging?: boolean
   filterPanel?: (
     allColumns: ColumnInstance<any>[],
     filters: Filters<any>,
@@ -65,7 +69,7 @@ export interface DataTableProps
     ) => void,
     globalFilter: any,
     setGlobalFilter: (filterValue: FilterValue) => void
-  ) => React.ReactElement
+  ) => React.ReactElement | React.ReactNode | null
   onRowSelection?: (rows: Array<Row>) => void
 }
 
@@ -128,9 +132,14 @@ const propTypes = {
   disableSorting: PropTypes.bool,
 
   /**
-   * Removes the link to filter panel.
+   * Disabling Filtering removes filter panel.
    */
   disableFiltering: PropTypes.bool,
+
+  /**
+   * Disables dragging function on Table headers.
+   */
+  disableDragging: PropTypes.bool,
 
   /**
    * Adds zebra-striping to any table row within the `<tbody>`.
@@ -183,9 +192,10 @@ const propTypes = {
   /**
    * Custom Filter panel function.
    */
-  filterPanel: PropTypes.element,
+  filterPanel: PropTypes.func,
 }
 
+const POSITION = { x: 0, y: 0 }
 export function DataTable(
   props: React.PropsWithChildren<DataTableProps> & {
     ref?: React.Ref<HTMLDivElement>
@@ -204,6 +214,7 @@ export function DataTable(
     disablePagination,
     disableSorting,
     disableFiltering,
+    disableDragging,
     striped,
     bordered,
     borderless,
@@ -217,18 +228,14 @@ export function DataTable(
     filterPanel,
     ...rest
   } = props
-
   const filterColumns = filterPanel && !disableFiltering ? true : false
-  // To convert custom column props: sortBy
-  const normalizedColumns = React.useMemo(
-    () =>
-      columns.map(col => {
-        const { sortBy, ...columnProps } = col
-        columnProps.disableSortBy = !sortBy
-        return columnProps
-      }),
-    []
-  )
+  const enableRowSelection = !disableRowSelection && !checkBoxRowSelection
+  const containerRef = useRef<HTMLDivElement>(null)
+
+  // TODO: Need an alternative to handle Modus Bootstrap class for sticky first column
+  const hasStickyFirstColumn = className
+    ? className.split(" ").includes("table-sticky-first-column")
+    : false
 
   // Conditional Table Hooks Array
   const conditionalHooks: any = [useFlexLayout]
@@ -237,6 +244,7 @@ export function DataTable(
   if (!disablePagination) conditionalHooks.push(usePagination)
   if (resizeColumns) conditionalHooks.push(useResizeColumns)
   if (!disableRowSelection) conditionalHooks.push(useRowSelect)
+  if (!disableDragging) conditionalHooks.push(useColumnOrder)
   if (
     checkBoxRowSelection &&
     !columns.find(col => col.accessor === "selector")
@@ -246,7 +254,18 @@ export function DataTable(
     )
   }
 
-  // Table instance
+  // Handle custom props such as - sortBy
+  const normalizedColumns = React.useMemo(
+    () =>
+      columns.map(col => {
+        const { sortBy, ...columnProps } = col
+        columnProps.disableSortBy = !sortBy
+        return columnProps
+      }),
+    [columns]
+  )
+
+  // Construct Table instance
   const tableInstance = useTable(
     {
       columns: normalizedColumns,
@@ -267,6 +286,7 @@ export function DataTable(
     prepareRow,
     rows,
     allColumns,
+    visibleColumns,
     setFilter,
     setAllFilters,
     setGlobalFilter,
@@ -276,17 +296,22 @@ export function DataTable(
     gotoPage,
     setPageSize,
     selectedFlatRows,
+    setColumnOrder,
     state: { pageIndex, pageSize, filters, globalFilter },
   } = tableInstance
 
   // Context Menu
-  const containerRef = useRef<HTMLDivElement>(null)
   const {
     contextMenu,
     showContextMenu,
     handleHeaderContextMenu,
     handleContextMenuClose,
   } = useDataTableContextMenu(tableInstance)
+
+  // Use useAsyncDebounce for Global filter https://react-table.tanstack.com/docs/faq#how-can-i-debounce-rapid-table-state-changes
+  const setGlobalFilterCustom = useAsyncDebounce(value => {
+    setGlobalFilter(value || undefined)
+  }, 50)
 
   // Helpers
   // To add invisible columns
@@ -307,21 +332,159 @@ export function DataTable(
     [allColumns]
   )
 
+  // Callback APIs
   useEffect(() => {
     if (onRowSelection) onRowSelection(selectedFlatRows.map(d => d.original))
   }, [selectedFlatRows])
 
-  // Special css classes
-  // TODO: need an alternative to handle custom css classes for Table and other elements
-  const classesArray = className ? className.split(" ") : []
+  // Drag and Drop
+  const draggingState = useRef({
+    isDragging: false,
+    origin: POSITION,
+    translation: POSITION,
+    width: "0px",
+    height: "0px",
+    columnId: null,
+  })
+  const forceUpdate = useForceUpdate()
 
-  // Row selection by mouse click
-  const rowSelectionByClick = !disableRowSelection && !checkBoxRowSelection
+  const droppingState = useRef({ columnId: null, validTarget: false })
+  const bodyRef = useRef(null)
+  const columnsRef = useRef([])
 
-  // Use useAsyncDebounce for Global filter https://react-table.tanstack.com/docs/faq#how-can-i-debounce-rapid-table-state-changes
-  const setGlobalFilterCustom = useAsyncDebounce(value => {
-    setGlobalFilter(value || undefined)
-  }, 50)
+  function clearDroppingState() {
+    droppingState.current = { columnId: null, validTarget: false }
+  }
+
+  function getDroppableColumn(x: any, y: any) {
+    const column = columnsRef.current.find(({ ref }) => {
+      const rect = ref.getBoundingClientRect()
+      if (rect) {
+        const inVerticalBounds = y >= rect.top && y <= rect.bottom
+        const inHorizontalBounds = x >= rect.left && x <= rect.right
+        return inVerticalBounds && inHorizontalBounds
+      }
+      return false
+    })
+    return column
+  }
+
+  const handleMouseDown = (event, columnId: string) => {
+    const { clientX, clientY, target } = event
+    const prevState = draggingState.current
+
+    debugger
+    clearDroppingState()
+    draggingState.current = {
+      ...prevState,
+      isDragging: true,
+      origin: { x: clientX, y: clientY },
+      columnId,
+      width:
+        (target && target.offsetParent && target.offsetParent.width) || "80px",
+      height:
+        (target && target.offsetParent && target.offsetParent.height) || "3rem",
+    }
+    forceUpdate()
+  }
+
+  const handleMouseMove = useCallback(
+    ({ clientX, clientY }) => {
+      const translation = {
+        x: clientX,
+        y: clientY,
+      }
+      const prevState = draggingState.current
+
+      const dropColumn = getDroppableColumn(clientX, clientY)
+
+      clearDroppingState()
+      draggingState.current = {
+        ...prevState,
+        translation,
+      }
+      if (dropColumn) {
+        droppingState.current.columnId = dropColumn.columnId
+        // show columns reordering effect until the selected column is dropped
+      }
+      forceUpdate()
+    },
+    [draggingState.current.origin]
+  )
+
+  const handleMouseUp = useCallback(event => {
+    const prevDragState = draggingState.current
+    if (
+      droppingState.current.validTarget &&
+      droppingState.current.columnId &&
+      draggingState.current.columnId
+    ) {
+      const dropNode = droppingState.current.columnId
+      const dragNode = draggingState.current.columnId
+      if (dropNode !== dragNode) {
+        let columnIds = visibleColumns.map(d => d.id)
+
+        //delete and insert the column at new index
+        columnIds.splice(columnIds.indexOf(dragNode), 1)
+        columnIds.splice(columnIds.indexOf(dropNode), 0, dragNode)
+
+        setColumnOrder(columnIds)
+      }
+    }
+    draggingState.current = {
+      ...prevDragState,
+      isDragging: false,
+    }
+  }, [])
+
+  const pushColumnRef = useCallback((columnId: string, ref: any) => {
+    let refs = columnsRef.current
+      ? columnsRef.current.filter(col => col.columnId !== columnId)
+      : []
+    refs.push({ columnId, ref })
+
+    columnsRef.current = refs
+  }, [])
+
+  useEffect(() => {
+    bodyRef.current = document.body
+  }, [])
+
+  useEffect(() => {
+    if (draggingState.current.isDragging) {
+      window.addEventListener("mousemove", handleMouseMove)
+      window.addEventListener("mouseup", handleMouseUp)
+    } else {
+      window.removeEventListener("mousemove", handleMouseMove)
+      window.removeEventListener("mouseup", handleMouseUp)
+
+      const prevState = draggingState.current
+      draggingState.current = {
+        ...prevState,
+        translation: POSITION,
+        columnId: null,
+      }
+      clearDroppingState()
+      forceUpdate()
+    }
+  }, [draggingState.current.isDragging])
+
+  const dragItemStyle = useMemo(
+    () => ({
+      width: draggingState.current.width,
+      height: draggingState.current.height,
+      transform: `translate(calc(${draggingState.current.translation.x}px - 10%), calc(${draggingState.current.translation.y}px - 50%))`,
+      msTransform: `translateX(${draggingState.current.translation.x}px) translateX(-10%) translateY(${draggingState.current.translation.y}px) translateY(-50%)`,
+      zIndex: 9999,
+      left: 0,
+      top: 0,
+      position: "absolute",
+      cursor: draggingState.current.isDragging
+        ? "-webkit-grabbing"
+        : "-webkit-grab",
+    }),
+    [draggingState.current]
+  )
 
   return (
     <>
@@ -353,8 +516,7 @@ export function DataTable(
                 responsive={responsive}
                 {...getTableProps()}
                 className={classNames(
-                  classesArray.includes("table-sticky-first-column") &&
-                    "table-sticky-first-column"
+                  hasStickyFirstColumn && "table-sticky-first-column"
                 )}
               >
                 <thead className="bg-gray-light sticky-top">
@@ -368,9 +530,20 @@ export function DataTable(
                         headerGroup.id
                       ).map(column => (
                         <DataTableHeaderCell
+                          key={column.id}
                           header={column}
-                          onHeaderContextMenu={(event, header) =>
-                            handleHeaderContextMenu(event, header, containerRef)
+                          updateRef={(columnId, ref) =>
+                            pushColumnRef(columnId, ref)
+                          }
+                          onHeaderContextMenu={(event, headerColumn) =>
+                            handleHeaderContextMenu(
+                              event,
+                              headerColumn,
+                              containerRef
+                            )
+                          }
+                          onDragHeaderStart={(event, columnId) =>
+                            handleMouseDown(event, columnId)
                           }
                           onToggleHideColumn={toggleHideColumn}
                           className={classNames(
@@ -393,7 +566,7 @@ export function DataTable(
                       <tr
                         {...row.getRowProps()}
                         onClick={() => {
-                          rowSelectionByClick &&
+                          enableRowSelection &&
                             row.toggleRowSelected(!row.isSelected)
                         }}
                         className={row.isSelected && "selected"}
@@ -431,6 +604,15 @@ export function DataTable(
               className="border border-tertiary"
             ></TablePagination>
           )}
+
+          {draggingState.current.isDragging &&
+            bodyRef.current &&
+            createPortal(
+              <div className="d-flex bg-gray-light" style={dragItemStyle}>
+                Header
+              </div>,
+              bodyRef.current
+            )}
         </div>
       </DataTableStyled>
 

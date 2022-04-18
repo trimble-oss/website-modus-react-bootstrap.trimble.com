@@ -1,4 +1,4 @@
-import React, { useCallback } from "react"
+import React, { useCallback, useEffect, useRef } from "react"
 import merge from "lodash/merge"
 import PropTypes from "prop-types"
 import classNames from "classnames"
@@ -7,8 +7,10 @@ import { ColumnInstance } from "react-table"
 export interface DataTableHeaderCellProps
   extends React.HTMLProps<HTMLTableCellElement> {
   header: any
-  onHeaderContextMenu: (column: ColumnInstance, event) => void
+  onHeaderContextMenu: (event, column: ColumnInstance) => void
   onToggleHideColumn: (columnId: string, hide: boolean) => void
+  onDragHeaderStart: (event, columnId: string) => void
+  updateRef: (columnId: string, ref: any) => void
 }
 
 const propTypes = {
@@ -56,21 +58,47 @@ const DataTableHeaderCell = React.forwardRef<
       header,
       onHeaderContextMenu,
       onToggleHideColumn,
+      onDragHeaderStart,
+      updateRef,
       children,
       className,
       ...props
     },
     ref
   ) => {
+    const defaultRef = useRef<HTMLTableCellElement>(null)
+    const resolvedRef = ref || defaultRef
     // handle right-click
-    const handleContextMenuClick = useCallback((header, event) => {
-      event.preventDefault()
-      onHeaderContextMenu(event, header)
-    }, [])
+    const handleContextMenuClick = useCallback(
+      (event, header) => {
+        event.preventDefault()
+        onHeaderContextMenu(event, header)
+      },
+      [onHeaderContextMenu, header]
+    )
 
-    const handleShowHiddenColumn = useCallback(event => {
-      onToggleHideColumn(header.id, false)
-    }, [])
+    const handleShowHiddenColumn = useCallback(
+      event => {
+        onToggleHideColumn(header.id, false)
+      },
+      [onToggleHideColumn, header]
+    )
+
+    const handleMouseDown = useCallback(
+      event => {
+        onDragHeaderStart(event, header.id)
+      },
+      [onDragHeaderStart, header]
+    )
+
+    useEffect(() => {
+      const columnRef = (
+        resolvedRef as React.MutableRefObject<HTMLTableCellElement>
+      ).current
+      if (columnRef && header && updateRef) {
+        updateRef(header.id, columnRef)
+      }
+    }, [header, resolvedRef, updateRef])
 
     if (!header.isVisible) {
       return (
@@ -84,72 +112,75 @@ const DataTableHeaderCell = React.forwardRef<
           </div>
         </div>
       )
+    } else {
+      const headerProps = merge(
+        header.getHeaderProps(
+          header.getSortByToggleProps && header.getSortByToggleProps()
+        ),
+        {
+          style: {
+            flex: header.width ? `${header.width} 0 auto` : undefined,
+          },
+          title: "",
+        }
+      )
+      const headerLabel = header.render("Header")
+      return (
+        <th
+          className={classNames(
+            "pr-2",
+            className,
+            header.id === "selector" && "icon-only"
+          )}
+          ref={resolvedRef}
+          {...headerProps}
+          {...props}
+          onContextMenu={handleContextMenuClick}
+          onMouseDown={handleMouseDown}
+        >
+          <div className="d-flex" style={{ width: "100%" }}>
+            <div
+              className="flex-grow-1"
+              style={{
+                whiteSpace: "nowrap",
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+              }}
+              data-toggle="tooltip"
+              data-placement="top"
+              title={headerLabel}
+            >
+              {headerLabel}
+            </div>
+            <div>
+              {header.canSort && (
+                <>
+                  {header.isSorted ? (
+                    <SortIcon
+                      className="sorted"
+                      sort={header.isSortedDesc ? "desc" : "asc"}
+                    />
+                  ) : (
+                    <SortIcon
+                      className="unsorted"
+                      title="Sort Ascending"
+                      sort="asc"
+                    />
+                  )}
+                </>
+              )}
+            </div>
+          </div>
+
+          {header.getResizerProps && (
+            <div
+              {...header.getResizerProps()}
+              className="table-col-resizable"
+            />
+          )}
+        </th>
+      )
     }
-
-    const headerProps = merge(
-      header.getHeaderProps(
-        header.getSortByToggleProps && header.getSortByToggleProps()
-      ),
-      {
-        style: {
-          flex: header.width ? `${header.width} 0 auto` : undefined,
-        },
-        title: "",
-      }
-    )
-    const headerLabel = header.render("Header")
-
-    return (
-      <th
-        className={classNames(
-          "pr-2",
-          className,
-          header.id === "selector" && "icon-only"
-        )}
-        ref={ref}
-        {...headerProps}
-        {...props}
-        onContextMenu={e => handleContextMenuClick(header, e)}
-      >
-        <div className="d-flex" style={{ width: "100%" }}>
-          <div
-            className="flex-grow-1"
-            style={{
-              whiteSpace: "nowrap",
-              overflow: "hidden",
-              textOverflow: "ellipsis",
-            }}
-            data-toggle="tooltip"
-            data-placement="top"
-            title={headerLabel}
-          >
-            {headerLabel}
-          </div>
-          <div>
-            {header.canSort && (
-              <>
-                {header.isSorted ? (
-                  <SortIcon
-                    className="sorted"
-                    sort={header.isSortedDesc ? "desc" : "asc"}
-                  />
-                ) : (
-                  <SortIcon
-                    className="unsorted"
-                    title="Sort Ascending"
-                    sort="asc"
-                  />
-                )}
-              </>
-            )}
-          </div>
-        </div>
-
-        {header.getResizerProps && (
-          <div {...header.getResizerProps()} className="table-col-resizable" />
-        )}
-      </th>
-    )
   }
 )
 
