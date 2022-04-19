@@ -288,7 +288,6 @@ function ReactTableNextGen() {
       resizeColumns
       multipleRowSelection
       checkBoxRowSelection
-      style={{ maxHeight: "400px" }}
     ></DataTable>
   )
 }
