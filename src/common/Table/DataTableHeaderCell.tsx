@@ -171,8 +171,9 @@ const DataTableHeaderCell = React.forwardRef<
       return (
         <th
           className={classNames(
-            "pr-2 pl-0",
+            "pr-2",
             className,
+            allowDrag && "draggable",
             header.id === "selector" && "icon-only"
           )}
           ref={resolvedRef}
@@ -184,8 +185,7 @@ const DataTableHeaderCell = React.forwardRef<
           onDrop={handleDrop}
         >
           <div
-            className="d-flex w-100 h-100 align-items-center"
-            style={{ paddingLeft: "1rem" }}
+            className="d-flex w-100 h-100 align-items-center th-content"
             {...draggingProps}
           >
             <div

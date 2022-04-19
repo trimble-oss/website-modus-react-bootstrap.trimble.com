@@ -24,11 +24,12 @@ const IndeterminateCheckbox = React.forwardRef<
 export const checkBoxSelectionHook = (
   hooks: Hooks<any>,
   tableId: string,
+  columnId: string,
   multipleRowSelection
 ) => {
   hooks.visibleColumns.push(columns => [
     {
-      id: "selector",
+      id: columnId,
       width: 25,
       minWidth: 25,
       disableResizing: true,
@@ -37,7 +38,7 @@ export const checkBoxSelectionHook = (
         return (
           <IndeterminateCheckbox
             {...row.getToggleRowSelectedProps()}
-            id={`${tableId}_checkbox_"${row.id}`}
+            id={`${tableId}_${columnId}_row"${row.id}`}
           />
         )
       },
@@ -46,7 +47,7 @@ export const checkBoxSelectionHook = (
           return (
             <IndeterminateCheckbox
               {...getToggleAllRowsSelectedProps()}
-              id={`${tableId}_checkbox_header`}
+              id={`${tableId}_${columnId}_header`}
             />
           )
         },

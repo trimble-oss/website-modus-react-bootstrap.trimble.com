@@ -281,8 +281,14 @@ function ReactTableNextGen() {
       bordered
       hover
       data={data}
-      // filterPanel={FilterPanel}
-      filterPanel={GlobalFilterPanel}
+      filterPanel={FilterPanel}
+      // filterPanel={GlobalFilterPanel}
+      pageSize={7}
+      pageSizeOptions={[7, 10, 25, 50]}
+      resizeColumns
+      multipleRowSelection
+      checkBoxRowSelection
+      style={{ maxHeight: "400px" }}
     ></DataTable>
   )
 }

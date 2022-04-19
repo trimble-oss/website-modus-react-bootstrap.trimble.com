@@ -33,6 +33,7 @@ import {
 } from "./DataTableHelpers"
 import { TableColumn } from "."
 import useDataTableDragDrop from "./useDataTableDragDrop"
+import useDataTableInstance from "./useDataTableInstance"
 
 export interface DataTableProps
   extends Omit<React.HTMLProps<HTMLDivElement>, "data" | "size">,
@@ -194,6 +195,7 @@ const propTypes = {
   filterPanel: PropTypes.func,
 }
 
+const checkBoxSelectorColumnId = "selector"
 export function DataTable(
   props: React.PropsWithChildren<DataTableProps> & {
     ref?: React.Ref<HTMLDivElement>
@@ -248,96 +250,53 @@ export function DataTable(
     !columns.find(col => col.accessor === "selector")
   ) {
     conditionalHooks.push(hooks =>
-      checkBoxSelectionHook(hooks, id, multipleRowSelection)
+      checkBoxSelectionHook(
+        hooks,
+        id,
+        checkBoxSelectorColumnId,
+        multipleRowSelection
+      )
     )
   }
 
-  // Handle custom props such as - sortBy
-  const normalizedColumns = React.useMemo(
-    () =>
-      columns.map(col => {
-        const { sortBy, ...columnProps } = col
-        columnProps.disableSortBy = !sortBy
-        return columnProps
-      }),
-    [columns]
-  )
+  const tableOptions = {
+    // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+    initialState: {
+      pageIndex: 0,
+      pageSize: pageSizeProp || 10,
+    } as TableState,
+    ...(!multipleRowSelection && stateReducer),
+  }
 
-  // Construct Table instance
-  const tableInstance = useTable(
-    {
-      columns: normalizedColumns,
-      data,
-      // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-      initialState: {
-        pageIndex: 0,
-        pageSize: pageSizeProp || 10,
-      } as TableState,
-      ...(!multipleRowSelection && stateReducer),
-    },
-    ...conditionalHooks
-  )
-
-  // Header Context Menu
   const {
+    headerGroups,
+    rows,
+    allColumns,
+    page,
+    pageOptions,
+    selectedFlatRows,
     contextMenu,
     showContextMenu,
+    state: { pageIndex, pageSize, filters, globalFilter },
+    prepareRow,
+    getTableProps,
+    getTableBodyProps,
+    gotoPage,
+    setPageSize,
+    getAllHeadersInAGroup,
+    setFilter,
+    setAllFilters,
+    setGlobalFilterCustom,
+    toggleHideColumn,
     handleHeaderContextMenu,
     handleContextMenuClose,
-  } = useDataTableContextMenu(tableInstance)
-
-  // Header Drag and Drop
-  const {
     handleDragStart,
     handleDragEnter,
     handleDragOver,
     handleDrop,
     handleDragEnd,
     registerColumnRef,
-  } = useDataTableDragDrop(tableInstance)
-
-  const {
-    getTableProps,
-    getTableBodyProps,
-    headerGroups,
-    prepareRow,
-    rows,
-    allColumns,
-    setFilter,
-    setAllFilters,
-    setGlobalFilter,
-    toggleHideColumn,
-    page,
-    pageOptions,
-    gotoPage,
-    setPageSize,
-    selectedFlatRows,
-    state: { pageIndex, pageSize, filters, globalFilter },
-  } = tableInstance
-
-  // Use useAsyncDebounce for Global filter https://react-table.tanstack.com/docs/faq#how-can-i-debounce-rapid-table-state-changes
-  const setGlobalFilterCustom = useAsyncDebounce(value => {
-    setGlobalFilter(value || undefined)
-  }, 50)
-
-  // Helpers
-  // To add invisible columns
-  const getAllHeadersInAGroup = useCallback(
-    (curr: HeaderGroup[], headerGroupid: any) => {
-      return allColumns
-        .filter(
-          col =>
-            col.id === "selector" ||
-            !headerGroupid ||
-            (col.parent ? col.parent.id === headerGroupid : false)
-        )
-        .map(col => {
-          let newCol = curr.find(c => c.id === col.id)
-          return newCol || col
-        })
-    },
-    [allColumns]
-  )
+  } = useDataTableInstance(columns, data, tableOptions, conditionalHooks)
 
   // Callback APIs
   useEffect(() => {
@@ -406,8 +365,14 @@ export function DataTable(
                           onDragHeaderEnd={handleDragEnd}
                           onDragHeaderEnter={handleDragEnter}
                           onToggleHideColumn={toggleHideColumn}
-                          allowDrag={column.allowDrag}
-                          allowDrop={column.allowDrop}
+                          allowDrag={
+                            column.id !== checkBoxSelectorColumnId &&
+                            column.allowDrag
+                          }
+                          allowDrop={
+                            column.id !== checkBoxSelectorColumnId &&
+                            column.allowDrop
+                          }
                           className={classNames(
                             checkBoxRowSelection &&
                               column.id === "selector" &&
