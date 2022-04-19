@@ -1,4 +1,4 @@
-import React, { useCallback, useState, useRef } from "react"
+import { useCallback, useRef } from "react"
 import useForceUpdate from "@restart/hooks/useForceUpdate"
 
 const POSITION = { x: 0, y: 0 }

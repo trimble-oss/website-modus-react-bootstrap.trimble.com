@@ -2157,3 +2157,65 @@ function Example() {
 }
 
 render(<Example />);`
+
+export const DataTableWithDragAndDrop = `
+function Example() {
+  const columns = React.useMemo(
+    () => [
+      {
+        Header: "First Name",
+        accessor: "firstName",
+        width: 80,
+        allowDrag: true,
+        allowDrop: true,
+      },
+      {
+        Header: "Last Name",
+        accessor: "lastName",
+        width: 80,
+        allowDrag: true,
+        allowDrop: true,
+      },
+      {
+        Header: "Age",
+        accessor: "age",
+        width: 50,
+        allowDrag: true,
+        allowDrop: true,
+      },
+      {
+        Header: "Visits",
+        accessor: "visits",
+        width: 50,
+        allowDrag: true,
+        allowDrop: true,
+      },
+      {
+        Header: "Status",
+        accessor: "status",
+        width: 70,
+        allowDrag: true,
+        allowDrop: true,
+      },
+      {
+        Header: "Profile Progress Status",
+        accessor: "progress",
+        width: 70,
+        allowDrag: false,
+        allowDrop: false,
+      },
+    ],
+    []
+  )
+  const [data, setData] = React.useState(() => makeData(10000))
+
+  return (
+    <DataTable
+      id="dt_drag_drop"
+      columns={columns} bordered hover
+      data={data}
+    ></DataTable>
+  )
+}
+
+render(<Example />);`

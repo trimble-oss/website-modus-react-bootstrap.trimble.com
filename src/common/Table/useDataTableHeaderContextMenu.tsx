@@ -1,4 +1,4 @@
-import React, { useCallback, useState, useRef } from "react"
+import React, { useCallback, useState } from "react"
 import { Form } from "@trimbleinc/modus-react-bootstrap"
 import { ColumnInstance } from "react-table"
 import { ContextMenuState } from "./types"

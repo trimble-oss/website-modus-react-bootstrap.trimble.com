@@ -1,7 +1,6 @@
-import React, { useCallback, useEffect, useMemo, useRef } from "react"
+import React, { useEffect, useRef } from "react"
 import PropTypes from "prop-types"
 import {
-  useTable,
   useSortBy,
   usePagination,
   useResizeColumns,
@@ -11,8 +10,6 @@ import {
   useRowSelect,
   useFilters,
   useGlobalFilter,
-  useAsyncDebounce,
-  HeaderGroup,
   Row,
   ColumnInstance,
   Filters,
@@ -25,14 +22,12 @@ import TablePagination from "./TablePagination"
 import DataTableHeaderCell from "./DataTableHeaderCell"
 import DataTableStyled from "./DataTableStyled"
 import ContextMenu from "./ContextMenu"
-import useDataTableContextMenu from "./useDataTableContextMenu"
 import {
   checkBoxSelectionHook,
   getCellStyles,
   stateReducer,
 } from "./DataTableHelpers"
 import { TableColumn } from "."
-import useDataTableDragDrop from "./useDataTableDragDrop"
 import useDataTableInstance from "./useDataTableInstance"
 
 export interface DataTableProps

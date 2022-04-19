@@ -1,7 +1,7 @@
 import React, { useCallback } from "react"
 import { HeaderGroup, useAsyncDebounce, useTable } from "react-table"
-import useDataTableContextMenu from "./useDataTableContextMenu"
-import useDataTableDragDrop from "./useDataTableDragDrop"
+import useDataTableContextMenu from "./useDataTableHeaderContextMenu"
+import useDataTableDragDrop from "./useDataTableHeaderDragDrop"
 
 const useDataTableInstance = (columns, data, options, hooks) => {
   // Handle custom props such as - sortBy
