@@ -3,9 +3,11 @@ import { Form } from "@trimbleinc/modus-react-bootstrap"
 import { ColumnInstance } from "react-table"
 import { ContextMenuState } from "./types"
 
-const useDataTableContextMenu = tableInstance => {
-  const { allColumns, toggleHideColumn, toggleHideAllColumns } = tableInstance
-
+const useDataTableContextMenu = ({
+  allColumns,
+  toggleHideColumn,
+  toggleHideAllColumns,
+}) => {
   const [contextMenu, setContextMenu] = useState<ContextMenuState>(null)
   const [showContextMenu, setShowContextMenu] = useState(false)
 

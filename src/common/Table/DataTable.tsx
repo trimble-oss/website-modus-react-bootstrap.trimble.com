@@ -32,8 +32,7 @@ import {
   stateReducer,
 } from "./DataTableHelpers"
 import { TableColumn } from "."
-import useForceUpdate from "@restart/hooks/useForceUpdate"
-import { createPortal } from "react-dom"
+import useDataTableDragDrop from "./useDataTableDragDrop"
 
 export interface DataTableProps
   extends Omit<React.HTMLProps<HTMLDivElement>, "data" | "size">,
@@ -195,7 +194,6 @@ const propTypes = {
   filterPanel: PropTypes.func,
 }
 
-const POSITION = { x: 0, y: 0 }
 export function DataTable(
   props: React.PropsWithChildren<DataTableProps> & {
     ref?: React.Ref<HTMLDivElement>
@@ -279,6 +277,25 @@ export function DataTable(
     },
     ...conditionalHooks
   )
+
+  // Header Context Menu
+  const {
+    contextMenu,
+    showContextMenu,
+    handleHeaderContextMenu,
+    handleContextMenuClose,
+  } = useDataTableContextMenu(tableInstance)
+
+  // Header Drag and Drop
+  const {
+    handleDragStart,
+    handleDragEnter,
+    handleDragOver,
+    handleDrop,
+    handleDragEnd,
+    registerColumnRef,
+  } = useDataTableDragDrop(tableInstance)
+
   const {
     getTableProps,
     getTableBodyProps,
@@ -286,7 +303,6 @@ export function DataTable(
     prepareRow,
     rows,
     allColumns,
-    visibleColumns,
     setFilter,
     setAllFilters,
     setGlobalFilter,
@@ -296,17 +312,8 @@ export function DataTable(
     gotoPage,
     setPageSize,
     selectedFlatRows,
-    setColumnOrder,
     state: { pageIndex, pageSize, filters, globalFilter },
   } = tableInstance
-
-  // Context Menu
-  const {
-    contextMenu,
-    showContextMenu,
-    handleHeaderContextMenu,
-    handleContextMenuClose,
-  } = useDataTableContextMenu(tableInstance)
 
   // Use useAsyncDebounce for Global filter https://react-table.tanstack.com/docs/faq#how-can-i-debounce-rapid-table-state-changes
   const setGlobalFilterCustom = useAsyncDebounce(value => {
@@ -336,160 +343,6 @@ export function DataTable(
   useEffect(() => {
     if (onRowSelection) onRowSelection(selectedFlatRows.map(d => d.original))
   }, [selectedFlatRows])
-
-  // Drag and Drop
-  const draggingState = useRef({
-    isDragging: false,
-    origin: POSITION,
-    translation: POSITION,
-    width: "0px",
-    height: "0px",
-    columnId: null,
-    columnOrder: visibleColumns.map(d => d.id),
-  })
-  const forceUpdate = useForceUpdate()
-
-  const droppingState = useRef({ columnId: null, validTarget: false })
-  const bodyRef = useRef(null)
-  const columnsRef = useRef([])
-
-  function clearDroppingState() {
-    if (droppingState.current.columnId && columnsRef.current) {
-      let droppableColumn = columnsRef.current.find(
-        col => col.columnId === droppingState.current.columnId
-      )
-      if (droppableColumn && droppableColumn.ref) {
-        droppableColumn.ref.classList.remove("drop-allow")
-        droppableColumn.ref.classList.remove("drop-block")
-      }
-    }
-    droppingState.current = { columnId: null, validTarget: false }
-  }
-
-  const handleDragStart = (event, columnId: string) => {
-    const { clientX, clientY, target } = event
-    const prevState = draggingState.current
-
-    clearDroppingState()
-    draggingState.current = {
-      ...prevState,
-      isDragging: true,
-      origin: { x: clientX, y: clientY },
-      columnId,
-      width:
-        (target && target.offsetParent && target.offsetParent.width) || "80px",
-      height:
-        (target && target.offsetParent && target.offsetParent.height) || "3rem",
-      columnOrder: visibleColumns.map(d => d.id),
-    }
-  }
-
-  const handleDragOver = useCallback(
-    ({ clientX, clientY }, dropColumnId) => {
-      clearDroppingState()
-      const translation = {
-        x: clientX,
-        y: clientY,
-      }
-      const prevState = draggingState.current
-
-      draggingState.current = {
-        ...prevState,
-        translation,
-      }
-      droppingState.current.columnId = dropColumnId
-      droppingState.current.validTarget = true
-      let droppableColumn = columnsRef.current.find(
-        col => col.columnId === dropColumnId
-      )
-
-      if (droppableColumn && droppableColumn.ref) {
-        droppableColumn.ref.classList.add("drop-allow")
-      }
-    },
-    [draggingState.current.origin]
-  )
-
-  const handleDrop = useCallback((event, dropColumnId) => {
-    const prevDragState = draggingState.current
-    const dragColumnId = draggingState.current.columnId
-    if (dropColumnId !== dragColumnId) {
-      let columnIds = visibleColumns.map(d => d.id)
-
-      //delete and insert the column at new index
-      columnIds.splice(columnIds.indexOf(dragColumnId), 1)
-      columnIds.splice(columnIds.indexOf(dropColumnId), 0, dragColumnId)
-
-      setColumnOrder(columnIds)
-    }
-    draggingState.current = {
-      ...prevDragState,
-      isDragging: false,
-    }
-  }, [])
-
-  const handleDragEnd = useCallback((event, dropColumnId) => {
-    const prevDragState = draggingState.current
-
-    // If true last drop wasn't successful and reset the column order
-    if (draggingState.current.isDragging) {
-      setColumnOrder(draggingState.current.columnOrder)
-
-      draggingState.current = {
-        ...prevDragState,
-        isDragging: false,
-      }
-    }
-  }, [])
-
-  const pushColumnRef = useCallback((columnId: string, ref: any) => {
-    let refs = columnsRef.current
-      ? columnsRef.current.filter(col => col.columnId !== columnId)
-      : []
-    refs.push({ columnId, ref })
-
-    columnsRef.current = refs
-  }, [])
-
-  useEffect(() => {
-    bodyRef.current = document.body
-  }, [])
-
-  useEffect(() => {
-    if (draggingState.current.isDragging) {
-      // window.addEventListener("mousemove", handleMouseMove)
-      // window.addEventListener("mouseup", handleMouseUp)
-    } else {
-      // window.removeEventListener("mousemove", handleMouseMove)
-      // window.removeEventListener("mouseup", handleMouseUp)
-
-      const prevState = draggingState.current
-      draggingState.current = {
-        ...prevState,
-        translation: POSITION,
-        columnId: null,
-      }
-      clearDroppingState()
-      forceUpdate()
-    }
-  }, [draggingState.current.isDragging])
-
-  const dragItemStyle = useMemo(
-    () => ({
-      width: draggingState.current.width,
-      height: draggingState.current.height,
-      transform: `translate(calc(${draggingState.current.translation.x}px - 10%), calc(${draggingState.current.translation.y}px - 50%))`,
-      msTransform: `translateX(${draggingState.current.translation.x}px) translateX(-10%) translateY(${draggingState.current.translation.y}px) translateY(-50%)`,
-      zIndex: 9999,
-      left: 0,
-      top: 0,
-      position: "absolute",
-      cursor: draggingState.current.isDragging
-        ? "-webkit-grabbing"
-        : "-webkit-grab",
-    }),
-    [draggingState.current]
-  )
 
   return (
     <>
@@ -537,8 +390,8 @@ export function DataTable(
                         <DataTableHeaderCell
                           key={column.id}
                           header={column}
-                          updateRef={(columnId, ref) =>
-                            pushColumnRef(columnId, ref)
+                          registerRef={(columnId, ref) =>
+                            registerColumnRef(columnId, ref)
                           }
                           onHeaderContextMenu={(event, headerColumn) =>
                             handleHeaderContextMenu(
@@ -547,18 +400,11 @@ export function DataTable(
                               containerRef
                             )
                           }
-                          onDragHeaderStart={(event, columnId) =>
-                            handleDragStart(event, columnId)
-                          }
-                          onDragHeaderOver={(event, columnId) =>
-                            handleDragOver(event, columnId)
-                          }
-                          onDropHeader={(event, columnId) =>
-                            handleDrop(event, columnId)
-                          }
-                          onDragHeaderEnd={(event, columnId) =>
-                            handleDragEnd(event, columnId)
-                          }
+                          onDragHeaderStart={handleDragStart}
+                          onDragHeaderOver={handleDragOver}
+                          onDropHeader={handleDrop}
+                          onDragHeaderEnd={handleDragEnd}
+                          onDragHeaderEnter={handleDragEnter}
                           onToggleHideColumn={toggleHideColumn}
                           allowDrag={column.allowDrag}
                           allowDrop={column.allowDrop}
@@ -620,15 +466,6 @@ export function DataTable(
               className="border border-tertiary"
             ></TablePagination>
           )}
-
-          {/* {draggingState.current.isDragging &&
-            bodyRef.current &&
-            createPortal(
-              <div className="d-flex bg-gray-light" style={dragItemStyle}>
-                Header
-              </div>,
-              bodyRef.current
-            )} */}
         </div>
       </DataTableStyled>
 
