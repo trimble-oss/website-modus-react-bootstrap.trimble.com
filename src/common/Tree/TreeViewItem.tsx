@@ -1,17 +1,16 @@
-import React, { useContext, useRef } from "react"
-import PropTypes, { node } from "prop-types"
-import TreeViewContext from "./TreeViewContext"
-import TreeViewItemContext from "./TreeViewItemContext"
+import React, { useContext, useEffect } from "react"
+import PropTypes from "prop-types"
 import classNames from "classnames"
+import _findIndex from "lodash/findIndex"
+import _every from "lodash/every"
+import _merge from "lodash/merge"
 import { Form } from "@trimbleinc/modus-react-bootstrap"
 import TreeViewItemStyled, {
   TreeViewItemGroupStyled,
 } from "./TreeViewItemStyled"
+import TreeViewContext from "./TreeViewContext"
+import TreeViewItemContext from "./TreeViewItemContext"
 import { TreeItem } from "./types"
-import _findIndex from "lodash/findIndex"
-import _every from "lodash/every"
-import _merge from "lodash/merge"
-import useForceUpdate from "@restart/hooks/useForceUpdate"
 import { useDescendant } from "./useDescendant"
 
 export interface TreeViewItemProps
@@ -71,7 +70,7 @@ const IndeterminateCheckbox = React.forwardRef<
   const defaultRef = React.useRef<HTMLInputElement>(null)
   const resolvedRef = ref || defaultRef
 
-  React.useEffect(() => {
+  useEffect(() => {
     ;(
       resolvedRef as React.MutableRefObject<HTMLInputElement>
     ).current.indeterminate = indeterminate
@@ -144,6 +143,7 @@ const TreeViewItem = React.forwardRef<HTMLDivElement, TreeViewItemProps>(
         ? isIndeterminate(nodeId)
         : false
     const inFocus = isNodeInFocus(nodeId)
+    const defaultTabIndex = disabled ? -1 : 0
 
     const finalExpandIcon = expandIcon || defaultExpandIcon || (
       <i className="modus-icons">chevron_down_thick</i>
@@ -165,7 +165,7 @@ const TreeViewItem = React.forwardRef<HTMLDivElement, TreeViewItemProps>(
       onDescendantToggleCbSelectionOnParent,
     } = useDescendant(nodeId, isCheckBoxSelected, toggleMultiCheckBoxSelection)
 
-    React.useEffect(() => {
+    useEffect(() => {
       const node = { id: nodeId, parentId, label, disabled }
       registerNode && registerNode(node)
 
@@ -174,7 +174,7 @@ const TreeViewItem = React.forwardRef<HTMLDivElement, TreeViewItemProps>(
       }
     }, [registerNode, unRegisterNode, nodeId, parentId, label])
 
-    React.useEffect(() => {
+    useEffect(() => {
       let ele = (resolvedRef as React.MutableRefObject<HTMLInputElement>)
         .current
       if (inFocus) ele.focus()
@@ -187,7 +187,7 @@ const TreeViewItem = React.forwardRef<HTMLDivElement, TreeViewItemProps>(
       [toggleNodeSelection]
     )
 
-    function getChildren(array: TreeItem[]): number[] {
+    const getChildren = (array: TreeItem[]): number[] => {
       if (!array) return []
       return array.reduce((r, { id, children }) => {
         r.push(id, ...getChildren(children))
@@ -248,10 +248,10 @@ const TreeViewItem = React.forwardRef<HTMLDivElement, TreeViewItemProps>(
           aria-disabled={disabled}
           aria-level={level}
           className={classNames(disabled && "disabled", className)}
-          tabIndex={0}
+          tabIndex={defaultTabIndex}
           onFocus={e => focusNode(e, nodeId)}
           onKeyDown={e => {
-            onKeyPress(e, () => toggleNodeSelection(e, nodeId))
+            onKeyPress(e, nodeId, () => toggleNodeSelection(e, nodeId))
           }}
           ref={ref}
           {...rest}
@@ -266,16 +266,17 @@ const TreeViewItem = React.forwardRef<HTMLDivElement, TreeViewItemProps>(
             <div className="d-flex">
               <div
                 className="d-flex align-items-center drag-icon"
-                tabIndex={finalDragIcon ? 0 : -1}
+                tabIndex={finalDragIcon ? defaultTabIndex : -1}
               >
                 {finalDragIcon || blankIcon}
               </div>
+              <span className="tree-item-level" />
               <div
                 onClick={expandable ? handleExpansion : () => {}}
-                className="d-flex align-items-center expand-icon"
-                tabIndex={expandable ? 0 : -1}
+                className="d-flex align-items-center"
+                tabIndex={expandable ? defaultTabIndex : -1}
                 onKeyDown={e => {
-                  onKeyPress(e, () => toggleExpansion(e, nodeId))
+                  onKeyPress(e, nodeId, () => toggleExpansion(e, nodeId))
                 }}
               >
                 {expandable
@@ -287,7 +288,10 @@ const TreeViewItem = React.forwardRef<HTMLDivElement, TreeViewItemProps>(
             </div>
 
             {checkBoxSelection && (
-              <div className="d-flex align-items-center" tabIndex={0}>
+              <div
+                className="d-flex align-items-center"
+                tabIndex={defaultTabIndex}
+              >
                 <IndeterminateCheckbox
                   checked={checkBoxSelected}
                   id={`${rootId}_cbselection_${nodeId}`}
@@ -298,7 +302,10 @@ const TreeViewItem = React.forwardRef<HTMLDivElement, TreeViewItemProps>(
             )}
 
             {finalItemIcon && (
-              <div className="d-flex align-items-center" tabIndex={0}>
+              <div
+                className="d-flex align-items-center"
+                tabIndex={defaultTabIndex}
+              >
                 {finalItemIcon}
               </div>
             )}

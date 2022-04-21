@@ -120,7 +120,8 @@ const TreeView = React.forwardRef<HTMLUListElement, TreeViewProps>(
   ) => {
     const nodes = React.useRef({})
     const expandedProp = React.useRef([])
-    const [focusNodeId, setFocusNodeId] = React.useState<number>()
+    const [focusNodeState, setFocusNodeState] =
+      React.useState<{ id: number; tabKey: boolean }>()
     const [nodesExpanded, setExpanded] = React.useState<number[]>(
       [].concat(defaultExpanded)
     )
@@ -207,10 +208,13 @@ const TreeView = React.forwardRef<HTMLUListElement, TreeViewProps>(
       []
     )
 
-    const focusNode = React.useCallback((event: any, nodeId: number) => {
-      setFocusNodeId(nodeId)
-      event.stopPropagation()
-    }, [])
+    const focusNode = React.useCallback(
+      (event: any, nodeId: number, tabKey = false) => {
+        setFocusNodeState({ id: nodeId, tabKey })
+        event.stopPropagation()
+      },
+      []
+    )
 
     // Verifiers
     const isExpanded = React.useCallback(
@@ -257,9 +261,9 @@ const TreeView = React.forwardRef<HTMLUListElement, TreeViewProps>(
 
     const isNodeInFocus = React.useCallback(
       (nodeId: number) => {
-        return focusNodeId === nodeId
+        return focusNodeState && focusNodeState.id === nodeId
       },
-      [focusNodeId]
+      [focusNodeState]
     )
 
     const isNodeDisabled = React.useCallback(
@@ -332,7 +336,7 @@ const TreeView = React.forwardRef<HTMLUListElement, TreeViewProps>(
       return newSelected
     }
 
-    const handleKeyDown = (event, enterKeyPressAction) => {
+    const handleKeyDown = (event, nodeId, enterKeyPressAction) => {
       let flag = false
       const key = event.key
 
@@ -340,7 +344,8 @@ const TreeView = React.forwardRef<HTMLUListElement, TreeViewProps>(
       if (
         event.altKey ||
         event.currentTarget !== event.target ||
-        !focusNodeId
+        !focusNodeState ||
+        !focusNodeState.id
       ) {
         return
       }
@@ -374,16 +379,16 @@ const TreeView = React.forwardRef<HTMLUListElement, TreeViewProps>(
           // if (multiSelect && event.shiftKey && !disableSelection) {
           //   selectNextNode(event, focusedNodeId)
           // }
-          debugger
-          focusNode(event, getNextNavigatableNode(focusNodeId))
+
+          focusNode(event, getNextNavigatableNode(focusNodeState.id))
           flag = true
           break
         case "ArrowUp":
           // if (multiSelect && event.shiftKey && !disableSelection) {
           //   selectPreviousNode(event, focusedNodeId)
           // }
-          debugger
-          focusNode(event, getPreviousNavigatableNode(focusNodeId))
+
+          focusNode(event, getPreviousNavigatableNode(focusNodeState.id))
           flag = true
           break
         case "ArrowRight":
@@ -392,7 +397,8 @@ const TreeView = React.forwardRef<HTMLUListElement, TreeViewProps>(
           // } else {
           //   flag = handleNextArrow(event)
           // }
-          if (!isExpanded(focusNodeId)) toggleExpansion(event, focusNodeId)
+          if (!isExpanded(focusNodeState.id))
+            toggleExpansion(event, focusNodeState.id)
           break
         case "ArrowLeft":
           // if (isRtl) {
@@ -400,7 +406,8 @@ const TreeView = React.forwardRef<HTMLUListElement, TreeViewProps>(
           // } else {
           //   flag = handlePreviousArrow(event)
           // }
-          if (isExpanded(focusNodeId)) toggleExpansion(event, focusNodeId)
+          if (isExpanded(focusNodeState.id))
+            toggleExpansion(event, focusNodeState.id)
           break
 
         default:
@@ -496,7 +503,7 @@ const TreeView = React.forwardRef<HTMLUListElement, TreeViewProps>(
         node = nodes.current[node.parentId]
       }
 
-      return null
+      return id
     }
 
     const getPreviousNavigatableNode = id => {
@@ -505,7 +512,7 @@ const TreeView = React.forwardRef<HTMLUListElement, TreeViewProps>(
       const nodeIndex = siblings.indexOf(id)
 
       if (nodeIndex === 0) {
-        return node.parentId
+        return node.parentId || id
       }
 
       let currentNode = siblings[nodeIndex - 1]

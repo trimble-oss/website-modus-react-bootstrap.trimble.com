@@ -25,8 +25,12 @@ export interface TreeViewContextType {
     selected?: number[],
     unselected?: number[]
   ) => void
-  focusNode: (event: any, nodeId: number) => void
-  onKeyPress: (event: any, enterKeyPressAction: () => void) => void
+  focusNode: (event: any, nodeId: number, tabKey?: boolean) => void
+  onKeyPress: (
+    event: any,
+    nodeId: number,
+    enterKeyPressAction: () => void
+  ) => void
 }
 
 const TreeViewContext = React.createContext<TreeViewContextType>(null)

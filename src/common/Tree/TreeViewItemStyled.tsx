@@ -62,7 +62,7 @@ const TreeViewItemStyled = styled(TreeViewItemStyleWrapper)`
       .drag-icon > * {
         font-size: 1rem !important;
       }
-      .expand-icon {
+      .tree-item-level {
         padding-left: ${props =>
           props.level > 0 ? (props.level - 1) * 0.5 : 0}rem !important;
       }
