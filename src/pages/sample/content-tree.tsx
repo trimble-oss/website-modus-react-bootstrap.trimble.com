@@ -5,16 +5,16 @@ import {
   FormControl,
   Row,
 } from "@trimbleinc/modus-react-bootstrap"
-import DefaultLayout from "../layouts/DefaultLayout"
+import DefaultLayout from "../../layouts/DefaultLayout"
 import {
   ModusIconsScripts,
   ModusLayoutScripts,
-} from "../common/ExternalDependencyHelper"
-import TreeViewItem from "../common/Tree/TreeViewItem"
-import TreeView from "../common/Tree/TreeView"
+} from "../../common/ExternalDependencyHelper"
+import TreeViewItem from "../../common/Tree/TreeViewItem"
+import TreeView from "../../common/Tree/TreeView"
 import styled from "styled-components"
 import findIndex from "lodash/findIndex"
-import { TreeNode as Node } from "../examples/components/ContentTree"
+import { TreeNode as Node } from "../../examples/components/ContentTree"
 import { useEffect, useCallback, useState, useMemo, useRef } from "react"
 import useForceUpdate from "@restart/hooks/useForceUpdate"
 import { createPortal } from "react-dom"

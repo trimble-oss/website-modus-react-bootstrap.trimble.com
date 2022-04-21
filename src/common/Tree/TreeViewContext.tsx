@@ -16,6 +16,7 @@ export interface TreeViewContextType {
   isNodeSelected: (nodeId: number) => boolean
   isIndeterminate: (nodeId: number) => boolean
   isCheckBoxSelected: (nodeId: number) => boolean
+  isNodeInFocus: (nodeId: number) => boolean
   toggleExpansion: (event: any, nodeId: number) => void
   toggleNodeSelection: (event: any, nodeId: number) => void
   toggleSingleCheckBoxSelection: (event: any, nodeId: number) => void
@@ -24,6 +25,8 @@ export interface TreeViewContextType {
     selected?: number[],
     unselected?: number[]
   ) => void
+  focusNode: (event: any, nodeId: number) => void
+  onKeyPress: (event: any, enterKeyPressAction: () => void) => void
 }
 
 const TreeViewContext = React.createContext<TreeViewContextType>(null)

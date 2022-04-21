@@ -65,8 +65,9 @@ const IndeterminateCheckbox = React.forwardRef<
     indeterminate?: any
     onClick?: (...args: any[]) => void
     checked?: boolean
+    tabIndex?: number
   }
->(({ id, indeterminate, checked, onClick, ...props }, ref) => {
+>(({ id, indeterminate, checked, tabIndex, onClick, ...props }, ref) => {
   const defaultRef = React.useRef<HTMLInputElement>(null)
   const resolvedRef = ref || defaultRef
 
@@ -83,6 +84,7 @@ const IndeterminateCheckbox = React.forwardRef<
       checked={checked}
       ref={resolvedRef}
       onClick={onClick}
+      tabIndex={tabIndex}
       {...props}
     />
   )
@@ -104,17 +106,22 @@ const TreeViewItem = React.forwardRef<HTMLDivElement, TreeViewItemProps>(
     }: TreeViewItemProps,
     ref
   ) => {
+    const defaultRef = React.useRef<HTMLDivElement>(null)
+    const resolvedRef = ref || defaultRef
     const {
       id: rootId,
       registerNode,
       unRegisterNode,
       isExpanded,
+      isNodeInFocus,
       isNodeSelected,
       isCheckBoxSelected,
       toggleExpansion,
       toggleNodeSelection,
       toggleSingleCheckBoxSelection,
       toggleMultiCheckBoxSelection,
+      focusNode,
+      onKeyPress,
       isIndeterminate,
       checkBoxSelection,
       multiSelectCheckBox,
@@ -136,6 +143,7 @@ const TreeViewItem = React.forwardRef<HTMLDivElement, TreeViewItemProps>(
       checkBoxSelection && expandable && isIndeterminate
         ? isIndeterminate(nodeId)
         : false
+    const inFocus = isNodeInFocus(nodeId)
 
     const finalExpandIcon = expandIcon || defaultExpandIcon || (
       <i className="modus-icons">chevron_down_thick</i>
@@ -158,13 +166,19 @@ const TreeViewItem = React.forwardRef<HTMLDivElement, TreeViewItemProps>(
     } = useDescendant(nodeId, isCheckBoxSelected, toggleMultiCheckBoxSelection)
 
     React.useEffect(() => {
-      const node = { id: nodeId, parentId, label }
+      const node = { id: nodeId, parentId, label, disabled }
       registerNode && registerNode(node)
 
       return () => {
         unRegisterNode && unRegisterNode(nodeId)
       }
     }, [registerNode, unRegisterNode, nodeId, parentId, label])
+
+    React.useEffect(() => {
+      let ele = (resolvedRef as React.MutableRefObject<HTMLInputElement>)
+        .current
+      if (inFocus) ele.focus()
+    }, [resolvedRef, inFocus])
 
     const handleNodeSelection = React.useCallback(
       (e: any) => {
@@ -234,6 +248,11 @@ const TreeViewItem = React.forwardRef<HTMLDivElement, TreeViewItemProps>(
           aria-disabled={disabled}
           aria-level={level}
           className={classNames(disabled && "disabled", className)}
+          tabIndex={0}
+          onFocus={e => focusNode(e, nodeId)}
+          onKeyDown={e => {
+            onKeyPress(e, () => toggleNodeSelection(e, nodeId))
+          }}
           ref={ref}
           {...rest}
         >
@@ -245,12 +264,19 @@ const TreeViewItem = React.forwardRef<HTMLDivElement, TreeViewItemProps>(
             )}
           >
             <div className="d-flex">
-              <div className="d-flex align-items-center drag-icon">
+              <div
+                className="d-flex align-items-center drag-icon"
+                tabIndex={finalDragIcon ? 0 : -1}
+              >
                 {finalDragIcon || blankIcon}
               </div>
               <div
                 onClick={expandable ? handleExpansion : () => {}}
                 className="d-flex align-items-center expand-icon"
+                tabIndex={expandable ? 0 : -1}
+                onKeyDown={e => {
+                  onKeyPress(e, () => toggleExpansion(e, nodeId))
+                }}
               >
                 {expandable
                   ? expanded
@@ -261,7 +287,7 @@ const TreeViewItem = React.forwardRef<HTMLDivElement, TreeViewItemProps>(
             </div>
 
             {checkBoxSelection && (
-              <div className="d-flex align-items-center">
+              <div className="d-flex align-items-center" tabIndex={0}>
                 <IndeterminateCheckbox
                   checked={checkBoxSelected}
                   id={`${rootId}_cbselection_${nodeId}`}
@@ -272,7 +298,9 @@ const TreeViewItem = React.forwardRef<HTMLDivElement, TreeViewItemProps>(
             )}
 
             {finalItemIcon && (
-              <div className="d-flex align-items-center">{finalItemIcon}</div>
+              <div className="d-flex align-items-center" tabIndex={0}>
+                {finalItemIcon}
+              </div>
             )}
             <div
               onClick={handleNodeSelection}

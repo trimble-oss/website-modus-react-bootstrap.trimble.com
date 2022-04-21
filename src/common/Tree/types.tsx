@@ -5,4 +5,5 @@ export type TreeItem = {
   parentId: number
   label?: ReactNode
   children?: TreeItem[]
+  disabled?: boolean
 }
