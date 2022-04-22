@@ -362,26 +362,10 @@ const TreeView = React.forwardRef<HTMLUListElement, TreeViewProps>(
 
       switch (key) {
         case " ":
-          // if (!disableSelection && !isDisabled(focusedNodeId)) {
-          //   if (multiSelect && event.shiftKey) {
-          //     selectRange(event, { end: focusedNodeId })
-          //     flag = true
-          //   } else if (multiSelect) {
-          //     flag = selectNode(event, focusedNodeId, true)
-          //   } else {
-          //     flag = selectNode(event, focusedNodeId)
-          //   }
-          // }
           toggleExpansion(event, focusNodeId)
           event.stopPropagation()
           break
         case "Enter":
-          // if (!isDisabled(focusedNodeId)) {
-          //   if (isExpandable(focusedNodeId)) {
-          //     toggleExpansion(event)
-          //     flag = true
-          //   }
-          // }
           enterKeyPressAction()
           event.stopPropagation()
           break
@@ -404,42 +388,13 @@ const TreeView = React.forwardRef<HTMLUListElement, TreeViewProps>(
           flag = true
           break
         case "ArrowRight":
-          // if (isRtl) {
-          //   flag = handlePreviousArrow(event)
-          // } else {
-          //   flag = handleNextArrow(event)
-          // }
           if (!isExpanded(focusNodeId)) toggleExpansion(event, focusNodeId)
           break
         case "ArrowLeft":
-          // if (isRtl) {
-          //   flag = handleNextArrow(event)
-          // } else {
-          //   flag = handlePreviousArrow(event)
-          // }
           if (isExpanded(focusNodeId)) toggleExpansion(event, focusNodeId)
           break
 
         default:
-        // if (key === "*") {
-        //   expandAllSiblings(event, focusedNodeId)
-        //   flag = true
-        // } else if (
-        //   multiSelect &&
-        //   ctrlPressed &&
-        //   key.toLowerCase() === "a" &&
-        //   !disableSelection
-        // ) {
-        //   selectAllNodes(event)
-        //   flag = true
-        // } else if (
-        //   !ctrlPressed &&
-        //   !event.shiftKey &&
-        //   isPrintableCharacter(key)
-        // ) {
-        //   focusByFirstCharacter(event, focusedNodeId, key)
-        //   flag = true
-        // }
       }
 
       if (flag) {
