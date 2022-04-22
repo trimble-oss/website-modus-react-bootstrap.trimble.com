@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useRef, useCallback, useState, useEffect } from "react"
 import PropTypes from "prop-types"
 import TreeViewContext from "./TreeViewContext"
 import { TreeItem } from "./types"
@@ -118,25 +118,25 @@ const TreeView = React.forwardRef<HTMLUListElement, TreeViewProps>(
     },
     ref
   ) => {
-    const nodes = React.useRef({})
-    const expandedProp = React.useRef([])
-    const [focusNodeId, setFocusNodeId] = React.useState<number>()
-    const [nodesExpanded, setExpanded] = React.useState<number[]>(
+    const nodes = useRef({})
+    const expandedProp = useRef([])
+    const [focusNodeId, setFocusNodeId] = useState<number>()
+    const [nodesExpanded, setExpanded] = useState<number[]>(
       [].concat(defaultExpanded)
     )
-    const [nodesSelected, setNodeSelected] = React.useState<number[]>(
+    const [nodesSelected, setNodeSelected] = useState<number[]>(
       [].concat(
         defaultSelected && defaultSelected.length > 1 && !multiSelectNode
           ? [defaultSelected[0]]
           : defaultSelected
       )
     )
-    const [nodeCheckBoxSelected, setNodeCheckBoxSelected] = React.useState<
-      number[]
-    >([])
+    const [nodeCheckBoxSelected, setNodeCheckBoxSelected] = useState<number[]>(
+      []
+    )
 
     // Update nodesExpanded state only when the API expanded value changes
-    React.useEffect(() => {
+    useEffect(() => {
       if (expanded !== undefined && expandedProp.current !== expanded) {
         expandedProp.current = expanded
         setExpanded(expanded)
@@ -145,17 +145,17 @@ const TreeView = React.forwardRef<HTMLUListElement, TreeViewProps>(
 
     // Tree view context
     // Actions
-    const registerNode = React.useCallback((node: TreeItem) => {
+    const registerNode = useCallback((node: TreeItem) => {
       nodes.current[node.id] = node
     }, [])
 
-    const unRegisterNode = React.useCallback((nodeId: number) => {
+    const unRegisterNode = useCallback((nodeId: number) => {
       const newNodes = { ...nodes.current }
       delete newNodes[nodeId]
       nodes.current = newNodes
     }, [])
 
-    const toggleExpansion = React.useCallback((event: any, nodeId: number) => {
+    const toggleExpansion = useCallback((event: any, nodeId: number) => {
       let newExpanded = []
       setExpanded(prevState => {
         let oldExpanded = prevState || []
@@ -172,18 +172,15 @@ const TreeView = React.forwardRef<HTMLUListElement, TreeViewProps>(
       })
     }, [])
 
-    const toggleNodeSelection = React.useCallback(
-      (event: any, nodeId: number) => {
-        // TODO: implement shift + click, ctrl + click for multi selection on node
+    const toggleNodeSelection = useCallback((event: any, nodeId: number) => {
+      // TODO: implement shift + click, ctrl + click for multi selection on node
 
-        const multiple =
-          multiSelectNode && (event.shiftKey || event.ctrlKey || event.metaKey)
-        handleSelection(event, nodeId, setNodeSelected, onNodeSelect, multiple)
-      },
-      []
-    )
+      const multiple =
+        multiSelectNode && (event.shiftKey || event.ctrlKey || event.metaKey)
+      handleSelection(event, nodeId, setNodeSelected, onNodeSelect, multiple)
+    }, [])
 
-    const toggleSingleCheckBoxSelection = React.useCallback(
+    const toggleSingleCheckBoxSelection = useCallback(
       (event: any, nodeId: number) => {
         handleSelection(
           event,
@@ -196,7 +193,7 @@ const TreeView = React.forwardRef<HTMLUListElement, TreeViewProps>(
       []
     )
 
-    const toggleMultiCheckBoxSelection = React.useCallback(
+    const toggleMultiCheckBoxSelection = useCallback(
       (event: any, selected: number[], unselected: number[]) => {
         setNodeCheckBoxSelected(oldItems => {
           const newItems = [
@@ -210,7 +207,7 @@ const TreeView = React.forwardRef<HTMLUListElement, TreeViewProps>(
       []
     )
 
-    const focusNode = React.useCallback(
+    const focusNode = useCallback(
       (event: any, nodeId: number, tabKey = false) => {
         setFocusNodeId(nodeId)
         event.stopPropagation()
@@ -219,7 +216,7 @@ const TreeView = React.forwardRef<HTMLUListElement, TreeViewProps>(
     )
 
     // Verifiers
-    const isExpanded = React.useCallback(
+    const isExpanded = useCallback(
       (nodeId: number) =>
         Array.isArray(nodesExpanded)
           ? nodesExpanded.indexOf(nodeId) !== -1
@@ -227,14 +224,14 @@ const TreeView = React.forwardRef<HTMLUListElement, TreeViewProps>(
       [nodesExpanded]
     )
 
-    const isNodeSelected = React.useCallback(
+    const isNodeSelected = useCallback(
       (nodeId: number) => {
         return nodesSelected.indexOf(nodeId) !== -1
       },
       [nodesSelected]
     )
 
-    const isCheckBoxSelected = React.useCallback(
+    const isCheckBoxSelected = useCallback(
       (nodeId: number) =>
         Array.isArray(nodeCheckBoxSelected)
           ? nodeCheckBoxSelected.indexOf(nodeId) !== -1
@@ -242,7 +239,7 @@ const TreeView = React.forwardRef<HTMLUListElement, TreeViewProps>(
       [nodeCheckBoxSelected]
     )
 
-    const isIndeterminate = React.useCallback(
+    const isIndeterminate = useCallback(
       (nodeId: number) => {
         const childNodes = getChildrenIds(getNodesArray(), nodeId)
         if (!childNodes || childNodes.length === 0) return false
@@ -261,14 +258,14 @@ const TreeView = React.forwardRef<HTMLUListElement, TreeViewProps>(
       [nodeCheckBoxSelected]
     )
 
-    const isNodeInFocus = React.useCallback(
+    const isNodeInFocus = useCallback(
       (nodeId: number) => {
         return focusNodeId === nodeId
       },
       [focusNodeId]
     )
 
-    const isNodeDisabled = React.useCallback(
+    const isNodeDisabled = useCallback(
       (nodeId: number) => {
         return nodes.current[nodeId] ? nodes.current[nodeId].disabled : false
       },
@@ -295,31 +292,38 @@ const TreeView = React.forwardRef<HTMLUListElement, TreeViewProps>(
 
     const handleMultipleSelect = (
       value,
-      setStatefn: (value: React.SetStateAction<number[]>) => void
+      setStatefn: (value: React.SetStateAction<number[]>) => void,
+      recursive = false
     ): number[] => {
-      let newSelected
+      let newSelected = []
 
       setStatefn(prevState => {
         const oldSelected = prevState || []
-        const array = getNodesArray()
-        const childNodes = getChildrenIds(array, value)
 
-        // unselect parents and children
-        if (oldSelected.indexOf(value) !== -1) {
-          const parents = getParents(value)
-          let filtered = oldSelected.filter(
-            id =>
-              childNodes.indexOf(id) < 0 &&
-              id !== value &&
-              parents.indexOf(id) < 0
-          )
+        if (recursive) {
+          const array = getNodesArray()
+          const childNodes = getChildrenIds(array, value)
+          // unselect parents and children
+          if (oldSelected.indexOf(value) !== -1) {
+            const parents = getParents(value)
+            let filtered = oldSelected.filter(
+              id =>
+                childNodes.indexOf(id) < 0 &&
+                id !== value &&
+                parents.indexOf(id) < 0
+            )
 
-          newSelected = filtered
-        }
-        // select children and parents with all child nodes selected
-        else {
-          let filtered = oldSelected.filter(id => childNodes.indexOf(id) < 0)
-          newSelected = filtered.concat([value], childNodes)
+            newSelected = filtered
+          }
+          // select children and parents with all child nodes selected
+          else {
+            let filtered = oldSelected.filter(id => childNodes.indexOf(id) < 0)
+            newSelected = filtered.concat([value], childNodes)
+          }
+        } else {
+          if (oldSelected.includes(value))
+            newSelected = oldSelected.filter(id => id !== value)
+          else newSelected = oldSelected.concat(value)
         }
 
         return newSelected

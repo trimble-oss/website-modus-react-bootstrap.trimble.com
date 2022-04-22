@@ -40,8 +40,14 @@ const TreeViewItemStyled = styled(TreeViewItemStyleWrapper)`
   &.focus-visible,
   *:focus-visible {
     box-shadow: none !important;
-    border: 2px solid #0063a3 !important;
-    outline: none !important;
+    outline: 2px solid #0063a3 !important;
+  }
+  .custom-control-input:focus-visible {
+    & ~ .custom-control-label::before,
+    & ~ .custom-control-label::after {
+      box-shadow: none !important;
+      outline: 2px solid #0063a3 !important;
+    }
   }
 
   li.list-group-item {
@@ -54,14 +60,15 @@ const TreeViewItemStyled = styled(TreeViewItemStyleWrapper)`
           props.itemIcon == "true" &&
           "min-content"} auto min-content !important;
 
+      .drag-icon > * {
+        font-size: 1rem !important;
+      }
       .modus-icons,
       .material-icons {
         cursor: pointer;
         font-size: 1.25rem !important;
       }
-      .drag-icon > * {
-        font-size: 1rem !important;
-      }
+
       .tree-item-level {
         padding-left: ${props =>
           props.level > 0 ? (props.level - 1) * 0.5 : 0}rem !important;

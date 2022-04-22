@@ -63,31 +63,38 @@ const IndeterminateCheckbox = React.forwardRef<
     id: string
     indeterminate?: any
     onClick?: (...args: any[]) => void
+    onKeydown?: (...args: any[]) => void
     checked?: boolean
     tabIndex?: number
   }
->(({ id, indeterminate, checked, tabIndex, onClick, ...props }, ref) => {
-  const defaultRef = React.useRef<HTMLInputElement>(null)
-  const resolvedRef = ref || defaultRef
+>(
+  (
+    { id, indeterminate, checked, tabIndex, onClick, onKeydown, ...props },
+    ref
+  ) => {
+    const defaultRef = React.useRef<HTMLInputElement>(null)
+    const resolvedRef = ref || defaultRef
 
-  useEffect(() => {
-    ;(
-      resolvedRef as React.MutableRefObject<HTMLInputElement>
-    ).current.indeterminate = indeterminate
-  }, [resolvedRef, indeterminate])
+    useEffect(() => {
+      ;(
+        resolvedRef as React.MutableRefObject<HTMLInputElement>
+      ).current.indeterminate = indeterminate
+    }, [resolvedRef, indeterminate])
 
-  return (
-    <Form.Check
-      custom
-      id={id}
-      checked={checked}
-      ref={resolvedRef}
-      onClick={onClick}
-      tabIndex={tabIndex}
-      {...props}
-    />
-  )
-})
+    return (
+      <Form.Check
+        custom
+        id={id}
+        checked={checked}
+        ref={resolvedRef}
+        onClick={onClick}
+        onKeyDown={onKeydown}
+        tabIndex={tabIndex}
+        {...props}
+      />
+    )
+  }
+)
 
 const TreeViewItem = React.forwardRef<HTMLDivElement, TreeViewItemProps>(
   (
@@ -188,14 +195,6 @@ const TreeViewItem = React.forwardRef<HTMLDivElement, TreeViewItemProps>(
       [toggleNodeSelection]
     )
 
-    const getChildren = (array: TreeItem[]): number[] => {
-      if (!array) return []
-      return array.reduce((r, { id, children }) => {
-        r.push(id, ...getChildren(children))
-        return r
-      }, [])
-    }
-
     const handleCheckBoxSelection = React.useCallback(
       (e: any) => {
         e.stopPropagation()
@@ -237,6 +236,14 @@ const TreeViewItem = React.forwardRef<HTMLDivElement, TreeViewItemProps>(
       [toggleExpansion]
     )
 
+    const getChildren = (array: TreeItem[]): number[] => {
+      if (!array) return []
+      return array.reduce((r, { id, children }) => {
+        r.push(id, ...getChildren(children))
+        return r
+      }, [])
+    }
+
     return (
       <>
         <TreeViewItemStyled
@@ -264,9 +271,10 @@ const TreeViewItem = React.forwardRef<HTMLDivElement, TreeViewItemProps>(
               disabled && "disabled"
             )}
           >
-            <div className="d-flex">
+            <div className="d-flex align-items-center">
               <div
-                className="d-flex align-items-center drag-icon"
+                className="drag-icon"
+                style={{ display: "inline-flex" }}
                 tabIndex={finalDragIcon ? defaultTabIndex : -1}
               >
                 {finalDragIcon || blankIcon}
@@ -274,7 +282,7 @@ const TreeViewItem = React.forwardRef<HTMLDivElement, TreeViewItemProps>(
               <span className="tree-item-level" />
               <div
                 onClick={expandable ? handleExpansion : () => {}}
-                className="d-flex align-items-center"
+                style={{ display: "inline-flex" }}
                 tabIndex={expandable ? defaultTabIndex : -1}
                 onKeyDown={e => {
                   onKeyPress(e, () => toggleExpansion(e, nodeId))
@@ -296,6 +304,10 @@ const TreeViewItem = React.forwardRef<HTMLDivElement, TreeViewItemProps>(
                   onClick={handleCheckBoxSelection}
                   indeterminate={checkBoxIndeterminate}
                   tabIndex={defaultTabIndex}
+                  onKeydown={e => {
+                    if (e.key !== " ")
+                      onKeyPress(e, () => handleCheckBoxSelection(e))
+                  }}
                 />
               </div>
             )}
