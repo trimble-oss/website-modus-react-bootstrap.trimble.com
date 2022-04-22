@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from "react"
+import React, { useContext, useEffect, useRef, useState } from "react"
 import PropTypes from "prop-types"
 import classNames from "classnames"
 import _findIndex from "lodash/findIndex"
@@ -105,6 +105,7 @@ const TreeViewItem = React.forwardRef<HTMLDivElement, TreeViewItemProps>(
     }: TreeViewItemProps,
     ref
   ) => {
+    const [resetTabFocus, setResetTabFocus] = useState(false)
     const defaultRef = React.useRef<HTMLDivElement>(null)
     const resolvedRef = ref || defaultRef
     const {
@@ -251,7 +252,7 @@ const TreeViewItem = React.forwardRef<HTMLDivElement, TreeViewItemProps>(
           tabIndex={defaultTabIndex}
           onFocus={e => focusNode(e, nodeId)}
           onKeyDown={e => {
-            onKeyPress(e, nodeId, () => toggleNodeSelection(e, nodeId))
+            onKeyPress(e, () => toggleNodeSelection(e, nodeId))
           }}
           ref={ref}
           {...rest}
@@ -276,7 +277,7 @@ const TreeViewItem = React.forwardRef<HTMLDivElement, TreeViewItemProps>(
                 className="d-flex align-items-center"
                 tabIndex={expandable ? defaultTabIndex : -1}
                 onKeyDown={e => {
-                  onKeyPress(e, nodeId, () => toggleExpansion(e, nodeId))
+                  onKeyPress(e, () => toggleExpansion(e, nodeId))
                 }}
               >
                 {expandable
@@ -288,15 +289,13 @@ const TreeViewItem = React.forwardRef<HTMLDivElement, TreeViewItemProps>(
             </div>
 
             {checkBoxSelection && (
-              <div
-                className="d-flex align-items-center"
-                tabIndex={defaultTabIndex}
-              >
+              <div className="d-flex align-items-center">
                 <IndeterminateCheckbox
                   checked={checkBoxSelected}
                   id={`${rootId}_cbselection_${nodeId}`}
                   onClick={handleCheckBoxSelection}
                   indeterminate={checkBoxIndeterminate}
+                  tabIndex={defaultTabIndex}
                 />
               </div>
             )}

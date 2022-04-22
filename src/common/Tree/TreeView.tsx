@@ -120,8 +120,7 @@ const TreeView = React.forwardRef<HTMLUListElement, TreeViewProps>(
   ) => {
     const nodes = React.useRef({})
     const expandedProp = React.useRef([])
-    const [focusNodeState, setFocusNodeState] =
-      React.useState<{ id: number; tabKey: boolean }>()
+    const [focusNodeId, setFocusNodeId] = React.useState<number>()
     const [nodesExpanded, setExpanded] = React.useState<number[]>(
       [].concat(defaultExpanded)
     )
@@ -176,7 +175,10 @@ const TreeView = React.forwardRef<HTMLUListElement, TreeViewProps>(
     const toggleNodeSelection = React.useCallback(
       (event: any, nodeId: number) => {
         // TODO: implement shift + click, ctrl + click for multi selection on node
-        handleSelection(event, nodeId, setNodeSelected, onNodeSelect, false)
+
+        const multiple =
+          multiSelectNode && (event.shiftKey || event.ctrlKey || event.metaKey)
+        handleSelection(event, nodeId, setNodeSelected, onNodeSelect, multiple)
       },
       []
     )
@@ -210,7 +212,7 @@ const TreeView = React.forwardRef<HTMLUListElement, TreeViewProps>(
 
     const focusNode = React.useCallback(
       (event: any, nodeId: number, tabKey = false) => {
-        setFocusNodeState({ id: nodeId, tabKey })
+        setFocusNodeId(nodeId)
         event.stopPropagation()
       },
       []
@@ -261,9 +263,9 @@ const TreeView = React.forwardRef<HTMLUListElement, TreeViewProps>(
 
     const isNodeInFocus = React.useCallback(
       (nodeId: number) => {
-        return focusNodeState && focusNodeState.id === nodeId
+        return focusNodeId === nodeId
       },
-      [focusNodeState]
+      [focusNodeId]
     )
 
     const isNodeDisabled = React.useCallback(
@@ -336,7 +338,12 @@ const TreeView = React.forwardRef<HTMLUListElement, TreeViewProps>(
       return newSelected
     }
 
-    const handleKeyDown = (event, nodeId, enterKeyPressAction) => {
+    /**
+     * Issue with using on :focus css style on elements, we really need to show the focus style only when tab key is used to focus the elements
+     * but then when mouse click focus css should not apply
+     * how to do it !?
+     */
+    const handleKeyDown = (event, enterKeyPressAction) => {
       let flag = false
       const key = event.key
 
@@ -344,13 +351,11 @@ const TreeView = React.forwardRef<HTMLUListElement, TreeViewProps>(
       if (
         event.altKey ||
         event.currentTarget !== event.target ||
-        !focusNodeState ||
-        !focusNodeState.id
+        !focusNodeId
       ) {
         return
       }
 
-      const ctrlPressed = event.ctrlKey || event.metaKey
       switch (key) {
         case " ":
           // if (!disableSelection && !isDisabled(focusedNodeId)) {
@@ -363,6 +368,7 @@ const TreeView = React.forwardRef<HTMLUListElement, TreeViewProps>(
           //     flag = selectNode(event, focusedNodeId)
           //   }
           // }
+          toggleExpansion(event, focusNodeId)
           event.stopPropagation()
           break
         case "Enter":
@@ -376,19 +382,21 @@ const TreeView = React.forwardRef<HTMLUListElement, TreeViewProps>(
           event.stopPropagation()
           break
         case "ArrowDown":
-          // if (multiSelect && event.shiftKey && !disableSelection) {
-          //   selectNextNode(event, focusedNodeId)
-          // }
+          const nextNode = getNextNavigatableNode(focusNodeId)
+          if (multiSelectNode && event.shiftKey) {
+            toggleNodeSelection(event, nextNode)
+          }
 
-          focusNode(event, getNextNavigatableNode(focusNodeState.id))
+          focusNode(event, nextNode)
           flag = true
           break
         case "ArrowUp":
-          // if (multiSelect && event.shiftKey && !disableSelection) {
-          //   selectPreviousNode(event, focusedNodeId)
-          // }
+          const nodePrevious = getPreviousNavigatableNode(focusNodeId)
+          if (multiSelectNode && event.shiftKey) {
+            toggleNodeSelection(event, nodePrevious)
+          }
 
-          focusNode(event, getPreviousNavigatableNode(focusNodeState.id))
+          focusNode(event, nodePrevious)
           flag = true
           break
         case "ArrowRight":
@@ -397,8 +405,7 @@ const TreeView = React.forwardRef<HTMLUListElement, TreeViewProps>(
           // } else {
           //   flag = handleNextArrow(event)
           // }
-          if (!isExpanded(focusNodeState.id))
-            toggleExpansion(event, focusNodeState.id)
+          if (!isExpanded(focusNodeId)) toggleExpansion(event, focusNodeId)
           break
         case "ArrowLeft":
           // if (isRtl) {
@@ -406,8 +413,7 @@ const TreeView = React.forwardRef<HTMLUListElement, TreeViewProps>(
           // } else {
           //   flag = handlePreviousArrow(event)
           // }
-          if (isExpanded(focusNodeState.id))
-            toggleExpansion(event, focusNodeState.id)
+          if (isExpanded(focusNodeId)) toggleExpansion(event, focusNodeId)
           break
 
         default:

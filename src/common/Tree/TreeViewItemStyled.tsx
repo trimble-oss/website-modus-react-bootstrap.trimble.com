@@ -36,12 +36,12 @@ const TreeViewItemGroupStyleWrapper = React.forwardRef<
 })
 
 const TreeViewItemStyled = styled(TreeViewItemStyleWrapper)`
-  &:focus,
-  &.focus,
-  *:focus {
+  &:focus-visible,
+  &.focus-visible,
+  *:focus-visible {
     box-shadow: none !important;
     border: 2px solid #0063a3 !important;
-    outline: none;
+    outline: none !important;
   }
 
   li.list-group-item {

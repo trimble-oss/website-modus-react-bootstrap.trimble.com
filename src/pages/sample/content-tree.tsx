@@ -421,7 +421,13 @@ function RenderTreeViewWithDrag() {
               </div>
             </div>
             <div className="col">
-              <TreeView id="example" expanded={expanded}>
+              <TreeView
+                id="example"
+                expanded={expanded}
+                checkBoxSelection
+                multiSelectCheckBox
+                multiSelectNode
+              >
                 <StyledCustomTreeViewItem>
                   {data.map(item => (
                     <CustomTreeViewItem
