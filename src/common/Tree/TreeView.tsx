@@ -336,10 +336,12 @@ const TreeView = React.forwardRef<HTMLUListElement, TreeViewProps>(
       value,
       setStatefn: (value: React.SetStateAction<number[]>) => void
     ): number[] => {
-      const newSelected = [value]
-      setStatefn(newSelected)
-
-      return newSelected
+      let selection = []
+      setStatefn(prevState => {
+        selection = prevState && prevState.includes(value) ? [] : [value]
+        return selection
+      })
+      return selection
     }
 
     /**
@@ -371,8 +373,15 @@ const TreeView = React.forwardRef<HTMLUListElement, TreeViewProps>(
           break
         case "ArrowDown":
           const nextNode = getNextNavigatableNode(focusNodeId)
-          if (multiSelectNode && event.shiftKey) {
-            toggleNodeSelection(event, nextNode)
+          if (
+            multiSelectNode &&
+            event.shiftKey &&
+            isNodeSelected(focusNodeId)
+          ) {
+            // deselect if going back to the selected node
+            if (isNodeSelected(nextNode))
+              toggleNodeSelection(event, focusNodeId)
+            else toggleNodeSelection(event, nextNode)
           }
 
           focusNode(event, nextNode)
@@ -380,8 +389,15 @@ const TreeView = React.forwardRef<HTMLUListElement, TreeViewProps>(
           break
         case "ArrowUp":
           const nodePrevious = getPreviousNavigatableNode(focusNodeId)
-          if (multiSelectNode && event.shiftKey) {
-            toggleNodeSelection(event, nodePrevious)
+          if (
+            multiSelectNode &&
+            event.shiftKey &&
+            isNodeSelected(focusNodeId)
+          ) {
+            // deselect if going back to the selected node
+            if (isNodeSelected(nodePrevious))
+              toggleNodeSelection(event, focusNodeId)
+            else toggleNodeSelection(event, nodePrevious)
           }
 
           focusNode(event, nodePrevious)
