@@ -8,9 +8,8 @@ interface TreeViewItemContextProps {
   registerDescendant?: (
     id: number,
     children: TreeItemExtended[],
-    element: any,
-    index?: number
-  ) => void
+    element: any
+  ) => number
   unRegisterDescendant?: (id: number) => void
   updateDescendant?: (
     id: number,

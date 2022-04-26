@@ -33,11 +33,12 @@ export function useDescendant(
     onDescendantToggleCbSelection: onDescendantToggleCbSelectionOnParent,
   } = useContext(TreeViewItemContext)
   const isRegisteredRef = useRef(false)
+  let [index, setIndex] = useState(-1)
 
   useEffect(() => {
     if (registerOnParent && element) {
       isRegisteredRef.current = true
-      registerOnParent(nodeId, childNodes.current, element)
+      setIndex(registerOnParent(nodeId, childNodes.current, element))
     }
 
     return () => {
@@ -84,33 +85,28 @@ export function useDescendant(
 
   const registerDescendant = useCallback(
     (id, children, descendantElement) => {
+      let newIndex = -1
+
       if (childNodes.current) {
         let newItems = childNodes.current
-        let oldIndex = _findIndex(childNodes.current, node => node.id === id)
+        let oldIndex = _findIndex(newItems, node => node.id === id)
 
         // new index based on DOM position
 
-        let newIndex =
-          binaryFindElement(childNodes.current, descendantElement) ||
-          childNodes.current.length
+        newIndex =
+          binaryFindElement(newItems, descendantElement) || newItems.length
 
         // If the descendant already exist, delete it and insert at the new index
         if (oldIndex >= 0) {
-          childNodes.current.splice(oldIndex, 1)
-          childNodes.current.splice(newIndex, 0, {
-            ...childNodes.current[oldIndex],
-            id,
-            children,
-          })
-        } else {
-          childNodes.current.push({
-            id,
-            children,
-            parentId: nodeId,
-            index: newIndex,
-            element: descendantElement,
-          })
+          newItems.splice(oldIndex, 1)
         }
+        newItems.splice(newIndex, 0, {
+          id,
+          children,
+          parentId: nodeId,
+          index: newIndex,
+          element: descendantElement,
+        })
         newItems.forEach((item, position) => {
           item.index = position
         })
@@ -120,6 +116,7 @@ export function useDescendant(
           updateParent(nodeId, childNodes.current, element)
         }
       }
+      return newIndex
     },
     [childNodes, nodeId, updateParent]
   )
@@ -140,21 +137,16 @@ export function useDescendant(
     (id, children, descendantElement) => {
       if (childNodes.current) {
         let nodeIndex = _findIndex(childNodes.current, node => node.id === id)
-        if (nodeIndex >= 0) {
-          childNodes.current.splice(nodeIndex, 1, {
-            ...childNodes.current[nodeIndex],
-            id,
-            children,
-          })
-        } else {
-          childNodes.current.push({
-            id,
-            parentId: nodeId,
-            children,
-            element: descendantElement,
-            index: childNodes.current.length,
-          })
-        }
+        let newIndex = nodeIndex < 0 ? childNodes.current.length : nodeIndex
+
+        childNodes.current.splice(newIndex, 1, {
+          id,
+          children,
+          parentId: nodeId,
+          index: newIndex,
+          element: descendantElement,
+        })
+
         if (updateParent && isRegisteredRef.current) {
           updateParent(nodeId, childNodes.current, element)
         }
@@ -207,6 +199,7 @@ export function useDescendant(
   return {
     parentId,
     level,
+    index,
     getChildNodes,
     setChildNodes,
     registerDescendant,

@@ -180,6 +180,7 @@ const TreeViewItem = React.forwardRef<HTMLDivElement, TreeViewItemProps>(
     const {
       parentId,
       level,
+      index,
       getChildNodes,
       registerDescendant,
       unRegisterDescendant,
@@ -194,16 +195,13 @@ const TreeViewItem = React.forwardRef<HTMLDivElement, TreeViewItemProps>(
     )
 
     useEffect(() => {
-      const node = { id: nodeId, parentId, label, disabled }
-      if (registerNode) {
-        const index = registerNode(node)
-        nodeIndexRef.current = index
-      }
+      const node = { id: nodeId, parentId, label, disabled, index }
+      registerNode && registerNode(node)
 
       return () => {
         unRegisterNode && unRegisterNode(nodeId)
       }
-    }, [registerNode, unRegisterNode, nodeId, parentId, label])
+    }, [registerNode, unRegisterNode, nodeId, parentId, label, disabled, index])
 
     useEffect(() => {
       let ele = resolvedRef.current
@@ -268,7 +266,7 @@ const TreeViewItem = React.forwardRef<HTMLDivElement, TreeViewItemProps>(
 
     const handleFocus = React.useCallback(
       (e: any) => {
-        if (!disabled || !inFocus) return
+        if (disabled || inFocus) return
 
         if (e.target === e.currentTarget) {
           let ele = resolvedRef.current

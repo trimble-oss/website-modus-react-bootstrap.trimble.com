@@ -1,7 +1,7 @@
 import React, { useRef, useCallback, useState, useEffect } from "react"
 import PropTypes from "prop-types"
 import TreeViewContext from "./TreeViewContext"
-import { TreeItem } from "./types"
+import { TreeItem, TreeItemExtended } from "./types"
 import TreeViewItemContext from "./TreeViewItemContext"
 import classNames from "classnames"
 import _merge from "lodash/merge"
@@ -146,30 +146,14 @@ const TreeView = React.forwardRef<HTMLUListElement, TreeViewProps>(
 
     // Tree view context
     // Actions
-    const registerNode = useCallback((node: TreeItem) => {
+    const registerNode = useCallback((node: TreeItemExtended) => {
       nodes.current[node.id] = node
-
-      let currNodeIndex = nodesIndex.current.indexOf(node.id)
-      if (currNodeIndex < 0)
-        currNodeIndex = nodesIndex.current.push(node.id) - 1
-      if (node.parentId && !nodesIndex.current.includes(node.parentId)) {
-        nodesIndex.current.splice(
-          currNodeIndex ? currNodeIndex - 1 : 0,
-          0,
-          node.parentId
-        )
-        return currNodeIndex + 1
-      }
-      return currNodeIndex
     }, [])
 
     const unRegisterNode = useCallback((nodeId: number) => {
       const newNodes = { ...nodes.current }
       delete newNodes[nodeId]
       nodes.current = newNodes
-
-      const index = nodesIndex.current.indexOf(nodeId)
-      if (index > -1) nodesIndex.current.splice(index, 1)
     }, [])
 
     const toggleExpansion = useCallback((event: any, nodeId: number) => {
@@ -459,6 +443,15 @@ const TreeView = React.forwardRef<HTMLUListElement, TreeViewProps>(
       }, [])
     }
 
+    const getImmediateChildrenIds = id =>
+      Object.keys(nodes.current)
+        .map(key => {
+          return nodes.current[key]
+        })
+        .filter(node => node.parentId === id)
+        .sort((a, b) => a.index - b.index)
+        .map(child => child.id)
+
     const getParents = (nodeId: number): number[] => {
       let { parentId } = nodes.current[nodeId]
       let parents = []
@@ -470,8 +463,8 @@ const TreeView = React.forwardRef<HTMLUListElement, TreeViewProps>(
       return parents
     }
 
-    const getNavigableChildrenIds = (id, recursive = true) => {
-      let childrenIds = getChildrenIds(getNodesArray(), id, recursive)
+    const getNavigableChildrenIds = id => {
+      let childrenIds = getImmediateChildrenIds(id)
 
       // if (!disabledItemsFocusable) {
       //   childrenIds = childrenIds.filter(node => !isDisabled(node))
@@ -490,7 +483,7 @@ const TreeView = React.forwardRef<HTMLUListElement, TreeViewProps>(
       let node = nodes.current[id]
       while (node != null) {
         // Try to get next sibling
-        const siblings = getNavigableChildrenIds(node.parentId, false)
+        const siblings = getNavigableChildrenIds(node.parentId)
         const nextSibling = siblings[siblings.indexOf(node.id) + 1]
 
         if (nextSibling) {
@@ -506,7 +499,7 @@ const TreeView = React.forwardRef<HTMLUListElement, TreeViewProps>(
 
     const getPreviousNavigatableNode = id => {
       const node = nodes.current[id]
-      const siblings = getNavigableChildrenIds(node.parentId, false)
+      const siblings = getNavigableChildrenIds(node.parentId)
       const nodeIndex = siblings.indexOf(id)
 
       if (nodeIndex === 0) {
