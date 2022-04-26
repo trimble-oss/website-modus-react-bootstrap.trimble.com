@@ -10,7 +10,7 @@ export interface TreeViewContextType {
   expandIcon?: React.ReactElement
   itemIcon?: React.ReactElement
   dragIcon?: React.ReactElement
-  registerNode: (node: TreeItem) => void
+  registerNode: (node: TreeItem) => number
   unRegisterNode: (nodeId: number) => void
   isExpanded: (nodeId: number) => boolean
   isNodeSelected: (nodeId: number) => boolean

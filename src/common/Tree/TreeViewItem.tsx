@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useRef, useState } from "react"
+import React, { useContext, useEffect, useMemo, useRef, useState } from "react"
 import PropTypes from "prop-types"
 import classNames from "classnames"
 import _findIndex from "lodash/findIndex"
@@ -63,13 +63,23 @@ const IndeterminateCheckbox = React.forwardRef<
     id: string
     indeterminate?: any
     onClick?: (...args: any[]) => void
+    onFocus?: (...args: any[]) => void
     onKeydown?: (...args: any[]) => void
     checked?: boolean
     tabIndex?: number
   }
 >(
   (
-    { id, indeterminate, checked, tabIndex, onClick, onKeydown, ...props },
+    {
+      id,
+      indeterminate,
+      checked,
+      tabIndex,
+      onFocus,
+      onClick,
+      onKeydown,
+      ...props
+    },
     ref
   ) => {
     const defaultRef = React.useRef<HTMLInputElement>(null)
@@ -89,6 +99,7 @@ const IndeterminateCheckbox = React.forwardRef<
         ref={resolvedRef}
         onClick={onClick}
         onKeyDown={onKeydown}
+        onFocus={onFocus}
         tabIndex={tabIndex}
         {...props}
       />
@@ -112,9 +123,9 @@ const TreeViewItem = React.forwardRef<HTMLDivElement, TreeViewItemProps>(
     }: TreeViewItemProps,
     ref
   ) => {
-    const [resetTabFocus, setResetTabFocus] = useState(false)
     const defaultRef = React.useRef<HTMLDivElement>(null)
     const resolvedRef = ref || defaultRef
+    const nodeIndexRef = useRef(0)
     const {
       id: rootId,
       registerNode,
@@ -151,7 +162,6 @@ const TreeViewItem = React.forwardRef<HTMLDivElement, TreeViewItemProps>(
         ? isIndeterminate(nodeId)
         : false
     const inFocus = isNodeInFocus(nodeId)
-    const defaultTabIndex = disabled ? -1 : 0
 
     const finalExpandIcon = expandIcon || defaultExpandIcon || (
       <i className="modus-icons">chevron_down_thick</i>
@@ -175,7 +185,10 @@ const TreeViewItem = React.forwardRef<HTMLDivElement, TreeViewItemProps>(
 
     useEffect(() => {
       const node = { id: nodeId, parentId, label, disabled }
-      registerNode && registerNode(node)
+      if (registerNode) {
+        const index = registerNode(node)
+        nodeIndexRef.current = index
+      }
 
       return () => {
         unRegisterNode && unRegisterNode(nodeId)
@@ -185,8 +198,12 @@ const TreeViewItem = React.forwardRef<HTMLDivElement, TreeViewItemProps>(
     useEffect(() => {
       let ele = (resolvedRef as React.MutableRefObject<HTMLInputElement>)
         .current
-      if (inFocus) ele.focus()
+      if (inFocus) {
+        ele.focus()
+      }
     }, [resolvedRef, inFocus])
+
+    const defaultTabIndex = disabled ? -1 : 0
 
     const handleNodeSelection = React.useCallback(
       (e: any) => {
@@ -236,6 +253,23 @@ const TreeViewItem = React.forwardRef<HTMLDivElement, TreeViewItemProps>(
       [toggleExpansion]
     )
 
+    const handleFocus = React.useCallback(
+      (e: any) => {
+        if (!disabled || !inFocus) return
+
+        if (e.target === e.currentTarget) {
+          let ele = (resolvedRef as React.MutableRefObject<HTMLInputElement>)
+            .current
+          ele.focus({
+            preventScroll: true,
+          })
+        }
+
+        focusNode(e, nodeId)
+      },
+      [toggleExpansion]
+    )
+
     const getChildren = (array: TreeItem[]): number[] => {
       if (!array) return []
       return array.reduce((r, { id, children }) => {
@@ -257,7 +291,7 @@ const TreeViewItem = React.forwardRef<HTMLDivElement, TreeViewItemProps>(
           aria-level={level}
           className={classNames(disabled && "disabled", className)}
           tabIndex={defaultTabIndex}
-          onFocus={e => focusNode(e, nodeId)}
+          onFocus={handleFocus}
           onKeyDown={e => {
             onKeyPress(e, () => toggleNodeSelection(e, nodeId))
           }}
@@ -287,6 +321,7 @@ const TreeViewItem = React.forwardRef<HTMLDivElement, TreeViewItemProps>(
                 onKeyDown={e => {
                   onKeyPress(e, () => toggleExpansion(e, nodeId))
                 }}
+                onFocus={e => {}}
               >
                 {expandable
                   ? expanded
@@ -308,6 +343,7 @@ const TreeViewItem = React.forwardRef<HTMLDivElement, TreeViewItemProps>(
                     if (e.key !== " ")
                       onKeyPress(e, () => handleCheckBoxSelection(e))
                   }}
+                  onFocus={e => {}}
                 />
               </div>
             )}

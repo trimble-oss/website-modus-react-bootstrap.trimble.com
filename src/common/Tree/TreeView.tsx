@@ -120,6 +120,7 @@ const TreeView = React.forwardRef<HTMLUListElement, TreeViewProps>(
   ) => {
     const nodes = useRef({})
     const expandedProp = useRef([])
+    const nodesIndex = useRef<number[]>([])
     const [focusNodeId, setFocusNodeId] = useState<number>()
     const [nodesExpanded, setExpanded] = useState<number[]>(
       [].concat(defaultExpanded)
@@ -147,12 +148,28 @@ const TreeView = React.forwardRef<HTMLUListElement, TreeViewProps>(
     // Actions
     const registerNode = useCallback((node: TreeItem) => {
       nodes.current[node.id] = node
+
+      let currNodeIndex = nodesIndex.current.indexOf(node.id)
+      if (currNodeIndex < 0)
+        currNodeIndex = nodesIndex.current.push(node.id) - 1
+      if (node.parentId && !nodesIndex.current.includes(node.parentId)) {
+        nodesIndex.current.splice(
+          currNodeIndex ? currNodeIndex - 1 : 0,
+          0,
+          node.parentId
+        )
+        return currNodeIndex + 1
+      }
+      return currNodeIndex
     }, [])
 
     const unRegisterNode = useCallback((nodeId: number) => {
       const newNodes = { ...nodes.current }
       delete newNodes[nodeId]
       nodes.current = newNodes
+
+      const index = nodesIndex.current.indexOf(nodeId)
+      if (index > -1) nodesIndex.current.splice(index, 1)
     }, [])
 
     const toggleExpansion = useCallback((event: any, nodeId: number) => {
@@ -210,7 +227,7 @@ const TreeView = React.forwardRef<HTMLUListElement, TreeViewProps>(
     const focusNode = useCallback(
       (event: any, nodeId: number, tabKey = false) => {
         setFocusNodeId(nodeId)
-        event.stopPropagation()
+        // event.stopPropagation()
       },
       []
     )
