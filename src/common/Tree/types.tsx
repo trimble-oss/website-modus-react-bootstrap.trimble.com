@@ -7,3 +7,7 @@ export type TreeItem = {
   children?: TreeItem[]
   disabled?: boolean
 }
+export type TreeItemExtended = TreeItem & {
+  index: number
+  element?: any
+}

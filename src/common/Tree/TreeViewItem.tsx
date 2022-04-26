@@ -123,9 +123,6 @@ const TreeViewItem = React.forwardRef<HTMLDivElement, TreeViewItemProps>(
     }: TreeViewItemProps,
     ref
   ) => {
-    const defaultRef = React.useRef<HTMLDivElement>(null)
-    const resolvedRef = ref || defaultRef
-    const nodeIndexRef = useRef(0)
     const {
       id: rootId,
       registerNode,
@@ -148,6 +145,13 @@ const TreeViewItem = React.forwardRef<HTMLDivElement, TreeViewItemProps>(
       itemIcon: defaultItemIcon,
       dragIcon: defaultDragIcon,
     } = useContext(TreeViewContext)
+
+    const defaultRef = React.useRef<HTMLDivElement>(null)
+    const resolvedRef = (ref ||
+      defaultRef) as React.MutableRefObject<HTMLInputElement>
+    const nodeIndexRef = useRef(0)
+
+    const [treeItemElement, setTreeItemElement] = useState(null)
 
     const expandable = Boolean(
       Array.isArray(children) ? children.length : children
@@ -172,6 +176,7 @@ const TreeViewItem = React.forwardRef<HTMLDivElement, TreeViewItemProps>(
     const finalItemIcon = itemIcon || defaultItemIcon
     const finalDragIcon = dragIcon || defaultDragIcon
     const blankIcon = <i className="modus-icons">blank</i>
+
     const {
       parentId,
       level,
@@ -181,7 +186,12 @@ const TreeViewItem = React.forwardRef<HTMLDivElement, TreeViewItemProps>(
       updateDescendant,
       onDescendantToggleCbSelection,
       onDescendantToggleCbSelectionOnParent,
-    } = useDescendant(nodeId, isCheckBoxSelected, toggleMultiCheckBoxSelection)
+    } = useDescendant(
+      nodeId,
+      treeItemElement,
+      isCheckBoxSelected,
+      toggleMultiCheckBoxSelection
+    )
 
     useEffect(() => {
       const node = { id: nodeId, parentId, label, disabled }
@@ -196,12 +206,15 @@ const TreeViewItem = React.forwardRef<HTMLDivElement, TreeViewItemProps>(
     }, [registerNode, unRegisterNode, nodeId, parentId, label])
 
     useEffect(() => {
-      let ele = (resolvedRef as React.MutableRefObject<HTMLInputElement>)
-        .current
+      let ele = resolvedRef.current
       if (inFocus) {
         ele.focus()
       }
-    }, [resolvedRef, inFocus])
+    }, [resolvedRef.current, inFocus])
+
+    useEffect(() => {
+      setTreeItemElement(resolvedRef.current)
+    }, [resolvedRef.current])
 
     const defaultTabIndex = disabled ? -1 : 0
 
@@ -258,8 +271,7 @@ const TreeViewItem = React.forwardRef<HTMLDivElement, TreeViewItemProps>(
         if (!disabled || !inFocus) return
 
         if (e.target === e.currentTarget) {
-          let ele = (resolvedRef as React.MutableRefObject<HTMLInputElement>)
-            .current
+          let ele = resolvedRef.current
           ele.focus({
             preventScroll: true,
           })
