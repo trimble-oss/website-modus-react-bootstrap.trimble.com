@@ -38,20 +38,19 @@ const TreeViewItemStyled = styled(TreeViewItemStyleWrapper)`
   &:focus-visible,
   &.focus-visible,
   *:focus-visible {
-    box-shadow: none !important;
-    outline: 2px solid #0063a3 !important;
+    outline: 2px auto #0063a3 !important;
   }
   .custom-control-input:focus-visible {
     & ~ .custom-control-label::before,
     & ~ .custom-control-label::after {
-      box-shadow: none !important;
-      outline: 2px solid #0063a3 !important;
+      outline: 2px auto #0063a3 !important;
     }
   }
 
   &.list-group-item {
     padding: 5px 16px 5px 0 !important;
     cursor: pointer;
+    align-items: stretch !important;
 
     grid-template-columns: min-content ${props =>
         props.checkBoxSelection == "true" && "min-content"} ${props =>
@@ -69,7 +68,6 @@ const TreeViewItemStyled = styled(TreeViewItemStyleWrapper)`
       padding-left: ${props =>
         props.level > 0 ? (props.level - 1) * 0.5 : 0}rem !important;
     }
-    align-items: stretch !important;
   }
 `
 export const TreeViewItemGroupStyled = styled(TreeViewItemGroupStyleWrapper)`

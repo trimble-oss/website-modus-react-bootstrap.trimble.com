@@ -149,6 +149,7 @@ const TreeViewItem = React.forwardRef<HTMLLIElement, TreeViewItemProps>(
     const defaultRef = React.useRef<HTMLDivElement>(null)
     const resolvedRef = (ref ||
       defaultRef) as React.MutableRefObject<HTMLInputElement>
+    const focusSource = useRef(null)
 
     const [treeItemElement, setTreeItemElement] = useState(null)
 
@@ -206,7 +207,7 @@ const TreeViewItem = React.forwardRef<HTMLLIElement, TreeViewItemProps>(
 
     useEffect(() => {
       let ele = resolvedRef.current
-      if (inFocus) {
+      if (inFocus && !focusSource.current) {
         ele.focus()
       }
     }, [resolvedRef.current, inFocus])
@@ -273,11 +274,15 @@ const TreeViewItem = React.forwardRef<HTMLLIElement, TreeViewItemProps>(
             preventScroll: true,
           })
         }
-
+        focusSource.current = e.target
         focusNode(e, nodeId)
       },
       [toggleExpansion]
     )
+
+    const handleBlur = React.useCallback((e: any) => {
+      focusSource.current = null
+    }, [])
 
     const getChildren = (array: TreeItem[]): number[] => {
       if (!array) return []
@@ -306,6 +311,7 @@ const TreeViewItem = React.forwardRef<HTMLLIElement, TreeViewItemProps>(
           )}
           tabIndex={defaultTabIndex}
           onFocus={handleFocus}
+          onBlur={handleBlur}
           onKeyDown={e => {
             onKeyPress(e, () => toggleNodeSelection(e, nodeId))
           }}

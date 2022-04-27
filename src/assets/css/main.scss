@@ -15,6 +15,8 @@
 @import "../../../node_modules/bootstrap/scss/variables";
 @import "../../../node_modules/bootstrap/scss/mixins";
 
+$custom-checkbox-indicator-icon-indeterminate: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='4' height='3.8' viewBox='0 0 4 4'><path stroke='#{$control-surface-color}' d='M-0.1 2h4'/></svg>") !default;
+
 // Modus mixins
 @import "../../../node_modules/@trimbleinc/modus-bootstrap/scss/components/mixins";
 
