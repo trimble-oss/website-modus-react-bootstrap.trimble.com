@@ -14,7 +14,7 @@ import { TreeItem } from "./types"
 import { useDescendant } from "./useDescendant"
 
 export interface TreeViewItemProps
-  extends Omit<React.HTMLAttributes<HTMLElement>, "label"> {
+  extends Omit<React.HTMLAttributes<HTMLLIElement>, "label"> {
   nodeId: number
   label: React.ReactNode | React.ReactElement | string
   collapseIcon?: React.ReactElement
@@ -107,7 +107,7 @@ const IndeterminateCheckbox = React.forwardRef<
   }
 )
 
-const TreeViewItem = React.forwardRef<HTMLDivElement, TreeViewItemProps>(
+const TreeViewItem = React.forwardRef<HTMLLIElement, TreeViewItemProps>(
   (
     {
       className,
@@ -298,7 +298,12 @@ const TreeViewItem = React.forwardRef<HTMLDivElement, TreeViewItemProps>(
           aria-selected={nodeSelected}
           aria-disabled={disabled}
           aria-level={level}
-          className={classNames(disabled && "disabled", className)}
+          className={classNames(
+            "list-group-item list-item-leftright-control",
+            nodeSelected && "active",
+            disabled && "disabled",
+            className
+          )}
           tabIndex={defaultTabIndex}
           onFocus={handleFocus}
           onKeyDown={e => {
@@ -307,71 +312,63 @@ const TreeViewItem = React.forwardRef<HTMLDivElement, TreeViewItemProps>(
           ref={ref}
           {...rest}
         >
-          <li
-            className={classNames(
-              "list-group-item list-item-leftright-control",
-              nodeSelected && "active",
-              disabled && "disabled"
-            )}
-          >
+          <div className="d-flex align-items-center">
+            <div
+              className="drag-icon"
+              style={{ display: "inline-flex" }}
+              tabIndex={finalDragIcon ? defaultTabIndex : -1}
+            >
+              {finalDragIcon || blankIcon}
+            </div>
+            <span className="tree-item-level" />
+            <div
+              onClick={expandable ? handleExpansion : () => {}}
+              style={{ display: "inline-flex" }}
+              tabIndex={expandable ? defaultTabIndex : -1}
+              onKeyDown={e => {
+                onKeyPress(e, () => toggleExpansion(e, nodeId))
+              }}
+              onFocus={e => {}}
+            >
+              {expandable
+                ? expanded
+                  ? finalExpandIcon
+                  : finalCollapseIcon
+                : blankIcon}
+            </div>
+          </div>
+
+          {checkBoxSelection && (
             <div className="d-flex align-items-center">
-              <div
-                className="drag-icon"
-                style={{ display: "inline-flex" }}
-                tabIndex={finalDragIcon ? defaultTabIndex : -1}
-              >
-                {finalDragIcon || blankIcon}
-              </div>
-              <span className="tree-item-level" />
-              <div
-                onClick={expandable ? handleExpansion : () => {}}
-                style={{ display: "inline-flex" }}
-                tabIndex={expandable ? defaultTabIndex : -1}
-                onKeyDown={e => {
-                  onKeyPress(e, () => toggleExpansion(e, nodeId))
+              <IndeterminateCheckbox
+                checked={checkBoxSelected}
+                id={`${rootId}_cbselection_${nodeId}`}
+                onClick={handleCheckBoxSelection}
+                indeterminate={checkBoxIndeterminate}
+                tabIndex={defaultTabIndex}
+                onKeydown={e => {
+                  if (e.key !== " ")
+                    onKeyPress(e, () => handleCheckBoxSelection(e))
                 }}
                 onFocus={e => {}}
-              >
-                {expandable
-                  ? expanded
-                    ? finalExpandIcon
-                    : finalCollapseIcon
-                  : blankIcon}
-              </div>
+              />
             </div>
+          )}
 
-            {checkBoxSelection && (
-              <div className="d-flex align-items-center">
-                <IndeterminateCheckbox
-                  checked={checkBoxSelected}
-                  id={`${rootId}_cbselection_${nodeId}`}
-                  onClick={handleCheckBoxSelection}
-                  indeterminate={checkBoxIndeterminate}
-                  tabIndex={defaultTabIndex}
-                  onKeydown={e => {
-                    if (e.key !== " ")
-                      onKeyPress(e, () => handleCheckBoxSelection(e))
-                  }}
-                  onFocus={e => {}}
-                />
-              </div>
-            )}
-
-            {finalItemIcon && (
-              <div
-                className="d-flex align-items-center"
-                tabIndex={defaultTabIndex}
-              >
-                {finalItemIcon}
-              </div>
-            )}
+          {finalItemIcon && (
             <div
-              onClick={handleNodeSelection}
               className="d-flex align-items-center"
+              tabIndex={defaultTabIndex}
             >
-              {label}
+              {finalItemIcon}
             </div>
-          </li>
+          )}
+          <div
+            onClick={handleNodeSelection}
+            className="d-flex align-items-center"
+          >
+            {label}
+          </div>
         </TreeViewItemStyled>
 
         {children && (
@@ -386,6 +383,7 @@ const TreeViewItem = React.forwardRef<HTMLDivElement, TreeViewItemProps>(
             }}
           >
             <TreeViewItemGroupStyled
+              className="list-group"
               expanded={expanded ? "true" : "false"}
               role="group"
             >

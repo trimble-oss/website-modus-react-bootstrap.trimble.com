@@ -418,10 +418,6 @@ const TreeView = React.forwardRef<HTMLUListElement, TreeViewProps>(
         event.preventDefault()
         event.stopPropagation()
       }
-
-      // if (onKeyDown) {
-      //   onKeyDown(event)
-      // }
     }
 
     // Helpers
@@ -465,11 +461,6 @@ const TreeView = React.forwardRef<HTMLUListElement, TreeViewProps>(
 
     const getNavigableChildrenIds = id => {
       let childrenIds = getImmediateChildrenIds(id)
-
-      // if (!disabledItemsFocusable) {
-      //   childrenIds = childrenIds.filter(node => !isDisabled(node))
-      // }
-
       childrenIds = childrenIds.filter(node => !isNodeDisabled(node))
       return childrenIds
     }

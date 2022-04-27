@@ -40,16 +40,12 @@ const StyledDragItem = styled.div`
     }
   }
 `
-const StyledCustomTreeViewItem = styled.div`
+const StyledTreeView = styled(TreeView)`
   .drop-allow {
-    li:first-child {
-      border-top: 2px solid #0063a3 !important;
-    }
+    border-top: 2px solid #0063a3 !important;
   }
   .drop-block {
-    li:first-child {
-      border-top: 2px solid red !important;
-    }
+    border-top: 2px solid red !important;
   }
 `
 
@@ -421,28 +417,26 @@ function RenderTreeViewWithDrag() {
               </div>
             </div>
             <div className="col">
-              <TreeView
+              <StyledTreeView
                 id="example"
                 expanded={expanded}
                 checkBoxSelection
                 multiSelectCheckBox
                 multiSelectNode
               >
-                <StyledCustomTreeViewItem>
-                  {data.map(item => (
-                    <CustomTreeViewItem
-                      nodeId={item.nodeId}
-                      children={item.children}
-                      label={item.label}
-                      key={item.nodeId}
-                      registerTreeItem={registerTreeItem}
-                      unRegisterTreeItem={unRegisterTreeItem}
-                      handleMouseDown={handleMouseDown}
-                      draggable={drag}
-                    />
-                  ))}
-                </StyledCustomTreeViewItem>
-              </TreeView>
+                {data.map(item => (
+                  <CustomTreeViewItem
+                    nodeId={item.nodeId}
+                    children={item.children}
+                    label={item.label}
+                    key={item.nodeId}
+                    registerTreeItem={registerTreeItem}
+                    unRegisterTreeItem={unRegisterTreeItem}
+                    handleMouseDown={handleMouseDown}
+                    draggable={drag}
+                  />
+                ))}
+              </StyledTreeView>
             </div>
           </div>
         </div>
