@@ -60,15 +60,14 @@ const TreeViewItemStyled = styled(TreeViewItemStyleWrapper)`
           props.itemIcon == "true" &&
           "min-content"} auto min-content !important;
 
-      .drag-icon > * {
-        font-size: 1rem !important;
-      }
       .modus-icons,
       .material-icons {
         cursor: pointer;
         font-size: 1.25rem !important;
       }
-
+      .drag-icon > * {
+        font-size: 1rem !important;
+      }
       .tree-item-level {
         padding-left: ${props =>
           props.level > 0 ? (props.level - 1) * 0.5 : 0}rem !important;

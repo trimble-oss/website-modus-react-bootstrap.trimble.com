@@ -149,7 +149,6 @@ const TreeViewItem = React.forwardRef<HTMLDivElement, TreeViewItemProps>(
     const defaultRef = React.useRef<HTMLDivElement>(null)
     const resolvedRef = (ref ||
       defaultRef) as React.MutableRefObject<HTMLInputElement>
-    const nodeIndexRef = useRef(0)
 
     const [treeItemElement, setTreeItemElement] = useState(null)
 
@@ -177,6 +176,8 @@ const TreeViewItem = React.forwardRef<HTMLDivElement, TreeViewItemProps>(
     const finalDragIcon = dragIcon || defaultDragIcon
     const blankIcon = <i className="modus-icons">blank</i>
 
+    const defaultTabIndex = disabled ? -1 : 0
+
     const {
       parentId,
       level,
@@ -195,8 +196,8 @@ const TreeViewItem = React.forwardRef<HTMLDivElement, TreeViewItemProps>(
     )
 
     useEffect(() => {
-      const node = { id: nodeId, parentId, label, disabled, index }
-      registerNode && registerNode(node)
+      if (registerNode)
+        registerNode({ id: nodeId, parentId, label, disabled, index })
 
       return () => {
         unRegisterNode && unRegisterNode(nodeId)
@@ -213,8 +214,6 @@ const TreeViewItem = React.forwardRef<HTMLDivElement, TreeViewItemProps>(
     useEffect(() => {
       setTreeItemElement(resolvedRef.current)
     }, [resolvedRef.current])
-
-    const defaultTabIndex = disabled ? -1 : 0
 
     const handleNodeSelection = React.useCallback(
       (e: any) => {

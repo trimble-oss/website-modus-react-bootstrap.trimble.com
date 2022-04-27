@@ -92,9 +92,7 @@ export function useDescendant(
         let oldIndex = _findIndex(newItems, node => node.id === id)
 
         // new index based on DOM position
-
-        newIndex =
-          binaryFindElement(newItems, descendantElement) || newItems.length
+        newIndex = binaryFindElement(newItems, descendantElement)
 
         // If the descendant already exist, delete it and insert at the new index
         if (oldIndex >= 0) {
