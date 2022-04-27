@@ -366,7 +366,7 @@ const TreeView = React.forwardRef<HTMLUListElement, TreeViewProps>(
       switch (key) {
         case " ":
           toggleExpansion(event, focusNodeId)
-          event.stopPropagation()
+          flag = true
           break
         case "Enter":
           enterKeyPressAction()

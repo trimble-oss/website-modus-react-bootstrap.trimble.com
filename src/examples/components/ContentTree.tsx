@@ -1123,7 +1123,7 @@ function TreeViewWithDrag() {
             </div>
           </div>
           <div className="col">
-            <TreeView id="example" expanded={expanded}>
+            <TreeView id="example" expanded={expanded} multiSelectNode>
               <StyledCustomTreeViewItem>
                 {data.map(item => (
                   <CustomTreeViewItem

@@ -55,6 +55,11 @@ const propTypes = {
    * Drag icon to appear before collapse/expand icon.
    */
   dragIcon: PropTypes.element,
+
+  /**
+   * Disables the TreeItem and its content.
+   */
+  disabled: PropTypes.bool,
 }
 
 const IndeterminateCheckbox = React.forwardRef<
