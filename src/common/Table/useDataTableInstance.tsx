@@ -1,9 +1,10 @@
-import React, { useCallback } from "react"
+import React, { useCallback, useRef, useEffect } from "react"
 import { HeaderGroup, useAsyncDebounce, useTable } from "react-table"
 import useDataTableContextMenu from "./useDataTableHeaderContextMenu"
 import useDataTableDragDrop from "./useDataTableHeaderDragDrop"
 
 const useDataTableInstance = (columns, data, options, hooks) => {
+  const registeredColumns = useRef<{ id: string; ref: any }[]>([])
   // Handle custom props such as - sortBy
   const normalizedColumns = React.useMemo(
     () =>
@@ -34,14 +35,10 @@ const useDataTableInstance = (columns, data, options, hooks) => {
   } = useDataTableContextMenu(tableInstance)
 
   // Header Drag and Drop
-  const {
-    handleDragStart,
-    handleDragEnter,
-    handleDragOver,
-    handleDrop,
-    handleDragEnd,
-    registerColumnRef,
-  } = useDataTableDragDrop(tableInstance)
+  const { handleMouseDown, dragContent, isDragging } = useDataTableDragDrop(
+    tableInstance,
+    registeredColumns.current
+  )
 
   const {
     getTableProps,
@@ -86,6 +83,15 @@ const useDataTableInstance = (columns, data, options, hooks) => {
     [allColumns]
   )
 
+  const registerColumn = useCallback((id: string, ref: any) => {
+    let refs = registeredColumns.current
+      ? registeredColumns.current.filter(col => col.id !== id)
+      : []
+    refs.push({ id, ref })
+
+    registeredColumns.current = refs
+  }, [])
+
   return {
     // tableinstance
     getTableProps,
@@ -102,9 +108,10 @@ const useDataTableInstance = (columns, data, options, hooks) => {
     pageOptions,
     gotoPage,
     setPageSize,
-    selectedFlatRows,
+    selectedRows: selectedFlatRows.map(d => d.original),
     state: { pageIndex, pageSize, filters, globalFilter },
     getAllHeadersInAGroup,
+    registerColumn,
 
     // context menu
     contextMenu,
@@ -113,12 +120,9 @@ const useDataTableInstance = (columns, data, options, hooks) => {
     handleContextMenuClose,
 
     // drag and drop
-    handleDragStart,
-    handleDragEnter,
-    handleDragOver,
-    handleDrop,
-    handleDragEnd,
-    registerColumnRef,
+    handleMouseDown,
+    dragContent,
+    isDragging,
   }
 }
 

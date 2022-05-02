@@ -1,139 +1,202 @@
-import { useCallback, useRef } from "react"
+import React, { useCallback, useEffect, useMemo, useRef } from "react"
 import useForceUpdate from "@restart/hooks/useForceUpdate"
+import { isEqual } from "lodash"
 
 const POSITION = { x: 0, y: 0 }
-const useDataTableDragDrop = ({ visibleColumns, setColumnOrder }) => {
+const useDataTableDragDrop = (
+  { visibleColumns, setColumnOrder },
+  registeredColumns: { id: string; ref: any }[]
+) => {
   const forceUpdate = useForceUpdate()
-  const columnsRef = useRef([])
-  const droppingState = useRef({ columnId: null, validTarget: false })
+  const droppingState = useRef<{
+    column: { id: string; ref: any }
+    validTarget: boolean
+  }>({
+    column: null,
+    validTarget: false,
+  })
   const draggingState = useRef({
     isDragging: false,
+    visible: false,
     origin: POSITION,
     translation: POSITION,
     width: "0px",
     height: "0px",
-    columnId: null,
+    column: null,
     columnOrder: visibleColumns.map(d => d.id),
   })
 
-  function clearDroppingState() {
-    if (droppingState.current.columnId && columnsRef.current) {
-      let droppableColumn = columnsRef.current.find(
-        col => col.columnId === droppingState.current.columnId
-      )
-      if (droppableColumn && droppableColumn.ref) {
-        droppableColumn.ref.classList.remove("drop-allow")
-        droppableColumn.ref.classList.remove("drop-block")
-      }
+  useEffect(() => {
+    if (draggingState.current.isDragging) {
+      window.addEventListener("mousemove", handleMouseMove)
+      window.addEventListener("mouseup", handleMouseUp)
+    } else {
+      window.removeEventListener("mousemove", handleMouseMove)
+      window.removeEventListener("mouseup", handleMouseUp)
     }
-    droppingState.current = { columnId: null, validTarget: false }
+  }, [draggingState.current.isDragging])
+
+  function clearDroppingState() {
+    const prevDropState = droppingState.current
+    if (droppingState.current.column) {
+      droppingState.current.column.ref.classList.remove("drop-allow")
+      droppingState.current.column.ref.classList.remove("drop-block")
+    }
+    droppingState.current = { column: null, validTarget: false }
+    return prevDropState
+  }
+  function getDroppableColumn(x, y) {
+    const column = registeredColumns.find(({ ref }) => {
+      const rect = ref.getBoundingClientRect()
+      return isWithInBounds(rect, x, y)
+    })
+    return column
+  }
+  function isWithInBounds(boundingClientRect, x, y) {
+    if (boundingClientRect) {
+      const inVerticalBounds =
+        y >= boundingClientRect.top && y <= boundingClientRect.bottom
+      const inHorizontalBounds =
+        x >= boundingClientRect.left && x <= boundingClientRect.right
+      return inVerticalBounds && inHorizontalBounds
+    }
+    return false
   }
 
-  const handleDragStart = useCallback((event, columnId: string) => {
-    const { clientX, clientY, target } = event
-    const prevState = draggingState.current
+  function getNewColumnOrder(columnIds, dragColumnId, dropColumnId): any[] {
+    let newColumnOrder = columnIds
+    newColumnOrder.splice(columnIds.indexOf(dragColumnId), 1)
+    newColumnOrder.splice(newColumnOrder.indexOf(dropColumnId), 0, dragColumnId)
 
-    clearDroppingState()
-    draggingState.current = {
-      ...prevState,
-      isDragging: true,
-      origin: { x: clientX, y: clientY },
-      columnId,
-      width:
-        (target && target.offsetParent && target.offsetParent.width) || "80px",
-      height:
-        (target && target.offsetParent && target.offsetParent.height) || "3rem",
-      columnOrder: visibleColumns.map(d => d.id),
+    return newColumnOrder
+  }
+
+  const getDragContent = useCallback(dragState => {
+    if (dragState.isDragging && dragState.column) {
+      const styles = {
+        width: dragState.width,
+        height: dragState.height,
+        transform: `translate(calc(${dragState.translation.x}px - 10%), calc(${dragState.translation.y}px - 50%))`,
+        msTransform: `translateX(${dragState.translation.x}px) translateX(-10%) translateY(${dragState.translation.y}px) translateY(-50%)`,
+        zIndex: 9999,
+        left: 0,
+        top: 0,
+        position: "absolute",
+        cursor: dragState.isDragging ? "-webkit-grabbing" : "-webkit-grab",
+        visibility: dragState.visible ? "visible" : "hidden",
+      }
+      return (
+        <div className="d-flex bg-gray-light" style={styles}>
+          {dragState.column.render("Header")}
+        </div>
+      )
     }
+
+    return <></>
   }, [])
 
-  const handleDragOver = useCallback(
-    (event, dropColumnId, allowDrop) => {
-      const prevState = draggingState.current
-      const { clientX, clientY } = event
+  const handleMouseDown = useCallback(
+    (event, columnId) => {
+      const { clientX, clientY, target, nativeEvent } = event
+      if (nativeEvent.which !== 1) return
+
+      const prevDragState = draggingState.current
+      clearDroppingState()
+      draggingState.current = {
+        ...prevDragState,
+        isDragging: true,
+        origin: { x: clientX, y: clientY },
+        column: visibleColumns.find(d => d.id === columnId),
+        width:
+          (target && target.offsetParent && target.offsetParent.width) ||
+          "80px",
+        height:
+          (target && target.offsetParent && target.offsetParent.height) ||
+          "3rem",
+        columnOrder: visibleColumns.map(d => d.id),
+      }
+      forceUpdate()
+    },
+    [draggingState.current, visibleColumns]
+  )
+
+  const handleMouseMove = useCallback(
+    ({ clientX, clientY }) => {
+      const prevDragState = draggingState.current
+      const prevDropState = clearDroppingState()
+      if (!prevDragState.column) return
+
       const translation = {
         x: clientX,
         y: clientY,
       }
-      draggingState.current = {
-        ...prevState,
-        translation,
-      }
-      clearDroppingState()
 
-      if (prevState.columnId) {
-        droppingState.current.columnId = dropColumnId
-        droppingState.current.validTarget = allowDrop
-        let droppableColumn = columnsRef.current.find(
-          col => col.columnId === dropColumnId
-        )
-        if (droppableColumn && droppableColumn.ref) {
+      // const hasDropColumnChanged = !(
+      //   prevDropState.column &&
+      //   isWithInBounds(prevDropState.column.ref, clientX, clientY)
+      // )
+      if (true) {
+        let droppableColumn = getDroppableColumn(clientX, clientY)
+
+        if (droppableColumn) {
+          let column = visibleColumns.find(d => d.id === droppableColumn.id)
+          const isDroppable =
+            column.allowDrop ||
+            (column.allowDropForColumns || []).includes(prevDragState.column.id)
+
+          droppingState.current.column = droppableColumn
+          droppingState.current.validTarget = isDroppable
           droppableColumn.ref.classList.add(
-            allowDrop ? "drop-allow" : "drop-block"
+            isDroppable ? "drop-allow" : "drop-block"
           )
         }
-        if (allowDrop) event.preventDefault()
       }
+
+      draggingState.current = {
+        ...prevDragState,
+        visible: true,
+        translation,
+      }
+      forceUpdate()
     },
-    [draggingState.current.origin]
+    [draggingState.current]
   )
 
-  const handleDragEnter = useCallback((event, columnId, allowDrop) => {
-    if (draggingState.current.columnId && allowDrop) event.preventDefault()
-  }, [])
+  const handleMouseUp = useCallback(
+    event => {
+      const prevDragState = draggingState.current
+      const prevDropState = droppingState.current
 
-  const handleDrop = useCallback((event, dropColumnId) => {
-    const prevDragState = draggingState.current
-    draggingState.current = {
-      ...prevDragState,
-      isDragging: false,
-    }
-    if (dropColumnId !== prevDragState.columnId) {
-      let columnIds = visibleColumns.map(d => d.id)
-
-      //delete and insert the column at new index
-      columnIds.splice(columnIds.indexOf(prevDragState.columnId), 1)
-      columnIds.splice(
-        columnIds.indexOf(dropColumnId),
-        0,
-        prevDragState.columnId
-      )
-      setColumnOrder(columnIds)
-    }
-  }, [])
-
-  const handleDragEnd = useCallback((event, dropColumnId) => {
-    const prevDragState = draggingState.current
-
-    // If drop wasn't successful, reset the column order
-    if (draggingState.current.isDragging) {
-      setColumnOrder(draggingState.current.columnOrder)
+      if (
+        prevDropState.validTarget &&
+        prevDropState.column &&
+        prevDropState.column.id !== prevDragState.column.id
+      ) {
+        let columnIds = getNewColumnOrder(
+          prevDragState.columnOrder,
+          prevDragState.column.id,
+          prevDropState.column.id
+        )
+        setColumnOrder(columnIds)
+      }
 
       draggingState.current = {
         ...prevDragState,
         isDragging: false,
+        visible: false,
+        translation: POSITION,
+        column: null,
       }
-    }
-    clearDroppingState()
-    forceUpdate()
-  }, [])
-
-  const registerColumnRef = useCallback((columnId: string, ref: any) => {
-    let refs = columnsRef.current
-      ? columnsRef.current.filter(col => col.columnId !== columnId)
-      : []
-    refs.push({ columnId, ref })
-
-    columnsRef.current = refs
-  }, [])
+      clearDroppingState()
+      forceUpdate()
+    },
+    [draggingState.current, droppingState.current, setColumnOrder]
+  )
 
   return {
-    handleDragStart,
-    handleDragEnter,
-    handleDragOver,
-    handleDrop,
-    handleDragEnd,
-    registerColumnRef,
+    handleMouseDown,
+    isDragging: draggingState.current.isDragging,
+    dragContent: getDragContent(draggingState.current),
   }
 }
 

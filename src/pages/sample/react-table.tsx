@@ -265,8 +265,7 @@ function ReactTableNextGen() {
         accessor: "progress",
         width: 70,
         sortBy: true,
-        allowDrag: false,
-        allowDrop: false,
+        allowDropForColumns: ["status"],
       },
     ],
     []

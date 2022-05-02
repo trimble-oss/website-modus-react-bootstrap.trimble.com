@@ -29,6 +29,7 @@ import {
 } from "./DataTableHelpers"
 import { TableColumn } from "."
 import useDataTableInstance from "./useDataTableInstance"
+import renderUsingPortal from "./renderUsingPortal"
 
 export interface DataTableProps
   extends Omit<React.HTMLProps<HTMLDivElement>, "data" | "size">,
@@ -65,7 +66,10 @@ export interface DataTableProps
     globalFilter: any,
     setGlobalFilter: (filterValue: FilterValue) => void
   ) => React.ReactElement | React.ReactNode | null
-  onRowSelection?: (rows: Array<Row>) => void
+  dragTemplate: (
+    column: ColumnInstance<any>
+  ) => React.ReactElement | React.ReactNode | null
+  onRowSelection?: (rows: any[]) => void
 }
 
 // TODO:
@@ -188,6 +192,11 @@ const propTypes = {
    * Custom Filter panel function.
    */
   filterPanel: PropTypes.func,
+
+  /**
+   * Template for Dragging item.
+   */
+  dragTemplate: PropTypes.func,
 }
 
 const checkBoxSelectorColumnId = "selector"
@@ -221,11 +230,13 @@ export function DataTable(
     ref,
     className,
     filterPanel,
+    dragTemplate,
     ...rest
   } = props
   const filterColumns = filterPanel && !disableFiltering ? true : false
   const enableRowSelection = !disableRowSelection && !checkBoxRowSelection
   const containerRef = useRef<HTMLDivElement>(null)
+  const bodyRef = useRef(null)
 
   // TODO: Need an alternative to handle Modus Bootstrap class for sticky first column
   const hasStickyFirstColumn = className
@@ -269,7 +280,7 @@ export function DataTable(
     allColumns,
     page,
     pageOptions,
-    selectedFlatRows,
+    selectedRows,
     contextMenu,
     showContextMenu,
     state: { pageIndex, pageSize, filters, globalFilter },
@@ -285,18 +296,20 @@ export function DataTable(
     toggleHideColumn,
     handleHeaderContextMenu,
     handleContextMenuClose,
-    handleDragStart,
-    handleDragEnter,
-    handleDragOver,
-    handleDrop,
-    handleDragEnd,
-    registerColumnRef,
+    handleMouseDown,
+    isDragging,
+    dragContent,
+    registerColumn,
   } = useDataTableInstance(columns, data, tableOptions, conditionalHooks)
 
   // Callback APIs
   useEffect(() => {
-    if (onRowSelection) onRowSelection(selectedFlatRows.map(d => d.original))
-  }, [selectedFlatRows])
+    if (onRowSelection) onRowSelection(selectedRows)
+  }, [selectedRows])
+
+  useEffect(() => {
+    bodyRef.current = document.body
+  }, [])
 
   return (
     <>
@@ -344,9 +357,7 @@ export function DataTable(
                         <DataTableHeaderCell
                           key={column.id}
                           header={column}
-                          registerRef={(columnId, ref) =>
-                            registerColumnRef(columnId, ref)
-                          }
+                          registerRef={(id, ref) => registerColumn(id, ref)}
                           onHeaderContextMenu={(event, headerColumn) =>
                             handleHeaderContextMenu(
                               event,
@@ -354,19 +365,11 @@ export function DataTable(
                               containerRef
                             )
                           }
-                          onDragHeaderStart={handleDragStart}
-                          onDragHeaderOver={handleDragOver}
-                          onDropHeader={handleDrop}
-                          onDragHeaderEnd={handleDragEnd}
-                          onDragHeaderEnter={handleDragEnter}
+                          onHeaderMouseDown={handleMouseDown}
                           onToggleHideColumn={toggleHideColumn}
                           allowDrag={
                             column.id !== checkBoxSelectorColumnId &&
                             column.allowDrag
-                          }
-                          allowDrop={
-                            column.id !== checkBoxSelectorColumnId &&
-                            column.allowDrop
                           }
                           className={classNames(
                             checkBoxRowSelection &&
@@ -437,6 +440,7 @@ export function DataTable(
           onClose={handleContextMenuClose}
         />
       )}
+      {isDragging && renderUsingPortal(dragContent, bodyRef)}
     </>
   )
 }

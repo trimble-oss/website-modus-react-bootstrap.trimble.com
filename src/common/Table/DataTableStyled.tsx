@@ -30,6 +30,7 @@ const DataTableStyled = styled(StyledDivWrapper)`
       th .modus-icons.material-icons.unsorted {
         vertical-align: text-bottom;
         font-size: 1rem;
+        cursor: pointer !important;
       }
 
       thead.sticky-top tr,
@@ -98,6 +99,7 @@ const DataTableStyled = styled(StyledDivWrapper)`
           border-left: 2px solid red !important;
         }
         &.draggable {
+          cursor: -webkit-grab !important;
           padding-left: 0;
           .th-content {
             padding-left: 1rem;

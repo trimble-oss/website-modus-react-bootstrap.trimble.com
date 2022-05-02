@@ -80,6 +80,7 @@ declare module "react-table" {
     align?: string
     allowDrag?: boolean
     allowDrop?: boolean
+    allowDropForColumns?: string[]
   }
 
   export interface ColumnInstance<D extends object = {}>
