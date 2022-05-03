@@ -3,7 +3,13 @@ import { HeaderGroup, useAsyncDebounce, useTable } from "react-table"
 import useDataTableContextMenu from "./useDataTableHeaderContextMenu"
 import useDataTableDragDrop from "./useDataTableHeaderDragDrop"
 
-const useDataTableInstance = (columns, data, options, hooks) => {
+const useDataTableInstance = (
+  columns,
+  data,
+  options,
+  hooks,
+  dragItemTemplate
+) => {
   const registeredColumns = useRef<{ id: string; ref: any }[]>([])
   // Handle custom props such as - sortBy
   const normalizedColumns = React.useMemo(
@@ -37,6 +43,7 @@ const useDataTableInstance = (columns, data, options, hooks) => {
   // Header Drag and Drop
   const { handleMouseDown, dragContent, isDragging } = useDataTableDragDrop(
     tableInstance,
+    dragItemTemplate,
     registeredColumns.current
   )
 
@@ -108,7 +115,7 @@ const useDataTableInstance = (columns, data, options, hooks) => {
     pageOptions,
     gotoPage,
     setPageSize,
-    selectedRows: selectedFlatRows.map(d => d.original),
+    selectedFlatRows,
     state: { pageIndex, pageSize, filters, globalFilter },
     getAllHeadersInAGroup,
     registerColumn,

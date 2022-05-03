@@ -186,7 +186,7 @@ const propTypes = {
   /**
    * Callback when a row is selected. If multipleRowSelection is enabled all rows selected will be available in the callback.
    */
-  onRowSelection: PropTypes.bool,
+  onRowSelection: PropTypes.func,
 
   /**
    * Custom Filter panel function.
@@ -280,7 +280,7 @@ export function DataTable(
     allColumns,
     page,
     pageOptions,
-    selectedRows,
+    selectedFlatRows,
     contextMenu,
     showContextMenu,
     state: { pageIndex, pageSize, filters, globalFilter },
@@ -300,12 +300,18 @@ export function DataTable(
     isDragging,
     dragContent,
     registerColumn,
-  } = useDataTableInstance(columns, data, tableOptions, conditionalHooks)
+  } = useDataTableInstance(
+    columns,
+    data,
+    tableOptions,
+    conditionalHooks,
+    dragTemplate
+  )
 
   // Callback APIs
   useEffect(() => {
-    if (onRowSelection) onRowSelection(selectedRows)
-  }, [selectedRows])
+    if (onRowSelection) onRowSelection(selectedFlatRows.map(d => d.original))
+  }, [selectedFlatRows])
 
   useEffect(() => {
     bodyRef.current = document.body

@@ -2201,8 +2201,7 @@ function Example() {
         Header: "Profile Progress Status",
         accessor: "progress",
         width: 70,
-        allowDrag: false,
-        allowDrop: false,
+        allowDropForColumns: ["status"],
       },
     ],
     []
