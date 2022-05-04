@@ -165,9 +165,3 @@ article a:not(.stretched-link)[href^="http"]::after,
 .autocomplete-suggestions.dropdown-menu {
   padding: 0px;
 }
-
-.custom-control-input:indeterminate {
-  & ~ .custom-control-label::after {
-    background-image: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='4' height='3.8' viewBox='0 0 4 4'><path stroke='#{$control-surface-color}' d='M-0.1 2h4'/></svg>") !important;
-  }
-}
