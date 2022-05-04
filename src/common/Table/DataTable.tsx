@@ -29,7 +29,7 @@ import {
 } from "./DataTableHelpers"
 import { TableColumn } from "."
 import useDataTableInstance from "./useDataTableInstance"
-import DataTableDragDropProvider from "./useDataTableHeaderDragDrop2"
+import DataTableDragDropProvider from "./useDataTableHeaderDragDrop"
 
 export interface DataTableProps
   extends Omit<React.HTMLProps<HTMLDivElement>, "data" | "size">,
@@ -297,13 +297,7 @@ export function DataTable(
     handleContextMenuClose,
     setColumnOrder,
     visibleColumns,
-  } = useDataTableInstance(
-    columns,
-    data,
-    tableOptions,
-    conditionalHooks,
-    dragTemplate
-  )
+  } = useDataTableInstance(columns, data, tableOptions, conditionalHooks)
 
   // Callback APIs
   useEffect(() => {

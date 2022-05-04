@@ -2159,6 +2159,32 @@ function Example() {
 render(<Example />);`
 
 export const DataTableWithDragAndDrop = `
+function GlobalFilterPanel(
+  allColumns,
+  filters,
+  setFilter,
+  setAllFilters,
+  globalFilter,
+  setGlobalFilter
+) {
+  return (
+    <Form.Group controlId="globalFilter" className="w-50">
+      <div className="d-flex input-with-icon-left">
+        <Form.Control
+          as="input"
+          type="search"
+          placeholder="Search"
+          value={globalFilter || ""}
+          size="lg"
+          onChange={e => setGlobalFilter(e.target.value || undefined)}
+        ></Form.Control>
+        <div className="input-icon">
+          <i className="material-icons">search</i>
+        </div>
+      </div>
+    </Form.Group>
+  )
+}
 function Example() {
   const columns = React.useMemo(
     () => [
@@ -2166,6 +2192,7 @@ function Example() {
         Header: "First Name",
         accessor: "firstName",
         width: 80,
+        sortBy: true,
         allowDrag: true,
         allowDrop: true,
       },
@@ -2173,6 +2200,7 @@ function Example() {
         Header: "Last Name",
         accessor: "lastName",
         width: 80,
+        sortBy: true,
         allowDrag: true,
         allowDrop: true,
       },
@@ -2180,6 +2208,7 @@ function Example() {
         Header: "Age",
         accessor: "age",
         width: 50,
+        sortBy: true,
         allowDrag: true,
         allowDrop: true,
       },
@@ -2187,6 +2216,7 @@ function Example() {
         Header: "Visits",
         accessor: "visits",
         width: 50,
+        sortBy: true,
         allowDrag: true,
         allowDrop: true,
       },
@@ -2213,6 +2243,10 @@ function Example() {
       id="dt_drag_drop"
       columns={columns} bordered hover
       data={data}
+      resizeColumns
+      multipleRowSelection
+      checkBoxRowSelection
+      filterPanel={GlobalFilterPanel}
     ></DataTable>
   )
 }

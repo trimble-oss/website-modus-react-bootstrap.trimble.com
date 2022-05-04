@@ -5,19 +5,78 @@ import React, {
   useRef,
   CSSProperties,
 } from "react"
+import PropTypes from "prop-types"
 import useForceUpdate from "@restart/hooks/useForceUpdate"
-import { isEqual } from "lodash"
-import { ColumnInstance } from "react-table"
+import renderUsingPortal from "./renderUsingPortal"
 
 const POSITION = { x: 0, y: 0 }
-const useDataTableDragDrop = (
-  { visibleColumns, setColumnOrder },
-  dragItemTemplate: (
-    column: ColumnInstance<any>
-  ) => React.ReactElement | React.ReactNode | null,
-  registeredColumns: { id: string; ref: any }[]
-) => {
+
+function getNewColumnOrder(columnIds, dragColumnId, dropColumnId): any[] {
+  let newColumnOrder = columnIds
+  newColumnOrder.splice(columnIds.indexOf(dragColumnId), 1)
+  newColumnOrder.splice(newColumnOrder.indexOf(dropColumnId), 0, dragColumnId)
+
+  return newColumnOrder
+}
+
+function getDragContent(dragState, dragItemTemplate) {
+  if (dragState.isDragging && dragState.column) {
+    const dragContainerStyle: CSSProperties = {
+      width: dragState.width,
+      height: dragState.height,
+      transform: `translate(calc(${dragState.translation.x}px - 10%), calc(${dragState.translation.y}px - 50%))`,
+      msTransform: `translateX(${dragState.translation.x}px) translateX(-10%) translateY(${dragState.translation.y}px) translateY(-50%)`,
+      zIndex: 9999,
+      left: 0,
+      top: 0,
+      position: "fixed",
+      cursor: dragState.isDragging ? "-webkit-grabbing" : "-webkit-grab",
+      visibility: dragState.visible ? "visible" : "hidden",
+      opacity: "0.9",
+    }
+    const dragContentStyle: CSSProperties = {
+      width: dragState.width,
+      height: dragState.height,
+    }
+
+    return (
+      <div style={dragContainerStyle}>
+        {dragItemTemplate ? (
+          dragItemTemplate(dragState.column)
+        ) : (
+          <div style={dragContentStyle} className="bg-gray-light p-2">
+            {dragState.column.render("Header")}
+          </div>
+        )}
+      </div>
+    )
+  }
+
+  return <></>
+}
+
+function isWithInBounds(boundingClientRect, x, y) {
+  if (boundingClientRect) {
+    const inVerticalBounds =
+      y >= boundingClientRect.top && y <= boundingClientRect.bottom
+    const inHorizontalBounds =
+      x >= boundingClientRect.left && x <= boundingClientRect.right
+    return inVerticalBounds && inHorizontalBounds
+  }
+  return false
+}
+
+export const DataTableDragDropContext = React.createContext<{
+  dragColumnId: any
+  onHeaderDragStart: (event: any, column: any) => void
+  registerColumn: (id: string, ref: any) => void
+}>(null)
+
+export default function DataTableDragDropProvider(props) {
+  const { children, visibleColumns, setColumnOrder, dragItemTemplate } = props
+
   const forceUpdate = useForceUpdate()
+  const registeredColumns = useRef<{ id: string; ref: any }[]>([])
   const droppingState = useRef<{
     column: { id: string; ref: any }
     validTarget: boolean
@@ -35,6 +94,11 @@ const useDataTableDragDrop = (
     column: null,
     columnOrder: visibleColumns.map(d => d.id),
   })
+
+  const bodyRef = useRef(null)
+  useEffect(() => {
+    bodyRef.current = document.body
+  }, [])
 
   useEffect(() => {
     if (draggingState.current.isDragging) {
@@ -55,73 +119,27 @@ const useDataTableDragDrop = (
     droppingState.current = { column: null, validTarget: false }
     return prevDropState
   }
-  function getDroppableColumn(x, y) {
-    const column = registeredColumns.find(({ ref }) => {
-      const rect = ref.getBoundingClientRect()
-      return isWithInBounds(rect, x, y)
-    })
-    return column
-  }
-  function isWithInBounds(boundingClientRect, x, y) {
-    if (boundingClientRect) {
-      const inVerticalBounds =
-        y >= boundingClientRect.top && y <= boundingClientRect.bottom
-      const inHorizontalBounds =
-        x >= boundingClientRect.left && x <= boundingClientRect.right
-      return inVerticalBounds && inHorizontalBounds
-    }
-    return false
-  }
-
-  function getNewColumnOrder(columnIds, dragColumnId, dropColumnId): any[] {
-    let newColumnOrder = columnIds
-    newColumnOrder.splice(columnIds.indexOf(dragColumnId), 1)
-    newColumnOrder.splice(newColumnOrder.indexOf(dropColumnId), 0, dragColumnId)
-
-    return newColumnOrder
-  }
-
-  const getDragContent = useCallback(
-    dragState => {
-      if (dragState.isDragging && dragState.column) {
-        const dragContainerStyle: CSSProperties = {
-          width: dragState.width,
-          height: dragState.height,
-          transform: `translate(calc(${dragState.translation.x}px - 10%), calc(${dragState.translation.y}px - 50%))`,
-          msTransform: `translateX(${dragState.translation.x}px) translateX(-10%) translateY(${dragState.translation.y}px) translateY(-50%)`,
-          zIndex: 9999,
-          left: 0,
-          top: 0,
-          position: "fixed",
-          cursor: dragState.isDragging ? "-webkit-grabbing" : "-webkit-grab",
-          visibility: dragState.visible ? "visible" : "hidden",
-          opacity: "0.9",
-        }
-        const dragContentStyle: CSSProperties = {
-          width: dragState.width,
-          height: dragState.height,
-        }
-
-        return (
-          <div style={dragContainerStyle}>
-            {dragItemTemplate ? (
-              dragItemTemplate(dragState.column)
-            ) : (
-              <div style={dragContentStyle} className="bg-gray-light p-2">
-                {dragState.column.render("Header")}
-              </div>
-            )}
-          </div>
-        )
-      }
-
-      return <></>
+  const getDroppableColumn = useCallback(
+    (x, y) => {
+      const column = registeredColumns.current.find(({ ref }) => {
+        const rect = ref.getBoundingClientRect()
+        return isWithInBounds(rect, x, y)
+      })
+      return column
     },
-    [dragItemTemplate]
+    [registeredColumns.current]
   )
 
+  const registerColumn = useCallback((id: string, ref: any) => {
+    let refs = registeredColumns.current
+      ? registeredColumns.current.filter(col => col.id !== id)
+      : []
+    refs.push({ id, ref })
+    registeredColumns.current = refs
+  }, [])
+
   const handleMouseDown = useCallback(
-    (event, columnId) => {
+    (event, column) => {
       const { clientX, clientY, target, nativeEvent } = event
       if (nativeEvent.which !== 1) return
 
@@ -131,7 +149,7 @@ const useDataTableDragDrop = (
         ...prevDragState,
         isDragging: true,
         origin: { x: clientX, y: clientY },
-        column: visibleColumns.find(d => d.id === columnId),
+        column,
         width:
           (target && target.offsetParent && target.offsetParent.width) ||
           "80px",
@@ -212,11 +230,38 @@ const useDataTableDragDrop = (
     [draggingState.current, droppingState.current, setColumnOrder]
   )
 
-  return {
-    handleMouseDown,
-    isDragging: draggingState.current.isDragging,
-    dragContent: getDragContent(draggingState.current),
-  }
+  const value = useMemo(
+    () => ({
+      dragColumnId: draggingState.current.column
+        ? draggingState.current.column.id
+        : null,
+      onHeaderDragStart: handleMouseDown,
+      registerColumn,
+    }),
+    [draggingState.current.column, handleMouseDown, registerColumn]
+  )
+
+  return (
+    <DataTableDragDropContext.Provider value={value}>
+      {children}
+      {draggingState.current.isDragging &&
+        renderUsingPortal(
+          getDragContent(draggingState.current, dragItemTemplate),
+          bodyRef
+        )}
+    </DataTableDragDropContext.Provider>
+  )
 }
 
-export default useDataTableDragDrop
+DataTableDragDropProvider.propTypes = {
+  children: PropTypes.node,
+  visibleColumns: PropTypes.any,
+  setColumnOrder: PropTypes.func,
+  dragItemTemplate: PropTypes.func,
+  registeredColumns: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.string.isRequired,
+      ref: PropTypes.any.isRequired,
+    })
+  ),
+}

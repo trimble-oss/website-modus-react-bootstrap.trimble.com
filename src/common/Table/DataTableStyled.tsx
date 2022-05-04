@@ -58,7 +58,7 @@ const DataTableStyled = styled(StyledDivWrapper)`
 
       th .table-col-resizable:hover {
         background-color: #9bc2f7;
-        cursor: ew-resize;
+        cursor: ew-resize !important;
       }
 
       .hidden-column {
@@ -99,9 +99,9 @@ const DataTableStyled = styled(StyledDivWrapper)`
           border-left: 2px solid red !important;
         }
         &.draggable {
-          cursor: -webkit-grab !important;
           padding-left: 0;
           .th-content {
+            cursor: -webkit-grab !important;
             padding-left: 1rem;
           }
         }

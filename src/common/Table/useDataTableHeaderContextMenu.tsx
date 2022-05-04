@@ -12,7 +12,7 @@ const useDataTableContextMenu = ({
   const [showContextMenu, setShowContextMenu] = useState(false)
 
   const handleHeaderContextMenu = useCallback(
-    (event, column: ColumnInstance, containerRef) => {
+    (event, columnId, containerRef) => {
       if (!containerRef.current) return
 
       const [selector, ...columns] = allColumns
@@ -24,7 +24,7 @@ const useDataTableContextMenu = ({
           {
             title: "Hide",
             onClick: () => {
-              toggleHideColumn(column.id, true)
+              toggleHideColumn(columnId, true)
               setShowContextMenu(false)
             },
           },

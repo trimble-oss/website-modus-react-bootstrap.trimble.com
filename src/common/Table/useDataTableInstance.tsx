@@ -1,15 +1,8 @@
-import React, { useCallback, useRef } from "react"
+import React, { useCallback, useRef, useState } from "react"
 import { HeaderGroup, useAsyncDebounce, useTable } from "react-table"
 import useDataTableContextMenu from "./useDataTableHeaderContextMenu"
 
-const useDataTableInstance = (
-  columns,
-  data,
-  options,
-  hooks,
-  dragItemTemplate
-) => {
-  const registeredColumns = useRef<{ id: string; ref: any }[]>([])
+const useDataTableInstance = (columns, data, options, hooks) => {
   // Handle custom props such as - sortBy
   const normalizedColumns = React.useMemo(
     () =>
