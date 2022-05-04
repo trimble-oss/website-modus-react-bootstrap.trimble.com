@@ -29,7 +29,7 @@ import {
 } from "./DataTableHelpers"
 import { TableColumn } from "."
 import useDataTableInstance from "./useDataTableInstance"
-import renderUsingPortal from "./renderUsingPortal"
+import DataTableDragDropProvider from "./useDataTableHeaderDragDrop2"
 
 export interface DataTableProps
   extends Omit<React.HTMLProps<HTMLDivElement>, "data" | "size">,
@@ -236,7 +236,6 @@ export function DataTable(
   const filterColumns = filterPanel && !disableFiltering ? true : false
   const enableRowSelection = !disableRowSelection && !checkBoxRowSelection
   const containerRef = useRef<HTMLDivElement>(null)
-  const bodyRef = useRef(null)
 
   // TODO: Need an alternative to handle Modus Bootstrap class for sticky first column
   const hasStickyFirstColumn = className
@@ -296,10 +295,8 @@ export function DataTable(
     toggleHideColumn,
     handleHeaderContextMenu,
     handleContextMenuClose,
-    handleMouseDown,
-    isDragging,
-    dragContent,
-    registerColumn,
+    setColumnOrder,
+    visibleColumns,
   } = useDataTableInstance(
     columns,
     data,
@@ -312,10 +309,6 @@ export function DataTable(
   useEffect(() => {
     if (onRowSelection) onRowSelection(selectedFlatRows.map(d => d.original))
   }, [selectedFlatRows])
-
-  useEffect(() => {
-    bodyRef.current = document.body
-  }, [])
 
   return (
     <>
@@ -356,37 +349,37 @@ export function DataTable(
                       {...headerGroup.getHeaderGroupProps()}
                       className="bg-gray-light"
                     >
-                      {getAllHeadersInAGroup(
-                        headerGroup.headers,
-                        headerGroup.id
-                      ).map(column => (
-                        <DataTableHeaderCell
-                          key={column.id}
-                          header={column}
-                          registerRef={(id, ref) => registerColumn(id, ref)}
-                          onHeaderContextMenu={(event, headerColumn) =>
-                            handleHeaderContextMenu(
-                              event,
-                              headerColumn,
-                              containerRef
-                            )
-                          }
-                          onHeaderMouseDown={handleMouseDown}
-                          onToggleHideColumn={toggleHideColumn}
-                          allowDrag={
-                            column.id !== checkBoxSelectorColumnId &&
-                            column.allowDrag
-                          }
-                          className={classNames(
-                            checkBoxRowSelection &&
-                              column.id === "selector" &&
-                              "icon-only",
-                            "bg-gray-light"
-                          )}
-                        >
-                          {column.render("Header")}
-                        </DataTableHeaderCell>
-                      ))}
+                      <DataTableDragDropProvider
+                        visibleColumns={visibleColumns}
+                        setColumnOrder={setColumnOrder}
+                        dragItemTemplate={dragTemplate}
+                      >
+                        {getAllHeadersInAGroup(
+                          headerGroup.headers,
+                          headerGroup.id
+                        ).map(column => (
+                          <DataTableHeaderCell
+                            key={column.id}
+                            header={column}
+                            onHeaderContextMenu={(event, headerColumn) =>
+                              handleHeaderContextMenu(
+                                event,
+                                headerColumn,
+                                containerRef
+                              )
+                            }
+                            onToggleHideColumn={toggleHideColumn}
+                            className={classNames(
+                              checkBoxRowSelection &&
+                                column.id === "selector" &&
+                                "icon-only",
+                              "bg-gray-light"
+                            )}
+                          >
+                            {column.render("Header")}
+                          </DataTableHeaderCell>
+                        ))}
+                      </DataTableDragDropProvider>
                     </tr>
                   ))}
                 </thead>
@@ -446,7 +439,6 @@ export function DataTable(
           onClose={handleContextMenuClose}
         />
       )}
-      {isDragging && renderUsingPortal(dragContent, bodyRef)}
     </>
   )
 }

@@ -1,7 +1,6 @@
-import React, { useCallback, useRef, useEffect } from "react"
+import React, { useCallback, useRef } from "react"
 import { HeaderGroup, useAsyncDebounce, useTable } from "react-table"
 import useDataTableContextMenu from "./useDataTableHeaderContextMenu"
-import useDataTableDragDrop from "./useDataTableHeaderDragDrop"
 
 const useDataTableInstance = (
   columns,
@@ -40,13 +39,6 @@ const useDataTableInstance = (
     handleContextMenuClose,
   } = useDataTableContextMenu(tableInstance)
 
-  // Header Drag and Drop
-  const { handleMouseDown, dragContent, isDragging } = useDataTableDragDrop(
-    tableInstance,
-    dragItemTemplate,
-    registeredColumns.current
-  )
-
   const {
     getTableProps,
     getTableBodyProps,
@@ -58,6 +50,8 @@ const useDataTableInstance = (
     setAllFilters,
     setGlobalFilter,
     toggleHideColumn,
+    visibleColumns,
+    setColumnOrder,
     page,
     pageOptions,
     gotoPage,
@@ -90,15 +84,6 @@ const useDataTableInstance = (
     [allColumns]
   )
 
-  const registerColumn = useCallback((id: string, ref: any) => {
-    let refs = registeredColumns.current
-      ? registeredColumns.current.filter(col => col.id !== id)
-      : []
-    refs.push({ id, ref })
-
-    registeredColumns.current = refs
-  }, [])
-
   return {
     // tableinstance
     getTableProps,
@@ -109,6 +94,8 @@ const useDataTableInstance = (
     allColumns,
     setFilter,
     setAllFilters,
+    setColumnOrder,
+    visibleColumns,
     setGlobalFilterCustom,
     toggleHideColumn,
     page,
@@ -118,18 +105,12 @@ const useDataTableInstance = (
     selectedFlatRows,
     state: { pageIndex, pageSize, filters, globalFilter },
     getAllHeadersInAGroup,
-    registerColumn,
 
     // context menu
     contextMenu,
     showContextMenu,
     handleHeaderContextMenu,
     handleContextMenuClose,
-
-    // drag and drop
-    handleMouseDown,
-    dragContent,
-    isDragging,
   }
 }
 

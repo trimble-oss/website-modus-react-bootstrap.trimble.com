@@ -1,17 +1,21 @@
-import React, { useCallback, useEffect, useRef } from "react"
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+} from "react"
 import merge from "lodash/merge"
 import PropTypes from "prop-types"
 import classNames from "classnames"
 import { ColumnInstance } from "react-table"
+import { DataTableDragDropContext } from "./useDataTableHeaderDragDrop2"
 
 export interface DataTableHeaderCellProps
   extends React.HTMLProps<HTMLTableCellElement> {
   header: any
-  allowDrag: boolean
   onHeaderContextMenu: (event, column: ColumnInstance) => void
   onToggleHideColumn: (columnId: string, hide: boolean) => void
-  onHeaderMouseDown: (event, columnId: string) => void
-  registerRef: (columnId: string, ref: any) => void
 }
 
 const modusSortArrows = {
@@ -53,9 +57,6 @@ const DataTableHeaderCell = React.forwardRef<
       header,
       onHeaderContextMenu,
       onToggleHideColumn,
-      allowDrag,
-      onHeaderMouseDown,
-      registerRef,
       children,
       className,
       ...props
@@ -63,7 +64,35 @@ const DataTableHeaderCell = React.forwardRef<
     ref
   ) => {
     const defaultRef = useRef<HTMLTableCellElement>(null)
-    const resolvedRef = ref || defaultRef
+    const resolvedRef = (ref ||
+      defaultRef) as React.MutableRefObject<HTMLTableCellElement>
+    const {
+      dragColumnId,
+      onHeaderDragEnter,
+      onHeaderDragLeave,
+      onHeaderDragStart,
+      onHeaderDrop,
+    } = useContext(DataTableDragDropContext)
+    const allowDrop =
+      header.allowDrop ||
+      (header.allowDropForColumns || []).includes(dragColumnId)
+    const dragDropEvents = useMemo(
+      () =>
+        dragColumnId
+          ? {
+              onMouseEnter: function (e) {
+                onHeaderDragEnter(e, allowDrop, resolvedRef.current)
+              },
+              onMouseLeave: function (e) {
+                onHeaderDragLeave(e, resolvedRef.current)
+              },
+              onMouseUp: function (e) {
+                onHeaderDrop(e, header.id, allowDrop, resolvedRef.current)
+              },
+            }
+          : {},
+      [dragColumnId, onHeaderDragEnter, onHeaderDragLeave, onHeaderDrop]
+    )
 
     // handle right-click
     const handleContextMenuClick = useCallback(
@@ -83,16 +112,6 @@ const DataTableHeaderCell = React.forwardRef<
 
     // Note: Drag events are triggered on the content of th
     // th border changes based on its position and stick top
-
-    useEffect(() => {
-      const columnRef = (
-        resolvedRef as React.MutableRefObject<HTMLTableCellElement>
-      ).current
-      if (registerRef && header && columnRef) {
-        registerRef(header.id, columnRef)
-      }
-    }, [header, resolvedRef, registerRef])
-
     if (!header.isVisible) {
       return (
         <div className="hidden-column">
@@ -117,19 +136,21 @@ const DataTableHeaderCell = React.forwardRef<
           title: "",
         }
       )
+
       const headerLabel = header.render("Header")
       return (
         <th
           className={classNames(
             "pr-2",
             className,
-            allowDrag && "draggable",
+            header.allowDrag && "draggable",
             header.id === "selector" && "icon-only"
           )}
           ref={resolvedRef}
+          onContextMenu={handleContextMenuClick}
+          {...dragDropEvents}
           {...headerProps}
           {...props}
-          onContextMenu={handleContextMenuClick}
         >
           <div className="d-flex w-100 h-100 align-items-center th-content">
             <div
@@ -142,7 +163,9 @@ const DataTableHeaderCell = React.forwardRef<
               data-toggle="tooltip"
               data-placement="top"
               title={headerLabel}
-              onMouseDown={e => allowDrag && onHeaderMouseDown(e, header.id)}
+              onMouseDown={e =>
+                header.allowDrag && onHeaderDragStart(e, header)
+              }
             >
               {headerLabel}
             </div>
