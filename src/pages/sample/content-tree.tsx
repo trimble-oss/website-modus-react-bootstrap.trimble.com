@@ -2,6 +2,8 @@ import * as React from "react"
 import { Container, Row } from "@trimbleinc/modus-react-bootstrap"
 import TreeViewItem from "../../common/Tree/TreeViewItem"
 import TreeView from "../../common/Tree/TreeView"
+import { ModusIconsScripts } from "../../common/ExternalDependencyHelper"
+import "../assets/css/test.scss"
 
 const ContentTreePage = props => {
   return (
@@ -12,6 +14,7 @@ const ContentTreePage = props => {
             <div className="col-12 col-lg-6 pt-5 mt-xl-5">
               <h1 className=" mt-4 ">
                 <div style={{ width: "400px" }}>
+                  <ModusIconsScripts />
                   <TreeView multiSelectCheckBox>
                     <TreeViewItem nodeId={1} label="Layout">
                       <TreeViewItem nodeId={2} label="Main Layout">

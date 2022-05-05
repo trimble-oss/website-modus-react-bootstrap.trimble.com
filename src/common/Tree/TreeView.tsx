@@ -120,7 +120,6 @@ const TreeView = React.forwardRef<HTMLUListElement, TreeViewProps>(
   ) => {
     const nodes = useRef({})
     const expandedProp = useRef([])
-    const nodesIndex = useRef<number[]>([])
     const [focusNodeId, setFocusNodeId] = useState<number>()
     const [nodesExpanded, setExpanded] = useState<number[]>(
       [].concat(defaultExpanded)

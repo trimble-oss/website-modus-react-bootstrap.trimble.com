@@ -153,7 +153,7 @@ const TreeViewItem = React.forwardRef<HTMLLIElement, TreeViewItemProps>(
 
     const defaultRef = React.useRef<HTMLDivElement>(null)
     const resolvedRef = (ref ||
-      defaultRef) as React.MutableRefObject<HTMLInputElement>
+      defaultRef) as React.MutableRefObject<HTMLLIElement>
     const focusSource = useRef(null)
 
     const [treeItemElement, setTreeItemElement] = useState(null)
@@ -271,6 +271,7 @@ const TreeViewItem = React.forwardRef<HTMLLIElement, TreeViewItemProps>(
 
     const handleFocus = React.useCallback(
       (e: any) => {
+        // do not update focus state if it is in disabled state or already in focus
         if (disabled || inFocus) return
 
         if (e.target === e.currentTarget) {
@@ -320,7 +321,7 @@ const TreeViewItem = React.forwardRef<HTMLLIElement, TreeViewItemProps>(
           onKeyDown={e => {
             onKeyPress(e, () => toggleNodeSelection(e, nodeId))
           }}
-          ref={ref}
+          ref={resolvedRef}
           {...rest}
         >
           <div className="d-flex align-items-center">
