@@ -165,17 +165,15 @@ export default function DataTableDragDropProvider(props) {
 
   const handleMouseMove = useCallback(
     ({ clientX, clientY }) => {
+      clearDroppingState()
       const prevDragState = draggingState.current
-      const prevDropState = clearDroppingState()
-      if (!prevDragState.column) return
-
       const translation = {
         x: clientX,
         y: clientY,
       }
+      if (!prevDragState.column) return
 
       let droppableColumn = getDroppableColumn(clientX, clientY)
-
       if (droppableColumn) {
         let column = visibleColumns.find(d => d.id === droppableColumn.id)
         const isDroppable =
@@ -188,7 +186,6 @@ export default function DataTableDragDropProvider(props) {
           isDroppable ? "drop-allow" : "drop-block"
         )
       }
-
       draggingState.current = {
         ...prevDragState,
         visible: true,

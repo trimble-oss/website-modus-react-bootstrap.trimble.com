@@ -1,15 +1,10 @@
-import React, {
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useRef,
-} from "react"
+import React, { useCallback, useContext, useEffect, useRef } from "react"
 import merge from "lodash/merge"
 import PropTypes from "prop-types"
 import classNames from "classnames"
 import { ColumnInstance } from "react-table"
 import { DataTableDragDropContext } from "./useDataTableHeaderDragDrop"
+import { CHECKBOX_SELECTOR_ID } from "./DataTableHelpers"
 
 export interface DataTableHeaderCellProps
   extends React.HTMLProps<HTMLTableCellElement> {
@@ -69,6 +64,7 @@ const DataTableHeaderCell = React.forwardRef<
     const { onHeaderDragStart, registerColumn } = useContext(
       DataTableDragDropContext
     )
+    const allowDrag = header.allowDrag && header.id !== CHECKBOX_SELECTOR_ID
 
     useEffect(() => {
       if (registerColumn && header.id && resolvedRef.current) {
@@ -126,7 +122,7 @@ const DataTableHeaderCell = React.forwardRef<
           className={classNames(
             "pr-2",
             className,
-            header.allowDrag && "draggable",
+            allowDrag && "draggable",
             header.id === "selector" && "icon-only"
           )}
           ref={resolvedRef}
@@ -145,9 +141,7 @@ const DataTableHeaderCell = React.forwardRef<
               data-toggle="tooltip"
               data-placement="top"
               title={headerLabel}
-              onMouseDown={e =>
-                header.allowDrag && onHeaderDragStart(e, header)
-              }
+              onMouseDown={e => allowDrag && onHeaderDragStart(e, header)}
             >
               {headerLabel}
             </div>

@@ -1,7 +1,7 @@
 import React, { useCallback, useState } from "react"
 import { Form } from "@trimbleinc/modus-react-bootstrap"
-import { ColumnInstance } from "react-table"
 import { ContextMenuState } from "./types"
+import { CHECKBOX_SELECTOR_ID } from "./DataTableHelpers"
 
 const useDataTableContextMenu = ({
   allColumns,
@@ -15,7 +15,7 @@ const useDataTableContextMenu = ({
     (event, columnId, containerRef) => {
       if (!containerRef.current) return
 
-      const [selector, ...columns] = allColumns
+      const columns = allColumns.filter(col => col.id !== CHECKBOX_SELECTOR_ID)
       const rect = containerRef.current.getBoundingClientRect()
       const contextMenu: ContextMenuState = {
         positionX: event.clientX - rect.left,

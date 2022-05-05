@@ -42,7 +42,6 @@
     "@mdx-js/mdx": "^1.6.22",
     "@mdx-js/react": "^1.6.22",
     "@netlify/plugin-gatsby": "^1.0.3",
-    "@trimbleinc/modus-bootstrap": "^1.4.1",
     "@types/react-dom": "^18.0.3",
     "@types/react-table": "^7.7.9",
     "@types/styled-components": "^5.1.14",

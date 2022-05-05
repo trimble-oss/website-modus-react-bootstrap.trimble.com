@@ -1,4 +1,4 @@
-import React, { useCallback, useRef, useState } from "react"
+import React, { useCallback } from "react"
 import { HeaderGroup, useAsyncDebounce, useTable } from "react-table"
 import useDataTableContextMenu from "./useDataTableHeaderContextMenu"
 

@@ -1,9 +1,3 @@
-import {
-  Column,
-  UseResizeColumnsColumnOptions,
-  UseSortByColumnOptions,
-} from "react-table"
-
 export type Variant =
   | "primary"
   | "secondary"

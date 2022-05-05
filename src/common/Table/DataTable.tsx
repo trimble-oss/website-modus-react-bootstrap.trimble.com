@@ -10,7 +10,6 @@ import {
   useRowSelect,
   useFilters,
   useGlobalFilter,
-  Row,
   ColumnInstance,
   Filters,
   FilterValue,
@@ -199,7 +198,6 @@ const propTypes = {
   dragTemplate: PropTypes.func,
 }
 
-const checkBoxSelectorColumnId = "selector"
 export function DataTable(
   props: React.PropsWithChildren<DataTableProps> & {
     ref?: React.Ref<HTMLDivElement>
@@ -255,12 +253,7 @@ export function DataTable(
     !columns.find(col => col.accessor === "selector")
   ) {
     conditionalHooks.push(hooks =>
-      checkBoxSelectionHook(
-        hooks,
-        id,
-        checkBoxSelectorColumnId,
-        multipleRowSelection
-      )
+      checkBoxSelectionHook(hooks, id, multipleRowSelection)
     )
   }
 
