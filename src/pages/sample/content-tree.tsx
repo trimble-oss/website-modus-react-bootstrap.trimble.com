@@ -3,7 +3,7 @@ import { Container, Row } from "@trimbleinc/modus-react-bootstrap"
 import TreeViewItem from "../../common/Tree/TreeViewItem"
 import TreeView from "../../common/Tree/TreeView"
 import { ModusIconsScripts } from "../../common/ExternalDependencyHelper"
-import "../assets/css/test.scss"
+import "../../assets/css/test.scss"
 
 const ContentTreePage = props => {
   return (
