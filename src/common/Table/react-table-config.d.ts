@@ -78,6 +78,9 @@ declare module "react-table" {
       UseResizeColumnsColumnOptions<D>,
       UseSortByColumnOptions<D> {
     align?: string
+    allowDrag?: boolean
+    allowDrop?: boolean
+    allowDropForColumns?: string[]
   }
 
   export interface ColumnInstance<D extends object = {}>

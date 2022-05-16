@@ -1,19 +1,21 @@
-import React, { useCallback, useState, useRef } from "react"
+import React, { useCallback, useState } from "react"
 import { Form } from "@trimbleinc/modus-react-bootstrap"
-import { ColumnInstance } from "react-table"
 import { ContextMenuState } from "./types"
+import { CHECKBOX_SELECTOR_ID } from "./DataTableHelpers"
 
-const useDataTableContextMenu = tableInstance => {
-  const { allColumns, toggleHideColumn, toggleHideAllColumns } = tableInstance
-
+const useDataTableContextMenu = ({
+  allColumns,
+  toggleHideColumn,
+  toggleHideAllColumns,
+}) => {
   const [contextMenu, setContextMenu] = useState<ContextMenuState>(null)
   const [showContextMenu, setShowContextMenu] = useState(false)
 
   const handleHeaderContextMenu = useCallback(
-    (event, column: ColumnInstance, containerRef) => {
+    (event, columnId, containerRef) => {
       if (!containerRef.current) return
 
-      const [selector, ...columns] = allColumns
+      const columns = allColumns.filter(col => col.id !== CHECKBOX_SELECTOR_ID)
       const rect = containerRef.current.getBoundingClientRect()
       const contextMenu: ContextMenuState = {
         positionX: event.clientX - rect.left,
@@ -22,7 +24,7 @@ const useDataTableContextMenu = tableInstance => {
           {
             title: "Hide",
             onClick: () => {
-              toggleHideColumn(column.id, true)
+              toggleHideColumn(columnId, true)
               setShowContextMenu(false)
             },
           },

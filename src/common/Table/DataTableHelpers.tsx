@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useRef, useState } from "react"
 import Form from "@trimbleinc/modus-react-bootstrap/Form"
 import { Cell, CellProps, HeaderProps, Hooks, Meta } from "react-table"
 
+export const CHECKBOX_SELECTOR_ID = "selector"
 const IndeterminateCheckbox = React.forwardRef<
   HTMLInputElement,
   {
@@ -28,7 +29,7 @@ export const checkBoxSelectionHook = (
 ) => {
   hooks.visibleColumns.push(columns => [
     {
-      id: "selector",
+      id: CHECKBOX_SELECTOR_ID,
       width: 25,
       minWidth: 25,
       disableResizing: true,
@@ -37,7 +38,7 @@ export const checkBoxSelectionHook = (
         return (
           <IndeterminateCheckbox
             {...row.getToggleRowSelectedProps()}
-            id={`${tableId}_checkbox_"${row.id}`}
+            id={`${tableId}_${CHECKBOX_SELECTOR_ID}_row"${row.id}`}
           />
         )
       },
@@ -46,7 +47,7 @@ export const checkBoxSelectionHook = (
           return (
             <IndeterminateCheckbox
               {...getToggleAllRowsSelectedProps()}
-              id={`${tableId}_checkbox_header`}
+              id={`${tableId}_${CHECKBOX_SELECTOR_ID}_header`}
             />
           )
         },

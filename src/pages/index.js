@@ -6,39 +6,41 @@ import modusLaptopPhone from "../assets/img/modus-laptop-phone.svg"
 const HomePage = props => (
   <DefaultLayout location={props.location}>
     <main id="main">
-      <Container fluid className="pt-5">
-        <Container>
-          <Row>
-            <div className="col-12 col-lg-6 pt-5 mt-xl-5">
-              <h1 className="text-trimble-blue mt-4 display-4 font-weight-bold text-center text-lg-left">
-                Modus React Bootstrap
-                <p
-                  className="text-trimble-blue font-weight-light display-4"
-                  style={{ lineHeight: "1.2" }}
-                >
-                  Developer Guide
+      <header>
+        <Container fluid className="pt-5">
+          <Container>
+            <Row>
+              <div className="col-12 col-lg-6 pt-5 mt-xl-5">
+                <h1 className="text-trimble-blue mt-4 display-2 font-weight-bold text-center text-lg-left">
+                  Modus React Bootstrap
+                  <p
+                    className="text-trimble-blue font-weight-light display-2"
+                    style={{ lineHeight: "1.2" }}
+                  >
+                    Developer Guide
+                  </p>
+                </h1>
+                <p className="lead text-trimble-blue-dark pt-3 mb-lg-5 text-center text-lg-left mr-lg-5">
+                  Quickly design and customize responsive mobile-first sites
+                  with Modus React Bootstrap, featuring a responsive grid
+                  system, and extensive prebuilt components.
                 </p>
-              </h1>
-              <p className="lead text-trimble-blue-dark pt-3 mb-lg-5 text-center text-lg-left mr-lg-5">
-                Quickly design and customize responsive mobile-first sites with
-                Modus React Bootstrap, featuring a responsive grid system, and
-                extensive prebuilt components.
-              </p>
-            </div>
-            <div className="col-10 col-sm-9 col-lg-6 mx-auto mt-lg-5 mb-n4">
-              <div className="mt-lg-5">
-                <img
-                  src={modusLaptopPhone}
-                  width="620"
-                  height="395"
-                  className="img-fluid text-center mx-auto mt-lg-5 mt-xl-1"
-                  alt=""
-                />
               </div>
-            </div>
-          </Row>
+              <div className="col-10 col-sm-9 col-lg-6 mx-auto mt-lg-5 mb-n4">
+                <div className="mt-lg-5">
+                  <img
+                    src={modusLaptopPhone}
+                    width="620"
+                    height="395"
+                    className="img-fluid text-center mx-auto mt-lg-5 mt-xl-1"
+                    alt=""
+                  />
+                </div>
+              </div>
+            </Row>
+          </Container>
         </Container>
-      </Container>
+      </header>
 
       <Container fluid className="bg-light">
         <Container className="py-5">

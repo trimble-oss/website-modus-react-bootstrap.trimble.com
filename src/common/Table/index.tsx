@@ -11,6 +11,8 @@ export type TableColumn = Column<any> &
   UseResizeColumnsColumnOptions<any> &
   UseSortByColumnOptions<any> & {
     sortBy?: boolean
+    allowDrop?: boolean
+    allowDrag?: boolean
   }
 
 export { default as DataTable } from "./DataTable"

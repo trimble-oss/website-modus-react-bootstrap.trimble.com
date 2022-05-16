@@ -15,12 +15,12 @@ import {
   Popover,
   Row,
 } from "@trimbleinc/modus-react-bootstrap"
-import DefaultLayout from "../layouts/DefaultLayout"
-import LinkedHeading from "../common/LinkedHeading"
-import TableOfContents from "../common/TableOfContents"
-import { ModusIconsScripts } from "../common/ExternalDependencyHelper"
-import { Table, TablePagination, DataTable } from "../common/Table"
-import { MakeData as makeData } from "../examples/components/Table"
+import DefaultLayout from "../../layouts/DefaultLayout"
+import LinkedHeading from "../../common/LinkedHeading"
+import TableOfContents from "../../common/TableOfContents"
+import { ModusIconsScripts } from "../../common/ExternalDependencyHelper"
+import { Table, TablePagination, DataTable } from "../../common/Table"
+import { MakeData as makeData } from "../../examples/components/Table"
 import styled from "styled-components"
 
 import { useTable, useSortBy, usePagination } from "react-table"
@@ -222,6 +222,8 @@ function ReactTableNextGen() {
         sortBy: true,
         Filter: TextFilter,
         width: 80,
+        allowDrag: true,
+        allowDrop: true,
       },
       {
         Header: "Last Name",
@@ -229,6 +231,8 @@ function ReactTableNextGen() {
         sortBy: true,
         Filter: TextFilter,
         width: 80,
+        allowDrag: true,
+        allowDrop: true,
       },
       {
         Header: "Age",
@@ -236,12 +240,16 @@ function ReactTableNextGen() {
         Filter: SliderFilter,
         width: 50,
         sortBy: true,
+        allowDrag: true,
+        allowDrop: true,
       },
       {
         Header: "Visits",
         accessor: "visits",
         width: 50,
         sortBy: true,
+        allowDrag: true,
+        allowDrop: true,
       },
       {
         Header: "Status",
@@ -249,12 +257,15 @@ function ReactTableNextGen() {
         Filter: SelectFilter,
         width: 70,
         sortBy: true,
+        allowDrag: true,
+        allowDrop: true,
       },
       {
         Header: "Profile Progress Status",
         accessor: "progress",
         width: 70,
         sortBy: true,
+        allowDropForColumns: ["status"],
       },
     ],
     []
@@ -269,8 +280,13 @@ function ReactTableNextGen() {
       bordered
       hover
       data={data}
-      // filterPanel={FilterPanel}
-      filterPanel={GlobalFilterPanel}
+      filterPanel={FilterPanel}
+      // filterPanel={GlobalFilterPanel}
+      pageSize={7}
+      pageSizeOptions={[7, 10, 25, 50]}
+      resizeColumns
+      multipleRowSelection
+      checkBoxRowSelection
     ></DataTable>
   )
 }

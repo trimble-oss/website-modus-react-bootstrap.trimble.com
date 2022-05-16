@@ -1,20 +1,16 @@
-import React, { useCallback } from "react"
+import React, { useCallback, useContext, useEffect, useRef } from "react"
 import merge from "lodash/merge"
 import PropTypes from "prop-types"
 import classNames from "classnames"
 import { ColumnInstance } from "react-table"
+import { DataTableDragDropContext } from "./useDataTableHeaderDragDrop"
+import { CHECKBOX_SELECTOR_ID } from "./DataTableHelpers"
 
 export interface DataTableHeaderCellProps
   extends React.HTMLProps<HTMLTableCellElement> {
   header: any
-  onHeaderContextMenu: (column: ColumnInstance, event) => void
+  onHeaderContextMenu: (event, column: ColumnInstance) => void
   onToggleHideColumn: (columnId: string, hide: boolean) => void
-}
-
-const propTypes = {
-  header: PropTypes.object.isRequired,
-  onHeaderContextMenu: PropTypes.func.isRequired,
-  onToggleHideColumn: PropTypes.func.isRequired,
 }
 
 const modusSortArrows = {
@@ -62,16 +58,38 @@ const DataTableHeaderCell = React.forwardRef<
     },
     ref
   ) => {
+    const defaultRef = useRef<HTMLTableCellElement>(null)
+    const resolvedRef = (ref ||
+      defaultRef) as React.MutableRefObject<HTMLTableCellElement>
+    const { onHeaderDragStart, registerColumn } = useContext(
+      DataTableDragDropContext
+    )
+    const allowDrag = header.allowDrag && header.id !== CHECKBOX_SELECTOR_ID
+
+    useEffect(() => {
+      if (registerColumn && header.id && resolvedRef.current) {
+        registerColumn(header.id, resolvedRef.current)
+      }
+    }, [header.id, resolvedRef.current, registerColumn])
+
     // handle right-click
-    const handleContextMenuClick = useCallback((header, event) => {
-      event.preventDefault()
-      onHeaderContextMenu(event, header)
-    }, [])
+    const handleContextMenuClick = useCallback(
+      event => {
+        event.preventDefault()
+        onHeaderContextMenu(event, header.id)
+      },
+      [onHeaderContextMenu, header.id]
+    )
 
-    const handleShowHiddenColumn = useCallback(event => {
-      onToggleHideColumn(header.id, false)
-    }, [])
+    const handleShowHiddenColumn = useCallback(
+      event => {
+        onToggleHideColumn(header.id, false)
+      },
+      [onToggleHideColumn, header.id]
+    )
 
+    // Note: Drag events are triggered on the content of th
+    // th border changes based on its position and stick top
     if (!header.isVisible) {
       return (
         <div className="hidden-column">
@@ -84,76 +102,86 @@ const DataTableHeaderCell = React.forwardRef<
           </div>
         </div>
       )
+    } else {
+      const headerProps = merge(
+        header.getHeaderProps(
+          header.getSortByToggleProps && header.getSortByToggleProps()
+        ),
+        {
+          style: {
+            flex: header.width ? `${header.width} 0 auto` : undefined,
+          },
+          title: "",
+        }
+      )
+
+      const headerLabel = header.render("Header")
+
+      return (
+        <th
+          className={classNames(
+            "pr-2",
+            className,
+            allowDrag && "draggable",
+            header.id === "selector" && "icon-only"
+          )}
+          ref={resolvedRef}
+          onContextMenu={handleContextMenuClick}
+          {...headerProps}
+          {...props}
+        >
+          <div className="d-flex w-100 h-100 align-items-center th-content">
+            <div
+              className="flex-grow-1"
+              style={{
+                whiteSpace: "nowrap",
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+              }}
+              data-toggle="tooltip"
+              data-placement="top"
+              title={headerLabel}
+              onMouseDown={e => allowDrag && onHeaderDragStart(e, header)}
+            >
+              {headerLabel}
+            </div>
+            <div>
+              {header.canSort && (
+                <>
+                  {header.isSorted ? (
+                    <SortIcon
+                      className="sorted"
+                      sort={header.isSortedDesc ? "desc" : "asc"}
+                    />
+                  ) : (
+                    <SortIcon
+                      className="unsorted"
+                      title="Sort Ascending"
+                      sort="asc"
+                    />
+                  )}
+                </>
+              )}
+            </div>
+          </div>
+
+          {header.getResizerProps && (
+            <div
+              {...header.getResizerProps()}
+              className="table-col-resizable"
+            />
+          )}
+        </th>
+      )
     }
-
-    const headerProps = merge(
-      header.getHeaderProps(
-        header.getSortByToggleProps && header.getSortByToggleProps()
-      ),
-      {
-        style: {
-          flex: header.width ? `${header.width} 0 auto` : undefined,
-        },
-        title: "",
-      }
-    )
-    const headerLabel = header.render("Header")
-
-    return (
-      <th
-        className={classNames(
-          "pr-2",
-          className,
-          header.id === "selector" && "icon-only"
-        )}
-        ref={ref}
-        {...headerProps}
-        {...props}
-        onContextMenu={e => handleContextMenuClick(header, e)}
-      >
-        <div className="d-flex" style={{ width: "100%" }}>
-          <div
-            className="flex-grow-1"
-            style={{
-              whiteSpace: "nowrap",
-              overflow: "hidden",
-              textOverflow: "ellipsis",
-            }}
-            data-toggle="tooltip"
-            data-placement="top"
-            title={headerLabel}
-          >
-            {headerLabel}
-          </div>
-          <div>
-            {header.canSort && (
-              <>
-                {header.isSorted ? (
-                  <SortIcon
-                    className="sorted"
-                    sort={header.isSortedDesc ? "desc" : "asc"}
-                  />
-                ) : (
-                  <SortIcon
-                    className="unsorted"
-                    title="Sort Ascending"
-                    sort="asc"
-                  />
-                )}
-              </>
-            )}
-          </div>
-        </div>
-
-        {header.getResizerProps && (
-          <div {...header.getResizerProps()} className="table-col-resizable" />
-        )}
-      </th>
-    )
   }
 )
 
-DataTableHeaderCell.propTypes = propTypes
+DataTableHeaderCell.propTypes = {
+  header: PropTypes.object.isRequired,
+  onHeaderContextMenu: PropTypes.func.isRequired,
+  onToggleHideColumn: PropTypes.func.isRequired,
+}
 
 DataTableHeaderCell.displayName = "DataTableHeaderCell"
 

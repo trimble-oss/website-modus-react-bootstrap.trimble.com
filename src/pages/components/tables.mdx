@@ -25,6 +25,7 @@ import {
   Editable,
   DataTableWithCellEditable,
   DataTableWithGlobalFilter,
+  DataTableWithDragAndDrop,
 } from "../../examples/components/Table"
 import { useTable, useSortBy, usePagination } from "react-table"
 import Badge from "@trimbleinc/modus-react-bootstrap/Badge"
@@ -269,6 +270,21 @@ import Badge from "@trimbleinc/modus-react-bootstrap/Badge"
 >
   Each cell can be customized to render custom control through{" "}
   <code> Cell </code> prop inside columns object as shown below.
+</CodeBlock>
+
+<CodeBlock
+  title="Column Reordering by Drag and Drop"
+  scope={{
+    makeData,
+  }}
+  code={DataTableWithDragAndDrop}
+  noInline={true}
+>
+  Use the props <code> allowDrag</code>, <code> allowDrop </code> to left click
+  and hold the column header to drag and drop the column in a new order. A
+  visual indicator is shown between the header cells where the column will be
+  dropped. If the drop operation is not allowed the line indicating the drop
+  location will be red.
 </CodeBlock>
 
 <LinkedHeading h="2" className="h1" id="table-api">
