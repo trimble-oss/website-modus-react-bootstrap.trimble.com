@@ -82,7 +82,8 @@ import classNames from "classnames"
   code={TreeViewMultiSelect}
   scope={{ TreeView, TreeViewItem }}
 >
-  Multiple node selection can be enabled through prop <code> multiSelect </code>.
+  Multiple node selection can be enabled through prop <code> multiSelect </code>
+  .
 </CodeBlock>
 
 <CodeBlock
@@ -122,7 +123,91 @@ import classNames from "classnames"
   hideCode={true}
 ></CodeBlock>
 
-<LinkedHeading h="2" className="h1" id="chip-api">
+<CodeBlock
+  title="Accessibility"
+  code={TreeViewWithDragDrop}
+  scope={{
+    TreeView,
+    TreeViewItem,
+    StyledIcon,
+    useForceUpdate,
+    StyledDragItem,
+    StyledCustomTreeViewItem,
+    createPortal,
+    classNames,
+    findIndex,
+  }}
+  noInline={true}
+  hideCode={true}
+>
+  Every Tree Item and the elements inside such as drag icon, expand & collapse
+  icon and the checkbox are accessible using the keyboard. “Tab” key moves focus
+  to the next focusable element and “Shift” + “Tab” moves focus to the previous
+  focusable element. Make sure any element that needs focus has{" "}
+  <code> tabindex </code> set.
+</CodeBlock>
+
+<LinkedHeading h="3" className="h2" id="keyboard-navigation">
+  Keyboard navigation
+</LinkedHeading>
+
+<table class="table table-bordered">
+  <thead class="bg-gray-light">
+    <tr>
+      <th scope="col">Keys</th>
+      <th scope="col">Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th scope="row">Arrow Left</th>
+      <td>Collapses the Tree Node</td>
+    </tr>
+    <tr>
+      <th scope="row">Arrow Right</th>
+      <td>Expands the Tree Node</td>
+    </tr>
+    <tr>
+      <th scope="row">Arrow Up</th>
+      <td>
+        Moves to the previous focusable Tree Item. Focus moves to a child node
+        if the parent node is expanded.
+      </td>
+    </tr>
+    <tr>
+      <th scope="row">Arrow Down</th>
+      <td>Moves to the next focusable Tree Item.</td>
+    </tr>
+    <tr>
+      <th scope="row">Enter</th>
+      <td>
+        Selects a Tree item or toggles the expansion state if the focus is on
+        expand/collapse icon.
+      </td>
+    </tr>
+    <tr>
+      <th scope="row">Space</th>
+      <td>Expands/Collapses the Tree Item when it is in focus. </td>
+    </tr>
+    <tr>
+      <th scope="row">Shift + Arrow Up/Down</th>
+      <td>
+        Performs multiple selection starting from the Tree Item that is selected
+        if <code> multiSelectNode</code> is set
+        <code> true </code> .
+      </td>
+    </tr>
+    <tr>
+      <th scope="row">Ctrl + click on Tree Item</th>
+      <td>
+        Performs multiple selection on the clicked Tree Items if{" "}
+        <code> multiSelectNode</code> is set <code> true</code>.
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<LinkedHeading h="2" className="h1" id="content-tree-api">
   API
 </LinkedHeading>
 <ComponentApi metadata={props.data.TreeView} />

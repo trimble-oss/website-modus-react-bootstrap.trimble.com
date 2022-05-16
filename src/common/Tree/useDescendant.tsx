@@ -1,3 +1,9 @@
+/** Credit:
+ *  https://github.com/reach/reach-ui/blob/86a046f54d53b6420e392b3fa56dd991d9d4e458/packages/descendants/README.md
+ *  Modified to suit our purposes.
+ *
+ */
+
 import React, {
   useState,
   useContext,
@@ -6,34 +12,39 @@ import React, {
   useEffect,
 } from "react"
 import TreeViewItemContext from "./TreeViewItemContext"
-import { TreeItem } from "./types"
+import { TreeItem, TreeItemExtended } from "./types"
 import _findIndex from "lodash/findIndex"
 import _every from "lodash/every"
 import _merge from "lodash/merge"
 
 export function useDescendant(
   nodeId,
+  element,
   isCheckBoxSelected,
   toggleMultiCheckBoxSelection
 ) {
-  const childNodes = useRef<TreeItem[]>([])
+  const childNodes = useRef<TreeItemExtended[]>([])
   const {
     parentId,
     level,
-    registerDescendant: registerDescendantOnParent,
-    unRegisterDescendant: unRegisterDescendantOnParent,
-    updateDescendant: updateDescendantOnParent,
+    registerDescendant: registerOnParent,
+    unRegisterDescendant: unRegisterOnParent,
+    updateDescendant: updateParent,
     onDescendantToggleCbSelection: onDescendantToggleCbSelectionOnParent,
   } = useContext(TreeViewItemContext)
+  const isRegisteredRef = useRef(false)
+  let [index, setIndex] = useState(-1)
 
   useEffect(() => {
-    registerDescendantOnParent &&
-      registerDescendantOnParent(nodeId, childNodes.current)
+    if (registerOnParent && element) {
+      isRegisteredRef.current = true
+      setIndex(registerOnParent(nodeId, childNodes.current, element))
+    }
 
     return () => {
-      unRegisterDescendantOnParent && unRegisterDescendantOnParent(nodeId)
+      unRegisterOnParent && unRegisterOnParent(nodeId)
     }
-  }, [registerDescendantOnParent, unRegisterDescendantOnParent])
+  }, [registerOnParent, unRegisterOnParent, element])
 
   const getChildNodes = useCallback(() => {
     return childNodes.current
@@ -45,65 +56,101 @@ export function useDescendant(
     [childNodes]
   )
 
-  const registerDescendant = useCallback(
-    (id, children, index?: number) => {
-      if (childNodes.current) {
-        let nodeIndex = _findIndex(childNodes.current, node => node.id === id)
-        if (nodeIndex >= 0) {
-          if (index) {
-            childNodes.current.splice(nodeIndex, 1)
-            childNodes.current.splice(index, 0, {
-              ...childNodes.current[nodeIndex],
-              id,
-              children,
-            })
-          } else {
-            childNodes.current.splice(nodeIndex, 1, {
-              ...childNodes.current[nodeIndex],
-              id,
-              children,
-            })
-          }
-        } else {
-          childNodes.current.push({ id, children, parentId: nodeId })
-        }
+  function binaryFindElement(array, element) {
+    let start = 0
+    let end = array.length - 1
 
-        updateDescendantOnParent &&
-          updateDescendantOnParent(nodeId, childNodes.current)
+    while (start <= end) {
+      const middle = Math.floor((start + end) / 2)
+
+      if (array[middle].element === element) {
+        return middle
       }
+
+      // eslint-disable-next-line no-bitwise
+
+      if (
+        array[middle].element &&
+        array[middle].element.compareDocumentPosition(element) &
+          Node.DOCUMENT_POSITION_PRECEDING
+      ) {
+        end = middle - 1
+      } else {
+        start = middle + 1
+      }
+    }
+
+    return start
+  }
+
+  const registerDescendant = useCallback(
+    (id, children, descendantElement) => {
+      let newIndex = -1
+
+      if (childNodes.current) {
+        let newItems = childNodes.current
+        let oldIndex = _findIndex(newItems, node => node.id === id)
+
+        // new index based on DOM position
+        newIndex = binaryFindElement(newItems, descendantElement)
+
+        // If the descendant already exist, delete it and insert at the new index
+        if (oldIndex >= 0) {
+          newItems.splice(oldIndex, 1)
+        }
+        newItems.splice(newIndex, 0, {
+          id,
+          children,
+          parentId: nodeId,
+          index: newIndex,
+          element: descendantElement,
+        })
+        newItems.forEach((item, position) => {
+          item.index = position
+        })
+        childNodes.current = newItems
+
+        if (updateParent && isRegisteredRef.current) {
+          updateParent(nodeId, childNodes.current, element)
+        }
+      }
+      return newIndex
     },
-    [childNodes, nodeId, updateDescendantOnParent]
+    [childNodes, nodeId, updateParent]
   )
 
   const unRegisterDescendant = useCallback(
     id => {
       if (childNodes.current) {
         childNodes.current = childNodes.current.filter(node => node.id !== id)
+        childNodes.current.forEach((item, position) => {
+          item.index = position
+        })
       }
     },
     [childNodes]
   )
 
   const updateDescendant = useCallback(
-    (id, children) => {
+    (id, children, descendantElement) => {
       if (childNodes.current) {
         let nodeIndex = _findIndex(childNodes.current, node => node.id === id)
-        if (nodeIndex >= 0) {
-          childNodes.current.splice(nodeIndex, 1, {
-            ...childNodes.current[nodeIndex],
-            id,
-            children,
-          })
-        } else {
-          childNodes.current.push({ id, parentId: nodeId, children })
-        }
+        let newIndex = nodeIndex < 0 ? childNodes.current.length : nodeIndex
 
-        // update also the parent
-        updateDescendantOnParent &&
-          updateDescendantOnParent(nodeId, childNodes.current)
+        childNodes.current.splice(newIndex, 1, {
+          id,
+          children,
+          parentId: nodeId,
+          index: newIndex,
+          element: descendantElement,
+        })
+
+        if (updateParent && isRegisteredRef.current) {
+          updateParent(nodeId, childNodes.current, element)
+        }
       }
     },
-    [childNodes, nodeId, updateDescendantOnParent]
+    [childNodes, nodeId, updateParent]
   )
 
   const onDescendantToggleCbSelection = useCallback(
@@ -150,6 +197,7 @@ export function useDescendant(
   return {
     parentId,
     level,
+    index,
     getChildNodes,
     setChildNodes,
     registerDescendant,

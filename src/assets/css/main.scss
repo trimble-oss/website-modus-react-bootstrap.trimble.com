@@ -149,11 +149,11 @@ article a:not(.stretched-link)[href^="http"]::after,
   display: inline-block;
 }
 
-.mcr-2 > * {
+.mcr-2>* {
   margin-right: 2px;
 }
 
-.highlight > pre {
+.highlight>pre {
   background-color: #fafafa !important;
 }
 

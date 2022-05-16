@@ -1123,7 +1123,7 @@ function TreeViewWithDrag() {
             </div>
           </div>
           <div className="col">
-            <TreeView id="example" expanded={expanded}>
+            <TreeView id="example" expanded={expanded} multiSelectNode>
               <StyledCustomTreeViewItem>
                 {data.map(item => (
                   <CustomTreeViewItem
@@ -1192,14 +1192,10 @@ export const StyledDragItem = styled.div`
 export const StyledCustomTreeViewItem = styled.div`
   li {
     padding: 5px 16px 5px 0 !important;
-  }
-  .drop-allow {
-    li {
+    &.drop-allow {
       border-top: 2px solid #0063a3 !important;
     }
-  }
-  .drop-block {
-    li {
+    &.drop-block {
       border-top: 2px solid red !important;
     }
   }
