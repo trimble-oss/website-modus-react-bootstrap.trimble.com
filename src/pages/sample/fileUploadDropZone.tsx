@@ -15,7 +15,12 @@ const FileUploadPage = props => {
               <div style={{ width: "400px" }}>
                 <h3 className="display-3">Upload Files</h3>
                 <h4>Max: 3 files (25 MB total)</h4>
-                <FileUploadDropZone id="test"></FileUploadDropZone>
+                <FileUploadDropZone
+                  id="test"
+                  disabled
+                  maxFileCount={2}
+                  maxTotalFileSizeBytes={5000}
+                ></FileUploadDropZone>
               </div>
             </div>
           </Row>

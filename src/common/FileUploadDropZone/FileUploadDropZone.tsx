@@ -2,16 +2,22 @@ import { forwardRef, useCallback, useRef, useState } from "react"
 import classNames from "classnames"
 import * as PropTypes from "prop-types"
 import React from "react"
+import FileUploadDropZoneStyled from "./FileUploadDropZoneStyled"
 
 export interface FileUploadDropZoneProps
   extends React.HTMLProps<HTMLDivElement> {
+  id: string
   maxFileCount?: number
   maxTotalFileSizeBytes?: number
   multiple?: boolean
+  disabled?: boolean
   onFiles?: (files: FileList, err: string) => void
 }
 
 const propTypes = {
+  /** A HTML id attribute, necessary for proper form accessibility. */
+  id: PropTypes.string,
+
   /**
    * Maximum number of files can be uploaded
    *
@@ -39,10 +45,14 @@ const propTypes = {
 const FileUploadDropZone = forwardRef<HTMLDivElement, FileUploadDropZoneProps>(
   (
     {
+      id,
       maxFileCount,
       maxTotalFileSizeBytes,
       multiple,
+      disabled,
       onFiles,
+      children,
+      as,
       className,
       ...props
     }: FileUploadDropZoneProps,
@@ -50,12 +60,29 @@ const FileUploadDropZone = forwardRef<HTMLDivElement, FileUploadDropZoneProps>(
   ) => {
     const resolvedRef = (useRef<HTMLDivElement>(null) ||
       ref) as React.MutableRefObject<HTMLDivElement>
+    const fileInputRef = useRef<HTMLInputElement>(null)
     const dragCounter = useRef(0) // workaround for drag leave event firing on parent when dragging over child div
     const [state, setState] = useState<{
       css?: string
       icon?: React.ReactElement
       message?: React.ReactElement | string
     }>(null)
+    const fileDropEvents = disabled
+      ? {}
+      : {
+          onDragEnter: function (e) {
+            handleDragEnter(e)
+          },
+          onDragOver: function (e) {
+            handleDragOver(e)
+          },
+          onDragLeave: function (e) {
+            handleDragLeave(e)
+          },
+          onDrop: function (e) {
+            handleDrop(e)
+          },
+        }
 
     const handleDragEnter = useCallback(
       e => {
@@ -71,6 +98,7 @@ const FileUploadDropZone = forwardRef<HTMLDivElement, FileUploadDropZoneProps>(
       },
       [setState]
     )
+
     const handleDragLeave = useCallback(
       e => {
         e.preventDefault()
@@ -83,16 +111,15 @@ const FileUploadDropZone = forwardRef<HTMLDivElement, FileUploadDropZoneProps>(
       },
       [setState]
     )
+
     const handleDragOver = useCallback(e => {
       e.preventDefault()
       e.stopPropagation()
     }, [])
-    const handleDrop = useCallback(
-      e => {
-        e.preventDefault()
-        e.stopPropagation()
 
-        let err = ValidateFiles(e.dataTransfer.files)
+    const handleFiles = useCallback(
+      (files: FileList) => {
+        let err = validateFiles(files)
         if (err) {
           setState({
             css: "files-invalid",
@@ -101,12 +128,21 @@ const FileUploadDropZone = forwardRef<HTMLDivElement, FileUploadDropZoneProps>(
           })
         } else setState(null)
 
-        if (onFiles) onFiles(e.dataTransfer.files, err)
+        if (onFiles) onFiles(files, err)
+      },
+      [setState]
+    )
+
+    const handleDrop = useCallback(
+      e => {
+        e.preventDefault()
+        e.stopPropagation()
+        handleFiles(e.dataTransfer.files)
       },
       [onFiles, setState]
     )
 
-    const ValidateFiles = useCallback(
+    const validateFiles = useCallback(
       (files: FileList) => {
         if (files) {
           let arr = Array.from(files)
@@ -116,14 +152,19 @@ const FileUploadDropZone = forwardRef<HTMLDivElement, FileUploadDropZoneProps>(
               return tot + file.size
             }, 0)
             if (totalSize > maxTotalFileSizeBytes)
-              return `Upload size exceeds limit. Max upload size ${maxTotalFileSizeBytes}bytes.`
+              return `Upload size exceeds limit. Max upload size ${bytesToSize(
+                maxTotalFileSizeBytes
+              )}.`
           }
-          // Multiple files upload
-          if (!multiple && arr.length > 1) {
-            return `Multiple files cannot be uploaded.`
-          }
-          if (multiple && maxFileCount && arr.length > maxFileCount) {
+
+          // Files count
+          if (maxFileCount && arr.length > maxFileCount) {
             return `Max files can be uploaded exceeds limit. Number of files uploaded is ${arr.length} and the limit is ${maxFileCount}.`
+          }
+
+          // Multiple upload
+          if (!multiple && !maxFileCount && arr.length > 1) {
+            return `Multiple files cannot be uploaded.`
           }
         }
         return null
@@ -131,28 +172,58 @@ const FileUploadDropZone = forwardRef<HTMLDivElement, FileUploadDropZoneProps>(
       [maxFileCount, maxTotalFileSizeBytes, multiple]
     )
 
+    function bytesToSize(bytes: number): string {
+      const sizes: string[] = ["Bytes", "KB", "MB", "GB", "TB"]
+      if (bytes === 0) return "n/a"
+      const i: number = parseInt(
+        Math.floor(Math.log(bytes) / Math.log(1024)).toString()
+      )
+      if (i === 0) return `${bytes} ${sizes[i]}`
+      return `${(bytes / Math.pow(1024, i)).toFixed(1)} ${sizes[i]}`
+    }
+
     return (
-      <div
+      <FileUploadDropZoneStyled
         {...props}
         ref={resolvedRef}
-        className={classNames("file-drop-zone", state && state.css, className)}
-        onDragEnter={handleDragEnter}
-        onDragOver={handleDragOver}
-        onDragLeave={handleDragLeave}
-        onDrop={handleDrop}
+        className={classNames(
+          "file-drop-zone",
+          state && state.css,
+          disabled && "disabled",
+          className
+        )}
+        {...fileDropEvents}
       >
-        <div className={classNames("d-flex flex-column my-5 text-center")}>
+        <div
+          className={classNames(
+            "d-flex flex-column my-5 text-center dropzone-content"
+          )}
+        >
+          <input
+            type="file"
+            id={id}
+            ref={fileInputRef}
+            multiple={multiple || (maxFileCount && maxFileCount > 1)}
+            className="d-none"
+            onChange={e => handleFiles(e.target.files)}
+          />
           {(state && state.icon) || <i className="modus-icons">cloud_upload</i>}
           <p>
             {(state && state.message) || (
               <>
-                Drag files here or
-                <span className="text-primary">browse</span> to upload.
+                Drag files here or{" "}
+                <span
+                  className="text-primary browse"
+                  onClick={e => !disabled && fileInputRef.current.click()}
+                >
+                  browse
+                </span>{" "}
+                to upload.
               </>
             )}
           </p>
         </div>
-      </div>
+      </FileUploadDropZoneStyled>
     )
   }
 )
