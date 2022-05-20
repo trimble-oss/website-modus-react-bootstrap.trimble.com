@@ -1,11 +1,6 @@
-import * as React from "react"
-import { Container, Row } from "@trimbleinc/modus-react-bootstrap"
-import { ModusIconsScripts } from "../../common/ExternalDependencyHelper"
-import "../../assets/css/main.scss"
-import FileUploadDropZone from "../../common/FileUploadDropZone/FileUploadDropZone"
-
+export const FileUploadDropZoneBasic = `
 const Example = () => {
-  const [filesUploaded, setFilesUploaded] = React.useState<FileList>(null)
+  const [filesUploaded, setFilesUploaded] = React.useState(null)
 
   return (
     <div style={{ width: "400px", height: "200px" }}>
@@ -30,19 +25,5 @@ const Example = () => {
     </div>
   )
 }
-const FileUploadPage = props => {
-  return (
-    <main id="main">
-      <ModusIconsScripts />
-      <Container fluid className="pt-5">
-        <Container>
-          <Row>
-            <Example />
-          </Row>
-        </Container>
-      </Container>
-    </main>
-  )
-}
-
-export default FileUploadPage
+render(<Example />);
+`

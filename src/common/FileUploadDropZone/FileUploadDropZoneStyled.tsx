@@ -1,10 +1,11 @@
 /* eslint-disable import/prefer-default-export */
 import * as React from "react"
+import { HTMLAttributes } from "react"
 import styled, { css } from "styled-components"
 
 export const StyledDivWrapper = React.forwardRef<
   HTMLDivElement,
-  React.HTMLProps<HTMLDivElement>
+  React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>, HTMLDivElement>
 >(({ children, ...props }, ref) => {
   return (
     <div ref={ref} {...props}>

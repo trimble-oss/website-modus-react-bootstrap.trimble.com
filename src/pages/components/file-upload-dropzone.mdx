@@ -1,0 +1,28 @@
+---
+title: File Upload DropZone
+description: File upload dropzone allows users to upload single or multiple files to the application by dragging and dropping.
+---
+
+import { graphql } from "gatsby"
+import { FileUploadDropZoneBasic } from "../../examples/components/FileUploadDropZone"
+
+<Overview>
+  File Upload Dropzone component allows users to upload content from their
+  computer or device into the application by dragging a file (or files) into a
+  target zone.
+</Overview>
+
+<CodeBlock title="Example" code={FileUploadDropZoneBasic}></CodeBlock>
+
+<LinkedHeading h="2" className="h1" id="file-upload-zone-api">
+  API
+</LinkedHeading>
+<ComponentApi metadata={props.data.FileUploadDropZone} />
+
+export const query = graphql`
+  query FileUploadDropZoneQuery {
+    Message: componentMetadata(displayName: { eq: "FileUploadDropZone" }) {
+      ...ComponentApi_metadata
+    }
+  }
+`
