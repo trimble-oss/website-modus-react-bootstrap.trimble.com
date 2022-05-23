@@ -11,22 +11,25 @@ function Example() {
         maxFileCount={2}
         maxTotalFileSizeBytes={5242880}
         onFiles={(files, err) => {
-          if(!err)
-            setFilesUploaded(files)
+          if(!err) setFilesUploaded(files)
+          else setFilesUploaded(null)
           }
         }
         style={{ width: "400px", height: "200px" }}
       ></FileUploadDropZone>
-      <h4 className="mt-5">Files uploaded:</h4>
-      <ul className="list-group list-group-borderless">
-        {filesUploaded &&
-          Array.from(filesUploaded).map(file => (
-            <li className="list-group-item list-item-left-control">
-              <i className="modus-icons">check_circle</i>
-              <span>{file.name}</span>
-            </li>
-          ))}
-      </ul>
+      {filesUploaded && (
+        <>
+          <h4 className="mt-5">Files uploaded:</h4>
+          <ul className="list-group list-group-borderless">
+            {Array.from(filesUploaded).map(file => (
+              <li className="list-group-item list-item-left-control">
+                <i className="modus-icons">check_circle</i>
+                <span>{file.name}</span>
+              </li>
+            ))}
+          </ul>
+        </>
+      )}
     </div>
   );
 }
@@ -43,8 +46,8 @@ function Example() {
       <FileUploadDropZone
         id="test2"
         onFiles={(files, err) => {
-          if(!err)
-            setFilesUploaded(files)
+          if(!err) setFilesUploaded(files)
+          else setFilesUploaded(null)
           }
         }
         validator={(files) => {
@@ -53,16 +56,19 @@ function Example() {
         }}
         style={{ width: "400px", height: "200px" }}
       ></FileUploadDropZone>
-      <h4 className="mt-5">Files uploaded:</h4>
-      <ul className="list-group list-group-borderless">
-        {filesUploaded &&
-          Array.from(filesUploaded).map(file => (
-            <li className="list-group-item list-item-left-control">
-              <i className="modus-icons">check_circle</i>
-              <span>{file.name}</span>
-            </li>
-          ))}
-      </ul>
+      {filesUploaded && (
+        <>
+          <h4 className="mt-5">Files uploaded:</h4>
+          <ul className="list-group list-group-borderless">
+            {Array.from(filesUploaded).map(file => (
+              <li className="list-group-item list-item-left-control">
+                <i className="modus-icons">check_circle</i>
+                <span>{file.name}</span>
+              </li>
+            ))}
+          </ul>
+        </>
+      )}
     </div>
   );
 }

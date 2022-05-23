@@ -21,16 +21,20 @@ const Example = () => {
         style={{ width: "400px", height: "200px" }}
         aria-label="Drop Zone"
       ></FileUploadDropZone>
-      <h4 className="mt-5">Files uploaded:</h4>
-      <ul className="list-group list-group-borderless">
-        {filesUploaded &&
-          Array.from(filesUploaded).map(file => (
-            <li className="list-group-item list-item-left-control">
-              <i className="modus-icons">check_circle</i>
-              <span>{file.name}</span>
-            </li>
-          ))}
-      </ul>
+
+      {filesUploaded && (
+        <>
+          <h4 className="mt-5">Files uploaded:</h4>
+          <ul className="list-group list-group-borderless">
+            {Array.from(filesUploaded).map(file => (
+              <li className="list-group-item list-item-left-control">
+                <i className="modus-icons">check_circle</i>
+                <span>{file.name}</span>
+              </li>
+            ))}
+          </ul>
+        </>
+      )}
     </div>
   )
 }
