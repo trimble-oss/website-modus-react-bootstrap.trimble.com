@@ -2,36 +2,45 @@
 import * as React from "react"
 import styled from "styled-components"
 
-export const StyledDivWrapper = React.forwardRef<
-  HTMLDivElement,
-  React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>, HTMLDivElement>
->(({ children, ...props }, ref) => {
-  return (
-    <div ref={ref} {...props}>
-      {children}
-    </div>
-  )
-})
-
-const FileUploadDropZoneStyled = styled(StyledDivWrapper)`
-  color: #6a6e79;
-  &.files-invalid {
-    color: #da212c;
-    background-color: #fbd4d7;
-  }
-  &.files-dropping {
-    color: #0063a3;
-    background-color: #dcedf9;
-  }
-  .browse {
-    cursor: pointer;
-    font-size: inherit;
-  }
-  &.disabled {
-    background-color: #cbcdd6 !important;
-    * {
-      color: #6a6e79 !important;
-      cursor: no-drop !important;
+const STATE_COLORS = {
+  default: {
+    text: "#6a6e79",
+  },
+  drop: {
+    text: "#0063a3",
+    background: "#dcedf9",
+  },
+  error: {
+    text: "#ab1f26",
+    background: "#fbd4d7",
+  },
+  disabled: {
+    text: "#6a6e79",
+    background: "#cbcdd6",
+  },
+}
+const FileUploadDropZoneStyled = styled.div<{ state?: string }>`
+  &.file-drop-zone {
+    position: relative;
+    background-color: #ffffff;
+    color: ${({ state }) => STATE_COLORS[state].text};
+    border-color: ${({ state }) => STATE_COLORS[state].text};
+    .file-drop-zone-overlay {
+      background-color: ${({ state }) => STATE_COLORS[state].background};
+      z-index: 1;
+      position: absolute;
+    }
+    .file-drop-zone-content {
+      z-index: 2;
+    }
+    .browse {
+      cursor: pointer;
+      font-size: inherit;
+    }
+    &.disabled {
+      * {
+        cursor: no-drop !important;
+      }
     }
   }
 `

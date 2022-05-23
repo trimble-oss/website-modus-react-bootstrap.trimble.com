@@ -102,7 +102,7 @@ const FileUploadDropZone = forwardRef<HTMLDivElement, FileUploadDropZoneProps>(
     const fileInputRef = useRef<HTMLInputElement>(null)
     const dragCounter = useRef(0) // workaround for drag leave event firing on parent when dragging over child div
     const [state, setState] = useState<{
-      css?: string
+      value?: string
       icon?: React.ReactElement
       message?: React.ReactElement | string
     }>(null)
@@ -128,7 +128,7 @@ const FileUploadDropZone = forwardRef<HTMLDivElement, FileUploadDropZoneProps>(
         e.preventDefault()
 
         setState({
-          css: "files-dropping",
+          value: "drop",
           message: "Drag files here.",
         })
 
@@ -164,7 +164,7 @@ const FileUploadDropZone = forwardRef<HTMLDivElement, FileUploadDropZoneProps>(
         let err = validator ? validator(files) : validateFiles(files)
         if (err) {
           setState({
-            css: "files-invalid",
+            value: "error",
             icon: <i className="modus-icons">no_entry</i>,
             message: err,
           })
@@ -265,10 +265,9 @@ const FileUploadDropZone = forwardRef<HTMLDivElement, FileUploadDropZoneProps>(
         ref={resolvedRef}
         className={classNames(
           "file-drop-zone d-flex align-items-center justify-content-center",
-          state && state.css,
-          disabled && "disabled",
           className
         )}
+        state={(disabled && "disabled") || (state && state.value) || "default"}
         {...fileDropEvents}
         tabIndex={tabIndex || 0}
         onKeyDown={handleKeyDown}
@@ -277,7 +276,12 @@ const FileUploadDropZone = forwardRef<HTMLDivElement, FileUploadDropZoneProps>(
           props["aria-disabled"] ? props["aria-disabled"] : disabled
         }
       >
-        <div className={classNames("d-flex flex-column text-center")}>
+        <div className="w-100 h-100 file-drop-zone-overlay"></div>
+        <div
+          className={classNames(
+            "file-drop-zone-content d-flex flex-column text-center p-3"
+          )}
+        >
           {(state && state.icon) || <i className="modus-icons">cloud_upload</i>}
           <div>
             {(state && state.message) || (
