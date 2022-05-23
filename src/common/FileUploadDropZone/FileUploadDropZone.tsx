@@ -9,6 +9,7 @@ import classNames from "classnames"
 import * as PropTypes from "prop-types"
 import React from "react"
 import FileUploadDropZoneStyled from "./FileUploadDropZoneStyled"
+import { Form } from "@trimbleinc/modus-react-bootstrap"
 
 export interface FileUploadDropZoneProps
   extends Omit<React.HTMLProps<HTMLDivElement>, "accept"> {
@@ -30,7 +31,7 @@ const propTypes = {
   id: PropTypes.string,
 
   /**
-   * Accepted Media type of the files uploaded. Refer https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/MIME_types for more information.
+   * Accepted File types for upload. The value should be either a valid MIME type or a file extension.
    */
   accept: PropTypes.arrayOf(PropTypes.string),
 
@@ -47,7 +48,7 @@ const propTypes = {
   maxTotalFileSizeBytes: PropTypes.number,
 
   /**
-   * Allows upload of multiple files.
+   * Enable multiple files upload.
    *
    */
   multiple: PropTypes.bool,
@@ -143,6 +144,7 @@ const FileUploadDropZone = forwardRef<HTMLDivElement, FileUploadDropZoneProps>(
         e.preventDefault()
 
         dragCounter.current--
+        console.log(dragCounter.current)
         if (dragCounter.current === 0) {
           setState(null)
         }
@@ -177,6 +179,7 @@ const FileUploadDropZone = forwardRef<HTMLDivElement, FileUploadDropZoneProps>(
       e => {
         e.preventDefault()
         handleFiles(e.dataTransfer.files)
+        dragCounter.current = 0
       },
       [onFiles, setState]
     )
@@ -195,9 +198,28 @@ const FileUploadDropZone = forwardRef<HTMLDivElement, FileUploadDropZoneProps>(
 
           // Accepted File types
           if (accept) {
-            const invalidType = arr.find(file => !accept.includes(file.type))
+            const acceptedTypes = new Set(accept)
+            const fileExtensionRegExp = new RegExp(".[0-9a-z]+$", "i")
+            const invalidType = arr.find(({ name, type }) => {
+              const hasFileExtension = fileExtensionRegExp.test(name)
+              if (!hasFileExtension) {
+                return true
+              }
+              const [fileExtension] = name.match(fileExtensionRegExp)
+
+              if (
+                acceptedTypes.has(type) ||
+                acceptedTypes.has(fileExtension.toLowerCase())
+              ) {
+                return false
+              }
+              return true
+            })
             if (invalidType) {
-              return `Some of the files uploaded are not matching the allowed file types(${accept.toString()})`
+              return `Some of the files uploaded are not matching the allowed File types (${accept
+                .map(item => `\"${item}\"`)
+                .join(", ")
+                .toString()})`
             }
           }
 
@@ -255,36 +277,30 @@ const FileUploadDropZone = forwardRef<HTMLDivElement, FileUploadDropZoneProps>(
           props["aria-disabled"] ? props["aria-disabled"] : disabled
         }
       >
-        <div
-          className={classNames(
-            "d-flex flex-column text-center dropzone-content"
-          )}
-        >
-          <input
-            type="file"
-            id={id}
-            ref={fileInputRef}
-            multiple={multiple || (maxFileCount && maxFileCount > 1)}
-            className="d-none"
-            onChange={e => handleFiles(e.target.files)}
-          />
+        <div className={classNames("d-flex flex-column text-center")}>
           {(state && state.icon) || <i className="modus-icons">cloud_upload</i>}
           <div>
             {(state && state.message) || (
               <>
                 Drag files here or{" "}
-                <span
-                  className="text-primary browse"
-                  onClick={e => !disabled && fileInputRef.current.click()}
-                  tabIndex={0}
-                  role="button"
-                  aria-label="browse"
-                  aria-disabled={
-                    props["aria-disabled"] ? props["aria-disabled"] : disabled
-                  }
-                >
-                  browse
-                </span>{" "}
+                <Form.File id={id} className="p-0 m-0 d-inline">
+                  <Form.File.Label
+                    className="text-primary browse"
+                    tabIndex={0}
+                    role="button"
+                    aria-label="browse"
+                    aria-disabled={
+                      props["aria-disabled"] ? props["aria-disabled"] : disabled
+                    }
+                  >
+                    browse
+                  </Form.File.Label>
+                  <Form.File.Input
+                    className="d-none"
+                    disabled={disabled}
+                    ref={fileInputRef}
+                  />
+                </Form.File>{" "}
                 to upload.
               </>
             )}

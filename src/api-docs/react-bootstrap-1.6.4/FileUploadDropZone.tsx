@@ -1,17 +1,29 @@
-import { forwardRef, useCallback, useRef, useState } from "react"
+import {
+  DragEventHandler,
+  forwardRef,
+  useCallback,
+  useRef,
+  useState,
+} from "react"
 import classNames from "classnames"
 import * as PropTypes from "prop-types"
 import React from "react"
 import FileUploadDropZoneStyled from "./FileUploadDropZoneStyled"
+import { Form } from "@trimbleinc/modus-react-bootstrap"
 
 export interface FileUploadDropZoneProps
-  extends React.HTMLProps<HTMLDivElement> {
+  extends Omit<React.HTMLProps<HTMLDivElement>, "accept"> {
   id: string
+  accept?: string[]
   maxFileCount?: number
   maxTotalFileSizeBytes?: number
   multiple?: boolean
   disabled?: boolean
   onFiles?: (files: FileList, err: string) => void
+  onDragEnter?: DragEventHandler<any> | undefined
+  onDragLeave?: DragEventHandler<any> | undefined
+  onDragOver?: DragEventHandler<any> | undefined
+  validator?: (files: FileList) => string
 }
 
 const propTypes = {
@@ -19,27 +31,48 @@ const propTypes = {
   id: PropTypes.string,
 
   /**
-   * Maximum number of files can be uploaded
+   * Accepted File Types for upload. The types should be either a valid MIME type or a file extension.
+   */
+  accept: PropTypes.arrayOf(PropTypes.string),
+
+  /**
+   * Maximum number of files can be uploaded.
    *
    */
   maxFileCount: PropTypes.number,
 
   /**
-   * Maximum Total size of the files uploaded
+   * Maximum Total size of the files uploaded.
    *
    */
   maxTotalFileSizeBytes: PropTypes.number,
 
   /**
-   * Allows upload of multiple files
+   * Allows upload of multiple files.
    *
    */
   multiple: PropTypes.bool,
 
   /**
-   * Fires when files are being uploaded
+   * Fires when files are being uploaded through drag & drop or browse button.
    */
   onFiles: PropTypes.func,
+  /**
+   * Callback for when the dragenter event occurs.
+   */
+  onDragEnter: PropTypes.func,
+  /**
+   * Callback for when the dragleave event occurs.
+   */
+  onDragLeave: PropTypes.func,
+  /**
+   * Callback for when the dragover event occurs.
+   */
+  onDragOver: PropTypes.func,
+  /**
+   * Custom validation function. It must return null if there's no errors.
+   */
+  validator: PropTypes.func,
 }
 
 const FileUploadDropZone = forwardRef<HTMLDivElement, FileUploadDropZoneProps>(
@@ -50,11 +83,16 @@ const FileUploadDropZone = forwardRef<HTMLDivElement, FileUploadDropZoneProps>(
       maxTotalFileSizeBytes,
       multiple,
       disabled,
-      onFiles,
       children,
       as,
       className,
       tabIndex,
+      accept,
+      onFiles,
+      onDragEnter,
+      onDragLeave,
+      onDragOver,
+      validator,
       ...props
     }: FileUploadDropZoneProps,
     ref
@@ -88,7 +126,6 @@ const FileUploadDropZone = forwardRef<HTMLDivElement, FileUploadDropZoneProps>(
     const handleDragEnter = useCallback(
       e => {
         e.preventDefault()
-        e.stopPropagation()
 
         setState({
           css: "files-dropping",
@@ -96,6 +133,8 @@ const FileUploadDropZone = forwardRef<HTMLDivElement, FileUploadDropZoneProps>(
         })
 
         dragCounter.current++
+
+        if (onDragEnter) onDragEnter(e)
       },
       [setState]
     )
@@ -103,24 +142,25 @@ const FileUploadDropZone = forwardRef<HTMLDivElement, FileUploadDropZoneProps>(
     const handleDragLeave = useCallback(
       e => {
         e.preventDefault()
-        e.stopPropagation()
 
         dragCounter.current--
         if (dragCounter.current === 0) {
           setState(null)
         }
+
+        if (onDragLeave) onDragLeave(e)
       },
       [setState]
     )
 
     const handleDragOver = useCallback(e => {
       e.preventDefault()
-      e.stopPropagation()
+      if (onDragOver) onDragOver(e)
     }, [])
 
     const handleFiles = useCallback(
       (files: FileList) => {
-        let err = validateFiles(files)
+        let err = validator ? validator(files) : validateFiles(files)
         if (err) {
           setState({
             css: "files-invalid",
@@ -137,7 +177,6 @@ const FileUploadDropZone = forwardRef<HTMLDivElement, FileUploadDropZoneProps>(
     const handleDrop = useCallback(
       e => {
         e.preventDefault()
-        e.stopPropagation()
         handleFiles(e.dataTransfer.files)
       },
       [onFiles, setState]
@@ -154,6 +193,34 @@ const FileUploadDropZone = forwardRef<HTMLDivElement, FileUploadDropZoneProps>(
       (files: FileList) => {
         if (files) {
           let arr = Array.from(files)
+
+          // Accepted File types
+          if (accept) {
+            const acceptedTypes = new Set(accept)
+            const fileExtensionRegExp = new RegExp(".[0-9a-z]+$", "i")
+            const invalidType = arr.find(({ name, type }) => {
+              const hasFileExtension = fileExtensionRegExp.test(name)
+              if (!hasFileExtension) {
+                return true
+              }
+              const [fileExtension] = name.match(fileExtensionRegExp)
+
+              if (
+                acceptedTypes.has(type) ||
+                acceptedTypes.has(fileExtension.toLowerCase())
+              ) {
+                return false
+              }
+              return true
+            })
+            if (invalidType) {
+              return `Some of the files uploaded are not matching the allowed File types (${accept
+                .map(item => `\"${item}\"`)
+                .join(", ")
+                .toString()})`
+            }
+          }
+
           // Total size
           if (maxTotalFileSizeBytes) {
             let totalSize = arr.reduce((tot, file) => {
@@ -195,7 +262,7 @@ const FileUploadDropZone = forwardRef<HTMLDivElement, FileUploadDropZoneProps>(
         {...props}
         ref={resolvedRef}
         className={classNames(
-          "file-drop-zone w-100 h-100 d-flex align-items-center justify-content-center",
+          "file-drop-zone d-flex align-items-center justify-content-center",
           state && state.css,
           disabled && "disabled",
           className
@@ -203,32 +270,35 @@ const FileUploadDropZone = forwardRef<HTMLDivElement, FileUploadDropZoneProps>(
         {...fileDropEvents}
         tabIndex={tabIndex || 0}
         onKeyDown={handleKeyDown}
+        aria-label={props["aria-label"] || "Drop Zone"}
+        aria-disabled={
+          props["aria-disabled"] ? props["aria-disabled"] : disabled
+        }
       >
-        <div
-          className={classNames(
-            "d-flex flex-column text-center dropzone-content"
-          )}
-        >
-          <input
-            type="file"
-            id={id}
-            ref={fileInputRef}
-            multiple={multiple || (maxFileCount && maxFileCount > 1)}
-            className="d-none"
-            onChange={e => handleFiles(e.target.files)}
-          />
+        <div className={classNames("d-flex flex-column text-center")}>
           {(state && state.icon) || <i className="modus-icons">cloud_upload</i>}
           <div>
             {(state && state.message) || (
               <>
                 Drag files here or{" "}
-                <span
-                  className="text-primary browse"
-                  onClick={e => !disabled && fileInputRef.current.click()}
-                  tabIndex={0}
-                >
-                  browse
-                </span>{" "}
+                <Form.File id={id} className="p-0 m-0 d-inline">
+                  <Form.File.Label
+                    className="text-primary browse"
+                    tabIndex={0}
+                    role="button"
+                    aria-label="browse"
+                    aria-disabled={
+                      props["aria-disabled"] ? props["aria-disabled"] : disabled
+                    }
+                  >
+                    browse
+                  </Form.File.Label>
+                  <Form.File.Input
+                    className="d-none"
+                    disabled={disabled}
+                    ref={fileInputRef}
+                  />
+                </Form.File>{" "}
                 to upload.
               </>
             )}

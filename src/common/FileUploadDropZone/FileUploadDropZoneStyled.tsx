@@ -15,31 +15,23 @@ export const StyledDivWrapper = React.forwardRef<
 })
 
 const FileUploadDropZoneStyled = styled(StyledDivWrapper)`
-  color: #6a6e79 !important;
-  .dropzone-content {
-    color: #6a6e79 !important;
-  }
+  color: #6a6e79;
   &.files-invalid {
-    color: #da212c !important;
+    color: #da212c;
     background-color: #fbd4d7;
-    .dropzone-content {
-      color: #da212c !important;
-    }
   }
   &.files-dropping {
-    color: #0063a3 !important;
+    color: #0063a3;
     background-color: #dcedf9;
-    .dropzone-content {
-      color: #0063a3 !important;
-    }
   }
   .browse {
     cursor: pointer;
+    font-size: inherit;
   }
   &.disabled {
     background-color: #cbcdd6 !important;
-    color: #6a6e79 !important;
     * {
+      color: #6a6e79 !important;
       cursor: no-drop !important;
     }
   }
