@@ -4,7 +4,10 @@ description: File upload dropzone allows users to upload single or multiple file
 ---
 
 import { graphql } from "gatsby"
-import { FileUploadDropZoneBasic } from "../../examples/components/FileUploadDropZone"
+import {
+  FileUploadDropZoneBasic,
+  FileUploadDropZoneCustomValidation,
+} from "../../examples/components/FileUploadDropZone"
 
 <Overview>
   File Upload Dropzone component allows users to upload content from their
@@ -12,7 +15,17 @@ import { FileUploadDropZoneBasic } from "../../examples/components/FileUploadDro
   target zone.
 </Overview>
 
-<CodeBlock title="Example" code={FileUploadDropZoneBasic}></CodeBlock>
+<CodeBlock
+  title="Example"
+  code={FileUploadDropZoneBasic}
+  noInline={true}
+></CodeBlock>
+
+<CodeBlock
+  title="Custom validation"
+  code={FileUploadDropZoneCustomValidation}
+  noInline={true}
+></CodeBlock>
 
 <LinkedHeading h="2" className="h1" id="file-upload-zone-api">
   API
@@ -21,7 +34,9 @@ import { FileUploadDropZoneBasic } from "../../examples/components/FileUploadDro
 
 export const query = graphql`
   query FileUploadDropZoneQuery {
-    Message: componentMetadata(displayName: { eq: "FileUploadDropZone" }) {
+    FileUploadDropZone: componentMetadata(
+      displayName: { eq: "FileUploadDropZone" }
+    ) {
       ...ComponentApi_metadata
     }
   }

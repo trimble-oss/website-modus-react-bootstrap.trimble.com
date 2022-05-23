@@ -1,17 +1,28 @@
-import { forwardRef, useCallback, useRef, useState } from "react"
+import {
+  DragEventHandler,
+  forwardRef,
+  useCallback,
+  useRef,
+  useState,
+} from "react"
 import classNames from "classnames"
 import * as PropTypes from "prop-types"
 import React from "react"
 import FileUploadDropZoneStyled from "./FileUploadDropZoneStyled"
 
 export interface FileUploadDropZoneProps
-  extends React.HTMLProps<HTMLDivElement> {
+  extends Omit<React.HTMLProps<HTMLDivElement>, "accept"> {
   id: string
+  accept?: string[]
   maxFileCount?: number
   maxTotalFileSizeBytes?: number
   multiple?: boolean
   disabled?: boolean
   onFiles?: (files: FileList, err: string) => void
+  onDragEnter?: DragEventHandler<any> | undefined
+  onDragLeave?: DragEventHandler<any> | undefined
+  onDragOver?: DragEventHandler<any> | undefined
+  validator?: (files: FileList) => string
 }
 
 const propTypes = {
@@ -19,27 +30,48 @@ const propTypes = {
   id: PropTypes.string,
 
   /**
-   * Maximum number of files can be uploaded
+   * Accepted Media type of the files uploaded. Refer https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/MIME_types for more information.
+   */
+  accept: PropTypes.arrayOf(PropTypes.string),
+
+  /**
+   * Maximum number of files can be uploaded.
    *
    */
   maxFileCount: PropTypes.number,
 
   /**
-   * Maximum Total size of the files uploaded
+   * Maximum Total size of the files uploaded.
    *
    */
   maxTotalFileSizeBytes: PropTypes.number,
 
   /**
-   * Allows upload of multiple files
+   * Allows upload of multiple files.
    *
    */
   multiple: PropTypes.bool,
 
   /**
-   * Fires when files are being uploaded
+   * Fires when files are being uploaded through drag & drop or browse button.
    */
   onFiles: PropTypes.func,
+  /**
+   * Callback for when the dragenter event occurs.
+   */
+  onDragEnter: PropTypes.func,
+  /**
+   * Callback for when the dragleave event occurs.
+   */
+  onDragLeave: PropTypes.func,
+  /**
+   * Callback for when the dragover event occurs.
+   */
+  onDragOver: PropTypes.func,
+  /**
+   * Custom validation function. It must return null if there's no errors.
+   */
+  validator: PropTypes.func,
 }
 
 const FileUploadDropZone = forwardRef<HTMLDivElement, FileUploadDropZoneProps>(
@@ -50,11 +82,16 @@ const FileUploadDropZone = forwardRef<HTMLDivElement, FileUploadDropZoneProps>(
       maxTotalFileSizeBytes,
       multiple,
       disabled,
-      onFiles,
       children,
       as,
       className,
       tabIndex,
+      accept,
+      onFiles,
+      onDragEnter,
+      onDragLeave,
+      onDragOver,
+      validator,
       ...props
     }: FileUploadDropZoneProps,
     ref
@@ -88,7 +125,6 @@ const FileUploadDropZone = forwardRef<HTMLDivElement, FileUploadDropZoneProps>(
     const handleDragEnter = useCallback(
       e => {
         e.preventDefault()
-        e.stopPropagation()
 
         setState({
           css: "files-dropping",
@@ -96,6 +132,8 @@ const FileUploadDropZone = forwardRef<HTMLDivElement, FileUploadDropZoneProps>(
         })
 
         dragCounter.current++
+
+        if (onDragEnter) onDragEnter(e)
       },
       [setState]
     )
@@ -103,24 +141,25 @@ const FileUploadDropZone = forwardRef<HTMLDivElement, FileUploadDropZoneProps>(
     const handleDragLeave = useCallback(
       e => {
         e.preventDefault()
-        e.stopPropagation()
 
         dragCounter.current--
         if (dragCounter.current === 0) {
           setState(null)
         }
+
+        if (onDragLeave) onDragLeave(e)
       },
       [setState]
     )
 
     const handleDragOver = useCallback(e => {
       e.preventDefault()
-      e.stopPropagation()
+      if (onDragOver) onDragOver(e)
     }, [])
 
     const handleFiles = useCallback(
       (files: FileList) => {
-        let err = validateFiles(files)
+        let err = validator ? validator(files) : validateFiles(files)
         if (err) {
           setState({
             css: "files-invalid",
@@ -137,7 +176,6 @@ const FileUploadDropZone = forwardRef<HTMLDivElement, FileUploadDropZoneProps>(
     const handleDrop = useCallback(
       e => {
         e.preventDefault()
-        e.stopPropagation()
         handleFiles(e.dataTransfer.files)
       },
       [onFiles, setState]
@@ -154,6 +192,15 @@ const FileUploadDropZone = forwardRef<HTMLDivElement, FileUploadDropZoneProps>(
       (files: FileList) => {
         if (files) {
           let arr = Array.from(files)
+
+          // Accepted File types
+          if (accept) {
+            const invalidType = arr.find(file => !accept.includes(file.type))
+            if (invalidType) {
+              return `Some of the files uploaded are not matching the allowed file types(${accept.toString()})`
+            }
+          }
+
           // Total size
           if (maxTotalFileSizeBytes) {
             let totalSize = arr.reduce((tot, file) => {
@@ -195,7 +242,7 @@ const FileUploadDropZone = forwardRef<HTMLDivElement, FileUploadDropZoneProps>(
         {...props}
         ref={resolvedRef}
         className={classNames(
-          "file-drop-zone w-100 h-100 d-flex align-items-center justify-content-center",
+          "file-drop-zone d-flex align-items-center justify-content-center",
           state && state.css,
           disabled && "disabled",
           className
@@ -203,6 +250,10 @@ const FileUploadDropZone = forwardRef<HTMLDivElement, FileUploadDropZoneProps>(
         {...fileDropEvents}
         tabIndex={tabIndex || 0}
         onKeyDown={handleKeyDown}
+        aria-label={props["aria-label"] || "Drop Zone"}
+        aria-disabled={
+          props["aria-disabled"] ? props["aria-disabled"] : disabled
+        }
       >
         <div
           className={classNames(
@@ -226,6 +277,11 @@ const FileUploadDropZone = forwardRef<HTMLDivElement, FileUploadDropZoneProps>(
                   className="text-primary browse"
                   onClick={e => !disabled && fileInputRef.current.click()}
                   tabIndex={0}
+                  role="button"
+                  aria-label="browse"
+                  aria-disabled={
+                    props["aria-disabled"] ? props["aria-disabled"] : disabled
+                  }
                 >
                   browse
                 </span>{" "}
