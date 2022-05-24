@@ -6,6 +6,7 @@ function Example() {
     <div>
       <h3 className="display-3">Upload Files</h3>
       <h4>Max: 3 files (5 MB total)</h4>
+      <h5>Supported file type: .pdf, .jpg, .png</h5>
       <FileUploadDropZone
         id="test1"
         maxFileCount={2}

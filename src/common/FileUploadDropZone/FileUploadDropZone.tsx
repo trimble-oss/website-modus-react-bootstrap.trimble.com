@@ -19,6 +19,7 @@ export interface FileUploadDropZoneProps
   maxTotalFileSizeBytes?: number
   multiple?: boolean
   disabled?: boolean
+  uploadIcon?: React.ReactElement | boolean
   onFiles?: (files: FileList, err: string) => void
   onDragEnter?: DragEventHandler<any> | undefined
   onDragLeave?: DragEventHandler<any> | undefined
@@ -52,6 +53,12 @@ const propTypes = {
    *
    */
   multiple: PropTypes.bool,
+
+  /**
+   * Set a custom upload icon or disable it.
+   *
+   */
+  uploadIcon: PropTypes.oneOfType([PropTypes.bool, PropTypes.element]),
 
   /**
    * Fires when files are being uploaded through drag & drop or browse button.
@@ -88,6 +95,7 @@ const FileUploadDropZone = forwardRef<HTMLDivElement, FileUploadDropZoneProps>(
       className,
       tabIndex,
       accept,
+      uploadIcon,
       onFiles,
       onDragEnter,
       onDragLeave,
@@ -106,6 +114,11 @@ const FileUploadDropZone = forwardRef<HTMLDivElement, FileUploadDropZoneProps>(
       icon?: React.ReactElement
       message?: React.ReactElement | string
     }>(null)
+    let finalUploadIcon = <i className="modus-icons">cloud_upload</i>
+    if (typeof uploadIcon === "boolean") {
+      if (!uploadIcon) finalUploadIcon = null
+    } else if (uploadIcon !== undefined) finalUploadIcon = uploadIcon
+
     const fileDropEvents = disabled
       ? {}
       : {
@@ -264,7 +277,7 @@ const FileUploadDropZone = forwardRef<HTMLDivElement, FileUploadDropZoneProps>(
         {...props}
         ref={resolvedRef}
         className={classNames(
-          "file-drop-zone d-flex align-items-center justify-content-center",
+          "d-flex align-items-center justify-content-center",
           className
         )}
         state={(disabled && "disabled") || (state && state.value) || "default"}
@@ -282,7 +295,7 @@ const FileUploadDropZone = forwardRef<HTMLDivElement, FileUploadDropZoneProps>(
             "file-drop-zone-content d-flex flex-column text-center p-3"
           )}
         >
-          {(state && state.icon) || <i className="modus-icons">cloud_upload</i>}
+          {(state && state.icon) || finalUploadIcon}
           <div>
             {(state && state.message) || (
               <>

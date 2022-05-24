@@ -1,6 +1,5 @@
 /* eslint-disable import/prefer-default-export */
-import * as React from "react"
-import styled from "styled-components"
+import styled, { css } from "styled-components"
 
 const STATE_COLORS = {
   default: {
@@ -20,28 +19,34 @@ const STATE_COLORS = {
   },
 }
 const FileUploadDropZoneStyled = styled.div<{ state?: string }>`
-  &.file-drop-zone {
-    position: relative;
-    background-color: #ffffff;
-    color: ${({ state }) => STATE_COLORS[state].text};
-    border-color: ${({ state }) => STATE_COLORS[state].text};
-    .file-drop-zone-overlay {
-      background-color: ${({ state }) => STATE_COLORS[state].background};
-      z-index: 1;
-      position: absolute;
-    }
-    .file-drop-zone-content {
-      z-index: 2;
-    }
-    .browse {
-      cursor: pointer;
-      font-size: inherit;
-    }
-    &.disabled {
+  ${({ state }) =>
+    css`
+      position: relative;
+      background-color: #ffffff;
+      color: ${STATE_COLORS[state].text};
+      .file-drop-zone-overlay {
+        border: 2px dotted #a3a6b1;
+        background-color: ${STATE_COLORS[state].background};
+        opacity: ${state == "error" || state == "disabled" ? "50%" : "100%"};
+        border-color: ${STATE_COLORS[state].text};
+        z-index: 1;
+        position: absolute;
+      }
+    `}
+  ${({ state }) =>
+    state === "disabled" &&
+    css`
       * {
         cursor: no-drop !important;
       }
-    }
+    `}
+
+  .file-drop-zone-content {
+    z-index: 2;
+  }
+  .browse {
+    cursor: pointer;
+    font-size: inherit;
   }
 `
 
