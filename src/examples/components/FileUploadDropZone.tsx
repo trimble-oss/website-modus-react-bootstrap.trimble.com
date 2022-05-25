@@ -9,7 +9,7 @@ function Example() {
       <h5>Supported file types are .pdf, .jpg and .png</h5>
       <FileUploadDropZone
         id="test1"
-        maxFileCount={2}
+        maxFileCount={3}
         maxTotalFileSizeBytes={5242880}
         accept={[".pdf","image/jpeg","image/png"]}
         onFiles={(files, err) => {

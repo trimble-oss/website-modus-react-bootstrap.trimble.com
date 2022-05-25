@@ -9,7 +9,7 @@ import React, {
 import classNames from "classnames"
 import * as PropTypes from "prop-types"
 import FileUploadDropZoneStyled from "./FileUploadDropZoneStyled"
-import { Form, Nav } from "@trimbleinc/modus-react-bootstrap"
+import { Form } from "@trimbleinc/modus-react-bootstrap"
 
 export interface FileUploadDropZoneProps
   extends Omit<React.HTMLProps<HTMLDivElement>, "accept"> {
@@ -350,7 +350,7 @@ const FileUploadDropZone = forwardRef<HTMLDivElement, FileUploadDropZoneProps>(
                   disabled={disabled}
                 >
                   <Form.File.Label
-                    className="text-primary browse"
+                    className="p-0 m-0 text-primary browse"
                     tabIndex={0}
                     role="button"
                     aria-label="browse"
