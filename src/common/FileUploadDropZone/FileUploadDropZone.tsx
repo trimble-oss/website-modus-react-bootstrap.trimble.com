@@ -9,7 +9,7 @@ import React, {
 import classNames from "classnames"
 import * as PropTypes from "prop-types"
 import FileUploadDropZoneStyled from "./FileUploadDropZoneStyled"
-import { Form } from "@trimbleinc/modus-react-bootstrap"
+import { Button, Form } from "@trimbleinc/modus-react-bootstrap"
 
 export interface FileUploadDropZoneProps
   extends Omit<React.HTMLProps<HTMLDivElement>, "accept"> {
@@ -204,18 +204,7 @@ const FileUploadDropZone = forwardRef<HTMLDivElement, FileUploadDropZoneProps>(
           setState({
             value: "error",
             icon: <i className="modus-icons">no_entry</i>,
-            message: (
-              <>
-                {err}
-                <div>
-                  Click{" "}
-                  <a href="#" className="text-reset" onClick={handleReset}>
-                    here
-                  </a>{" "}
-                  to reset.
-                </div>
-              </>
-            ),
+            message: err,
           })
         } else setState(null)
 
@@ -274,11 +263,22 @@ const FileUploadDropZone = forwardRef<HTMLDivElement, FileUploadDropZoneProps>(
               return true
             })
             if (invalidType) {
-              return `Some of the files uploaded are not matching the allowed File types (${accept
-                .map(item => `\"${item}\"`)
-                .join(", ")
-                .toString()}).`
+              return `Some files do not match the allowed file types (${accept
+                .map((item, index) => {
+                  return `\"${item}${index === accept.length - 1 ? "" : ","}\"`
+                })
+                .join(" ")}).`
             }
+          }
+
+          // Files count
+          if (maxFileCount && arr.length > maxFileCount) {
+            return `Max file upload limit of ${maxFileCount} files exceeded.`
+          }
+
+          // Multiple upload
+          if (!multiple && !maxFileCount && arr.length > 1) {
+            return `Multiple files cannot be uploaded.`
           }
 
           // Total size
@@ -290,16 +290,6 @@ const FileUploadDropZone = forwardRef<HTMLDivElement, FileUploadDropZoneProps>(
               return `Upload size exceeds limit. Max upload size ${bytesToSize(
                 maxTotalFileSizeBytes
               )}.`
-          }
-
-          // Files count
-          if (maxFileCount && arr.length > maxFileCount) {
-            return `Max files can be uploaded exceeds limit. Number of files uploaded is ${arr.length} and the limit is ${maxFileCount}.`
-          }
-
-          // Multiple upload
-          if (!multiple && !maxFileCount && arr.length > 1) {
-            return `Multiple files cannot be uploaded.`
           }
         }
         return null
@@ -323,7 +313,7 @@ const FileUploadDropZone = forwardRef<HTMLDivElement, FileUploadDropZoneProps>(
         {...props}
         ref={resolvedRef}
         className={classNames(
-          "d-flex align-items-center justify-content-center",
+          "d-flex flex-column  justify-content-center",
           className
         )}
         state={(disabled && "disabled") || (state && state.value) || "default"}
@@ -334,11 +324,7 @@ const FileUploadDropZone = forwardRef<HTMLDivElement, FileUploadDropZoneProps>(
         }
       >
         <div className="w-100 h-100 file-drop-zone-overlay"></div>
-        <div
-          className={classNames(
-            "file-drop-zone-content d-flex flex-column text-center p-3"
-          )}
-        >
+        <div className="file-drop-zone-content text-center p-3">
           {(state && state.icon) || finalUploadIcon}
           <div>
             {(state && state.message) || (
@@ -373,6 +359,20 @@ const FileUploadDropZone = forwardRef<HTMLDivElement, FileUploadDropZoneProps>(
             )}
           </div>
         </div>
+        {state && state.value === "error" && (
+          <div className="file-upload-dropzone-reset">
+            <div className="reset-container">
+              <Button
+                variant="outline-secondary"
+                size="sm"
+                className="text-center"
+                onClick={handleReset}
+              >
+                Reset
+              </Button>
+            </div>
+          </div>
+        )}
       </FileUploadDropZoneStyled>
     )
   }

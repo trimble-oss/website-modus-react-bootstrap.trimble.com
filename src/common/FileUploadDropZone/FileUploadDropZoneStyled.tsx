@@ -48,6 +48,17 @@ const FileUploadDropZoneStyled = styled.div<{ state?: string }>`
     cursor: pointer;
     font-size: inherit;
   }
+  .file-upload-dropzone-reset {
+    position: relative;
+    padding-top: 1%;
+    div.reset-container {
+      position: absolute;
+      left: 0;
+      right: 0;
+      z-index: 2;
+      text-align: center !important;
+    }
+  }
 `
 
 export default FileUploadDropZoneStyled
