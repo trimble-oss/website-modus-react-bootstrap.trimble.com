@@ -17,14 +17,14 @@ function Example() {
           else setFilesUploaded(null)
           }
         }
-        style={{ width: "400px", height: "200px" }}
+        style={{ maxWidth: "400px", height: "200px" }}
       ></FileUploadDropZone>
       {filesUploaded && (
         <>
           <h4 className="mt-5">Files uploaded:</h4>
           <ul className="list-group list-group-borderless">
-            {Array.from(filesUploaded).map(file => (
-              <li className="list-group-item list-item-left-control">
+            {Array.from(filesUploaded).map((file, index) => (
+              <li className="list-group-item list-item-left-control" key={index}>
                 <i className="modus-icons">check_circle</i>
                 <span>{file.name}</span>
               </li>
@@ -56,14 +56,14 @@ function Example() {
           if(files.length > 1)
             return "Custom Validation Message: Multiple files upload is not allowed at a time."
         }}
-        style={{ width: "400px", height: "200px" }}
+        style={{ maxWidth: "400px", height: "200px" }}
       ></FileUploadDropZone>
       {filesUploaded && (
         <>
           <h4 className="mt-5">Files uploaded:</h4>
           <ul className="list-group list-group-borderless">
-            {Array.from(filesUploaded).map(file => (
-              <li className="list-group-item list-item-left-control">
+            {Array.from(filesUploaded).map((file, index) => (
+              <li className="list-group-item list-item-left-control" key={index}>
                 <i className="modus-icons">check_circle</i>
                 <span>{file.name}</span>
               </li>

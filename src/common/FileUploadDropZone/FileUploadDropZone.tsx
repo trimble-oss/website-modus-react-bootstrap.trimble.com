@@ -9,7 +9,7 @@ import React, {
 import classNames from "classnames"
 import * as PropTypes from "prop-types"
 import FileUploadDropZoneStyled from "./FileUploadDropZoneStyled"
-import { Form } from "@trimbleinc/modus-react-bootstrap"
+import { Form, Nav } from "@trimbleinc/modus-react-bootstrap"
 
 export interface FileUploadDropZoneProps
   extends Omit<React.HTMLProps<HTMLDivElement>, "accept"> {
@@ -204,7 +204,18 @@ const FileUploadDropZone = forwardRef<HTMLDivElement, FileUploadDropZoneProps>(
           setState({
             value: "error",
             icon: <i className="modus-icons">no_entry</i>,
-            message: err,
+            message: (
+              <>
+                {err}
+                <div>
+                  Click{" "}
+                  <a href="#" className="text-reset" onClick={handleReset}>
+                    here
+                  </a>{" "}
+                  to reset.
+                </div>
+              </>
+            ),
           })
         } else setState(null)
 
@@ -227,6 +238,15 @@ const FileUploadDropZone = forwardRef<HTMLDivElement, FileUploadDropZoneProps>(
           fileInputRef.current.click()
       },
       [fileInputRef, disabled]
+    )
+
+    const handleReset = useCallback(
+      e => {
+        e.preventDefault()
+        setState(null)
+        dragCounter.current = 0
+      },
+      [setState, dragCounter]
     )
 
     const validateFiles = useCallback(
@@ -257,7 +277,7 @@ const FileUploadDropZone = forwardRef<HTMLDivElement, FileUploadDropZoneProps>(
               return `Some of the files uploaded are not matching the allowed File types (${accept
                 .map(item => `\"${item}\"`)
                 .join(", ")
-                .toString()})`
+                .toString()}).`
             }
           }
 
@@ -345,6 +365,7 @@ const FileUploadDropZone = forwardRef<HTMLDivElement, FileUploadDropZoneProps>(
                     disabled={disabled}
                     ref={fileInputRef}
                     onChange={e => handleFiles(e.target.files)}
+                    multiple={multiple || (maxFileCount && maxFileCount > 1)}
                   />
                 </Form.File>{" "}
                 to upload.
