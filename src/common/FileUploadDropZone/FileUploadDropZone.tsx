@@ -32,7 +32,7 @@ const propTypes = {
   id: PropTypes.string,
 
   /**
-   * Accepted File types for upload. The value should be either a valid MIME type or a file extension.
+   * Accepted File types for upload. Values should be either a valid MIME type or a file extension.
    */
   accept: PropTypes.arrayOf(PropTypes.string),
 
@@ -61,7 +61,7 @@ const propTypes = {
   uploadIcon: PropTypes.oneOfType([PropTypes.bool, PropTypes.element]),
 
   /**
-   * Fires when files are being uploaded through drag & drop or browse button.
+   * Callback when files are being uploaded through drag & drop or browse button.
    *
    * ```js
    * function onFiles(files: FileList, err: string) => void
@@ -98,7 +98,7 @@ const propTypes = {
    *
    * ```js
    * function validator(files: FileList) => string
-   *  files: FileList (https://developer.mozilla.org/en-US/docs/Web/API/FileList)
+   *  files: (https://developer.mozilla.org/en-US/docs/Web/API/FileList)
    * ```
    */
   validator: PropTypes.func,
@@ -344,6 +344,7 @@ const FileUploadDropZone = forwardRef<HTMLDivElement, FileUploadDropZoneProps>(
                     className="d-none"
                     disabled={disabled}
                     ref={fileInputRef}
+                    onChange={e => handleFiles(e.target.files)}
                   />
                 </Form.File>{" "}
                 to upload.

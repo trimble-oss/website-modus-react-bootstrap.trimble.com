@@ -66,7 +66,6 @@ const propTypes = {
    * ```js
    * function onFiles(files: FileList, err: string) => void
    *  files: (https://developer.mozilla.org/en-US/docs/Web/API/FileList)
-   *  err: string
    * ```
    */
   onFiles: PropTypes.func,
@@ -75,7 +74,6 @@ const propTypes = {
    *
    * ```js
    * function onDragEnter(event: React.SyntheticEvent) => void
-   *  event: React DragEvent
    * ```
    */
   onDragEnter: PropTypes.func,
@@ -84,7 +82,6 @@ const propTypes = {
    *
    * ```js
    * function onDragLeave(event: React.SyntheticEvent) => void
-   *  event: React DragEvent
    * ```
    */
   onDragLeave: PropTypes.func,
@@ -93,7 +90,6 @@ const propTypes = {
    *
    * ```js
    * function onDragLeave(event: React.SyntheticEvent) => void
-   *  event: React DragEvent
    * ```
    */
   onDragOver: PropTypes.func,
