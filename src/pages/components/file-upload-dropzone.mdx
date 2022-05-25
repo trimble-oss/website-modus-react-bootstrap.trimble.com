@@ -19,11 +19,11 @@ import {
   For a styled drag 'n' drop zone for uploading files use the{" "}
   <code>&lt;FileUploadDropZone&gt;</code> component with an <code>id</code>. The
   event <code> onFiles </code> fires when the files are added and it contains
-  FileList object along with the current error value.
+  files along with the current error value.
   <br />
-  Uploaded files are validated using the input from props <code> multiple</code>,
-  <code> maxFileCount </code> and <code> maxTotalFileSizeBytes </code> and an appropriate
-  error message is displayed if any validation fails.
+  Uploaded files are validated using the input from props <code> multiple</code>
+  ,<code> maxFileCount </code> and <code> maxTotalFileSizeBytes </code> and an
+  appropriate error message is displayed if any validation fails.
 </CodeBlock>
 
 <CodeBlock
@@ -41,10 +41,10 @@ import {
   Accessibility
 </LinkedHeading>
 <p>
-  User can interact with File Upload Dropzone also through keyboard using the
-  tab key (or shift + tab when tabbing backwards). When the drop zone or browse
-  link is in focus, pressing the enter/return or space keys will open the
-  default file picker.
+  User can interact with File Upload Dropzone through keyboard using the tab key
+  (or shift + tab when tabbing backwards). When the drop zone or browse link is
+  in focus, pressing the enter/return or space keys will open the default file
+  picker.
 </p>
 
 <LinkedHeading h="2" className="h1" id="file-upload-zone-api">

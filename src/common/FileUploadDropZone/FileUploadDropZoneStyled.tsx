@@ -1,7 +1,7 @@
 /* eslint-disable import/prefer-default-export */
 import styled, { css } from "styled-components"
 
-const STATE_COLORS = {
+const UPLOAD_STATES = {
   default: {
     text: "#6a6e79",
   },
@@ -23,12 +23,12 @@ const FileUploadDropZoneStyled = styled.div<{ state?: string }>`
     css`
       position: relative;
       background-color: #ffffff;
-      color: ${STATE_COLORS[state].text};
+      color: ${UPLOAD_STATES[state].text};
       .file-drop-zone-overlay {
         border: 2px dotted #a3a6b1;
-        background-color: ${STATE_COLORS[state].background};
+        background-color: ${UPLOAD_STATES[state].background};
         opacity: ${state == "error" || state == "disabled" ? "50%" : "100%"};
-        border-color: ${STATE_COLORS[state].text};
+        border-color: ${UPLOAD_STATES[state].text};
         z-index: 1;
         position: absolute;
       }

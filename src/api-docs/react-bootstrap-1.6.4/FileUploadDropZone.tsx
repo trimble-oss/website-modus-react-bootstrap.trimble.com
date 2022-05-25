@@ -1,13 +1,13 @@
-import {
+import React, {
   DragEventHandler,
   forwardRef,
   useCallback,
+  useMemo,
   useRef,
   useState,
 } from "react"
 import classNames from "classnames"
 import * as PropTypes from "prop-types"
-import React from "react"
 import FileUploadDropZoneStyled from "./FileUploadDropZoneStyled"
 import { Form } from "@trimbleinc/modus-react-bootstrap"
 
@@ -19,6 +19,7 @@ export interface FileUploadDropZoneProps
   maxTotalFileSizeBytes?: number
   multiple?: boolean
   disabled?: boolean
+  uploadIcon?: React.ReactElement | boolean
   onFiles?: (files: FileList, err: string) => void
   onDragEnter?: DragEventHandler<any> | undefined
   onDragLeave?: DragEventHandler<any> | undefined
@@ -31,7 +32,7 @@ const propTypes = {
   id: PropTypes.string,
 
   /**
-   * Accepted File Types for upload. The types should be either a valid MIME type or a file extension.
+   * Accepted File types for upload. The value should be either a valid MIME type or a file extension.
    */
   accept: PropTypes.arrayOf(PropTypes.string),
 
@@ -48,29 +49,61 @@ const propTypes = {
   maxTotalFileSizeBytes: PropTypes.number,
 
   /**
-   * Allows upload of multiple files.
+   * Enable multiple files upload.
    *
    */
   multiple: PropTypes.bool,
 
   /**
+   * Set a custom upload icon or disable it.
+   *
+   */
+  uploadIcon: PropTypes.oneOfType([PropTypes.bool, PropTypes.element]),
+
+  /**
    * Fires when files are being uploaded through drag & drop or browse button.
+   *
+   * ```js
+   * function onFiles(files: FileList, err: string) => void
+   *  files: (https://developer.mozilla.org/en-US/docs/Web/API/FileList)
+   *  err: string
+   * ```
    */
   onFiles: PropTypes.func,
   /**
    * Callback for when the dragenter event occurs.
+   *
+   * ```js
+   * function onDragEnter(event: React.SyntheticEvent) => void
+   *  event: React DragEvent
+   * ```
    */
   onDragEnter: PropTypes.func,
   /**
    * Callback for when the dragleave event occurs.
+   *
+   * ```js
+   * function onDragLeave(event: React.SyntheticEvent) => void
+   *  event: React DragEvent
+   * ```
    */
   onDragLeave: PropTypes.func,
   /**
    * Callback for when the dragover event occurs.
+   *
+   * ```js
+   * function onDragLeave(event: React.SyntheticEvent) => void
+   *  event: React DragEvent
+   * ```
    */
   onDragOver: PropTypes.func,
   /**
    * Custom validation function. It must return null if there's no errors.
+   *
+   * ```js
+   * function validator(files: FileList) => string
+   *  files: FileList (https://developer.mozilla.org/en-US/docs/Web/API/FileList)
+   * ```
    */
   validator: PropTypes.func,
 }
@@ -88,6 +121,7 @@ const FileUploadDropZone = forwardRef<HTMLDivElement, FileUploadDropZoneProps>(
       className,
       tabIndex,
       accept,
+      uploadIcon,
       onFiles,
       onDragEnter,
       onDragLeave,
@@ -100,13 +134,22 @@ const FileUploadDropZone = forwardRef<HTMLDivElement, FileUploadDropZoneProps>(
     const resolvedRef = (useRef<HTMLDivElement>(null) ||
       ref) as React.MutableRefObject<HTMLDivElement>
     const fileInputRef = useRef<HTMLInputElement>(null)
-    const dragCounter = useRef(0) // workaround for drag leave event firing on parent when dragging over child div
+    const dragCounter = useRef(0) // workaround for drag leave event firing on parent when dragging over a child div
+
     const [state, setState] = useState<{
-      css?: string
+      value?: string
       icon?: React.ReactElement
       message?: React.ReactElement | string
     }>(null)
-    const fileDropEvents = disabled
+
+    const finalUploadIcon = useMemo(() => {
+      if (typeof uploadIcon === "boolean") {
+        if (!uploadIcon) return null
+      } else if (uploadIcon !== undefined) return uploadIcon
+      return <i className="modus-icons">cloud_upload</i>
+    }, [uploadIcon])
+
+    const events = disabled
       ? {}
       : {
           onDragEnter: function (e) {
@@ -121,19 +164,20 @@ const FileUploadDropZone = forwardRef<HTMLDivElement, FileUploadDropZoneProps>(
           onDrop: function (e) {
             handleDrop(e)
           },
+          onKeyDown: function (e) {
+            handleKeyDown(e)
+          },
         }
 
     const handleDragEnter = useCallback(
       e => {
-        e.preventDefault()
-
         setState({
-          css: "files-dropping",
+          value: "drop",
           message: "Drag files here.",
         })
-
         dragCounter.current++
 
+        e.preventDefault()
         if (onDragEnter) onDragEnter(e)
       },
       [setState]
@@ -141,13 +185,12 @@ const FileUploadDropZone = forwardRef<HTMLDivElement, FileUploadDropZoneProps>(
 
     const handleDragLeave = useCallback(
       e => {
-        e.preventDefault()
-
         dragCounter.current--
         if (dragCounter.current === 0) {
           setState(null)
         }
 
+        e.preventDefault()
         if (onDragLeave) onDragLeave(e)
       },
       [setState]
@@ -160,10 +203,10 @@ const FileUploadDropZone = forwardRef<HTMLDivElement, FileUploadDropZoneProps>(
 
     const handleFiles = useCallback(
       (files: FileList) => {
-        let err = validator ? validator(files) : validateFiles(files)
+        const err = validator ? validator(files) : validateFiles(files)
         if (err) {
           setState({
-            css: "files-invalid",
+            value: "error",
             icon: <i className="modus-icons">no_entry</i>,
             message: err,
           })
@@ -178,6 +221,7 @@ const FileUploadDropZone = forwardRef<HTMLDivElement, FileUploadDropZoneProps>(
       e => {
         e.preventDefault()
         handleFiles(e.dataTransfer.files)
+        dragCounter.current = 0
       },
       [onFiles, setState]
     )
@@ -259,29 +303,36 @@ const FileUploadDropZone = forwardRef<HTMLDivElement, FileUploadDropZoneProps>(
 
     return (
       <FileUploadDropZoneStyled
+        {...events}
         {...props}
         ref={resolvedRef}
         className={classNames(
-          "file-drop-zone d-flex align-items-center justify-content-center",
-          state && state.css,
-          disabled && "disabled",
+          "d-flex align-items-center justify-content-center",
           className
         )}
-        {...fileDropEvents}
+        state={(disabled && "disabled") || (state && state.value) || "default"}
         tabIndex={tabIndex || 0}
-        onKeyDown={handleKeyDown}
         aria-label={props["aria-label"] || "Drop Zone"}
         aria-disabled={
           props["aria-disabled"] ? props["aria-disabled"] : disabled
         }
       >
-        <div className={classNames("d-flex flex-column text-center")}>
-          {(state && state.icon) || <i className="modus-icons">cloud_upload</i>}
+        <div className="w-100 h-100 file-drop-zone-overlay"></div>
+        <div
+          className={classNames(
+            "file-drop-zone-content d-flex flex-column text-center p-3"
+          )}
+        >
+          {(state && state.icon) || finalUploadIcon}
           <div>
             {(state && state.message) || (
               <>
                 Drag files here or{" "}
-                <Form.File id={id} className="p-0 m-0 d-inline">
+                <Form.File
+                  id={id}
+                  className="p-0 m-0 d-inline"
+                  disabled={disabled}
+                >
                   <Form.File.Label
                     className="text-primary browse"
                     tabIndex={0}
