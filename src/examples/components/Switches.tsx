@@ -1,13 +1,13 @@
 export const SwitchesBasic = `
 <Form>
-  <Form.Check type="switch" id="custom-switch1" label="Switch" custom checked />
+  <Form.Check type="switch" id="custom-switch1" label="Switch" custom defaultChecked />
   <Form.Check type="switch" id="custom-switch2" label="Switch" custom />
   <Form.Switch
     disabled
     label="Disabled"
     id="disabled-custom-switch1"
     custom
-    checked
+    defaultChecked
   />
   <Form.Switch disabled label="Disabled" id="disabled-custom-switch2" custom />
 </Form>
@@ -20,7 +20,7 @@ export const SwitchesInline = `
     label="Switch"
     className="mr-4"
     custom
-    checked
+    defaultChecked
     inline
   />
   <Form.Check
@@ -36,7 +36,7 @@ export const SwitchesInline = `
     label="Disabled"
     id="disabled-custom-switch1"
     custom
-    checked
+    defaultChecked
     inline
     className="mr-4"
   />
