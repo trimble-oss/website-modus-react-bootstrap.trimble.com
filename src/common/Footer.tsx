@@ -123,7 +123,9 @@ const Footer = () => {
             >
               {"Terms of Use - "}
             </a>
-            <a href="/cookies/">{"Cookies - "}</a>
+            <a href="/cookies/" hidden>
+              {"Cookies - "}
+            </a>
             {"Modus React Bootstrap Version: "}
             {config.modusReactBootstrapVersion}
           </div>
