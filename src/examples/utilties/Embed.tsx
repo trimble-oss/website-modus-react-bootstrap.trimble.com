@@ -1,12 +1,6 @@
 export const EmbedBasic = `
 <div className="embed-responsive embed-responsive-16by9">
-  <iframe
-    className="embed-responsive-item"
-    src="https://player.vimeo.com/video/315750638"
-    allowfullscreen=""
-    title="Introducing Trimble Maps video"
-    loading="lazy"
-  ></iframe>
+  <iframe className="embed-responsive-item" src='/video' title="Trimble video" loading="lazy"></iframe>
 </div>
     `
 

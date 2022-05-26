@@ -1,4 +1,5 @@
 const path = require(`path`)
+const express= require('express');
 const { createFilePath } = require(`gatsby-source-filesystem`)
 
 exports.onCreateNode = ({ node, actions, getNode }) => {
@@ -33,4 +34,8 @@ exports.createSchemaCustomization = ({ actions }) => {
       slug: String
     }
   `)
+}
+
+exports.onCreateDevServer=({app})=>{
+  app.use(express.static('public'))
 }

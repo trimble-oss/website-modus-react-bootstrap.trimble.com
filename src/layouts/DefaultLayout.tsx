@@ -8,7 +8,6 @@ import GetNavigationMenu from "../common/MenuConfiguration"
 import "../assets/css/main.scss"
 import SEO from "../seo"
 import Banner from "../common/Banner"
-import { OneTrustCookieBannerScript } from "../common/ExternalDependencyHelper"
 
 const propTypes = {
   location: PropTypes.object.isRequired,
@@ -49,7 +48,7 @@ const DefaultLayout = ({ children, location, title, subtitle, banner }) => {
 
   return (
     <MenuContext.Provider value={context}>
-      <OneTrustCookieBannerScript />
+      {/* <OneTrustCookieBannerScript /> */}
       <SEO
         title={pageTitle}
         description={pageSubtitle}
