@@ -257,6 +257,13 @@ const componentsMenu: Menu = {
         "Chips are compact elements that represent an input, attribute, or action. Chips should appear dynamically as a group of multiple interactive elements. Unlike buttons, which should be a consistent and familiar call to action, one that a user expects to appear as the same action in the same general area.",
     },
     {
+      key: "content-tree",
+      title: "Content Tree",
+      styleguideUrl: "https://modus.trimble.com/components/content-tree/",
+      subtitle:
+        "A content tree provides users with a way to navigate nested hierarchical information using a parent-child relationship model.",
+    },
+    {
       key: "dropdowns",
       title: "Dropdowns",
       styleguideUrl: "https://modus.trimble.com/components/dropdowns/",
