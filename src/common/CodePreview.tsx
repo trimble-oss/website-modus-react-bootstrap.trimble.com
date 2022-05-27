@@ -1,6 +1,3 @@
-import { LiveProvider, LiveEditor, LiveError, LivePreview } from "react-live"
-import theme from "prism-react-renderer/themes/github"
-import { Container } from "@trimbleinc/modus-react-bootstrap"
 import React, {
   useContext,
   useEffect,
@@ -9,10 +6,14 @@ import React, {
   useCallback,
   useMemo,
 } from "react"
-import * as ReactBootstrap from "@trimbleinc/modus-react-bootstrap"
 import ReactDOM from "react-dom"
-import styled from "styled-components"
+import { LiveProvider, LiveEditor, LiveError, LivePreview } from "react-live"
+import theme from "prism-react-renderer/themes/github"
+import { Container } from "@trimbleinc/modus-react-bootstrap"
+import * as ReactBootstrap from "@trimbleinc/modus-react-bootstrap"
+import FileUploadDropZone from "./FileUploadDropZone/FileUploadDropZone"
 import { Table, TablePagination, DataTable } from "../common/Table"
+import styled from "styled-components"
 
 const StyledAccordion = styled(ReactBootstrap.Accordion)`
   .card-header::after {
@@ -29,8 +30,7 @@ const CodePreview = props => {
     useContext,
     useCallback,
     useMemo,
-    ...ReactBootstrap,
-    ...props.scope,
+    FileUploadDropZone,
     Table,
     TablePagination,
     DataTable,
