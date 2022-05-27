@@ -18,8 +18,6 @@ import {
   TreeViewWithDragDrop,
 } from "../../examples/components/ContentTree"
 import findIndex from "lodash/findIndex"
-import TreeViewItem from "../../common/Tree/TreeViewItem"
-import TreeView from "../../common/Tree/TreeView"
 import useForceUpdate from "@restart/hooks/useForceUpdate"
 import { createPortal } from "react-dom"
 import classNames from "classnames"
@@ -30,77 +28,62 @@ import classNames from "classnames"
   side of the screen and cannot be combined with Side Navigation or Toolbar.
 </Overview>
 
-<CodeBlock
-  title="Basic"
-  code={TreeViewBasic}
-  scope={{ TreeView, TreeViewItem }}
->
-  Content Tree can be created using the components <code> TreeView </code> in
+<CodeBlock title="Basic" code={TreeViewBasic}>
+  Content tree can be created using the components <code> TreeView </code> in
   the root and <code> TreeViewItem </code> for nodes.{" "}
   <code> TreeViewItem </code> takes <code> nodeId </code> which should be a
-  unique number for each node and the <code> label </code> prop to display the
-  node text.
-  <p>
-    Clicking the collapse/expand button in each content tree item expands or
-    collapse a tree view item and clicking on the label selects it.
-  </p>
+  unique number and the <code> label </code> prop to display the node text.
+  <br />
+  Clicking on collapse/expand button expands or collapse a tree view item and
+  clicking on the node selects it.
 </CodeBlock>
 
-<CodeBlock
-  title="Tree with Icons"
-  code={TreeViewWithItemIcon}
-  scope={{ TreeView, TreeViewItem }}
-  noInline={true}
->
-  Icons can be configured at the root level and node level and the state can be
-  managed with callback functions <code> onNodeToggle </code> and
-  <code> onNodeSelect</code>. An additional icon can be added through the prop <code>
-    itemIcon
-  </code>.
+<div className="docs-callout docs-callout-warning p-3 pb-0 rounded-lg">
+  <code>TreeView</code> component uses modus icons, refer to{" "}
+  <a href="/getting-started/">Getting Started</a> page on how to enable them.
+</div>
+
+<CodeBlock title="Tree with Icons" code={TreeViewWithItemIcon} noInline={true}>
+  Icons can be configured both at the root level and node level. Also an
+  additional icon can be added to show before the label text using the prop{" "}
+  <code>itemIcon</code>. For more operations, callback functions like
+  <code> onNodeToggle</code>,<code> onNodeSelect </code> are available.
 </CodeBlock>
 
-<CodeBlock
-  title="Condensed Tree"
-  code={TreeViewCondensed}
-  scope={{ TreeView, TreeViewItem }}
->
-  Use class <code> list-group-condensed </code> to shrink the size of Tree and
+<CodeBlock title="Condensed Tree" code={TreeViewCondensed}>
+  Set prop <code>size</code> to <code>sm</code> to shrink the size of Tree and
   its items.
 </CodeBlock>
 
-<CodeBlock
-  title="Borderless Tree"
-  code={TreeViewBorderless}
-  scope={{ TreeView, TreeViewItem }}
->
+<CodeBlock title="Borderless Tree" code={TreeViewBorderless}>
   Add a class of <code>.list-group-borderless</code> to your Tree view for a
   borderless variant.
 </CodeBlock>
 
-<CodeBlock
-  title="Multi Selection Tree"
-  code={TreeViewMultiSelect}
-  scope={{ TreeView, TreeViewItem }}
->
-  Multiple node selection can be enabled through prop <code> multiSelect </code>
-  .
+<CodeBlock title="Multi Selection Tree" code={TreeViewMultiSelect}>
+  Use the prop <code> multiSelectNode </code> to enable multiple selection and
+  the nodes can be selected using
+  <code> Shift + Arrow Up/Down </code> key or <code> Ctrl + click</code>.
+  <br />
+  For displaying checkbox on each node set <code> checkBoxSelection </code> and to
+  enable multiple selection use <code>multiSelectCheckBox</code>.
 </CodeBlock>
 
 <CodeBlock
   title="Tree with Actions"
   code={TreeViewWithActionBar}
-  scope={{ TreeView, TreeViewItem, StyledIcon, findIndex, useForceUpdate }}
+  scope={{ StyledIcon, findIndex, useForceUpdate }}
   noInline={true}
   hideCode={true}
 >
   Using the props and callback functions from the <code> TreeView </code>{" "}
-  component we perform more actions on each node.
+  component we perform more actions as shown in the example.
 </CodeBlock>
 
 <CodeBlock
   title="Tree with Filter"
   code={TreeViewWithFilter}
-  scope={{ TreeView, TreeViewItem, StyledIcon, findIndex, useForceUpdate }}
+  scope={{ StyledIcon, findIndex, useForceUpdate }}
   noInline={true}
   hideCode={true}
 ></CodeBlock>
@@ -109,8 +92,6 @@ import classNames from "classnames"
   title="Tree with Drag and Drop"
   code={TreeViewWithDragDrop}
   scope={{
-    TreeView,
-    TreeViewItem,
     StyledIcon,
     useForceUpdate,
     StyledDragItem,
@@ -127,8 +108,6 @@ import classNames from "classnames"
   title="Accessibility"
   code={TreeViewWithDragDrop}
   scope={{
-    TreeView,
-    TreeViewItem,
     StyledIcon,
     useForceUpdate,
     StyledDragItem,
@@ -141,10 +120,10 @@ import classNames from "classnames"
   hideCode={true}
 >
   Every Tree Item and the elements inside such as drag icon, expand & collapse
-  icon and the checkbox are accessible using the keyboard. “Tab” key moves focus
-  to the next focusable element and “Shift” + “Tab” moves focus to the previous
-  focusable element. Make sure any element that needs focus has{" "}
-  <code> tabindex </code> set.
+  icon and the checkbox are accessible through keyboard.<code> Tab </code> key
+  moves focus to the next focusable element and <code> Shift + Tab </code> moves
+  focus to the previous focusable element. Make sure any element that needs
+  focus has <code> tabindex </code> set.
 </CodeBlock>
 
 <LinkedHeading h="3" className="h2" id="keyboard-navigation">
@@ -171,18 +150,21 @@ import classNames from "classnames"
       <th scope="row">Arrow Up</th>
       <td>
         Moves to the previous focusable Tree Item. Focus moves to a child node
-        if the parent node is expanded.
+        if the current or previous parent node is expanded.
       </td>
     </tr>
     <tr>
       <th scope="row">Arrow Down</th>
-      <td>Moves to the next focusable Tree Item.</td>
+      <td>
+        Moves to the next focusable Tree Item. Focus moves to a child node if
+        the current or next parent node is expanded.
+      </td>
     </tr>
     <tr>
       <th scope="row">Enter</th>
       <td>
-        Selects a Tree item or toggles the expansion state if the focus is on
-        expand/collapse icon.
+        Selects the node if Tree Item is in focus and toggles the expansion
+        state if the focus is on expand/collapse icon.
       </td>
     </tr>
     <tr>
@@ -192,16 +174,15 @@ import classNames from "classnames"
     <tr>
       <th scope="row">Shift + Arrow Up/Down</th>
       <td>
-        Performs multiple selection starting from the Tree Item that is selected
-        if <code> multiSelectNode</code> is set
-        <code> true </code> .
+        If <code> multiSelectNode </code> is true, it performs multiple
+        selection starting from the Tree Item that is selected.
       </td>
     </tr>
     <tr>
       <th scope="row">Ctrl + click on Tree Item</th>
       <td>
-        Performs multiple selection on the clicked Tree Items if{" "}
-        <code> multiSelectNode</code> is set <code> true</code>.
+        If <code> multiSelectNode </code> is true, it performs multiple
+        selection on the clicked Tree Items.
       </td>
     </tr>
   </tbody>

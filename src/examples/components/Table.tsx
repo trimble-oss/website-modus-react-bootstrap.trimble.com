@@ -1,63 +1,182 @@
-import React from "react"
+import * as React from "react"
+import { Table } from "@trimbleinc/modus-react-bootstrap"
 import styled from "styled-components"
-const range = len => {
-  const arr = []
-  for (let i = 0; i < len; i++) {
-    arr.push(i)
-  }
-  return arr
+
+type propType = {
+  key: string
+  type: string
+  description: string | React.ReactNode
 }
 
-const names = [
-  "Mickey Mouse",
-  "Bugs Bunny",
-  "Homer Simpson",
-  "Fred Flintstone",
-  "Sponge Bob",
-  "Daffy Duck",
-  "Charlie Brown",
-  "Scooby Doo",
-  "Tom Cat",
-  "Jerry Mouse",
-  "Mighty Mouse",
-  "Wile E Coyote",
-  "Tweety Bird",
-  "Pink Panther",
-  "Road Runner",
-  "Patrick Star",
-  "Roger Rabbit",
-  "Papa Smurf",
-  "Buzz Lightyear",
-]
-const newPerson = () => {
-  const rand = Math.random()
-  const namesIndex = Math.floor(rand * (names.length - 1))
-  const firstName = names[namesIndex].split(" ")[0]
-  const lastName = names[namesIndex].split(" ")[1]
-  return {
-    firstName,
-    lastName,
-    age: Math.floor(rand * 30),
-    visits: Math.floor(rand * 100),
-    progress: Math.floor(rand * 100),
-    status: rand > 0.66 ? "Verified" : rand > 0.33 ? "Pending" : "Rejected",
+// for the API section
+function sortFn(a, b) {
+  if (a.key > b.key) {
+    return 1
   }
-}
-
-export function MakeData(...lens) {
-  const makeDataLevel = (depth = 0) => {
-    const len = lens[depth]
-    return range(len).map(d => {
-      return {
-        ...newPerson(),
-        subRows: lens[depth + 1] ? makeDataLevel(depth + 1) : undefined,
-      }
-    })
+  if (a.key < b.key) {
+    return -1
   }
-
-  return makeDataLevel()
+  return 0
 }
+export const DataTableColumnAPIInfo = [
+  {
+    key: "accessor",
+    type: "string",
+    required: true,
+    description: "This is the unique ID for the column.",
+  },
+  {
+    key: "Header",
+    type: "string | Function | React.Component => JSX",
+    description: "Used for rendering column header content.",
+  },
+  {
+    key: "Cell",
+    type: "Function | React.Component => JSX",
+    description: "Used for rendering custom table body cell content.",
+  },
+  {
+    key: "width",
+    type: "number",
+    description: "Specifies the width for the column.",
+  },
+  {
+    key: "minWidth",
+    type: "number",
+    description: "Specifies the minimum width for the column.",
+  },
+  {
+    key: "maxWidth",
+    type: "number",
+    description: "Specifies the maximum width for the column.",
+  },
+  {
+    key: "disableResizing",
+    type: "boolean",
+    description: "Disables resizing for the column.",
+  },
+  {
+    key: "sortBy",
+    type: "boolean",
+    description: "Enables sorting for the column.",
+  },
+  {
+    key: "sortDescFirst",
+    type: "boolean",
+    description:
+      "The first sort direction for this column will be descending instead of ascending.",
+  },
+  {
+    key: "sortType",
+    type: "string | Function(rowA: <Row>, rowB: <Row>, columnId: String, desc: Bool)",
+    description:
+      "String options are basic, datetime, alphanumeric. Default is alphanumeric. The resolved function from the this string/function will be used to sort the this column's data.",
+  },
+  {
+    key: "allowDrop",
+    type: "boolean",
+    description:
+      "Allows dropping over the column. Used when drag and drop columns.",
+  },
+  {
+    key: "allowDrag",
+    type: "boolean",
+    description:
+      "Allows dragging of the column. Used when drag and drop columns.",
+  },
+  {
+    key: "Filter",
+    type: "Function | React.Component => JSX",
+    description: (
+      <p>
+        This function (or component) is used to render this column's filter UI.
+        It receives the table and column instance objects as props.
+        <br />
+        Some of the props used for filter are: filterValue, preFilteredRows,
+        setFilter, render
+        <br />
+        <ul>
+          <li>filterValue: The current filter value of the column.</li>
+          <li>
+            preFilteredRows: The array of rows that were originally passed to
+            this column's filter before filtering took place.
+          </li>
+          <li>
+            setFilter: Function to set the current filter value for the column.
+          </li>
+          <li>
+            render: Function that takes a string value ex: 'Header' to render
+            the column header text.
+          </li>
+        </ul>
+      </p>
+    ),
+  },
+  {
+    key: "disableFilters",
+    type: "boolean",
+    description: "Filtering for the column will be disabled.",
+  },
+].sort(sortFn) as propType[]
 
+export const DataTableColumnInstanceAPIInfo = [
+  {
+    key: "canFilter",
+    description: "Denotes whether a column is filterable.",
+    type: "boolean",
+  },
+  {
+    key: "filterValue",
+    type: "any",
+    description: "The current filter value for the column.",
+  },
+  {
+    key: "preFilteredRows",
+    type: "Array<row>",
+    description:
+      "The array of rows that were originally passed to this column's filter before filtering took place.",
+  },
+  {
+    key: "filteredRows",
+    type: "Array<row>",
+    description:
+      "The resulting array of rows received from this column's filter after filtering took place.",
+  },
+  {
+    key: "canResize",
+    type: "boolean",
+    description: "Indicates if the column can be resized.",
+  },
+  {
+    key: "isResizing",
+    type: "boolean",
+    description: "Indicates if the column is currently being resized.",
+  },
+  {
+    key: "canSort",
+    type: "boolean",
+    description: "Denotes whether a column is sortable.",
+  },
+  {
+    key: "isSorted",
+    type: "boolean",
+    description: "Denotes whether this column is currently being sorted.",
+  },
+  {
+    key: "sortedIndex",
+    type: "number",
+    description:
+      "If the column is currently sorted the index will be order of sorted columns. If not sorted the index will be -1.",
+  },
+  {
+    key: "isSortedDesc",
+    type: "boolean",
+    description:
+      "Denotes whether the column's sort direction is descending or not.",
+  },
+].sort(sortFn) as propType[]
+
+// for the example section
 export const TableBasic = `
 <Table bordered>
   <thead>
@@ -389,180 +508,16 @@ export const TableSmall = `
 </Table>
 `
 
-export const TableWithSorting = `function Example()
-{
-  const columns = React.useMemo(
-    () => [
-      {
-        Header: "First Name",
-        accessor: "firstName",
-        width: 80,
-        sortBy: true,
-      },
-      {
-        Header: "Last Name",
-        accessor: "lastName",
-        width: 80,
-        sortBy: true,
-      },
-      {
-        Header: "Age",
-        accessor: "age",
-        width: 50,
-        sortBy: true,
-      },
-      {
-        Header: "Visits",
-        accessor: "visits",
-        width: 50,
-        sortBy: true,
-      },
-      {
-        Header: "Status",
-        accessor: "status",
-        width: 70,
-        sortBy: true,
-      },
-      {
-        Header: "Profile Progress Status",
-        accessor: "progress",
-        width: 70,
-        sortBy: true,
-      },
-    ],
-    []
-  )
-  const data = React.useMemo(() => makeData(100), [])
-  const {
-    getTableProps,
-    headerGroups,
-    prepareRow,
-    rows,
-    allColumns,
-    page,
-    pageOptions,
-    gotoPage,
-    setPageSize,
-    state: { pageIndex, pageSize, filters },
-  } = useTable(
-    {
-      columns,
-      data,
-      initialState: {pageSize:7}
-    },
-    useSortBy,
-    usePagination
-  )
+export const TableStyled = styled(Table)`
+  margin: 0;
+  width: 100%;
+  height: 100%;
 
-  const modusSortArrows = {
-    asc: {
-      icon: "sort_alpha_up",
-      title: "Sort Descending",
-    },
-    desc: {
-      icon: "sort_alpha_down",
-      title: "Sort Ascending",
-    },
-  }
-  const SortLabel = ({ sort, title, className }) => (
-    <i
-      className={"modus-icons material-icons ".concat(className)}
-      data-toggle="tooltip"
-      data-placement="top"
-      title={title || modusSortArrows[sort].title}
-    >
-      {modusSortArrows[sort].icon}
-    </i>
-  )
-  return (
-    <Styles>
-      <div>
-        <Table bordered hover>
-          <thead className="bg-gray-light sticky-top">
-            {headerGroups.map(headerGroup => (
-              <tr
-                {...headerGroup.getHeaderGroupProps()}
-                className="bg-gray-light"
-              >
-                {headerGroup.headers.map(column => (
-                  <th
-                    {...column.getHeaderProps(column.getSortByToggleProps())}
-                    className="bg-gray-light pr-2"
-                    title=""
-                  >
-                    <div className="d-flex" style={{ width: "100%" }}>
-                      <div className="flex-grow-1">
-                        {column.render("Header")}
-                      </div>
-                      <div>
-                        {column.canSort && (
-                          <>
-                            {column.isSorted ? (
-                              <SortLabel
-                                className="sorted"
-                                sort={column.isSortedDesc ? "desc" : "asc"}
-                              />
-                            ) : (
-                              <SortLabel
-                                className="unsorted"
-                                title="Sort Ascending"
-                                sort="asc"
-                              />
-                            )}
-                          </>
-                        )}
-                      </div>
-                    </div>
-                  </th>
-                ))}
-              </tr>
-            ))}
-          </thead>
-          <tbody>
-            {page.map((row, i) => {
-              prepareRow(row)
-              return (
-                <tr {...row.getRowProps()}>
-                  {row.cells.map(cell => {
-                    return (
-                      <td {...cell.getCellProps()}>{cell.render("Cell")}</td>
-                    )
-                  })}
-                </tr>
-              )
-            })}
-          </tbody>
-        </Table>
-      </div>
-      <TablePagination
-        totalPages={pageOptions.length}
-        pageIndex={pageIndex}
-        pageSize={pageSize}
-        onPageChange={gotoPage}
-        pageSizeOptions={[7, 10, 25, 50]}
-        onPageSizeChange={setPageSize}
-        className="border border-tertiary"
-      ></TablePagination>
-    </Styles>
-  )
-}
-
-render(<Example />);`
-
-export const Styles = styled.div`
-  .container {
-    padding: 0;
-    width: 100%;
-  }
-  table {
-    margin: 0;
-    width: 100%;
-    height: 100%;
-  }
   th .modus-icons.material-icons.sorted,
   th .modus-icons.material-icons.unsorted {
     vertical-align: text-bottom;
     font-size: 1rem;
+    cursor: pointer;
   }
   th .modus-icons.material-icons.unsorted {
     opacity: 0.5;
@@ -572,48 +527,224 @@ export const Styles = styled.div`
   }
 `
 
+export const TableWithSorting = `
+const NUMBER_OF_ROWS = 50
+const columns = [
+  {
+    Header: "First Name",
+    accessor: "firstName",
+  },
+  {
+    Header: "Last Name",
+    accessor: "lastName",
+  },
+  {
+    Header: "Age",
+    accessor: "age",
+  },
+  {
+    Header: "Visits",
+    accessor: "visits",
+  },
+  {
+    Header: "Status",
+    accessor: "status",
+  },
+  {
+    Header: "Profile Progress Status",
+    accessor: "progress",
+  },
+]
+
+const ModusSortArrows = {
+  asc: {
+    icon: "sort_alpha_up",
+    title: "Sort Descending",
+  },
+  desc: {
+    icon: "sort_alpha_down",
+    title: "Sort Ascending",
+  },
+}
+
+const SortIcon = ({ sort, title, className }) => (
+  <i
+    className={"modus-icons material-icons ".concat(className)}
+    data-toggle="tooltip"
+    data-placement="top"
+    title={title || ModusSortArrows[sort].title}
+  >
+    {ModusSortArrows[sort].icon}
+  </i>
+)
+
+
+function descendingComparator(a, b, orderBy) {
+  if (b[orderBy] < a[orderBy]) {
+    return -1
+  }
+  if (b[orderBy] > a[orderBy]) {
+    return 1
+  }
+  return 0
+}
+function getComparator(order, orderBy) {
+  return order === "desc"
+    ? (a, b) => descendingComparator(a, b, orderBy)
+    : (a, b) => -descendingComparator(a, b, orderBy)
+}
+function sort(array, comparator) {
+  const mapped = array.map((el, index) => [el, index])
+  mapped.sort((a, b) => {
+    const order = comparator(a[0], b[0])
+    if (order !== 0) {
+      return order
+    }
+    return a[1] - b[1]
+  })
+  return mapped.map(el => el[0])
+}
+
+function Example() {
+  const [order, setOrder] = useState("asc")
+  const [orderBy, setOrderBy] = useState(null)
+  const [page, setPage] = useState(0)
+  const [pageSize, setPageSize] = useState(10)
+
+  // makeData: a custom helper function to generate random rows
+  // for the demo purpose not implemented here in the example.
+  const data = useMemo(() => makeData(NUMBER_OF_ROWS), [])
+
+  const handlePageSizeChange = pageSize => {
+    setPageSize(pageSize)
+    setPage(0)
+  }
+
+  const handlePageChange = page => {
+    setPage(page)
+  }
+
+  const handleSort = (event, sortBy) => {
+    const isAsc = orderBy === sortBy && order === "asc"
+    setOrder(isAsc ? "desc" : "asc")
+    setOrderBy(sortBy)
+  }
+
+  /* Styled Component <TableStyled> :
+  const TableStyled = styled(Table)
+    margin: 0;
+    width: 100%;
+    height: 100%;
+
+    th .modus-icons.material-icons.sorted,
+    th .modus-icons.material-icons.unsorted {
+      vertical-align: text-bottom;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+    th .modus-icons.material-icons.unsorted {
+      opacity: 0.5;
+    }
+    th .modus-icons.material-icons.unsorted:hover {
+      opacity: 1;
+    }
+  */
+
+  return (
+    <Container className="w-100 p-0">
+      <TableStyled bordered hover>
+        <thead className="bg-gray-light sticky-top">
+          <tr className="bg-gray-light">
+            {columns.map(column => (
+              <th className="bg-gray-light pr-2" title="">
+                <div
+                  className="d-flex flex-row justify-content-center"
+                  style={{ width: "100%" }}
+                >
+                  <div className="flex-grow-1">{column.Header}</div>
+                  <div onClick={e => handleSort(e, column.accessor)}>
+                    {column.accessor == orderBy ? (
+                      <SortIcon className="sorted" sort={order} />
+                    ) : (
+                      <SortIcon
+                        className="unsorted"
+                        title="Sort Ascending"
+                        sort="asc"
+                      />
+                    )}
+                  </div>
+                </div>
+              </th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {sort(data, getComparator(order, orderBy))
+            .slice(page * pageSize, page * pageSize + pageSize)
+            .map((row, index) => {
+              return (
+                <tr>
+                  {columns.map(({ accessor }) => (
+                    <td>{row[accessor]}</td>
+                  ))}
+                </tr>
+              )
+            })}
+        </tbody>
+      </TableStyled>
+      <TablePagination
+        pageSize={pageSize}
+        pageIndex={page}
+        count={data.length}
+        pageSizeOptions={[10, 20, 50]}
+        onPageChange={handlePageChange}
+        onPageSizeChange={handlePageSizeChange}
+      ></TablePagination>
+    </Container>
+  )
+}
+
+render(<Example />);`
+
 export const DataTableWithSorting = `function Example() {
   const columns = React.useMemo(
     () => [
       {
         Header: "First Name",
         accessor: "firstName",
-        width: 80,
         sortBy: true,
       },
       {
         Header: "Last Name",
         accessor: "lastName",
-        width: 80,
         sortBy: true,
       },
       {
         Header: "Age",
         accessor: "age",
-        width: 50,
         sortBy: true,
       },
       {
         Header: "Visits",
         accessor: "visits",
-        width: 50,
         sortBy: true,
       },
       {
         Header: "Status",
         accessor: "status",
-        width: 70,
         sortBy: true,
       },
       {
         Header: "Profile Progress Status",
         accessor: "progress",
-        width: 70,
         sortBy: true,
       },
     ],
     []
   )
+
+  // makeData: a custom helper function to generate random rows
+  // for the demo purpose not implemented here in the example.
   const data = React.useMemo(() => makeData(30), [])
 
   return (
@@ -671,6 +802,9 @@ export const DataTableWithScroll = `function Example() {
     ],
     []
   )
+
+  // makeData: a custom helper function to generate random rows
+  // for the demo purpose not implemented here in the example.
   const data = React.useMemo(() => makeData(30), [])
 
   return (
@@ -729,6 +863,9 @@ export const DataTableWithoutPagination = `function Example() {
     ],
     []
   )
+
+  // makeData: a custom helper function to generate random rows
+  // for the demo purpose not implemented here in the example.
   const data = React.useMemo(() => makeData(10), [])
 
   return (
@@ -786,6 +923,9 @@ function Example() {
     ],
     []
   )
+
+  // makeData: a custom helper function to generate random rows
+  // for the demo purpose not implemented here in the example.
   const data = React.useMemo(() => makeData(30), [])
 
   return (
@@ -844,7 +984,11 @@ export const DataTableWithSingleRowSelection = `function Example() {
     ],
     []
   )
+
+  // makeData: a custom helper function to generate random rows
+  // for the demo purpose not implemented here in the example.
   const data = React.useMemo(() => makeData(30), [])
+
   const [selectedRows , setRowsSelected] = useState([])
   const handleOnRowSelection = (rows) => {
     setRowsSelected(rows)
@@ -858,7 +1002,7 @@ export const DataTableWithSingleRowSelection = `function Example() {
           data={data}
           pageSize={7}
           pageSizeOptions={[7, 10, 25, 50]}
-          onRowSelection={handleOnRowSelection}
+          onRowSelectionChange={handleOnRowSelection}
         ></DataTable>
       {selectedRows &&
         selectedRows.map(row => {
@@ -917,7 +1061,11 @@ export const DataTableWithMultiRowSelection = `function Example() {
     ],
     []
   )
+
+  // makeData: a custom helper function to generate random rows
+  // for the demo purpose not implemented here in the example.
   const data = React.useMemo(() => makeData(30), [])
+
   const [selectedRows, setRowsSelected] = React.useState([])
   const handleOnRowSelection = (rows) => {
     setRowsSelected(rows)
@@ -931,7 +1079,7 @@ export const DataTableWithMultiRowSelection = `function Example() {
           data={data}
           pageSize={7}
           pageSizeOptions={[7, 10, 25, 50]}
-          onRowSelection={handleOnRowSelection}
+          onRowSelectionChange={handleOnRowSelection}
           multipleRowSelection
         ></DataTable>
       {selectedRows &&
@@ -985,7 +1133,10 @@ export const DataTableWithCheckBoxSelection = `function Example() {
     []
   )
 
+  // makeData: a custom helper function to generate random rows
+  // for the demo purpose not implemented here in the example.
   const data = React.useMemo(() => makeData(20), [])
+
   const [selectedRows, setRowsSelected] = React.useState([])
   const handleOnRowSelection = (rows) => {
     setRowsSelected(rows)
@@ -999,7 +1150,7 @@ export const DataTableWithCheckBoxSelection = `function Example() {
           data={data}
           pageSize={7}
           pageSizeOptions={[7, 10, 25, 50]}
-          onRowSelection={handleOnRowSelection}
+          onRowSelectionChange={handleOnRowSelection}
           multipleRowSelection
           checkBoxRowSelection
         ></DataTable>
@@ -1080,6 +1231,8 @@ export const DataTableWithCustomCheckBoxSelection = `function Example() {
     []
   )
 
+  // makeData: a custom helper function to generate random rows
+  // for the demo purpose not implemented here in the example.
   const data = React.useMemo(() => makeData(20), [])
 
   return (
@@ -1130,6 +1283,8 @@ export const DataTableWithStickyFirstColumn = `function Example() {
     []
   )
 
+  // makeData: a custom helper function to generate random rows
+  // for the demo purpose not implemented here in the example.
   const data = React.useMemo(() => makeData(7), [])
 
   return (
@@ -1213,10 +1368,10 @@ function SelectFilter({
 }
 
 function FilterPanel(
-  allColumns,
+  columns,
   activeFilters,
-  setFilter,
-  setAllFilters,
+  resetFilter,
+  resetAllFilters,
   globalFilter,
   setGlobalFilter
 ) {
@@ -1225,8 +1380,7 @@ function FilterPanel(
       <Popover.Content>
         <Container style={{ width: "100%" }} className="p-1">
           <Row xs={1} md={2}>
-            {allColumns
-              .filter(it => it.canFilter && it.Filter)
+            {columns
               .map(column => (
                 <div key={column.id}>
                   <Col>{column.render("Filter")}</Col>
@@ -1234,7 +1388,7 @@ function FilterPanel(
               ))}
           </Row>
           <Row className="d-flex justify-content-end mr-2">
-            <Button onClick={e => setAllFilters([])}>RESET</Button>
+            <Button onClick={e => resetAllFilters()}>RESET</Button>
           </Row>
         </Container>
       </Popover.Content>
@@ -1265,7 +1419,7 @@ function FilterPanel(
         {activeFilters && activeFilters.length > 0 && (
           <div>
             Active Filters:
-            {allColumns.map(column => {
+            {columns.map(column => {
               const filter = activeFilters.find(f => f.id === column.id)
               const value = filter && filter.value
               return (
@@ -1276,7 +1430,7 @@ function FilterPanel(
                       .render("Header")
                       .toString()
                       .concat(": ", filter.value)}
-                    onClose={e => setFilter(column.id, undefined)}
+                    onClose={e => resetFilter(column.id)}
                   />
                 )
               )
@@ -1352,6 +1506,8 @@ function Example() {
     []
   )
 
+  // makeData: a custom helper function to generate random rows
+  // for the demo purpose not implemented here in the example.
   const data = React.useMemo(() => makeData(7), [])
 
   return (
@@ -1495,6 +1651,8 @@ export const DataTableWithCellEditable = `function Example() {
     []
   )
 
+  // makeData: a custom helper function to generate random rows
+  // for the demo purpose not implemented here in the example.
   const [data, setData] = React.useState(() => makeData(7))
 
   function UpdateMyData(rowIndex, columnId, value) {
@@ -1511,7 +1669,7 @@ export const DataTableWithCellEditable = `function Example() {
     )
   }
 
-  //Editable--CSS
+  // Styled component <Editable> :
   // td:nth-child(-n + 3) {
   //   padding: 0;
   // }
@@ -1550,10 +1708,10 @@ render(<Example />);`
 
 export const DataTableWithGlobalFilter = `
 function GlobalFilterPanel(
-  allColumns,
+  columns,
   filters,
-  setFilter,
-  setAllFilters,
+  resetFilter,
+  resetAllFilters,
   globalFilter,
   setGlobalFilter
 ) {
@@ -1617,6 +1775,9 @@ function Example() {
     ],
     []
   )
+
+  // makeData: a custom helper function to generate random rows
+  // for the demo purpose not implemented here in the example.
   const [data, setData] = React.useState(() => makeData(10000))
 
   return (
@@ -1709,6 +1870,9 @@ function Example() {
     ],
     []
   )
+
+  // makeData: a custom helper function to generate random rows
+  // for the demo purpose not implemented here in the example.
   const [data, setData] = React.useState(() => makeData(10000))
 
   return (
@@ -1725,3 +1889,61 @@ function Example() {
 }
 
 render(<Example />);`
+
+// for the data generator makeData function
+const range = len => {
+  const arr = []
+  for (let i = 0; i < len; i++) {
+    arr.push(i)
+  }
+  return arr
+}
+
+const names = [
+  "Mickey Mouse",
+  "Bugs Bunny",
+  "Homer Simpson",
+  "Fred Flintstone",
+  "Sponge Bob",
+  "Daffy Duck",
+  "Charlie Brown",
+  "Scooby Doo",
+  "Tom Cat",
+  "Jerry Mouse",
+  "Mighty Mouse",
+  "Wile E Coyote",
+  "Tweety Bird",
+  "Pink Panther",
+  "Road Runner",
+  "Patrick Star",
+  "Roger Rabbit",
+  "Papa Smurf",
+  "Buzz Lightyear",
+]
+const newPerson = () => {
+  const rand = Math.random()
+  const namesIndex = Math.floor(rand * (names.length - 1))
+  const firstName = names[namesIndex].split(" ")[0]
+  const lastName = names[namesIndex].split(" ")[1]
+  return {
+    firstName,
+    lastName,
+    age: Math.floor(rand * 30),
+    visits: Math.floor(rand * 100),
+    progress: Math.floor(rand * 100),
+    status: rand > 0.66 ? "Verified" : rand > 0.33 ? "Pending" : "Rejected",
+  }
+}
+export function MakeData(...lens) {
+  const makeDataLevel = (depth = 0) => {
+    const len = lens[depth]
+    return range(len).map(d => {
+      return {
+        ...newPerson(),
+        subRows: lens[depth + 1] ? makeDataLevel(depth + 1) : undefined,
+      }
+    })
+  }
+
+  return makeDataLevel()
+}

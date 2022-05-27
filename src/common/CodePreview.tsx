@@ -11,8 +11,6 @@ import { LiveProvider, LiveEditor, LiveError, LivePreview } from "react-live"
 import theme from "prism-react-renderer/themes/github"
 import { Container } from "@trimbleinc/modus-react-bootstrap"
 import * as ReactBootstrap from "@trimbleinc/modus-react-bootstrap"
-import FileUploadDropZone from "./FileUploadDropZone/FileUploadDropZone"
-import { Table, TablePagination, DataTable } from "../common/Table"
 import styled from "styled-components"
 
 const StyledAccordion = styled(ReactBootstrap.Accordion)`
@@ -20,7 +18,6 @@ const StyledAccordion = styled(ReactBootstrap.Accordion)`
     display: none !important;
   }
 `
-
 const CodePreview = props => {
   const scope = {
     ReactDOM,
@@ -30,10 +27,8 @@ const CodePreview = props => {
     useContext,
     useCallback,
     useMemo,
-    FileUploadDropZone,
-    Table,
-    TablePagination,
-    DataTable,
+    ...ReactBootstrap,
+    ...props.scope,
   }
 
   const [toggle, setToggle] = useState(props.hideCode)

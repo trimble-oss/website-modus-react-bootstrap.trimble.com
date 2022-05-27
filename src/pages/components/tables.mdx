@@ -11,7 +11,7 @@ import {
   TableSmall,
   TableWithSorting,
   MakeData as makeData,
-  Styles,
+  TableStyled,
   DataTableWithSorting,
   DataTableWithScroll,
   DataTableWithoutPagination,
@@ -26,9 +26,11 @@ import {
   DataTableWithCellEditable,
   DataTableWithGlobalFilter,
   DataTableWithDragAndDrop,
+  DataTableColumnAPIInfo,
+  DataTableColumnInstanceAPIInfo,
 } from "../../examples/components/Table"
 import { useTable, useSortBy, usePagination } from "react-table"
-import Badge from "@trimbleinc/modus-react-bootstrap/Badge"
+import Table from "@trimbleinc/modus-react-bootstrap/Table"
 
 <Overview>
   Due to the widespread use of tables across third-party widgets like calendars
@@ -37,19 +39,20 @@ import Badge from "@trimbleinc/modus-react-bootstrap/Badge"
   included modifier classes.
 </Overview>
 
-<CodeBlock title="Basic Table" code={TableBasic}></CodeBlock>
+<CodeBlock hideCode={true} title="Basic Table" code={TableBasic}></CodeBlock>
 
-<CodeBlock title="Hoverable Rows" code={TableHoverable}>
+<CodeBlock hideCode={true} title="Hoverable Rows" code={TableHoverable}>
   Add prop <code>hover </code> to enable a hover state on table rows within
   <code>&lt;tbody&gt;</code>.
 </CodeBlock>
 
 <CodeBlock
+  hideCode={true}
   title="Tables with Icons and Controls"
   code={TableIconsControls}
 ></CodeBlock>
 
-<CodeBlock title="Small Variants" code={TableSmall}>
+<CodeBlock hideCode={true} title="Small Variants" code={TableSmall}>
   <p>
     All previous table styles are also available in a smaller variant, set prop{" "}
     <code>size</code> to <code>sm</code>
@@ -61,35 +64,23 @@ import Badge from "@trimbleinc/modus-react-bootstrap/Badge"
 </CodeBlock>
 
 <CodeBlock
+  hideCode={true}
   title="Basic Table with Sorting and other features"
   code={TableWithSorting}
-  scope={{ makeData, useTable, useSortBy, usePagination, Styles }}
+  scope={{ makeData, useTable, useSortBy, usePagination, TableStyled }}
   noInline={true}
 >
   This example demonstrates the use of <code> Table </code> component with
-  external library{" "}
-  <a
-    href="https://react-table.tanstack.com/docs/examples/bootstrap-ui-components"
-    target="_blank"
-    rel="noopener"
-  >
-    React Table
-  </a>{" "}
-  for advanced features like sorting and pagination.{" "}
-  <code>TablePagination </code> is used here to implement pagination which is
-  basically a wrapper over <a href="/components/pagination">Pagination</a>{" "}
-  component.
+  custom sorting and pagination. It also uses <code> TablePagination </code>{" "}
+  component which is basically a wrapper over{" "}
+  <a href="/components/pagination">Pagination</a> and designed to work with
+  Tables.
 </CodeBlock>
 
 <LinkedHeading h="2" className="h1" id="datatable">
-  <span>
-    DataTable
-    <Badge pill variant="tertiary" className="mr-2 align-top">
-      BETA
-    </Badge>
-  </span>
+  DataTable
 </LinkedHeading>
-<p>
+<>
   The <code> DataTable </code> component is a wrapper of <code> Table </code>{" "}
   component with more features that can be turned on/off anytime through the
   API.
@@ -102,9 +93,15 @@ import Badge from "@trimbleinc/modus-react-bootstrap/Badge"
   <code> accessor </code> which is the column identifier and and the{" "}
   <code> Header </code> key is used to set the column label, eg.
   {`[{ Header: 'First Name', accessor: 'firstName' }]`}.
-</p>
+
+  <div className="docs-callout docs-callout-warning p-3 pb-0 rounded-lg">
+    <code>DataTable</code> component uses modus icons, refer to{" "}
+    <a href="/getting-started/">Getting Started</a> page on how to enable them.
+  </div>
+</>
 
 <CodeBlock
+  hideCode={true}
   title="Table with Sorting"
   code={DataTableWithSorting}
   noInline={true}
@@ -120,6 +117,7 @@ import Badge from "@trimbleinc/modus-react-bootstrap/Badge"
   </code>.
 </CodeBlock>
 <CodeBlock
+  hideCode={true}
   title="Table with Scroll"
   scope={{
     makeData,
@@ -132,6 +130,7 @@ import Badge from "@trimbleinc/modus-react-bootstrap/Badge"
 </CodeBlock>
 
 <CodeBlock
+  hideCode={true}
   title="Table with and without Client-side Pagination"
   scope={{
     makeData,
@@ -144,6 +143,7 @@ import Badge from "@trimbleinc/modus-react-bootstrap/Badge"
 </CodeBlock>
 
 <CodeBlock
+  hideCode={true}
   title="Table with Columns Resizing"
   scope={{
     makeData,
@@ -159,6 +159,7 @@ import Badge from "@trimbleinc/modus-react-bootstrap/Badge"
 </CodeBlock>
 
 <CodeBlock
+  hideCode={true}
   title="Table with Single Row Selection"
   scope={{
     makeData,
@@ -171,6 +172,7 @@ import Badge from "@trimbleinc/modus-react-bootstrap/Badge"
 </CodeBlock>
 
 <CodeBlock
+  hideCode={true}
   title="Table with Multiple Row Selection"
   scope={{
     makeData,
@@ -184,6 +186,7 @@ import Badge from "@trimbleinc/modus-react-bootstrap/Badge"
 </CodeBlock>
 
 <CodeBlock
+  hideCode={true}
   title="Table with CheckBox Row Selection"
   scope={{
     makeData,
@@ -197,6 +200,7 @@ import Badge from "@trimbleinc/modus-react-bootstrap/Badge"
 </CodeBlock>
 
 <CodeBlock
+  hideCode={true}
   title="Table with Custom CheckBox Row Selection"
   scope={{
     makeData,
@@ -210,6 +214,7 @@ import Badge from "@trimbleinc/modus-react-bootstrap/Badge"
 </CodeBlock>
 
 <CodeBlock
+  hideCode={true}
   title="Table with Sticky First Column"
   scope={{
     makeData,
@@ -222,6 +227,7 @@ import Badge from "@trimbleinc/modus-react-bootstrap/Badge"
 </CodeBlock>
 
 <CodeBlock
+  hideCode={true}
   title="Hiding Columns"
   scope={{
     makeData,
@@ -235,6 +241,7 @@ import Badge from "@trimbleinc/modus-react-bootstrap/Badge"
 </CodeBlock>
 
 <CodeBlock
+  hideCode={true}
   title="Filter Columns"
   scope={{
     makeData,
@@ -248,6 +255,7 @@ import Badge from "@trimbleinc/modus-react-bootstrap/Badge"
 </CodeBlock>
 
 <CodeBlock
+  hideCode={true}
   title="Global Search"
   scope={{
     makeData,
@@ -260,6 +268,7 @@ import Badge from "@trimbleinc/modus-react-bootstrap/Badge"
 </CodeBlock>
 
 <CodeBlock
+  hideCode={true}
   title="Editable Cell"
   scope={{
     Editable,
@@ -273,6 +282,7 @@ import Badge from "@trimbleinc/modus-react-bootstrap/Badge"
 </CodeBlock>
 
 <CodeBlock
+  hideCode={true}
   title="Column Reordering by Drag and Drop"
   scope={{
     makeData,
@@ -293,6 +303,50 @@ import Badge from "@trimbleinc/modus-react-bootstrap/Badge"
 <ComponentApi metadata={props.data.Table} />
 <ComponentApi metadata={props.data.DataTable} />
 <ComponentApi metadata={props.data.TablePagination} />
+
+<LinkedHeading h="3" id="DataTableColumn">
+  DataTableColumn
+</LinkedHeading>
+<Table bordered striped>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    {DataTableColumnAPIInfo.map(item => (
+      <tr>
+        <td className="text-monospace">{item.key}</td>
+        <td className="text-monospace">{item.type}</td>
+        <td>{item.description}</td>
+      </tr>
+    ))}
+  </tbody>
+</Table>
+
+<LinkedHeading h="3" id="DataTableColumnInstance">
+  DataTableColumnInstance
+</LinkedHeading>
+<Table bordered striped>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    {DataTableColumnInstanceAPIInfo.map(item => (
+      <tr>
+        <td className="text-monospace">{item.key}</td>
+        <td className="text-monospace">{item.type}</td>
+        <td>{item.description}</td>
+      </tr>
+    ))}
+  </tbody>
+</Table>
 
 export const query = graphql`
   query TableQuery {

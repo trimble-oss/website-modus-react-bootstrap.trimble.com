@@ -18,23 +18,28 @@ import {
 <CodeBlock title="Example" code={FileUploadDropZoneBasic} noInline={true}>
   For a styled drag 'n' drop zone for uploading files use the{" "}
   <code>&lt;FileUploadDropZone&gt;</code> component with an <code>id</code>. The
-  event <code> onFiles </code> fires when the files are added and it contains
-  files along with the current error value.
+  callback function <code> onFiles </code> fires when the files are added and it
+  contains files along with the current error value.
   <br />
   Uploaded files are validated using the input from props <code> multiple</code>,
   <code> maxFileCount </code> and <code> maxTotalFileSizeBytes </code> and an appropriate
   error message is displayed if any validation fails.
 </CodeBlock>
 
+<div className="docs-callout docs-callout-warning p-3 pb-0 rounded-lg">
+  <code>FileUploadDropZone</code> component uses modus icons, refer to{" "}
+  <a href="/getting-started/">Getting Started</a> page on how to enable them.
+</div>
+
 <CodeBlock
   title="Custom validation"
   code={FileUploadDropZoneCustomValidation}
   noInline={true}
 >
-  By providing <code> validator </code> prop custom validation can be added for
-  files as shown in the example. The function accepts <code>FileList</code>{" "}
-  object and it should either return null or the error message. The default
-  validation will be disabled when using <code> validator</code>.
+  By providing <code> validator </code> prop custom validation can be added as
+  shown in the example. The function accepts <code>FileList</code> object and it
+  should return null or the error message. The default validation will be
+  disabled while using <code> validator</code>.
 </CodeBlock>
 
 <LinkedHeading h="2" className="h1" id="file-upload-zone-accessibility">
@@ -43,8 +48,9 @@ import {
 <p>
   User can interact with File Upload Dropzone through keyboard using the{" "}
   <code>tab</code> key (or <code>shift + tab</code> when tabbing backwards).
-  When the drop zone or browse link is in focus, pressing the <code>enter</code>/
-  <code>return</code> or <code>space</code> keys will open the default file picker.
+  When the drop zone or browse link is in focus, pressing the <code>enter</code>
+  /<code>return</code> or <code>space</code> keys will open the default file
+  picker.
 </p>
 
 <LinkedHeading h="2" className="h1" id="file-upload-zone-api">

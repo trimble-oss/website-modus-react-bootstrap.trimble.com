@@ -28,8 +28,7 @@
     "test": "echo \"Write tests! -> https://gatsby.dev/unit-testing\" && exit 1"
   },
   "dependencies": {
-    "@trimbleinc/modus-react-bootstrap": "^1.0.0",
-    "@trimbleinc/modus-bootstrap": "^1.4.1",
+    "@trimbleinc/modus-react-bootstrap": "file:trimbleinc-modus-react-bootstrap-1.1.0.tgz",
     "classnames": "^2.3.1",
     "prop-types": "^15.8.1",
     "react-live": "^2.4.1",
@@ -39,7 +38,6 @@
     "styled-components": "^5.3.1"
   },
   "devDependencies": {
-    "@trimbleinc/modus-bootstrap": "^1.4.1",
     "@mdx-js/mdx": "^1.6.22",
     "@mdx-js/react": "^1.6.22",
     "@netlify/plugin-gatsby": "^1.0.3",

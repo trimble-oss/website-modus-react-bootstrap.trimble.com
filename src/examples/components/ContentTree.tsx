@@ -2,7 +2,7 @@ import styled from "styled-components"
 
 export const TreeViewBasic = `
 <div style={{width: "400px"}}>
-  <TreeView>
+  <TreeView nodeId={0}>
     <TreeViewItem nodeId={7} label="Inbox">
       <TreeViewItem nodeId={8} label="Personal"></TreeViewItem>
       <TreeViewItem nodeId={9} label="Work"></TreeViewItem>
@@ -36,7 +36,7 @@ export const TreeViewBasic = `
 
 export const TreeViewBorderless = `
 <div style={{width: "400px"}}>
-  <TreeView className="list-group-borderless">
+  <TreeView nodeId={0}  className="list-group-borderless">
     <TreeViewItem nodeId={7} label="Inbox">
       <TreeViewItem nodeId={8} label="Personal"></TreeViewItem>
       <TreeViewItem nodeId={9} label="Work"></TreeViewItem>
@@ -70,7 +70,7 @@ export const TreeViewBorderless = `
 
 export const TreeViewMultiSelect = `
 <div style={{width: "400px"}}>
-  <TreeView multiSelectCheckBox>
+  <TreeView nodeId={0}  multiSelectCheckBox>
     <TreeViewItem nodeId={1} label="Layout">
       <TreeViewItem nodeId={2} label="Main Layout">
         <TreeViewItem nodeId={3} label="Header"></TreeViewItem>
@@ -110,7 +110,7 @@ export const TreeViewMultiSelect = `
 
 export const TreeViewCondensed = `
 <div style={{width: "400px"}}>
-  <TreeView className="list-group-condensed">
+  <TreeView nodeId={0} size="sm">
     <TreeViewItem nodeId={1} label="Layout">
       <TreeViewItem nodeId={2} label="Main Layout">
         <TreeViewItem nodeId={3} label="Header"></TreeViewItem>
@@ -150,7 +150,7 @@ export const TreeViewCondensed = `
 
 export const TreeViewWithItemIcon = `
 function TreeViewWithIcon() {
-  const [expanded, setExpanded] = React.useState([])
+  const [expanded, setExpanded] = React.useState([1])
   const [selected, setSelected] = React.useState([])
 
   const handleExpansion = React.useCallback((event, nodesExpanded) => {
@@ -161,25 +161,26 @@ function TreeViewWithIcon() {
   }, [])
   const isExpanded = nodeId => expanded.indexOf(nodeId) > -1
   const isSelected = nodeId => selected.indexOf(nodeId) > -1
+
   const CustomTreeViewItem = ({ nodeId, label, ...props }) => {
-  const labelNode = (
-    <div className="d-flex justify-content-between w-100">
-      <div>{label}</div>
-      <div>{isSelected(nodeId) && <i className="modus-icons">check</i>}</div>
-    </div>
-  )
-    return (
-      <TreeViewItem
-        nodeId={nodeId}
-        label={labelNode}
-        itemIcon={<i className="material-icons">email</i>}
-      ></TreeViewItem>
+    const labelNode = (
+      <div className="d-flex justify-content-between w-100">
+        <div>{label}</div>
+        <div>{isSelected(nodeId) && <i className="modus-icons">check</i>}</div>
+      </div>
     )
+      return (
+        <TreeViewItem
+          nodeId={nodeId}
+          label={labelNode}
+          itemIcon={<i className="material-icons">email</i>}
+        ></TreeViewItem>
+      )
   }
 
   return (
     <div style={{width: "400px"}}>
-      <TreeView onNodeToggle={handleExpansion} onNodeSelect={handleSelection} defaultExpanded={[1]}>
+      <TreeView nodeId={0}  onNodeToggle={handleExpansion} onNodeSelect={handleSelection} defaultExpanded={[1]}>
         <TreeViewItem
           nodeId={1}
           label="Inbox"
@@ -205,12 +206,7 @@ export const StyledIcon = styled("i")`
   position: relative !important;
   display: inline-block !important;
 `
-export type TreeNode = {
-  nodeId: number
-  label?: string
-  children?: TreeNode[]
-  isNew?: boolean
-}
+
 export const TreeViewWithActionBar = `
 const ActionBarButton = ({ icon, tooltip, disabled, onClick, ...props }) => {
   return (
@@ -224,6 +220,83 @@ const ActionBarButton = ({ icon, tooltip, disabled, onClick, ...props }) => {
     >
       <StyledIcon className="material-icons">{icon}</StyledIcon>
     </button>
+  )
+}
+
+const CustomTreeViewItem = ({
+  nodeId,
+  isNew,
+  label,
+  children,
+  onNodeAdd,
+  onNodeEdit,
+  onChange,
+  isNodeEditable,
+  ...props
+}) => {
+  const isEditable = isNodeEditable(nodeId)
+
+  const handleOnKeyUp = e => {
+    if (e.key === "Enter" || e.keyCode === 13) {
+      if (isNew) onNodeAdd(e, nodeId, e.target.value)
+      else if (isEditable) onNodeEdit(e, nodeId, e.target.value)
+    } else {
+      onChange(e, nodeId, e.target.value)
+    }
+  }
+
+  if (isNew) {
+    return (
+      <li className="list-group-item list-item-leftright-control">
+        <i className="modus-icons">blank</i>
+        <Form.Control
+          as="input"
+          autoFocus
+          onFocus={e => {}} // to retain the focus
+          onKeyDown={handleOnKeyUp}
+          size="lg"
+          className="border-0"
+          defaultValue={label}
+        ></Form.Control>
+      </li>
+    )
+  }
+  return (
+      <TreeViewItem
+        nodeId={nodeId}
+        label={
+          isEditable ? (
+            <Form.Control
+              as="input"
+              autoFocus
+              onFocus={e => {}} // to retain the focus
+              onKeyDown={handleOnKeyUp}
+              onClick={e => e.stopPropagation()}
+              size="lg"
+              className="border-0"
+              defaultValue={label}
+            ></Form.Control>
+          ) : (
+            label
+          )
+        }
+        {...props}
+      >
+        {children &&
+          children.map(item => (
+            <CustomTreeViewItem
+              nodeId={item.nodeId}
+              children={item.children}
+              label={item.label}
+              isNew={item.isNew}
+              onNodeAdd={onNodeAdd}
+              onNodeEdit={onNodeEdit}
+              onChange={onChange}
+              isNodeEditable={isNodeEditable}
+              key={item.nodeId}
+            />
+          ))}
+      </TreeViewItem>
   )
 }
 
@@ -392,6 +465,11 @@ function TreeViewWithActionBar() {
     setSelected(nodeIds)
   }
 
+  const isNodeEditable = useCallback(
+    nodeId => editableNode.current === nodeId,
+    [editableNode.current]
+  )
+
   // Helpers
   function getNodeIds(array) {
     return array.reduce((r, { nodeId, children }) => {
@@ -413,80 +491,6 @@ function TreeViewWithActionBar() {
     return nodes
   }
 
-  // Components
-  const CustomTreeViewItem = ({
-    nodeId,
-    isNew,
-    label,
-    children,
-    onNodeAdd,
-    onNodeEdit,
-    onChange,
-    ...props
-  }) => {
-    const isEditable = editableNode.current === nodeId
-    const handleOnKeyUp = e => {
-      if (e.key === "Enter" || e.keyCode === 13) {
-        if (isNew) onNodeAdd(e, nodeId, e.target.value)
-        else if (isEditable) onNodeEdit(e, nodeId, e.target.value)
-      } else {
-        onChange(e, nodeId, e.target.value)
-      }
-    }
-    if (isNew) {
-      return (
-        <li className="list-group-item list-item-leftright-control">
-          <i className="modus-icons">blank</i>
-          <Form.Control
-            as="input"
-            autoFocus
-            onKeyUp={handleOnKeyUp}
-            size="lg"
-            className="border-0"
-            defaultValue={label}
-          ></Form.Control>
-        </li>
-      )
-    }
-
-    return (
-      <>
-        <TreeViewItem
-          nodeId={nodeId}
-          label={
-            isEditable ? (
-              <Form.Control
-                as="input"
-                autoFocus
-                onKeyUp={handleOnKeyUp}
-                size="lg"
-                className="border-0"
-                defaultValue={label}
-              ></Form.Control>
-            ) : (
-              label
-            )
-          }
-          {...props}
-        >
-          {children &&
-            children.map(item => (
-              <CustomTreeViewItem
-                nodeId={item.nodeId}
-                children={item.children}
-                label={item.label}
-                isNew={item.isNew}
-                onNodeAdd={onNodeAdd}
-                onNodeEdit={onNodeEdit}
-                onChange={onChange}
-                key={item.nodeId}
-              />
-            ))}
-        </TreeViewItem>
-      </>
-    )
-  }
-
   return (
     <div style={{ width: "400px" }}>
       <div className="container" ref={ref}>
@@ -496,14 +500,30 @@ function TreeViewWithActionBar() {
               className="d-flex justify-content-end align-items-center"
               style={{ minHeight: "3rem" }}
             >
-             <ActionBarButton icon="delete"  tooltip="Delete" onClick={handleDeleteClick}
-                disabled={!selected.length} />
-              <ActionBarButton icon="content_copy" disabled={!selected.length}
-                onClick={handleDuplicateClick} tooltip="Duplicate" />
-              <ActionBarButton icon="edit" onClick={handleEditClick}
-                disabled={!selected.length || editableNode.current} tooltip="Edit" />
-              <ActionBarButton icon="add" onClick={handleAddClick}
-                disabled={editableNode.current} tooltip="Add" />
+              <ActionBarButton
+                icon="delete"
+                tooltip="Delete"
+                onClick={handleDeleteClick}
+                disabled={!selected.length}
+              />
+              <ActionBarButton
+                icon="content_copy"
+                disabled={!selected.length}
+                onClick={handleDuplicateClick}
+                tooltip="Duplicate"
+              />
+              <ActionBarButton
+                icon="edit"
+                onClick={handleEditClick}
+                disabled={!selected.length || editableNode.current}
+                tooltip="Edit"
+              />
+              <ActionBarButton
+                icon="add"
+                onClick={handleAddClick}
+                disabled={editableNode.current}
+                tooltip="Add"
+              />
               <ActionBarButton icon="drag_indicator" disabled tooltip="Drag" />
               <ActionBarButton
                 icon={expanded.length === 0 ? "unfold_more" : "unfold_less"}
@@ -514,6 +534,7 @@ function TreeViewWithActionBar() {
           </div>
           <div className="col">
             <TreeView
+              nodeId={0}
               id="example"
               expanded={expanded}
               onNodeSelect={handleSelect}
@@ -527,6 +548,7 @@ function TreeViewWithActionBar() {
                   onNodeAdd={handleAddNode}
                   onNodeEdit={handleEditNode}
                   onChange={handleTreeItemLabelChange}
+                  isNodeEditable={isNodeEditable}
                   key={item.nodeId}
                 />
               ))}
@@ -538,10 +560,34 @@ function TreeViewWithActionBar() {
   )
 }
 
+
 render(<TreeViewWithActionBar />);
 `
 
 export const TreeViewWithFilter = `
+const CustomTreeViewItem = ({
+  nodeId,
+  label,
+  children,
+  ...props
+}) => {
+  return (
+    <>
+      <TreeViewItem nodeId={nodeId} label={label} {...props}>
+        {children &&
+          children.map(item => (
+            <CustomTreeViewItem
+              nodeId={item.nodeId}
+              children={item.children}
+              label={item.label}
+              key={item.nodeId}
+            />
+          ))}
+      </TreeViewItem>
+    </>
+  )
+}
+
 const ActionBarButton = ({ icon, tooltip, disabled, onClick, ...props }) => {
   return (
     <button
@@ -670,34 +716,6 @@ function TreeViewWithFilter() {
     }, [])
   }
 
-  // Components
-  const CustomTreeViewItem = ({
-    nodeId,
-    isNew,
-    label,
-    children,
-    onNodeAdd,
-    onNodeEdit,
-    onChange,
-    ...props
-  }) => {
-    return (
-      <>
-        <TreeViewItem nodeId={nodeId} label={label} {...props}>
-          {children &&
-            children.map(item => (
-              <CustomTreeViewItem
-                nodeId={item.nodeId}
-                children={item.children}
-                label={item.label}
-                key={item.nodeId}
-              />
-            ))}
-        </TreeViewItem>
-      </>
-    )
-  }
-
   return (
     <div style={{ width: "400px" }}>
       <div className="container">
@@ -732,7 +750,7 @@ function TreeViewWithFilter() {
             </div>
           </div>
           <div className="col">
-            <TreeView id="example" expanded={expanded}>
+            <TreeView nodeId={0}  id="example" expanded={expanded}>
               {data.map(item => (
                 <CustomTreeViewItem
                   nodeId={item.nodeId}
@@ -1123,7 +1141,7 @@ function TreeViewWithDrag() {
             </div>
           </div>
           <div className="col">
-            <TreeView id="example" expanded={expanded} multiSelectNode>
+            <TreeView nodeId={0}  id="example" expanded={expanded} multiSelectNode>
               <StyledCustomTreeViewItem>
                 {data.map(item => (
                   <CustomTreeViewItem
