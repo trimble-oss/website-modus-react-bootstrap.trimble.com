@@ -1,9 +1,3 @@
-import {
-  Column,
-  UseResizeColumnsColumnOptions,
-  UseSortByColumnOptions,
-} from "react-table"
-
 export type Variant =
   | "primary"
   | "secondary"
@@ -39,15 +33,13 @@ export type Color =
 
 export type EventKey = string | number
 
-export type TableColumn = Column<any> &
-  UseResizeColumnsColumnOptions<any> &
-  UseSortByColumnOptions<any> & {
-    sortBy?: boolean
-  }
-
-export type TreeItem = {
-  id: number
-  parentId: number
-  label: string
-  children?: TreeItem[]
+export type ContextMenuState = {
+  positionX: string | number
+  positionY: string | number
+  items: ContextMenuItem[]
+}
+export type ContextMenuItem = {
+  title: React.ReactNode
+  onClick?: (...args: any) => void
+  children?: ContextMenuItem[]
 }

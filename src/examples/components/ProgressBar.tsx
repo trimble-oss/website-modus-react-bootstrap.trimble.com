@@ -6,3 +6,6 @@ export const ProgressBarBasic = `
   </div>
 </div>
 `
+export const ProgressBarSmall = `
+<ProgressBar now={25} className="progress-sm" />
+`

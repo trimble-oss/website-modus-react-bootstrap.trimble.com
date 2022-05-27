@@ -1,7 +1,6 @@
-import React, { useCallback, useEffect, useMemo, useRef } from "react"
+import React, { useEffect, useRef } from "react"
 import PropTypes from "prop-types"
 import {
-  useTable,
   useSortBy,
   usePagination,
   useResizeColumns,
@@ -11,12 +10,10 @@ import {
   useRowSelect,
   useFilters,
   useGlobalFilter,
-  useAsyncDebounce,
-  HeaderGroup,
-  Row,
   ColumnInstance,
   Filters,
   FilterValue,
+  useColumnOrder,
 } from "react-table"
 import classNames from "classnames"
 import Table from "./Table"
@@ -24,13 +21,14 @@ import TablePagination from "./TablePagination"
 import DataTableHeaderCell from "./DataTableHeaderCell"
 import DataTableStyled from "./DataTableStyled"
 import ContextMenu from "./ContextMenu"
-import useDataTableContextMenu from "./useDataTableContextMenu"
 import {
   checkBoxSelectionHook,
   getCellStyles,
   stateReducer,
 } from "./DataTableHelpers"
 import { TableColumn } from "."
+import useDataTableInstance from "./useDataTableInstance"
+import DataTableDragDropProvider from "./useDataTableHeaderDragDrop"
 
 export interface DataTableProps
   extends Omit<React.HTMLProps<HTMLDivElement>, "data" | "size">,
@@ -53,6 +51,7 @@ export interface DataTableProps
   disablePagination?: boolean
   disableSorting?: boolean
   disableFiltering?: boolean
+  disableDragging?: boolean
   filterPanel?: (
     allColumns: ColumnInstance<any>[],
     filters: Filters<any>,
@@ -65,8 +64,11 @@ export interface DataTableProps
     ) => void,
     globalFilter: any,
     setGlobalFilter: (filterValue: FilterValue) => void
-  ) => React.ReactElement
-  onRowSelection?: (rows: Array<Row>) => void
+  ) => React.ReactElement | React.ReactNode | null
+  dragTemplate: (
+    column: ColumnInstance<any>
+  ) => React.ReactElement | React.ReactNode | null
+  onRowSelection?: (rows: any[]) => void
 }
 
 // TODO:
@@ -128,9 +130,14 @@ const propTypes = {
   disableSorting: PropTypes.bool,
 
   /**
-   * Removes the link to filter panel.
+   * Disabling Filtering removes filter panel.
    */
   disableFiltering: PropTypes.bool,
+
+  /**
+   * Disables dragging function on Table headers.
+   */
+  disableDragging: PropTypes.bool,
 
   /**
    * Adds zebra-striping to any table row within the `<tbody>`.
@@ -178,12 +185,17 @@ const propTypes = {
   /**
    * Callback when a row is selected. If multipleRowSelection is enabled all rows selected will be available in the callback.
    */
-  onRowSelection: PropTypes.bool,
+  onRowSelection: PropTypes.func,
 
   /**
    * Custom Filter panel function.
    */
-  filterPanel: PropTypes.element,
+  filterPanel: PropTypes.func,
+
+  /**
+   * Template for Dragging item.
+   */
+  dragTemplate: PropTypes.func,
 }
 
 export function DataTable(
@@ -204,6 +216,7 @@ export function DataTable(
     disablePagination,
     disableSorting,
     disableFiltering,
+    disableDragging,
     striped,
     bordered,
     borderless,
@@ -215,20 +228,17 @@ export function DataTable(
     ref,
     className,
     filterPanel,
+    dragTemplate,
     ...rest
   } = props
-
   const filterColumns = filterPanel && !disableFiltering ? true : false
-  // To convert custom column props: sortBy
-  const normalizedColumns = React.useMemo(
-    () =>
-      columns.map(col => {
-        const { sortBy, ...columnProps } = col
-        columnProps.disableSortBy = !sortBy
-        return columnProps
-      }),
-    []
-  )
+  const enableRowSelection = !disableRowSelection && !checkBoxRowSelection
+  const containerRef = useRef<HTMLDivElement>(null)
+
+  // TODO: Need an alternative to handle Modus Bootstrap class for sticky first column
+  const hasStickyFirstColumn = className
+    ? className.split(" ").includes("table-sticky-first-column")
+    : false
 
   // Conditional Table Hooks Array
   const conditionalHooks: any = [useFlexLayout]
@@ -237,6 +247,7 @@ export function DataTable(
   if (!disablePagination) conditionalHooks.push(usePagination)
   if (resizeColumns) conditionalHooks.push(useResizeColumns)
   if (!disableRowSelection) conditionalHooks.push(useRowSelect)
+  if (!disableDragging) conditionalHooks.push(useColumnOrder)
   if (
     checkBoxRowSelection &&
     !columns.find(col => col.accessor === "selector")
@@ -246,82 +257,45 @@ export function DataTable(
     )
   }
 
-  // Table instance
-  const tableInstance = useTable(
-    {
-      columns: normalizedColumns,
-      data,
-      // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-      initialState: {
-        pageIndex: 0,
-        pageSize: pageSizeProp || 10,
-      } as TableState,
-      ...(!multipleRowSelection && stateReducer),
-    },
-    ...conditionalHooks
-  )
+  const tableOptions = {
+    // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+    initialState: {
+      pageIndex: 0,
+      pageSize: pageSizeProp || 10,
+    } as TableState,
+    ...(!multipleRowSelection && stateReducer),
+  }
+
   const {
-    getTableProps,
-    getTableBodyProps,
     headerGroups,
-    prepareRow,
     rows,
     allColumns,
-    setFilter,
-    setAllFilters,
-    setGlobalFilter,
-    toggleHideColumn,
     page,
     pageOptions,
-    gotoPage,
-    setPageSize,
     selectedFlatRows,
-    state: { pageIndex, pageSize, filters, globalFilter },
-  } = tableInstance
-
-  // Context Menu
-  const containerRef = useRef<HTMLDivElement>(null)
-  const {
     contextMenu,
     showContextMenu,
+    state: { pageIndex, pageSize, filters, globalFilter },
+    prepareRow,
+    getTableProps,
+    getTableBodyProps,
+    gotoPage,
+    setPageSize,
+    getAllHeadersInAGroup,
+    setFilter,
+    setAllFilters,
+    setGlobalFilterCustom,
+    toggleHideColumn,
     handleHeaderContextMenu,
     handleContextMenuClose,
-  } = useDataTableContextMenu(tableInstance)
+    setColumnOrder,
+    visibleColumns,
+  } = useDataTableInstance(columns, data, tableOptions, conditionalHooks)
 
-  // Helpers
-  // To add invisible columns
-  const getAllHeadersInAGroup = useCallback(
-    (curr: HeaderGroup[], headerGroupid: any) => {
-      return allColumns
-        .filter(
-          col =>
-            col.id === "selector" ||
-            !headerGroupid ||
-            (col.parent ? col.parent.id === headerGroupid : false)
-        )
-        .map(col => {
-          let newCol = curr.find(c => c.id === col.id)
-          return newCol || col
-        })
-    },
-    [allColumns]
-  )
-
+  // Callback APIs
   useEffect(() => {
     if (onRowSelection) onRowSelection(selectedFlatRows.map(d => d.original))
   }, [selectedFlatRows])
-
-  // Special css classes
-  // TODO: need an alternative to handle custom css classes for Table and other elements
-  const classesArray = className ? className.split(" ") : []
-
-  // Row selection by mouse click
-  const rowSelectionByClick = !disableRowSelection && !checkBoxRowSelection
-
-  // Use useAsyncDebounce for Global filter https://react-table.tanstack.com/docs/faq#how-can-i-debounce-rapid-table-state-changes
-  const setGlobalFilterCustom = useAsyncDebounce(value => {
-    setGlobalFilter(value || undefined)
-  }, 50)
 
   return (
     <>
@@ -353,8 +327,7 @@ export function DataTable(
                 responsive={responsive}
                 {...getTableProps()}
                 className={classNames(
-                  classesArray.includes("table-sticky-first-column") &&
-                    "table-sticky-first-column"
+                  hasStickyFirstColumn && "table-sticky-first-column"
                 )}
               >
                 <thead className="bg-gray-light sticky-top">
@@ -363,26 +336,37 @@ export function DataTable(
                       {...headerGroup.getHeaderGroupProps()}
                       className="bg-gray-light"
                     >
-                      {getAllHeadersInAGroup(
-                        headerGroup.headers,
-                        headerGroup.id
-                      ).map(column => (
-                        <DataTableHeaderCell
-                          header={column}
-                          onHeaderContextMenu={(event, header) =>
-                            handleHeaderContextMenu(event, header, containerRef)
-                          }
-                          onToggleHideColumn={toggleHideColumn}
-                          className={classNames(
-                            checkBoxRowSelection &&
-                              column.id === "selector" &&
-                              "icon-only",
-                            "bg-gray-light"
-                          )}
-                        >
-                          {column.render("Header")}
-                        </DataTableHeaderCell>
-                      ))}
+                      <DataTableDragDropProvider
+                        visibleColumns={visibleColumns}
+                        setColumnOrder={setColumnOrder}
+                        dragItemTemplate={dragTemplate}
+                      >
+                        {getAllHeadersInAGroup(
+                          headerGroup.headers,
+                          headerGroup.id
+                        ).map(column => (
+                          <DataTableHeaderCell
+                            key={column.id}
+                            header={column}
+                            onHeaderContextMenu={(event, headerColumn) =>
+                              handleHeaderContextMenu(
+                                event,
+                                headerColumn,
+                                containerRef
+                              )
+                            }
+                            onToggleHideColumn={toggleHideColumn}
+                            className={classNames(
+                              checkBoxRowSelection &&
+                                column.id === "selector" &&
+                                "icon-only",
+                              "bg-gray-light"
+                            )}
+                          >
+                            {column.render("Header")}
+                          </DataTableHeaderCell>
+                        ))}
+                      </DataTableDragDropProvider>
                     </tr>
                   ))}
                 </thead>
@@ -393,7 +377,7 @@ export function DataTable(
                       <tr
                         {...row.getRowProps()}
                         onClick={() => {
-                          rowSelectionByClick &&
+                          enableRowSelection &&
                             row.toggleRowSelected(!row.isSelected)
                         }}
                         className={row.isSelected && "selected"}

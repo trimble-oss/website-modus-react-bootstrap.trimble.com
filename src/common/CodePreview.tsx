@@ -12,6 +12,7 @@ import React, {
 import * as ReactBootstrap from "@trimbleinc/modus-react-bootstrap"
 import ReactDOM from "react-dom"
 import styled from "styled-components"
+import { Table, TablePagination, DataTable } from "../common/Table"
 
 const StyledAccordion = styled(ReactBootstrap.Accordion)`
   .card-header::after {
@@ -21,6 +22,7 @@ const StyledAccordion = styled(ReactBootstrap.Accordion)`
 
 const CodePreview = props => {
   const scope = {
+    ReactDOM,
     useEffect,
     useRef,
     useState,
@@ -28,8 +30,10 @@ const CodePreview = props => {
     useCallback,
     useMemo,
     ...ReactBootstrap,
-    ReactDOM,
     ...props.scope,
+    Table,
+    TablePagination,
+    DataTable,
   }
 
   const [toggle, setToggle] = useState(props.hideCode)
@@ -57,7 +61,7 @@ const CodePreview = props => {
         >
           <ReactBootstrap.Card className="w-100">
             <ReactBootstrap.Card.Header className="w-100 m-0 p-0">
-              <div class="d-flex justify-content-end w-100">
+              <div className="d-flex justify-content-end w-100">
                 <div>
                   <ReactBootstrap.Accordion.Toggle
                     onClick={toggleCode}

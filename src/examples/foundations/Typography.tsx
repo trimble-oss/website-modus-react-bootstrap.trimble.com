@@ -9,6 +9,14 @@ export const TypographyHeadings = `
 </div>
     `
 
+export const TypographyDisplayHeadings = `
+<div>
+  <h1 className="display-1">Display 1</h1>
+  <h2 className="display-2">Display 2</h2>
+  <h3 className="display-3">Display 3</h3>
+</div>
+  `
+
 export const TypographyTextStyles = `
 <div>
   <p class="lead-text">Lead Text / Open Sans Regular</p>
