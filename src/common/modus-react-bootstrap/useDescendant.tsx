@@ -12,10 +12,11 @@ import React, {
   useEffect,
 } from "react"
 import TreeViewItemContext from "./TreeViewItemContext"
-import { TreeItem, TreeItemExtended } from "./types"
+import { TreeItemExtended } from "./types"
 import _findIndex from "lodash/findIndex"
 import _every from "lodash/every"
 import _merge from "lodash/merge"
+import { TreeItem } from "."
 
 export function useDescendant(
   nodeId,

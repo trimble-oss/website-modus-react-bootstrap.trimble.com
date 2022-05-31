@@ -2,7 +2,7 @@ import * as React from "react"
 import { Container, Row } from "@trimbleinc/modus-react-bootstrap"
 import { ModusIconsScripts } from "../../common/ExternalDependencyHelper"
 import "../../assets/css/main.scss"
-import FileUploadDropZone from "../../common/FileUploadDropZone/FileUploadDropZone"
+import { FileUploadDropZone } from "../../common/modus-react-bootstrap"
 
 const Example = () => {
   const [filesUploaded, setFilesUploaded] = React.useState<FileList>(null)

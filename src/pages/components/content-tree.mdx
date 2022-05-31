@@ -18,8 +18,6 @@ import {
   TreeViewWithDragDrop,
 } from "../../examples/components/ContentTree"
 import findIndex from "lodash/findIndex"
-import TreeViewItem from "../../common/Tree/TreeViewItem"
-import TreeView from "../../common/Tree/TreeView"
 import useForceUpdate from "@restart/hooks/useForceUpdate"
 import { createPortal } from "react-dom"
 import classNames from "classnames"
@@ -30,11 +28,7 @@ import classNames from "classnames"
   side of the screen and cannot be combined with Side Navigation or Toolbar.
 </Overview>
 
-<CodeBlock
-  title="Basic"
-  code={TreeViewBasic}
-  scope={{ TreeView, TreeViewItem }}
->
+<CodeBlock title="Basic" code={TreeViewBasic}>
   Content Tree can be created using the components <code> TreeView </code> in
   the root and <code> TreeViewItem </code> for nodes.{" "}
   <code> TreeViewItem </code> takes <code> nodeId </code> which should be a
@@ -46,12 +40,7 @@ import classNames from "classnames"
   </p>
 </CodeBlock>
 
-<CodeBlock
-  title="Tree with Icons"
-  code={TreeViewWithItemIcon}
-  scope={{ TreeView, TreeViewItem }}
-  noInline={true}
->
+<CodeBlock title="Tree with Icons" code={TreeViewWithItemIcon} noInline={true}>
   Icons can be configured at the root level and node level and the state can be
   managed with callback functions <code> onNodeToggle </code> and
   <code> onNodeSelect</code>. An additional icon can be added through the prop <code>
@@ -59,37 +48,24 @@ import classNames from "classnames"
   </code>.
 </CodeBlock>
 
-<CodeBlock
-  title="Condensed Tree"
-  code={TreeViewCondensed}
-  scope={{ TreeView, TreeViewItem }}
->
+<CodeBlock title="Condensed Tree" code={TreeViewCondensed}>
   Use class <code> list-group-condensed </code> to shrink the size of Tree and
   its items.
 </CodeBlock>
 
-<CodeBlock
-  title="Borderless Tree"
-  code={TreeViewBorderless}
-  scope={{ TreeView, TreeViewItem }}
->
+<CodeBlock title="Borderless Tree" code={TreeViewBorderless}>
   Add a class of <code>.list-group-borderless</code> to your Tree view for a
   borderless variant.
 </CodeBlock>
 
-<CodeBlock
-  title="Multi Selection Tree"
-  code={TreeViewMultiSelect}
-  scope={{ TreeView, TreeViewItem }}
->
-  Multiple node selection can be enabled through prop <code> multiSelect </code>
-  .
+<CodeBlock title="Multi Selection Tree" code={TreeViewMultiSelect}>
+  Multiple node selection can be enabled through prop <code> multiSelect </code>.
 </CodeBlock>
 
 <CodeBlock
   title="Tree with Actions"
   code={TreeViewWithActionBar}
-  scope={{ TreeView, TreeViewItem, StyledIcon, findIndex, useForceUpdate }}
+  scope={{ StyledIcon, findIndex, useForceUpdate }}
   noInline={true}
   hideCode={true}
 >
@@ -100,7 +76,7 @@ import classNames from "classnames"
 <CodeBlock
   title="Tree with Filter"
   code={TreeViewWithFilter}
-  scope={{ TreeView, TreeViewItem, StyledIcon, findIndex, useForceUpdate }}
+  scope={{ StyledIcon, findIndex, useForceUpdate }}
   noInline={true}
   hideCode={true}
 ></CodeBlock>
@@ -109,8 +85,6 @@ import classNames from "classnames"
   title="Tree with Drag and Drop"
   code={TreeViewWithDragDrop}
   scope={{
-    TreeView,
-    TreeViewItem,
     StyledIcon,
     useForceUpdate,
     StyledDragItem,
@@ -127,8 +101,6 @@ import classNames from "classnames"
   title="Accessibility"
   code={TreeViewWithDragDrop}
   scope={{
-    TreeView,
-    TreeViewItem,
     StyledIcon,
     useForceUpdate,
     StyledDragItem,

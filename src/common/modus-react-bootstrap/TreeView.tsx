@@ -1,10 +1,11 @@
 import React, { useRef, useCallback, useState, useEffect } from "react"
 import PropTypes from "prop-types"
 import TreeViewContext from "./TreeViewContext"
-import { TreeItem, TreeItemExtended } from "./types"
+import { TreeItemExtended } from "./types"
 import TreeViewItemContext from "./TreeViewItemContext"
 import classNames from "classnames"
 import _merge from "lodash/merge"
+import { TreeItem } from "."
 
 export interface TreeViewProps
   extends Omit<React.HTMLProps<HTMLUListElement>, "expanded" | "selected"> {

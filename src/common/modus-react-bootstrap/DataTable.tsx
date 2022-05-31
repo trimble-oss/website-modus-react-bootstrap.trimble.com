@@ -65,7 +65,7 @@ export interface DataTableProps
     globalFilter: any,
     setGlobalFilter: (filterValue: FilterValue) => void
   ) => React.ReactElement | React.ReactNode | null
-  dragTemplate: (
+  dragTemplate?: (
     column: ColumnInstance<any>
   ) => React.ReactElement | React.ReactNode | null
   onRowSelection?: (rows: any[]) => void

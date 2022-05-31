@@ -19,7 +19,11 @@ import DefaultLayout from "../../layouts/DefaultLayout"
 import LinkedHeading from "../../common/LinkedHeading"
 import TableOfContents from "../../common/TableOfContents"
 import { ModusIconsScripts } from "../../common/ExternalDependencyHelper"
-import { Table, TablePagination, DataTable } from "../../common/Table"
+import {
+  Table,
+  DataTable,
+  TablePagination,
+} from "../../common/modus-react-bootstrap"
 import { MakeData as makeData } from "../../examples/components/Table"
 import styled from "styled-components"
 
