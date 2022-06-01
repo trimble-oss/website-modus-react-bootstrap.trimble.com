@@ -1,4 +1,4 @@
-import { TreeItem } from "."
+import { ReactNode } from "react"
 
 export type Variant =
   | "primary"
@@ -45,7 +45,12 @@ export type ContextMenuItem = {
   onClick?: (...args: any) => void
   children?: ContextMenuItem[]
 }
-
-export type TreeItemExtended = TreeItem & {
+export type TreeItem = {
+  id: number
+  parentId: number
+  index: number
+  label?: ReactNode
+  children?: TreeItem[]
+  disabled?: boolean
   element?: any
 }

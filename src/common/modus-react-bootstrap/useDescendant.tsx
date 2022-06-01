@@ -12,11 +12,10 @@ import React, {
   useEffect,
 } from "react"
 import TreeViewItemContext from "./TreeViewItemContext"
-import { TreeItemExtended } from "./types"
+import { TreeItem } from "./types"
 import _findIndex from "lodash/findIndex"
 import _every from "lodash/every"
 import _merge from "lodash/merge"
-import { TreeItem } from "."
 
 export function useDescendant(
   nodeId,
@@ -24,7 +23,7 @@ export function useDescendant(
   isCheckBoxSelected,
   toggleMultiCheckBoxSelection
 ) {
-  const childNodes = useRef<TreeItemExtended[]>([])
+  const childNodes = useRef<TreeItem[]>([])
   const {
     parentId,
     level,

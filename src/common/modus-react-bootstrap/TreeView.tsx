@@ -4,7 +4,7 @@ import PropTypes from "prop-types"
 import classNames from "classnames"
 import _merge from "lodash/merge"
 
-import { TreeItem, TreeItemExtended } from "./types"
+import { TreeItem } from "./types"
 import TreeViewContext from "./TreeViewContext"
 import TreeViewItemContext from "./TreeViewItemContext"
 
@@ -147,7 +147,7 @@ const TreeView = React.forwardRef<HTMLUListElement, TreeViewProps>(
 
     // Tree view context
     // Actions
-    const registerNode = useCallback((node: TreeItemExtended) => {
+    const registerNode = useCallback((node: TreeItem) => {
       nodes.current[node.id] = node
     }, [])
 
