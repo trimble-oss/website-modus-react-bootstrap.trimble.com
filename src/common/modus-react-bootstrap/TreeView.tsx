@@ -7,6 +7,7 @@ import _merge from "lodash/merge"
 import { TreeItem } from "./types"
 import TreeViewContext from "./TreeViewContext"
 import TreeViewItemContext from "./TreeViewItemContext"
+import useCustomState from "./useCustomState"
 
 export interface TreeViewProps
   extends Omit<React.HTMLProps<HTMLUListElement>, "expanded" | "selected"> {
@@ -121,9 +122,9 @@ const TreeView = React.forwardRef<HTMLUListElement, TreeViewProps>(
     ref
   ) => {
     const nodes = useRef({})
-    const expandedProp = useRef([])
     const [focusNodeId, setFocusNodeId] = useState<number>()
-    const [nodesExpanded, setNodeExpanded] = useState<number[]>(
+    const [nodesExpanded, setNodeExpanded] = useCustomState(
+      expanded,
       [].concat(defaultExpanded)
     )
     const [nodesSelected, setNodeSelected] = useState<number[]>(
@@ -136,14 +137,6 @@ const TreeView = React.forwardRef<HTMLUListElement, TreeViewProps>(
     const [nodeCheckBoxSelected, setNodeCheckBoxSelected] = useState<number[]>(
       []
     )
-
-    // Using expandedProp to track the changes in `expanded`API
-    useEffect(() => {
-      if (expanded !== undefined && expandedProp.current !== expanded) {
-        expandedProp.current = expanded
-        setNodeExpanded(expanded)
-      }
-    }, [expanded])
 
     // Tree view context
     // Actions
@@ -159,19 +152,23 @@ const TreeView = React.forwardRef<HTMLUListElement, TreeViewProps>(
 
     const toggleExpansion = useCallback((event: any, nodeId: number) => {
       let newExpanded = []
-      setNodeExpanded(prevState => {
-        let oldExpanded = prevState || []
-        if (oldExpanded.indexOf(nodeId) !== -1) {
-          newExpanded = oldExpanded.filter(id => id !== nodeId)
-        } else {
-          newExpanded = [nodeId].concat(oldExpanded)
-        }
+      setNodeExpanded(
+        prevState => {
+          let oldExpanded = prevState || []
+          if (oldExpanded.indexOf(nodeId) !== -1) {
+            newExpanded = oldExpanded.filter(id => id !== nodeId)
+          } else {
+            newExpanded = [nodeId].concat(oldExpanded)
+          }
 
-        if (onNodeToggle) {
-          onNodeToggle(event, newExpanded)
+          return newExpanded
+        },
+        () => {
+          if (onNodeToggle) {
+            onNodeToggle(event, newExpanded)
+          }
         }
-        return newExpanded
-      })
+      )
     }, [])
 
     const toggleNodeSelection = useCallback((event: any, nodeId: number) => {
