@@ -290,6 +290,11 @@ const TreeViewItem = React.forwardRef<HTMLLIElement, TreeViewItemProps>(
       focusSource.current = null
     }, [])
 
+    const stopPropagation = React.useCallback(
+      (e, flag) => flag && e.stopPropagation(),
+      []
+    )
+
     const getChildren = (array: TreeItem[]): number[] => {
       if (!array) return []
       return array.reduce((r, { id, children }) => {
@@ -321,6 +326,7 @@ const TreeViewItem = React.forwardRef<HTMLLIElement, TreeViewItemProps>(
           onKeyDown={e => {
             onKeyPress(e, () => toggleNodeSelection(e, nodeId))
           }}
+          onClick={handleNodeSelection}
           ref={resolvedRef}
           {...rest}
         >
@@ -329,6 +335,7 @@ const TreeViewItem = React.forwardRef<HTMLLIElement, TreeViewItemProps>(
               className="drag-icon"
               style={{ display: "inline-flex" }}
               tabIndex={finalDragIcon ? defaultTabIndex : -1}
+              onClick={e => stopPropagation(e, finalDragIcon)}
             >
               {finalDragIcon || blankIcon}
             </div>
@@ -351,7 +358,10 @@ const TreeViewItem = React.forwardRef<HTMLLIElement, TreeViewItemProps>(
           </div>
 
           {checkBoxSelection && (
-            <div className="d-flex align-items-center">
+            <div
+              className="d-flex align-items-center"
+              onClick={e => stopPropagation(e, true)}
+            >
               <IndeterminateCheckbox
                 checked={checkBoxSelected}
                 id={`${rootId}_cbselection_${nodeId}`}
@@ -371,16 +381,12 @@ const TreeViewItem = React.forwardRef<HTMLLIElement, TreeViewItemProps>(
             <div
               className="d-flex align-items-center"
               tabIndex={defaultTabIndex}
+              onClick={e => stopPropagation(e, true)}
             >
               {finalItemIcon}
             </div>
           )}
-          <div
-            onClick={handleNodeSelection}
-            className="d-flex align-items-center"
-          >
-            {label}
-          </div>
+          <div className="d-flex align-items-center">{label}</div>
         </TreeViewItemStyled>
 
         {children && (

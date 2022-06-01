@@ -1,11 +1,12 @@
 import React, { useRef, useCallback, useState, useEffect } from "react"
+
 import PropTypes from "prop-types"
-import TreeViewContext from "./TreeViewContext"
-import { TreeItemExtended } from "./types"
-import TreeViewItemContext from "./TreeViewItemContext"
 import classNames from "classnames"
 import _merge from "lodash/merge"
-import { TreeItem } from "."
+
+import { TreeItem, TreeItemExtended } from "./types"
+import TreeViewContext from "./TreeViewContext"
+import TreeViewItemContext from "./TreeViewItemContext"
 
 export interface TreeViewProps
   extends Omit<React.HTMLProps<HTMLUListElement>, "expanded" | "selected"> {
@@ -41,57 +42,57 @@ const propTypes = {
   expandIcon: PropTypes.element,
 
   /**
-   * Icon to appear before the label.
+   * Default icon to appear before the label for all the Tree items including root node.
    */
   itemIcon: PropTypes.element,
 
   /**
-   * Drag icon to appear before collapse/expand icon.
+   * Default Dragging icon to appear before collapse/expand icon for all the Tree items including root node.
    */
   dragIcon: PropTypes.element,
 
   /**
-   * Enables checkbox selection on nodes.
+   * Enables checkbox selection on all the Tree items.
    */
   checkBoxSelection: PropTypes.bool,
 
   /**
-   * Enables Multiple Node selection.
+   * Enables selection on multiple Tree items by `Shift + Arrow Up/Down` or `Ctrl + mouse click`.
    */
   multiSelectNode: PropTypes.bool,
 
   /**
-   * Enables Multiple CheckBox selection.
+   * Enables checkBox selection on multiple Tree items.
    */
   multiSelectCheckBox: PropTypes.bool,
 
   /**
-   * Nodes that needed to be expanded by default.
+   * Tree items expanded by default.
    */
   defaultExpanded: PropTypes.arrayOf(PropTypes.number),
 
   /**
-   * Node(s) that needed to be selected by default (if multiSelect not enabled only the first node is considered).
+   * Tree items selected by default (if multiSelect not enabled only the first value is considered).
    */
   defaultSelected: PropTypes.arrayOf(PropTypes.number),
 
   /**
-   * To Expand the nodes manually.
+   * Expand the Tree items.
    */
   expanded: PropTypes.arrayOf(PropTypes.number),
 
   /**
-   * Callback when a node expands or collapse.
+   * Callback when a Tree item expands or collapse.
    */
   onNodeToggle: PropTypes.func,
 
   /**
-   * Callback when a single node or multiple nodes selected.
+   * Callback when Tree item(s) selected.
    */
   onNodeSelect: PropTypes.func,
 
   /**
-   * Callback when checkbox on a single or multiple nodes selected.
+   * Callback when a Tree item checkbox is selected.
    */
   onCheckBoxSelect: PropTypes.func,
 }
@@ -122,7 +123,7 @@ const TreeView = React.forwardRef<HTMLUListElement, TreeViewProps>(
     const nodes = useRef({})
     const expandedProp = useRef([])
     const [focusNodeId, setFocusNodeId] = useState<number>()
-    const [nodesExpanded, setExpanded] = useState<number[]>(
+    const [nodesExpanded, setNodeExpanded] = useState<number[]>(
       [].concat(defaultExpanded)
     )
     const [nodesSelected, setNodeSelected] = useState<number[]>(
@@ -136,11 +137,11 @@ const TreeView = React.forwardRef<HTMLUListElement, TreeViewProps>(
       []
     )
 
-    // Update nodesExpanded state only when the API expanded value changes
+    // Using expandedProp to track the changes in `expanded`API
     useEffect(() => {
       if (expanded !== undefined && expandedProp.current !== expanded) {
         expandedProp.current = expanded
-        setExpanded(expanded)
+        setNodeExpanded(expanded)
       }
     }, [expanded])
 
@@ -158,7 +159,7 @@ const TreeView = React.forwardRef<HTMLUListElement, TreeViewProps>(
 
     const toggleExpansion = useCallback((event: any, nodeId: number) => {
       let newExpanded = []
-      setExpanded(prevState => {
+      setNodeExpanded(prevState => {
         let oldExpanded = prevState || []
         if (oldExpanded.indexOf(nodeId) !== -1) {
           newExpanded = oldExpanded.filter(id => id !== nodeId)
