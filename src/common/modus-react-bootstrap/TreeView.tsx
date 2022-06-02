@@ -8,6 +8,7 @@ import { TreeItem } from "./types"
 import TreeViewContext from "./TreeViewContext"
 import TreeViewItemContext from "./TreeViewItemContext"
 import useCustomState from "./useCustomState"
+import TreeViewStyled from "./TreeViewStyled"
 
 export interface TreeViewProps
   extends Omit<React.HTMLProps<HTMLUListElement>, "expanded" | "selected"> {
@@ -28,72 +29,67 @@ export interface TreeViewProps
 }
 
 const propTypes = {
-  /**
-   * Tree View Unique Identifier.
-   */
+  /** A HTML id attribute, necessary for proper form accessibility. */
+
   id: PropTypes.string.isRequired,
-  /**
-   * Default Collapse icon for all the Tree items including root node.
-   */
+
+  /** Default Collapse icon for all the Tree items including root node. */
   collapseIcon: PropTypes.element,
 
-  /**
-   * Default Expand icon for all the Tree items including root node.
-   */
+  /** Default Expand icon for all the Tree items including root node. */
   expandIcon: PropTypes.element,
 
-  /**
-   * Default icon to appear before the label for all the Tree items including root node.
-   */
+  /** Default icon to appear before the label for all the Tree items including root node. */
   itemIcon: PropTypes.element,
 
-  /**
-   * Default Dragging icon to appear before collapse/expand icon for all the Tree items including root node.
-   */
+  /** Default Dragging icon to appear before collapse/expand icon for all the Tree items including root node. */
   dragIcon: PropTypes.element,
 
-  /**
-   * Enables checkbox selection on all the Tree items.
-   */
+  /** Enables checkbox selection on all the Tree items. */
   checkBoxSelection: PropTypes.bool,
 
-  /**
-   * Enables selection on multiple Tree items by `Shift + Arrow Up/Down` or `Ctrl + mouse click`.
-   */
+  /** Enables selection on multiple Tree items by `Shift + Arrow Up/Down` or `Ctrl + mouse click`. */
   multiSelectNode: PropTypes.bool,
 
-  /**
-   * Enables checkBox selection on multiple Tree items.
-   */
+  /** Enables checkBox selection on multiple Tree items. */
   multiSelectCheckBox: PropTypes.bool,
 
-  /**
-   * Tree items expanded by default.
-   */
+  /** Tree items expanded by default. */
   defaultExpanded: PropTypes.arrayOf(PropTypes.number),
 
-  /**
-   * Tree items selected by default (if multiSelect not enabled only the first value is considered).
-   */
+  /** Tree items selected by default (if multiSelect not enabled only the first value is considered). */
   defaultSelected: PropTypes.arrayOf(PropTypes.number),
 
-  /**
-   * Expand the Tree items.
-   */
+  /** Expand the Tree items explicitly. */
   expanded: PropTypes.arrayOf(PropTypes.number),
 
   /**
    * Callback when a Tree item expands or collapse.
+   *
+   * ```js
+   * function onNodeToggle(event: React.SyntheticEvent, expanded: number[]) => void
+   *  expanded: An array of nodeId(s) of expanded Tree Items
+   * ```
    */
   onNodeToggle: PropTypes.func,
 
   /**
    * Callback when Tree item(s) selected.
+   *
+   * ```js
+   * function onNodeSelect(event: React.SyntheticEvent, selected: number[]) => void
+   *  selected: An array of nodeId(s) of selected Tree Items
+   * ```
    */
   onNodeSelect: PropTypes.func,
 
   /**
    * Callback when a Tree item checkbox is selected.
+   *
+   * ```js
+   * function onCheckBoxSelect(event: React.SyntheticEvent, selected: number[]) => void
+   *  selected: An array of nodeId(s) of checkbox selected Tree Items
+   * ```
    */
   onCheckBoxSelect: PropTypes.func,
 }
@@ -117,6 +113,7 @@ const TreeView = React.forwardRef<HTMLUListElement, TreeViewProps>(
       expanded,
       className,
       children,
+      as,
       ...props
     },
     ref
@@ -150,46 +147,49 @@ const TreeView = React.forwardRef<HTMLUListElement, TreeViewProps>(
       nodes.current = newNodes
     }, [])
 
-    const toggleExpansion = useCallback((event: any, nodeId: number) => {
-      let newExpanded = []
-      setNodeExpanded(
-        prevState => {
-          let oldExpanded = prevState || []
-          if (oldExpanded.indexOf(nodeId) !== -1) {
-            newExpanded = oldExpanded.filter(id => id !== nodeId)
-          } else {
-            newExpanded = [nodeId].concat(oldExpanded)
-          }
-
-          return newExpanded
-        },
-        () => {
-          if (onNodeToggle) {
-            onNodeToggle(event, newExpanded)
-          }
+    const toggleExpansion = useCallback(
+      (event: any, nodeId: number) => {
+        let newExpanded = []
+        let oldExpanded = nodesExpanded || []
+        if (oldExpanded.indexOf(nodeId) !== -1) {
+          newExpanded = oldExpanded.filter(id => id !== nodeId)
+        } else {
+          newExpanded = [nodeId].concat(oldExpanded)
         }
-      )
-    }, [])
+        setNodeExpanded(newExpanded)
+        if (onNodeToggle) {
+          onNodeToggle(event, newExpanded)
+        }
+      },
+      [nodesExpanded, setNodeExpanded]
+    )
 
-    const toggleNodeSelection = useCallback((event: any, nodeId: number) => {
-      // TODO: implement shift + click, ctrl + click for multi selection on node
+    const toggleNodeSelection = useCallback(
+      (event: any, nodeId: number) => {
+        const multiple =
+          multiSelectNode && (event.shiftKey || event.ctrlKey || event.metaKey)
 
-      const multiple =
-        multiSelectNode && (event.shiftKey || event.ctrlKey || event.metaKey)
-      handleSelection(event, nodeId, setNodeSelected, onNodeSelect, multiple)
-    }, [])
+        let newSelected = []
+        if (multiple) {
+          newSelected = handleMultipleSelect(nodeId, nodesSelected)
+        } else {
+          newSelected = handleSingleSelect(nodeId, nodesSelected)
+        }
+
+        setNodeSelected(newSelected)
+        if (onNodeSelect) onNodeSelect(event, newSelected)
+      },
+      [nodesSelected, setNodeSelected, onNodeSelect]
+    )
 
     const toggleSingleCheckBoxSelection = useCallback(
       (event: any, nodeId: number) => {
-        handleSelection(
-          event,
-          nodeId,
-          setNodeCheckBoxSelected,
-          onCheckBoxSelect,
-          false
-        )
+        const prevState = [...nodeCheckBoxSelected]
+        const newState = prevState && prevState.includes(nodeId) ? [] : [nodeId]
+        setNodeCheckBoxSelected(newState)
+        if (onCheckBoxSelect) onCheckBoxSelect(event, newState)
       },
-      []
+      [nodeCheckBoxSelected, setNodeCheckBoxSelected, onCheckBoxSelect]
     )
 
     const toggleMultiCheckBoxSelection = useCallback(
@@ -203,7 +203,7 @@ const TreeView = React.forwardRef<HTMLUListElement, TreeViewProps>(
           return newItems
         })
       },
-      []
+      [setNodeCheckBoxSelected, onCheckBoxSelect]
     )
 
     const focusNode = useCallback(
@@ -211,7 +211,7 @@ const TreeView = React.forwardRef<HTMLUListElement, TreeViewProps>(
         setFocusNodeId(nodeId)
         // event.stopPropagation()
       },
-      []
+      [setFocusNodeId]
     )
 
     // Verifiers
@@ -272,163 +272,142 @@ const TreeView = React.forwardRef<HTMLUListElement, TreeViewProps>(
     )
 
     // Handlers
-    const handleSelection = (
-      event: any,
-      nodeId: number,
-      setStatefn: (value: React.SetStateAction<number[]>) => void,
-      callBackfn: (event: any, value: number[]) => void,
-      multiple = false
-    ) => {
-      let newSelected = []
-      if (multiple) {
-        newSelected = handleMultipleSelect(nodeId, setStatefn)
-      } else {
-        newSelected = handleSingleSelect(nodeId, setStatefn)
-      }
-
-      if (callBackfn) callBackfn(event, newSelected)
-    }
-
     const handleMultipleSelect = (
       value,
-      setStatefn: (value: React.SetStateAction<number[]>) => void,
+      prevState,
       recursive = false
     ): number[] => {
       let newSelected = []
+      const oldSelected = prevState || []
 
-      setStatefn(prevState => {
-        const oldSelected = prevState || []
+      if (recursive) {
+        const array = getNodesArray()
+        const childNodes = getChildrenIds(array, value)
+        // unselect parents and children
+        if (oldSelected.indexOf(value) !== -1) {
+          const parents = getParents(value)
+          let filtered = oldSelected.filter(
+            id =>
+              childNodes.indexOf(id) < 0 &&
+              id !== value &&
+              parents.indexOf(id) < 0
+          )
 
-        if (recursive) {
-          const array = getNodesArray()
-          const childNodes = getChildrenIds(array, value)
-          // unselect parents and children
-          if (oldSelected.indexOf(value) !== -1) {
-            const parents = getParents(value)
-            let filtered = oldSelected.filter(
-              id =>
-                childNodes.indexOf(id) < 0 &&
-                id !== value &&
-                parents.indexOf(id) < 0
-            )
-
-            newSelected = filtered
-          }
-          // select children and parents with all child nodes selected
-          else {
-            let filtered = oldSelected.filter(id => childNodes.indexOf(id) < 0)
-            newSelected = filtered.concat([value], childNodes)
-          }
-        } else {
-          if (oldSelected.includes(value))
-            newSelected = oldSelected.filter(id => id !== value)
-          else newSelected = oldSelected.concat(value)
+          newSelected = filtered
         }
-
-        return newSelected
-      })
+        // select children and parents with all child nodes selected
+        else {
+          let filtered = oldSelected.filter(id => childNodes.indexOf(id) < 0)
+          newSelected = filtered.concat([value], childNodes)
+        }
+      } else {
+        if (oldSelected.includes(value))
+          newSelected = oldSelected.filter(id => id !== value)
+        else newSelected = oldSelected.concat(value)
+      }
 
       return newSelected
     }
 
-    const handleSingleSelect = (
-      value,
-      setStatefn: (value: React.SetStateAction<number[]>) => void
-    ): number[] => {
+    const handleSingleSelect = (value, prevState): number[] => {
       let selection = []
-      setStatefn(prevState => {
-        selection = prevState && prevState.includes(value) ? [] : [value]
-        return selection
-      })
+      selection = prevState && prevState.includes(value) ? [] : [value]
       return selection
     }
 
-    /**
-     * Issue with using on :focus css style on elements, we really need to show the focus style only when tab key is used to focus the elements
-     * but then when mouse click focus css should not apply
-     * how to do it !?
-     */
-    const handleKeyDown = (event, enterKeyPressAction) => {
-      let flag = false
-      const key = event.key
+    const handleKeyDown = useCallback(
+      (event, enterKeyPressAction) => {
+        let flag = false
+        const key = event.key
 
-      // If the tree is empty there will be no focused node
-      if (
-        event.altKey ||
-        event.currentTarget !== event.target ||
-        !focusNodeId
-      ) {
-        return
-      }
+        // If the tree is empty there will be no focused node
+        if (
+          event.altKey ||
+          event.currentTarget !== event.target ||
+          !focusNodeId
+        ) {
+          return
+        }
 
-      switch (key) {
-        case " ":
-          toggleExpansion(event, focusNodeId)
-          flag = true
-          break
-        case "Enter":
-          enterKeyPressAction()
+        switch (key) {
+          case " ":
+            toggleExpansion(event, focusNodeId)
+            flag = true
+            break
+          case "Enter":
+            enterKeyPressAction()
+            event.stopPropagation()
+            break
+          case "ArrowDown":
+            const nextNode = getNextNavigatableNode(focusNodeId)
+            if (
+              multiSelectNode &&
+              event.shiftKey &&
+              isNodeSelected(focusNodeId)
+            ) {
+              // deselect if going back to the selected node
+              if (isNodeSelected(nextNode))
+                toggleNodeSelection(event, focusNodeId)
+              else toggleNodeSelection(event, nextNode)
+            }
+
+            focusNode(event, nextNode)
+            flag = true
+            break
+          case "ArrowUp":
+            const nodePrevious = getPreviousNavigatableNode(focusNodeId)
+            if (
+              multiSelectNode &&
+              event.shiftKey &&
+              isNodeSelected(focusNodeId)
+            ) {
+              // deselect if going back to the selected node
+              if (isNodeSelected(nodePrevious))
+                toggleNodeSelection(event, focusNodeId)
+              else toggleNodeSelection(event, nodePrevious)
+            }
+
+            focusNode(event, nodePrevious)
+            flag = true
+            break
+          case "ArrowRight":
+            if (!isExpanded(focusNodeId)) toggleExpansion(event, focusNodeId)
+            break
+          case "ArrowLeft":
+            if (isExpanded(focusNodeId)) toggleExpansion(event, focusNodeId)
+            break
+
+          default:
+        }
+
+        if (flag) {
+          event.preventDefault()
           event.stopPropagation()
-          break
-        case "ArrowDown":
-          const nextNode = getNextNavigatableNode(focusNodeId)
-          if (
-            multiSelectNode &&
-            event.shiftKey &&
-            isNodeSelected(focusNodeId)
-          ) {
-            // deselect if going back to the selected node
-            if (isNodeSelected(nextNode))
-              toggleNodeSelection(event, focusNodeId)
-            else toggleNodeSelection(event, nextNode)
-          }
-
-          focusNode(event, nextNode)
-          flag = true
-          break
-        case "ArrowUp":
-          const nodePrevious = getPreviousNavigatableNode(focusNodeId)
-          if (
-            multiSelectNode &&
-            event.shiftKey &&
-            isNodeSelected(focusNodeId)
-          ) {
-            // deselect if going back to the selected node
-            if (isNodeSelected(nodePrevious))
-              toggleNodeSelection(event, focusNodeId)
-            else toggleNodeSelection(event, nodePrevious)
-          }
-
-          focusNode(event, nodePrevious)
-          flag = true
-          break
-        case "ArrowRight":
-          if (!isExpanded(focusNodeId)) toggleExpansion(event, focusNodeId)
-          break
-        case "ArrowLeft":
-          if (isExpanded(focusNodeId)) toggleExpansion(event, focusNodeId)
-          break
-
-        default:
-      }
-
-      if (flag) {
-        event.preventDefault()
-        event.stopPropagation()
-      }
-    }
+        }
+      },
+      [
+        focusNodeId,
+        focusNode,
+        isExpanded,
+        toggleExpansion,
+        isNodeSelected,
+        toggleNodeSelection,
+      ]
+    )
 
     // Helpers
-    const getNodesArray = () =>
-      Object.keys(nodes.current).map(key => {
+    // TODO: Replace the logic getChildrenIds(getNodesArray) to avoid performance issues if any
+    function getNodesArray(): TreeItem[] {
+      return Object.keys(nodes.current).map(key => {
         return nodes.current[key]
-      }) as TreeItem[]
+      })
+    }
 
-    const getChildrenIds = (
+    function getChildrenIds(
       array: TreeItem[],
       nodeId: number,
       recursive = true
-    ): number[] => {
+    ): number[] {
       return array.reduce((r, { id, parentId }) => {
         if (parentId === nodeId) {
           r.push(id, ...(recursive ? getChildrenIds(array, id) : []))
@@ -437,16 +416,17 @@ const TreeView = React.forwardRef<HTMLUListElement, TreeViewProps>(
       }, [])
     }
 
-    const getImmediateChildrenIds = id =>
-      Object.keys(nodes.current)
+    function getImmediateChildrenIds(id) {
+      return Object.keys(nodes.current)
         .map(key => {
           return nodes.current[key]
         })
         .filter(node => node.parentId === id)
         .sort((a, b) => a.index - b.index)
         .map(child => child.id)
+    }
 
-    const getParents = (nodeId: number): number[] => {
+    function getParents(nodeId: number): number[] {
       let { parentId } = nodes.current[nodeId]
       let parents = []
       while (parentId != null) {
@@ -457,13 +437,13 @@ const TreeView = React.forwardRef<HTMLUListElement, TreeViewProps>(
       return parents
     }
 
-    const getNavigableChildrenIds = id => {
+    function getNavigableChildrenIds(id) {
       let childrenIds = getImmediateChildrenIds(id)
       childrenIds = childrenIds.filter(node => !isNodeDisabled(node))
       return childrenIds
     }
 
-    const getNextNavigatableNode = id => {
+    function getNextNavigatableNode(id) {
       // If expanded get first child
       if (isExpanded(id) && getNavigableChildrenIds(id).length > 0) {
         return getNavigableChildrenIds(id)[0]
@@ -486,7 +466,7 @@ const TreeView = React.forwardRef<HTMLUListElement, TreeViewProps>(
       return id
     }
 
-    const getPreviousNavigatableNode = id => {
+    function getPreviousNavigatableNode(id) {
       const node = nodes.current[id]
       const siblings = getNavigableChildrenIds(node.parentId)
       const nodeIndex = siblings.indexOf(id)
@@ -533,15 +513,15 @@ const TreeView = React.forwardRef<HTMLUListElement, TreeViewProps>(
         }}
       >
         <TreeViewItemContext.Provider value={{ parentId: null, level: 1 }}>
-          <ul
+          <TreeViewStyled
             className={classNames("list-group", className)}
             {...props}
-            id={id}
             ref={ref}
+            id={id}
             role="tree"
           >
             {children}
-          </ul>
+          </TreeViewStyled>
         </TreeViewItemContext.Provider>
       </TreeViewContext.Provider>
     )

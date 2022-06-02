@@ -12,13 +12,9 @@ export default function useCustomState(prop, defaultProp) {
     }
   }, [prop])
 
-  const setValueFn = useCallback(
-    (newValue, callBackFn: (...args: any[]) => any, ...args: any[]) => {
-      setValue(newValue)
-      if (callBackFn) callBackFn(...args)
-    },
-    []
-  )
+  const setValueFn = useCallback(newValue => {
+    setValue(newValue)
+  }, [])
 
   return [value, setValueFn]
 }

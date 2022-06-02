@@ -1,17 +1,12 @@
-import React, { useContext, useEffect, useMemo, useRef, useState } from "react"
+import React, { useContext, useEffect, useRef, useState } from "react"
 import PropTypes from "prop-types"
 import classNames from "classnames"
-import _findIndex from "lodash/findIndex"
-import _every from "lodash/every"
-import _merge from "lodash/merge"
-import { Form } from "@trimbleinc/modus-react-bootstrap"
-import TreeViewItemStyled, {
-  TreeViewItemGroupStyled,
-} from "./TreeViewItemStyled"
 import TreeViewContext from "./TreeViewContext"
 import TreeViewItemContext from "./TreeViewItemContext"
 import { TreeItem } from "./types"
+import { TreeViewItemStyled, TreeViewItemGroupStyled } from "./TreeViewStyled"
 import { useDescendant } from "./useDescendant"
+import IndeterminateCheckbox from "./IndeterminateCheckbox"
 
 export interface TreeViewItemProps
   extends Omit<React.HTMLAttributes<HTMLLIElement>, "label"> {
@@ -26,91 +21,27 @@ export interface TreeViewItemProps
 }
 
 const propTypes = {
-  /**
-   * Tree Node Id
-   */
+  /** An unique id for Tree Item */
   nodeId: PropTypes.number.isRequired,
 
-  /**
-   * Tree Node Text
-   */
+  /** Tree Item label */
   label: PropTypes.oneOfType([PropTypes.string, PropTypes.element]),
 
-  /**
-   * Collapse icon for the Tree node.
-   */
+  /** Collapse icon for the Tree node. */
   collapseIcon: PropTypes.element,
 
-  /**
-   * Expand icon for the Tree node.
-   */
+  /** Expand icon for the Tree node. */
   expandIcon: PropTypes.element,
 
-  /**
-   * Icon to appear before the label.
-   */
+  /** Icon to appear before the label. */
   itemIcon: PropTypes.element,
 
-  /**
-   * Drag icon to appear before collapse/expand icon.
-   */
+  /** Drag icon to appear before collapse/expand icon. */
   dragIcon: PropTypes.element,
 
-  /**
-   * Disables the TreeItem and its content.
-   */
+  /** Disables the Tree node and its children. */
   disabled: PropTypes.bool,
 }
-
-const IndeterminateCheckbox = React.forwardRef<
-  HTMLInputElement,
-  {
-    id: string
-    indeterminate?: any
-    onClick?: (...args: any[]) => void
-    onFocus?: (...args: any[]) => void
-    onKeydown?: (...args: any[]) => void
-    checked?: boolean
-    tabIndex?: number
-  }
->(
-  (
-    {
-      id,
-      indeterminate,
-      checked,
-      tabIndex,
-      onFocus,
-      onClick,
-      onKeydown,
-      ...props
-    },
-    ref
-  ) => {
-    const defaultRef = React.useRef<HTMLInputElement>(null)
-    const resolvedRef = ref || defaultRef
-
-    useEffect(() => {
-      ;(
-        resolvedRef as React.MutableRefObject<HTMLInputElement>
-      ).current.indeterminate = indeterminate
-    }, [resolvedRef, indeterminate])
-
-    return (
-      <Form.Check
-        custom
-        id={id}
-        checked={checked}
-        ref={resolvedRef}
-        onClick={onClick}
-        onKeyDown={onKeydown}
-        onFocus={onFocus}
-        tabIndex={tabIndex}
-        {...props}
-      />
-    )
-  }
-)
 
 const TreeViewItem = React.forwardRef<HTMLLIElement, TreeViewItemProps>(
   (
@@ -151,9 +82,10 @@ const TreeViewItem = React.forwardRef<HTMLLIElement, TreeViewItemProps>(
       dragIcon: defaultDragIcon,
     } = useContext(TreeViewContext)
 
-    const defaultRef = React.useRef<HTMLDivElement>(null)
     const resolvedRef = (ref ||
-      defaultRef) as React.MutableRefObject<HTMLLIElement>
+      React.useRef<HTMLLIElement>(
+        null
+      )) as React.MutableRefObject<HTMLLIElement>
     const focusSource = useRef(null)
 
     const [treeItemElement, setTreeItemElement] = useState(null)
@@ -368,7 +300,7 @@ const TreeViewItem = React.forwardRef<HTMLLIElement, TreeViewItemProps>(
                 onClick={handleCheckBoxSelection}
                 indeterminate={checkBoxIndeterminate}
                 tabIndex={defaultTabIndex}
-                onKeydown={e => {
+                onKeyDown={e => {
                   if (e.key !== " ")
                     onKeyPress(e, () => handleCheckBoxSelection(e))
                 }}

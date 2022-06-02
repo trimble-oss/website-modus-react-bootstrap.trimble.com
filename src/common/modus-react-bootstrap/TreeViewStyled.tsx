@@ -34,7 +34,20 @@ const TreeViewItemGroupStyleWrapper = React.forwardRef<
   )
 })
 
-const TreeViewItemStyled = styled(TreeViewItemStyleWrapper)`
+export const TreeViewStyled = styled.ul`
+  .modus-icons,
+  .material-icons {
+    cursor: pointer;
+    font-size: 16px !important;
+  }
+  &.list-group-condensed {
+    .modus-icons,
+    .material-icons {
+      font-size: 12px !important;
+    }
+  }
+`
+export const TreeViewItemStyled = styled(TreeViewItemStyleWrapper)`
   &:focus-visible,
   &.focus-visible,
   *:focus-visible {
@@ -56,14 +69,6 @@ const TreeViewItemStyled = styled(TreeViewItemStyleWrapper)`
         props.checkBoxSelection == "true" && "min-content"} ${props =>
         props.itemIcon == "true" && "min-content"} auto min-content !important;
 
-    .modus-icons,
-    .material-icons {
-      cursor: pointer;
-      font-size: 1.25rem !important;
-    }
-    .drag-icon > * {
-      font-size: 1rem !important;
-    }
     .tree-item-level {
       padding-left: ${props =>
         props.level > 0 ? (props.level - 1) * 0.5 : 0}rem !important;
@@ -74,4 +79,4 @@ export const TreeViewItemGroupStyled = styled(TreeViewItemGroupStyleWrapper)`
   display: ${props => (props.expanded == "true" ? "block" : "none")};
 `
 
-export default TreeViewItemStyled
+export default TreeViewStyled
