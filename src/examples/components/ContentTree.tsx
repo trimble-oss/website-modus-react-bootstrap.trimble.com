@@ -434,6 +434,11 @@ function TreeViewWithActionBar() {
         onChange(e, nodeId, e.target.value)
       }
     }
+    const handleOnBlur= e => {
+      if (isNew) onNodeAdd(e, nodeId, e.target.value)
+      else if (isEditable) onNodeEdit(e, nodeId, e.target.value)
+    }
+
     if (isNew) {
       return (
         <li className="list-group-item list-item-leftright-control">
@@ -441,6 +446,8 @@ function TreeViewWithActionBar() {
           <Form.Control
             as="input"
             autoFocus
+            onFocus={e => {}} // to retain the focus
+            onBlur={handleOnBlur}
             onKeyUp={handleOnKeyUp}
             size="lg"
             className="border-0"
@@ -459,6 +466,8 @@ function TreeViewWithActionBar() {
               <Form.Control
                 as="input"
                 autoFocus
+                onFocus={e => {}} // to retain the focus
+                onBlur={handleOnBlur}
                 onKeyUp={handleOnKeyUp}
                 size="lg"
                 className="border-0"

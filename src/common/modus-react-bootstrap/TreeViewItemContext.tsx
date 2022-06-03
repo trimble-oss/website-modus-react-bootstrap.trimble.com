@@ -1,5 +1,4 @@
 import * as React from "react"
-import PropTypes from "prop-types"
 import { TreeItem } from "./types"
 
 interface TreeViewItemContextProps {
@@ -12,7 +11,7 @@ interface TreeViewItemContextProps {
   ) => number
   unRegisterDescendant?: (id: number) => void
   updateDescendant?: (id: number, children: TreeItem[], element: any) => void
-  onDescendantToggleCbSelection?: (
+  updateCheckboxSelection?: (
     event: any,
     id: number,
     selected: number[],

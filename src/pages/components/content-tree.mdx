@@ -41,11 +41,10 @@ import classNames from "classnames"
 </CodeBlock>
 
 <CodeBlock title="Tree with Icons" code={TreeViewWithItemIcon} noInline={true}>
-  Icons can be configured at the root level and node level and the state can be
-  managed with callback functions <code> onNodeToggle </code> and
-  <code> onNodeSelect</code>. An additional icon can be added through the prop <code>
-    itemIcon
-  </code>.
+  Icons can be configured both at the root level and node level. Also an
+  additional icon can be added to show before the label text using the prop{" "}
+  <code>itemIcon</code>. For more operations, callback functions like
+  <code> onNodeToggle</code>,<code> onNodeSelect </code> are available.
 </CodeBlock>
 
 <CodeBlock title="Condensed Tree" code={TreeViewCondensed}>
@@ -59,7 +58,12 @@ import classNames from "classnames"
 </CodeBlock>
 
 <CodeBlock title="Multi Selection Tree" code={TreeViewMultiSelect}>
-  Multiple node selection can be enabled through prop <code> multiSelect </code>.
+  Use the prop <code> multiSelectNode </code> to enable multiple selection and
+  the nodes can be selected using
+  <code> Shift + Arrow Up/Down </code> key or <code> Ctrl + </code> mouse click.
+  <br />
+  For displaying checkbox on each node set <code> checkBoxSelection </code> and to
+  enable multiple selection use <code>multiSelectCheckBox</code>.
 </CodeBlock>
 
 <CodeBlock
@@ -70,7 +74,7 @@ import classNames from "classnames"
   hideCode={true}
 >
   Using the props and callback functions from the <code> TreeView </code>{" "}
-  component we perform more actions on each node.
+  component we perform more actions as shown in the example.
 </CodeBlock>
 
 <CodeBlock
