@@ -23,8 +23,8 @@ import { TreeItem } from "./types"
 type DescendantProviderParam = {
   nodeId: number
   element: any
-  hasCheckBoxSelected: (nodeId: number) => boolean
-  handleCheckboxSelection: (
+  hasCheckBoxSelected?: (nodeId: number) => boolean
+  handleCheckboxSelection?: (
     event: any,
     selected?: number[],
     unselected?: number[]
@@ -47,7 +47,8 @@ export default function useTreeViewDescendants({
 
   const [index, setIndex] = useState(-1)
 
-  // descendant context methods from the parent node
+  // descendant context methods from the parent node if any
+  const treeItemContext = useContext(TreeViewItemContext)
   const {
     parentId,
     level,
@@ -55,7 +56,7 @@ export default function useTreeViewDescendants({
     unRegisterDescendant: unRegisterOnParent,
     updateDescendant: updateParent,
     updateCheckboxSelection: updateCheckboxSelectionOnParent,
-  } = useContext(TreeViewItemContext)
+  } = treeItemContext || {}
 
   const descendants = useMemo(
     () => registeredChildren.current,

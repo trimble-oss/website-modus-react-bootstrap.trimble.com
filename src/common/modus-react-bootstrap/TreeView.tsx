@@ -9,10 +9,12 @@ import TreeViewContext from "./TreeViewContext"
 import TreeViewItemContext from "./TreeViewItemContext"
 import useCustomState from "./useCustomState"
 import TreeViewStyled from "./TreeViewStyled"
+import useTreeViewDescendants from "./useTreeViewDescendants"
 
 export interface TreeViewProps
   extends Omit<React.HTMLProps<HTMLUListElement>, "expanded" | "selected"> {
   id: string
+  nodeId: number
   collapseIcon?: React.ReactElement
   expandIcon?: React.ReactElement
   itemIcon?: React.ReactElement
@@ -32,6 +34,9 @@ const propTypes = {
   /** A HTML id attribute, necessary for proper form accessibility. */
 
   id: PropTypes.string.isRequired,
+
+  /** An unique numerical id for Tree Item */
+  nodeId: PropTypes.number.isRequired,
 
   /** Default Collapse icon for all the Tree items including root node. */
   collapseIcon: PropTypes.element,
@@ -98,6 +103,7 @@ const TreeView = React.forwardRef<HTMLUListElement, TreeViewProps>(
   (
     {
       id,
+      nodeId,
       collapseIcon,
       expandIcon,
       itemIcon,
@@ -119,6 +125,10 @@ const TreeView = React.forwardRef<HTMLUListElement, TreeViewProps>(
     ref
   ) => {
     const nodes = useRef({})
+    const resolvedRef = (ref ||
+      React.useRef<HTMLUListElement>(
+        null
+      )) as React.MutableRefObject<HTMLUListElement>
     const [focusNodeId, setFocusNodeId] = useState<number>()
     const [nodesExpanded, setNodeExpanded] = useCustomState(
       expanded,
@@ -134,6 +144,17 @@ const TreeView = React.forwardRef<HTMLUListElement, TreeViewProps>(
     const [nodeCheckBoxSelected, setNodeCheckBoxSelected] = useState<number[]>(
       []
     )
+    // Used by descendant context to find the index of repositioned elements
+    const [treeItemElement, setTreeItemElement] = useState(null)
+    const { registerDescendant, unRegisterDescendant, updateDescendant } =
+      useTreeViewDescendants({
+        nodeId,
+        element: treeItemElement,
+      })
+
+    useEffect(() => {
+      setTreeItemElement(resolvedRef.current)
+    }, [resolvedRef.current])
 
     // Tree view context
     // Actions
@@ -512,7 +533,15 @@ const TreeView = React.forwardRef<HTMLUListElement, TreeViewProps>(
           dragIcon,
         }}
       >
-        <TreeViewItemContext.Provider value={{ parentId: null, level: 1 }}>
+        <TreeViewItemContext.Provider
+          value={{
+            parentId: nodeId,
+            level: 1,
+            registerDescendant,
+            unRegisterDescendant,
+            updateDescendant,
+          }}
+        >
           <TreeViewStyled
             className={classNames("list-group", className)}
             {...props}

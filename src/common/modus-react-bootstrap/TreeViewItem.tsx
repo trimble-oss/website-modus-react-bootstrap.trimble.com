@@ -21,7 +21,7 @@ export interface TreeViewItemProps
 }
 
 const propTypes = {
-  /** An unique id for Tree Item */
+  /** An unique numerical id for Tree Item */
   nodeId: PropTypes.number.isRequired,
 
   /** Tree Item label */
