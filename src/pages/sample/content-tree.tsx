@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useMemo } from "react"
+import React, { useState, useEffect, useCallback, useMemo, useRef } from "react"
 import { Container, Form, Row } from "@trimbleinc/modus-react-bootstrap"
 import { TreeView, TreeViewItem } from "../../common/modus-react-bootstrap"
 import { ModusIconsScripts } from "../../common/ExternalDependencyHelper"
@@ -228,6 +228,17 @@ function TreeViewWithActionBar() {
     ...props
   }) => {
     const isEditable = editableNode.current === nodeId
+    const editref = useRef<HTMLInputElement>()
+    const newref = useRef<HTMLInputElement>()
+
+    useEffect(() => {
+      if (isEditable && editref.current) editref.current.focus()
+    }, [isEditable])
+
+    useEffect(() => {
+      if (isEditable && newref.current) newref.current.focus()
+    }, [isEditable])
+
     const handleOnKeyUp = e => {
       if (e.key === "Enter" || e.keyCode === 13) {
         if (isNew) onNodeAdd(e, nodeId, e.target.value)
@@ -244,11 +255,12 @@ function TreeViewWithActionBar() {
           <Form.Control
             as="input"
             autoFocus
-            onKeyUp={handleOnKeyUp}
+            onFocus={e => {}} // to retain the focus
+            onKeyDown={handleOnKeyUp}
             size="lg"
             className="border-0"
             defaultValue={label}
-            onFocus={e => {}}
+            ref={newref}
           ></Form.Control>
         </li>
       )
@@ -262,12 +274,14 @@ function TreeViewWithActionBar() {
             isEditable ? (
               <Form.Control
                 as="input"
+                ref={editref}
                 autoFocus
-                onKeyUp={handleOnKeyUp}
+                onFocus={e => {}} // to retain the focus
+                onKeyDown={handleOnKeyUp}
+                onClick={e => e.stopPropagation()}
                 size="lg"
                 className="border-0"
                 defaultValue={label}
-                onFocus={e => {}}
               ></Form.Control>
             ) : (
               label
@@ -336,6 +350,7 @@ function TreeViewWithActionBar() {
           </div>
           <div className="col">
             <TreeView
+              nodeId={0}
               id="example"
               expanded={expanded}
               onNodeSelect={handleSelect}

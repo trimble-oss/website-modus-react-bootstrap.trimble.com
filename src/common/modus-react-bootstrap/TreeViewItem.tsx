@@ -158,10 +158,19 @@ const TreeViewItem = React.forwardRef<HTMLLIElement, TreeViewItemProps>(
     // Triggered from keyboard interaction such as arrow up/down key press
     useEffect(() => {
       let ele = resolvedRef.current
+
       if (inFocus && !focusSource.current) {
+        console.log("am here too inside!!")
         ele.focus()
       }
-    }, [resolvedRef.current, inFocus])
+      console.log(`Node id ${nodeId} is in focus${inFocus}`)
+      console.log(focusSource.current)
+      console.log("am here too outside!!")
+    }, [inFocus])
+
+    useEffect(() => {
+      console.log(`re-render ${nodeId}`)
+    }, [])
 
     useEffect(() => {
       setTreeItemElement(resolvedRef.current)
@@ -169,6 +178,9 @@ const TreeViewItem = React.forwardRef<HTMLLIElement, TreeViewItemProps>(
 
     const handleNodeSelection = React.useCallback(
       (e: any) => {
+        console.log("node selection")
+        console.log(e.target)
+        console.log(e.currentTarget)
         toggleNodeSelection(e, nodeId)
       },
       [toggleNodeSelection]
@@ -210,24 +222,37 @@ const TreeViewItem = React.forwardRef<HTMLLIElement, TreeViewItemProps>(
       [toggleExpansion]
     )
 
+    //using handlefocus breaks add & edit functionalities
     const handleFocus = React.useCallback(
       (e: any) => {
+        // console.log("focus")
+        // console.log(e.target)
+        // console.log(e.currentTarget)
+        // console.log("in focus?" + inFocus)
+
         // do not update focus state if it is in a disabled state or if already in focus
         if (disabled || inFocus) return
 
         if (e.target === e.currentTarget) {
+          console.log("here am inside!!")
           let ele = resolvedRef.current
           ele.focus({
             preventScroll: true,
           })
         }
         focusSource.current = e.target
+        console.log(focusSource.current)
+        console.log("here am outside!!")
         focusNode(e, nodeId)
+        e.preventDefault()
       },
       [disabled, inFocus, focusNode]
     )
 
     const handleBlur = React.useCallback((e: any) => {
+      console.log("blur")
+      console.log(e.target)
+      console.log(e.currentTarget)
       focusSource.current = null
     }, [])
 
@@ -265,7 +290,12 @@ const TreeViewItem = React.forwardRef<HTMLLIElement, TreeViewItemProps>(
           onFocus={handleFocus}
           onBlur={handleBlur}
           onKeyDown={e => {
-            onKeyPress(e, () => toggleNodeSelection(e, nodeId))
+            console.log("key down")
+            console.log(e.target)
+            console.log(e.currentTarget)
+
+            if (e.target === e.currentTarget)
+              onKeyPress(e, () => toggleNodeSelection(e, nodeId))
           }}
           onClick={handleNodeSelection}
           ref={resolvedRef}
