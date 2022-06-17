@@ -24,8 +24,7 @@
     "lint": "npm run lint-css",
     "lint-css": "stylelint \"src/assets/css/*.scss\"",
     "serve": "gatsby serve",
-    "start": "gatsby develop",
-    "test": "echo \"Write tests! -> https://gatsby.dev/unit-testing\" && exit 1"
+    "start": "gatsby develop"
   },
   "dependencies": {
     "@trimbleinc/modus-react-bootstrap": "file:trimbleinc-modus-react-bootstrap-1.1.0.tgz",
