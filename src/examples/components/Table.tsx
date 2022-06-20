@@ -655,8 +655,8 @@ function Example() {
       <TableStyled bordered hover>
         <thead className="bg-gray-light sticky-top">
           <tr className="bg-gray-light">
-            {columns.map(column => (
-              <th className="bg-gray-light pr-2" title="">
+            {columns.map((column,index) => (
+              <th key={index} className="bg-gray-light pr-2" title="">
                 <div
                   className="d-flex flex-row justify-content-center"
                   style={{ width: "100%" }}
@@ -683,9 +683,9 @@ function Example() {
             .slice(page * pageSize, page * pageSize + pageSize)
             .map((row, index) => {
               return (
-                <tr>
+                <tr key={index}>
                   {columns.map(({ accessor }) => (
-                    <td>{row[accessor]}</td>
+                    <td key={accessor}>{row[accessor]}</td>
                   ))}
                 </tr>
               )
@@ -990,9 +990,9 @@ export const DataTableWithSingleRowSelection = `function Example() {
   const data = React.useMemo(() => makeData(30), [])
 
   const [selectedRows , setRowsSelected] = useState([])
-  const handleOnRowSelection = (rows) => {
+  const handleOnRowSelection = React.useCallback((rows) => {
     setRowsSelected(rows)
-  }
+  },[setRowsSelected])
 
   return (
     <div>
@@ -1067,9 +1067,9 @@ export const DataTableWithMultiRowSelection = `function Example() {
   const data = React.useMemo(() => makeData(30), [])
 
   const [selectedRows, setRowsSelected] = React.useState([])
-  const handleOnRowSelection = (rows) => {
+  const handleOnRowSelection = React.useCallback((rows) => {
     setRowsSelected(rows)
-  }
+  },[setRowsSelected])
 
   return (
     <div>
@@ -1079,8 +1079,8 @@ export const DataTableWithMultiRowSelection = `function Example() {
           data={data}
           pageSize={7}
           pageSizeOptions={[7, 10, 25, 50]}
-          onRowSelectionChange={handleOnRowSelection}
           multipleRowSelection
+          onRowSelectionChange={handleOnRowSelection}
         ></DataTable>
       {selectedRows &&
         selectedRows.map(row => {
@@ -1136,6 +1136,10 @@ export const DataTableWithCheckBoxSelection = `function Example() {
   // makeData: a custom helper function to generate random rows
   // for the demo purpose not implemented here in the example.
   const data = React.useMemo(() => makeData(20), [])
+  const [selectedRows, setRowsSelected] = React.useState([])
+  const handleOnRowSelection = React.useCallback((rows) => {
+    setRowsSelected(rows)
+  },[setRowsSelected])
 
   return (
     <div>
@@ -1149,7 +1153,17 @@ export const DataTableWithCheckBoxSelection = `function Example() {
           multipleRowSelection
           checkBoxRowSelection
           data={data}
+          onRowSelectionChange={handleOnRowSelection}
         ></DataTable>
+        {selectedRows &&
+          selectedRows.map(row => {
+            return (
+              <Toast className="toast-primary" key={row.firstName}>
+                Successfully selected {row.firstName}, Age - {row.age},
+                Visits - {row.visits}, Status - {row.status} !!
+              </Toast>
+            )
+          })}
     </div>
   );
 }
@@ -1222,6 +1236,11 @@ export const DataTableWithCustomCheckBoxSelection = `function Example() {
   // for the demo purpose not implemented here in the example.
   const data = React.useMemo(() => makeData(20), [])
 
+  const [selectedRows, setRowsSelected] = React.useState([])
+  const handleOnRowSelection = React.useCallback((rows) => {
+    setRowsSelected(rows)
+  },[setRowsSelected])
+
   return (
     <div>
         <DataTable
@@ -1232,7 +1251,17 @@ export const DataTableWithCustomCheckBoxSelection = `function Example() {
           pageSizeOptions={[7, 10, 25, 50]}
           multipleRowSelection
           checkBoxRowSelection
+          onRowSelectionChange={handleOnRowSelection}
         ></DataTable>
+        {selectedRows &&
+          selectedRows.map(row => {
+            return (
+              <Toast className="toast-primary" key={row.firstName}>
+                Successfully selected {row.firstName}, Age - {row.age},
+                Visits - {row.visits}, Status - {row.status} !!
+              </Toast>
+            )
+          })}
     </div>
   );
 }

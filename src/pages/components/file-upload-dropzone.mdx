@@ -21,9 +21,9 @@ import {
   callback function <code> onFiles </code> fires when the files are added and it
   contains files along with the current error value.
   <br />
-  Uploaded files are validated using the input from props <code> multiple</code>,
-  <code> maxFileCount </code> and <code> maxTotalFileSizeBytes </code> and an appropriate
-  error message is displayed if any validation fails.
+  Uploaded files are validated using the input from props <code> multiple</code>
+  ,<code> maxFileCount </code> and <code> maxTotalFileSizeBytes </code> and an
+  appropriate error message is displayed if any validation fails.
 </CodeBlock>
 
 <div className="docs-callout docs-callout-warning p-3 pb-0 rounded-lg">
@@ -42,8 +42,8 @@ import {
     it should return null or the error message. The default validation will be
     disabled while using <code> validator</code>.
     <br />
-    The below example shows the custom validation logic to verify single file
-    upload.
+    <span class="font-weight-bold">Note:</span> Below example shows the custom
+    validation logic to verify single file upload.
   </>
 </CodeBlock>
 
@@ -53,9 +53,8 @@ import {
 <p>
   User can interact with File Upload Dropzone through keyboard using the{" "}
   <code>tab</code> key (or <code>shift + tab</code> when tabbing backwards).
-  When the drop zone or browse link is in focus, pressing the <code>enter</code>
-  /<code>return</code> or <code>space</code> keys will open the default file
-  picker.
+  When the drop zone or browse link is in focus, pressing the <code>enter</code>/
+  <code>return</code> or <code>space</code> keys will open the default file picker.
 </p>
 
 <LinkedHeading h="2" className="h1" id="file-upload-zone-api">
