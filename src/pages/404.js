@@ -1,5 +1,4 @@
 import * as React from "react"
-import { Container, Row } from "@trimbleinc/modus-react-bootstrap"
 import DefaultLayout from "../layouts/DefaultLayout"
 import NotFoundImgA from "../assets/img/404-a.svg"
 import NotFoundImgB from "../assets/img/404-b.svg"

@@ -1,5 +1,5 @@
 import * as React from "react"
-import { Col, Container, Row } from "@trimbleinc/modus-react-bootstrap"
+import { Col, Row } from "@trimbleinc/modus-react-bootstrap"
 import DefaultLayout from "../layouts/DefaultLayout"
 
 const CookiesPage = props => {
@@ -15,13 +15,13 @@ const CookiesPage = props => {
           <Col xs={12} md={9} xl={8} id="rb-docs-content" className="main">
             <p>
               "Cookies" are pieces of information that a web site transfers to
-              an individual's hard drive for record-keeping purposes. We don't use any on this site.
+              an individual's hard drive for record-keeping purposes. We don't
+              use any on this site.
             </p>
             <div id="optanon-cookie-policy" hidden></div>
             <br />
             <br />
             {/*  OneTrust Cookies Settings button start  */}
-            <a class="btn btn-primary optanon-show-settings" id="optanon-show-settings" hidden>Cookie Settings</a>
           </Col>
           <Col className="d-none d-xl-block menu-right" xl={2}></Col>
         </Row>

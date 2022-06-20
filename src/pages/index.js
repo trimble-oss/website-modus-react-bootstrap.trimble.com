@@ -1,5 +1,5 @@
 import * as React from "react"
-import { Container, Row } from "@trimbleinc/modus-react-bootstrap"
+import { Button, Container, Row } from "@trimbleinc/modus-react-bootstrap"
 import DefaultLayout from "../layouts/DefaultLayout"
 import modusLaptopPhone from "../assets/img/modus-laptop-phone.svg"
 
@@ -214,8 +214,7 @@ const HomePage = props => (
                       about new releases.
                     </p>
                   </div>
-                  <a
-                    href=""
+                  <Button
                     onClick={e => {
                       window.open(
                         "https://docs.google.com/forms/d/e/1FAIpQLSc5-PBOzJjT2Q8r5Pg7BPYzae-rz5fg5ySSBcHwfhBneUkvWg/viewform",
@@ -228,7 +227,7 @@ const HomePage = props => (
                     className="btn btn-primary rounded text-center"
                   >
                     Subscribe »
-                  </a>
+                  </Button>
                 </div>
               </div>
             </div>
