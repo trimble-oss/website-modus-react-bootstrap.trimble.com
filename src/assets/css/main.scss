@@ -176,6 +176,7 @@ article a:not(.stretched-link)[href^="http"]::after,
 .popover .arrow {
   display: none !important;
 }
+
 a.header-link::after {
   content: unset;
 }
