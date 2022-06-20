@@ -36,10 +36,15 @@ import {
   code={FileUploadDropZoneCustomValidation}
   noInline={true}
 >
-  By providing <code> validator </code> prop custom validation can be added as
-  shown in the example. The function accepts <code>FileList</code> object and it
-  should return null or the error message. The default validation will be
-  disabled while using <code> validator</code>.
+  <>
+    By providing <code> validator </code> prop custom validation can be added as
+    shown in the example. The function accepts <code>FileList</code> object and
+    it should return null or the error message. The default validation will be
+    disabled while using <code> validator</code>.
+    <br />
+    The below example shows the custom validation logic to verify single file
+    upload.
+  </>
 </CodeBlock>
 
 <LinkedHeading h="2" className="h1" id="file-upload-zone-accessibility">

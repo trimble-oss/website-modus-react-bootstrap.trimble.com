@@ -1,9 +1,6 @@
 import * as React from "react"
-import {
-  Container,
-  Row,
-  FileUploadDropZone,
-} from "@trimbleinc/modus-react-bootstrap"
+import { Container, Row } from "@trimbleinc/modus-react-bootstrap"
+import FileUploadDropZone from "@trimbleinc/modus-react-bootstrap/FileUploadDropzone"
 import { ModusIconsScripts } from "../../common/ExternalDependencyHelper"
 import "../../assets/css/main.scss"
 
@@ -19,12 +16,13 @@ const Example = () => {
       <FileUploadDropZone
         id="test"
         maxFileCount={2}
-        maxTotalFileSizeBytes={5000}
+        maxTotalFileSizeBytes={50000000}
         onFiles={(files, err) => {
           if (!err) setFilesUploaded(files)
         }}
         style={{ width: "400px", height: "200px" }}
         aria-label="Drop Zone"
+        accept="image/*,.pdf"
       ></FileUploadDropZone>
 
       {filesUploaded && (

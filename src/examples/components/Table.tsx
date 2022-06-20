@@ -88,7 +88,7 @@ export const DataTableColumnAPIInfo = [
     key: "Filter",
     type: "Function | React.Component => JSX",
     description: (
-      <p>
+      <>
         This function (or component) is used to render this column's filter UI.
         It receives the table and column instance objects as props.
         <br />
@@ -109,7 +109,7 @@ export const DataTableColumnAPIInfo = [
             the column header text.
           </li>
         </ul>
-      </p>
+      </>
     ),
   },
   {
@@ -284,7 +284,7 @@ export const TableIconsControls = `
     </tr>
     <tr>
       <th scope="row" className="icon-only">
-        <FormCheck custom checked id="tableCheckbox1-tb1" readOnly></FormCheck>
+        <FormCheck custom defaultChecked id="tableCheckbox1-tb1"></FormCheck>
       </th>
       <td>Jacob</td>
       <td>Thornton</td>
@@ -312,7 +312,7 @@ export const TableIconsControls = `
         <Form.Check
           type="radio"
           custom
-          checked
+          defaultChecked
           id="tableradio1-tb1"
         ></Form.Check>
       </th>
@@ -339,7 +339,7 @@ export const TableIconsControls = `
     </tr>
     <tr>
       <th scope="row" className="icon-only">
-        <Form.Switch custom checked id="tableSwitch1-tb1"></Form.Switch>
+        <Form.Switch custom defaultChecked id="tableSwitch1-tb1"></Form.Switch>
       </th>
       <td>Larry</td>
       <td>the Bird</td>
@@ -414,7 +414,7 @@ export const TableSmall = `
       <th scope="row" className="icon-only">
         <FormCheck
           custom
-          checked
+          defaultChecked
           id="tableCheckbox1-tb1"
           className="custom-control-sm" readOnly></FormCheck>
       </th>
@@ -445,7 +445,7 @@ export const TableSmall = `
         <Form.Check
           type="radio"
           custom
-          checked
+          defaultChecked
           id="tableradio1-tb1"
           size="sm"
           className="custom-control-sm"
@@ -477,7 +477,7 @@ export const TableSmall = `
       <th scope="row" className="icon-only">
         <Form.Switch
           custom
-          checked
+          defaultChecked
           id="tableSwitch1-tb1"
           className="custom-control-sm"
         ></Form.Switch>
@@ -1137,32 +1137,19 @@ export const DataTableWithCheckBoxSelection = `function Example() {
   // for the demo purpose not implemented here in the example.
   const data = React.useMemo(() => makeData(20), [])
 
-  const [selectedRows, setRowsSelected] = React.useState([])
-  const handleOnRowSelection = (rows) => {
-    setRowsSelected(rows)
-  }
-
   return (
     <div>
         <DataTable
           id="dt_cb_selection"
-          columns={columns} bordered hover
-          data={data}
+          columns={columns}
+          bordered
+          hover
           pageSize={7}
           pageSizeOptions={[7, 10, 25, 50]}
-          onRowSelectionChange={handleOnRowSelection}
           multipleRowSelection
           checkBoxRowSelection
+          data={data}
         ></DataTable>
-      {selectedRows &&
-        selectedRows.map(row => {
-          return (
-            <Toast className="toast-primary" key={row.firstName}>
-              Successfully selected {row.firstName}, Age - {row.age},
-              Visits - {row.visits}, Status - {row.status} !!
-            </Toast>
-          )
-        })}
     </div>
   );
 }

@@ -1,23 +1,7 @@
-import React, { useState, useMemo, useCallback } from "react"
-import styled from "styled-components"
-import {
-  Button,
-  Chip,
-  Col,
-  Container,
-  Form,
-  Nav,
-  OverlayTrigger,
-  Popover,
-  Row,
-  DataTable,
-  Table,
-  TablePagination,
-} from "@trimbleinc/modus-react-bootstrap"
+import * as React from "react"
+import DataTable from "@trimbleinc/modus-react-bootstrap/DataTable"
 import { ModusIconsScripts } from "../../common/ExternalDependencyHelper"
 import { MakeData as makeData } from "../../examples/components/Table"
-import LinkedHeading from "../../common/LinkedHeading"
-import { bool, string } from "prop-types"
 
 function Example() {
   const columns = React.useMemo(
@@ -63,11 +47,14 @@ function Example() {
   return (
     <DataTable
       id="dt_sorting"
+      style={{ width: "800px" }}
       columns={columns}
       bordered
       hover
       pageSize={7}
       pageSizeOptions={[7, 10, 25, 50]}
+      multipleRowSelection
+      checkBoxRowSelection
       data={data}
     ></DataTable>
   )
@@ -76,13 +63,7 @@ const ReactTablePage = props => {
   return (
     <main id="main">
       <ModusIconsScripts />
-      <Container fluid className="pt-5">
-        <Container>
-          <Row>
-            <Example />
-          </Row>
-        </Container>
-      </Container>
+      <Example />
     </main>
   )
 }

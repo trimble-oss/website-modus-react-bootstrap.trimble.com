@@ -1,18 +1,12 @@
-import React, { useState, useEffect, useCallback, useMemo, useRef } from "react"
+import * as React from "react"
 import {
   Container,
-  Form,
   Row,
   TreeView,
   TreeViewItem,
 } from "@trimbleinc/modus-react-bootstrap"
 import { ModusIconsScripts } from "../../common/ExternalDependencyHelper"
 import "../../assets/css/main.scss"
-import findIndex from "lodash/findIndex"
-import useForceUpdate from "@restart/hooks/useForceUpdate"
-import { createPortal } from "react-dom"
-import classNames from "classnames"
-import styled from "styled-components"
 
 const ContentTreePage = props => {
   return (

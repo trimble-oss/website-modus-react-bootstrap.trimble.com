@@ -53,14 +53,12 @@ import Table from "@trimbleinc/modus-react-bootstrap/Table"
 ></CodeBlock>
 
 <CodeBlock hideCode={true} title="Small Variants" code={TableSmall}>
-  <p>
-    All previous table styles are also available in a smaller variant, set prop{" "}
-    <code>size</code> to <code>sm</code>
-  </p>
-  <p>
-    When using small variants of tables with icons and controls, don’t forget to
-    use the smaller variants of those icons and controls too!
-  </p>
+  All previous table styles are also available in a smaller variant, set prop{" "}
+  <code>size</code> to <code>sm</code>
+  <br />
+  <br />
+  When using small variants of tables with icons and controls, don’t forget to use
+  the smaller variants of those icons and controls too!
 </CodeBlock>
 
 <CodeBlock
@@ -316,8 +314,8 @@ import Table from "@trimbleinc/modus-react-bootstrap/Table"
     </tr>
   </thead>
   <tbody>
-    {DataTableColumnAPIInfo.map(item => (
-      <tr>
+    {DataTableColumnAPIInfo.map((item, index) => (
+      <tr key={index}>
         <td className="text-monospace">{item.key}</td>
         <td className="text-monospace">{item.type}</td>
         <td>{item.description}</td>
@@ -338,8 +336,8 @@ import Table from "@trimbleinc/modus-react-bootstrap/Table"
     </tr>
   </thead>
   <tbody>
-    {DataTableColumnInstanceAPIInfo.map(item => (
-      <tr>
+    {DataTableColumnInstanceAPIInfo.map((item, index) => (
+      <tr key={index}>
         <td className="text-monospace">{item.key}</td>
         <td className="text-monospace">{item.type}</td>
         <td>{item.description}</td>

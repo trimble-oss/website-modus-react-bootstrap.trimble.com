@@ -11,7 +11,7 @@ function Example() {
         id="test1"
         maxFileCount={3}
         maxTotalFileSizeBytes={5242880}
-        accept={[".pdf","image/jpeg","image/png"]}
+        accept=".pdf,image/*"
         onFiles={(files, err) => {
           if(!err) setFilesUploaded(files)
           else setFilesUploaded(null)
