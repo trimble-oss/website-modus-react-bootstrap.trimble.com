@@ -1,11 +1,11 @@
 export const PaginationBasic = `
-<nav aria-label="...">
+<nav aria-label="Pagination Example">
   <Pagination>
-    <Pagination.Item>
-      <i className="modus-icons">chevron_left</i>
+    <Pagination.Item aria-label="Previous">
+      <i className="modus-icons" aria-hidden="true">chevron_left</i>
     </Pagination.Item>
-    <Pagination.Item>
-      <i className="modus-icons">more_horizontal</i>
+    <Pagination.Item  aria-label="Go to previous pages">
+      <i className="modus-icons" aria-hidden="true">more_horizontal</i>
     </Pagination.Item>
 
     <Pagination.Item>{3}</Pagination.Item>
@@ -14,22 +14,22 @@ export const PaginationBasic = `
     <Pagination.Item>{6}</Pagination.Item>
     <Pagination.Item>{7}</Pagination.Item>
 
-    <Pagination.Item>
-      <i className="modus-icons">more_horizontal</i>
+    <Pagination.Item aria-label="Go to next pages">
+      <i className="modus-icons" aria-hidden="true">more_horizontal</i>
     </Pagination.Item>
-    <Pagination.Item>
-      <i className="modus-icons">chevron_right</i>
+    <Pagination.Item aria-label="Next">
+      <i className="modus-icons" aria-hidden="true">chevron_right</i>
     </Pagination.Item>
   </Pagination>
 </nav>
 `
 
 export const PaginationDisabledActiveStates = `
-<nav>
+<nav aria-label="Pagination Example">
   <Pagination>
-    <Pagination.Item disabled>Disabled</Pagination.Item>
+    <Pagination.Item disabled aria-disabled="true">Disabled</Pagination.Item>
     <Pagination.Item>1</Pagination.Item>
-    <Pagination.Item active>2 (active)</Pagination.Item>
+    <Pagination.Item active aria-selected="true">2 (active)</Pagination.Item>
     <Pagination.Item>3</Pagination.Item>
     <Pagination.Item>4</Pagination.Item>
   </Pagination>
@@ -38,45 +38,45 @@ export const PaginationDisabledActiveStates = `
 
 export const PaginationSizing = `
 <div>
-  <nav aria-label="...">
+  <nav aria-label="Pagination Example">
     <Pagination size="sm">
-      <Pagination.Item disabled>Disabled</Pagination.Item>
-      <Pagination.Item>
-        <i className="modus-icons">chevron_left</i>
+      <Pagination.Item disabled aria-disabled="true">Disabled</Pagination.Item>
+      <Pagination.Item aria-label="Previous">
+        <i className="modus-icons" aria-hidden="true">chevron_left</i>
       </Pagination.Item>
-      <Pagination.Item>
-        <i className="modus-icons">more_horizontal</i>
+      <Pagination.Item aria-label="Go to previous pages">
+        <i className="modus-icons" aria-hidden="true">more_horizontal</i>
       </Pagination.Item>
       <Pagination.Item>{3}</Pagination.Item>
       <Pagination.Item active>{4}</Pagination.Item>
       <Pagination.Item>{5}</Pagination.Item>
-      <Pagination.Item>
-        <i className="modus-icons">more_horizontal</i>
+      <Pagination.Item aria-label="Go to next pages">
+        <i className="modus-icons" aria-hidden="true">more_horizontal</i>
       </Pagination.Item>
-      <Pagination.Item>
-        <i className="modus-icons">chevron_right</i>
+      <Pagination.Item aria-label="Next">
+        <i className="modus-icons" aria-hidden="true">chevron_right</i>
       </Pagination.Item>
       <Pagination.Item>Next</Pagination.Item>
     </Pagination>
   </nav>
 
-  <nav aria-label="...">
+  <nav aria-label="Pagination Example">
     <Pagination size="lg">
-      <Pagination.Item disabled>Disabled</Pagination.Item>
-      <Pagination.Item>
-        <i className="modus-icons">chevron_left</i>
+      <Pagination.Item disabled aria-disabled="true">Disabled</Pagination.Item>
+      <Pagination.Item aria-label="Previous">
+        <i className="modus-icons" aria-hidden="true">chevron_left</i>
       </Pagination.Item>
-      <Pagination.Item>
-        <i className="modus-icons">more_horizontal</i>
+      <Pagination.Item aria-label="Go to previous pages">
+        <i className="modus-icons" aria-hidden="true">more_horizontal</i>
       </Pagination.Item>
       <Pagination.Item>{3}</Pagination.Item>
       <Pagination.Item active>{4}</Pagination.Item>
       <Pagination.Item>{5}</Pagination.Item>
-      <Pagination.Item>
-        <i className="modus-icons">more_horizontal</i>
+      <Pagination.Item aria-label="Go to next pages">
+        <i className="modus-icons" aria-hidden="true">more_horizontal</i>
       </Pagination.Item>
-      <Pagination.Item>
-        <i className="modus-icons">chevron_right</i>
+      <Pagination.Item aria-label="Next">
+        <i className="modus-icons" aria-hidden="true">chevron_right</i>
       </Pagination.Item>
       <Pagination.Item>Next</Pagination.Item>
     </Pagination>

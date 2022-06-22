@@ -13,6 +13,7 @@ interface CodeBlockProps
   code: string
   noInline?: boolean
   style?: string
+  hideCode?: boolean
 }
 
 const CodeBlock = ({
@@ -25,6 +26,7 @@ const CodeBlock = ({
   noInline,
   style,
   className,
+  hideCode,
   ...props
 }: CodeBlockProps) => {
   const codePreview = (code, scope, noInline, style, className) => {
@@ -38,6 +40,7 @@ const CodeBlock = ({
         noInline={noInline}
         style={style}
         className={className}
+        hideCode={hideCode}
       ></CodePreview>
     )
   }

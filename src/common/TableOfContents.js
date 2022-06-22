@@ -71,8 +71,10 @@ const getNestedHeadings = headingElements => {
   const nestedHeadings = []
 
   headingElements.forEach((heading, index) => {
-    const { innerText: title, id } = heading
+    const { innerText, id } = heading
     if (!id) return
+
+    const title = innerText.endsWith("#") ? innerText.slice(0, -1) : innerText
     if (heading.nodeName === "H2") {
       nestedHeadings.push({ id, title, items: [] })
     } else if (heading.nodeName === "H3") {
@@ -171,7 +173,7 @@ const TableOfContents = props => {
                   href={current.styleguideUrl}
                   className="nav-link text-dark text-decoration-none filter-desaturate"
                   target="_blank"
-                  rel="noopener"
+                  rel="noreferrer"
                 >
                   Modus Style Guide
                 </a>
