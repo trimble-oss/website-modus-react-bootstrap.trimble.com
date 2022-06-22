@@ -17,7 +17,7 @@ module.exports = {
     {
       resolve: `gatsby-source-filesystem`,
       options: {
-        path: `${__dirname}/src/api-docs/react-bootstrap-1.6.4/`,
+        path: `${__dirname}/src/api-docs/modus-react-bootstrap/`,
         name: "api-docs",
       },
     },

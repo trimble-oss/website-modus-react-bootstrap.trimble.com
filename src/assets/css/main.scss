@@ -58,6 +58,7 @@
 @import "../../../node_modules/@trimbleinc/modus-bootstrap/scss/components/controls";
 @import "../../../node_modules/@trimbleinc/modus-bootstrap/scss/components/base";
 @import "../../../node_modules/@trimbleinc/modus-bootstrap/scss/components/scrollbars";
+@import "../../../node_modules/@trimbleinc/modus-bootstrap/scss/components/file-drop-zone";
 
 @import "./styles.scss";
 
@@ -164,4 +165,18 @@ article a:not(.stretched-link)[href^="http"]::after,
 
 .autocomplete-suggestions.dropdown-menu {
   padding: 0;
+}
+
+.custom-checkbox
+  .custom-control-input:indeterminate
+  ~ .custom-control-label::after {
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='4' height='3.8' viewBox='0 0 4 4' %3e%3cpath stroke='%23fff' d='M0.1,2h4 '/%3e%3c/svg%3e") !important;
+}
+
+.popover .arrow {
+  display: none !important;
+}
+
+a.header-link::after {
+  content: unset;
 }
