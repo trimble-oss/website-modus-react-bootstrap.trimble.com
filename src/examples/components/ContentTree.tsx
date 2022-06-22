@@ -2,7 +2,7 @@ import styled from "styled-components"
 
 export const TreeViewBasic = `
 <div style={{width: "400px"}}>
-  <TreeView nodeId={0}>
+  <TreeView nodeId={0} id="basic">
     <TreeViewItem nodeId={7} label="Inbox">
       <TreeViewItem nodeId={8} label="Personal"></TreeViewItem>
       <TreeViewItem nodeId={9} label="Work"></TreeViewItem>
@@ -36,7 +36,7 @@ export const TreeViewBasic = `
 
 export const TreeViewBorderless = `
 <div style={{width: "400px"}}>
-  <TreeView nodeId={0}  className="list-group-borderless">
+  <TreeView nodeId={0} id="borderless" className="list-group-borderless">
     <TreeViewItem nodeId={7} label="Inbox">
       <TreeViewItem nodeId={8} label="Personal"></TreeViewItem>
       <TreeViewItem nodeId={9} label="Work"></TreeViewItem>
@@ -70,7 +70,7 @@ export const TreeViewBorderless = `
 
 export const TreeViewMultiSelect = `
 <div style={{width: "400px"}}>
-  <TreeView nodeId={0}  multiSelectCheckBox>
+  <TreeView nodeId={0} id="multiselect"  multiSelectCheckBox>
     <TreeViewItem nodeId={1} label="Layout">
       <TreeViewItem nodeId={2} label="Main Layout">
         <TreeViewItem nodeId={3} label="Header"></TreeViewItem>
@@ -110,7 +110,7 @@ export const TreeViewMultiSelect = `
 
 export const TreeViewCondensed = `
 <div style={{width: "400px"}}>
-  <TreeView nodeId={0} size="sm">
+  <TreeView nodeId={0} id="condensed" size="sm">
     <TreeViewItem nodeId={1} label="Layout">
       <TreeViewItem nodeId={2} label="Main Layout">
         <TreeViewItem nodeId={3} label="Header"></TreeViewItem>
@@ -180,7 +180,7 @@ function TreeViewWithIcon() {
 
   return (
     <div style={{width: "400px"}}>
-      <TreeView nodeId={0}  onNodeToggle={handleExpansion} onNodeSelect={handleSelection} defaultExpanded={[1]}>
+      <TreeView nodeId={0} id="withIcons" onNodeToggle={handleExpansion} onNodeSelect={handleSelection} defaultExpanded={[1]}>
         <TreeViewItem
           nodeId={1}
           label="Inbox"

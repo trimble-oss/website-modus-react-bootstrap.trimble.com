@@ -264,7 +264,7 @@ export const TableIconsControls = `
       <td>Mark</td>
       <td>Otto</td>
       <td>@mdo</td>
-      <td scope="row" className="icon-only">
+      <td className="icon-only">
         <Dropdown>
           <Dropdown.Toggle
             variant="text-dark"
@@ -274,7 +274,7 @@ export const TableIconsControls = `
           >
             <i className="modus-icons">more_vertical</i>
           </Dropdown.Toggle>
-          <Dropdown.Menu>
+          <Dropdown.Menu align="right">
             <Dropdown.Item href="#/action-1">Action</Dropdown.Item>
             <Dropdown.Item href="#/action-2">Another action</Dropdown.Item>
             <Dropdown.Item href="#/action-3">Something else</Dropdown.Item>
@@ -284,12 +284,12 @@ export const TableIconsControls = `
     </tr>
     <tr>
       <th scope="row" className="icon-only">
-        <FormCheck custom defaultChecked id="tableCheckbox1-tb1"></FormCheck>
+        <FormCheck custom defaultChecked id="tableCheckbox1-tb1" aria-label="Select"></FormCheck>
       </th>
       <td>Jacob</td>
       <td>Thornton</td>
       <td>@fat</td>
-      <td scope="row" className="icon-only">
+      <td className="icon-only">
         <Dropdown>
           <Dropdown.Toggle
             variant="text-dark"
@@ -299,7 +299,7 @@ export const TableIconsControls = `
           >
             <i className="modus-icons">more_vertical</i>
           </Dropdown.Toggle>
-          <Dropdown.Menu>
+          <Dropdown.Menu align="right">
             <Dropdown.Item href="#/action-1">Action</Dropdown.Item>
             <Dropdown.Item href="#/action-2">Another action</Dropdown.Item>
             <Dropdown.Item href="#/action-3">Something else</Dropdown.Item>
@@ -314,12 +314,13 @@ export const TableIconsControls = `
           custom
           defaultChecked
           id="tableradio1-tb1"
+          aria-label="Select"
         ></Form.Check>
       </th>
       <td>John</td>
       <td>Snow</td>
       <td>@jsnow</td>
-      <td scope="row" className="icon-only">
+      <td className="icon-only">
         <Dropdown>
           <Dropdown.Toggle
             variant="text-dark"
@@ -329,7 +330,7 @@ export const TableIconsControls = `
           >
             <i className="modus-icons">more_vertical</i>
           </Dropdown.Toggle>
-          <Dropdown.Menu>
+          <Dropdown.Menu align="right">
             <Dropdown.Item href="#/action-1">Action</Dropdown.Item>
             <Dropdown.Item href="#/action-2">Another action</Dropdown.Item>
             <Dropdown.Item href="#/action-3">Something else</Dropdown.Item>
@@ -339,12 +340,12 @@ export const TableIconsControls = `
     </tr>
     <tr>
       <th scope="row" className="icon-only">
-        <Form.Switch custom defaultChecked id="tableSwitch1-tb1"></Form.Switch>
+        <Form.Switch custom defaultChecked id="tableSwitch1-tb1" aria-label="Switch"></Form.Switch>
       </th>
       <td>Larry</td>
       <td>the Bird</td>
       <td>@twitter</td>
-      <td scope="row" className="icon-only">
+      <td className="icon-only">
         <Dropdown>
           <Dropdown.Toggle
             variant="text-dark"
@@ -354,7 +355,7 @@ export const TableIconsControls = `
           >
             <i className="modus-icons">more_vertical</i>
           </Dropdown.Toggle>
-          <Dropdown.Menu>
+          <Dropdown.Menu align="right">
             <Dropdown.Item href="#/action-1">Action</Dropdown.Item>
             <Dropdown.Item href="#/action-2">Another action</Dropdown.Item>
             <Dropdown.Item href="#/action-3">Something else</Dropdown.Item>
@@ -391,18 +392,18 @@ export const TableSmall = `
       <td>Mark</td>
       <td>Otto</td>
       <td>@mdo</td>
-      <td scope="row" className="icon-only">
+      <td className="icon-only">
         <Dropdown>
           <Dropdown.Toggle
             variant="text-dark"
-            id="dropdown-basic1-tb1"
+            id="dropdown-basic1-tb2"
             bsPrefix
             className="btn-icon-only"
             size="sm"
           >
             <i className="modus-icons">more_vertical</i>
           </Dropdown.Toggle>
-          <Dropdown.Menu>
+          <Dropdown.Menu align="right">
             <Dropdown.Item href="#/action-1">Action</Dropdown.Item>
             <Dropdown.Item href="#/action-2">Another action</Dropdown.Item>
             <Dropdown.Item href="#/action-3">Something else</Dropdown.Item>
@@ -415,24 +416,25 @@ export const TableSmall = `
         <FormCheck
           custom
           defaultChecked
-          id="tableCheckbox1-tb1"
-          className="custom-control-sm" readOnly></FormCheck>
+          id="tableCheckbox1-tb2"
+          aria-label="Select"
+          className="custom-control-sm"></FormCheck>
       </th>
       <td>Jacob</td>
       <td>Thornton</td>
       <td>@fat</td>
-      <td scope="row" className="icon-only">
+      <td className="icon-only">
         <Dropdown>
           <Dropdown.Toggle
             variant="text-dark"
-            id="dropdown-basic2-tb1"
+            id="dropdown-basic2-tb2"
             bsPrefix
             className="btn-icon-only"
             size="sm"
           >
             <i className="modus-icons">more_vertical</i>
           </Dropdown.Toggle>
-          <Dropdown.Menu>
+          <Dropdown.Menu align="right">
             <Dropdown.Item href="#/action-1">Action</Dropdown.Item>
             <Dropdown.Item href="#/action-2">Another action</Dropdown.Item>
             <Dropdown.Item href="#/action-3">Something else</Dropdown.Item>
@@ -446,26 +448,27 @@ export const TableSmall = `
           type="radio"
           custom
           defaultChecked
-          id="tableradio1-tb1"
+          id="tableradio1-tb2"
           size="sm"
           className="custom-control-sm"
+          aria-label="Select"
         ></Form.Check>
       </th>
       <td>John</td>
       <td>Snow</td>
       <td>@jsnow</td>
-      <td scope="row" className="icon-only">
+      <td className="icon-only">
         <Dropdown>
           <Dropdown.Toggle
             variant="text-dark"
-            id="dropdown-basic3-tb1"
+            id="dropdown-basic3-tb2"
             bsPrefix
             className="btn-icon-only"
             size="sm"
           >
             <i className="modus-icons">more_vertical</i>
           </Dropdown.Toggle>
-          <Dropdown.Menu>
+          <Dropdown.Menu align="right">
             <Dropdown.Item href="#/action-1">Action</Dropdown.Item>
             <Dropdown.Item href="#/action-2">Another action</Dropdown.Item>
             <Dropdown.Item href="#/action-3">Something else</Dropdown.Item>
@@ -478,25 +481,26 @@ export const TableSmall = `
         <Form.Switch
           custom
           defaultChecked
-          id="tableSwitch1-tb1"
+          id="tableSwitch1-tb2"
           className="custom-control-sm"
+          aria-label="Switch"
         ></Form.Switch>
       </th>
       <td>Larry</td>
       <td>the Bird</td>
       <td>@twitter</td>
-      <td scope="row" className="icon-only">
+      <td className="icon-only">
         <Dropdown>
           <Dropdown.Toggle
             variant="text-dark"
-            id="dropdown-basic4-tb1"
+            id="dropdown-basic4-tb2"
             bsPrefix
             className="btn-icon-only"
             size="sm"
           >
             <i className="modus-icons">more_vertical</i>
           </Dropdown.Toggle>
-          <Dropdown.Menu>
+          <Dropdown.Menu align="right">
             <Dropdown.Item href="#/action-1">Action</Dropdown.Item>
             <Dropdown.Item href="#/action-2">Another action</Dropdown.Item>
             <Dropdown.Item href="#/action-3">Something else</Dropdown.Item>
@@ -1188,7 +1192,7 @@ export const DataTableWithCustomCheckBoxSelection = `function Example() {
     () => [
       {
         accessor: "selector",
-        width: 25,
+        width: 50,
         Header: ({ getToggleAllRowsSelectedProps }) => (
           <IndeterminateCheckbox id="tableCbMultiRowSel_checkbox_header"
           {...getToggleAllRowsSelectedProps()} />
@@ -1732,7 +1736,7 @@ function GlobalFilterPanel(
   setGlobalFilter
 ) {
   return (
-    <Form.Group controlId="globalFilter" className="w-50">
+    <Form.Group controlId="globalFilter1" className="w-50">
       <div className="d-flex input-with-icon-left">
         <Form.Control
           as="input"
@@ -1809,32 +1813,6 @@ function Example() {
 render(<Example />);`
 
 export const DataTableWithDragAndDrop = `
-function GlobalFilterPanel(
-  allColumns,
-  filters,
-  setFilter,
-  setAllFilters,
-  globalFilter,
-  setGlobalFilter
-) {
-  return (
-    <Form.Group controlId="globalFilter" className="w-50">
-      <div className="d-flex input-with-icon-left">
-        <Form.Control
-          as="input"
-          type="search"
-          placeholder="Search"
-          value={globalFilter || ""}
-          size="lg"
-          onChange={e => setGlobalFilter(e.target.value || undefined)}
-        ></Form.Control>
-        <div className="input-icon">
-          <i className="material-icons">search</i>
-        </div>
-      </div>
-    </Form.Group>
-  )
-}
 function Example() {
   const columns = React.useMemo(
     () => [
@@ -1899,7 +1877,6 @@ function Example() {
       resizeColumns
       multipleRowSelection
       checkBoxRowSelection
-      filterPanel={GlobalFilterPanel}
     ></DataTable>
   )
 }
