@@ -72,9 +72,7 @@ const Styled = styled.div`
 export default function SamplePage() {
   return (
     <Styled className="modus-layout">
-      {!props.excludeSEO && (
-        <SEO title={"Sample test page"} description={"Sample test page"} />
-      )}
+      <SEO title={"Sample test page"} description={"Sample test page"} />
       <ModusIconsScripts />
       <ModusLayoutScripts />
       <nav className="navbar navbar-expand-sm flex-nowrap modus-header">

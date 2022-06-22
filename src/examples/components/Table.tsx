@@ -1192,7 +1192,7 @@ export const DataTableWithCustomCheckBoxSelection = `function Example() {
     () => [
       {
         accessor: "selector",
-        width: 25,
+        width: 50,
         Header: ({ getToggleAllRowsSelectedProps }) => (
           <IndeterminateCheckbox id="tableCbMultiRowSel_checkbox_header"
           {...getToggleAllRowsSelectedProps()} />
