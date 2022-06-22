@@ -8,6 +8,7 @@ import {
   ModusIconsScripts,
   ModusLayoutScripts,
 } from "../../common/ExternalDependencyHelper"
+import SEO from "../../seo"
 
 function FileUploadDropZoneBasic() {
   const [filesUploaded, setFilesUploaded] = React.useState(null)
@@ -98,6 +99,12 @@ const Content = ({ title, content }) => (
 export default function FileUploadDropZonePage(props) {
   return (
     <div className="grid-layout">
+      {!props.excludeSEO && (
+        <SEO
+          title={"File upload dropzone"}
+          description={"File upload dropzone"}
+        />
+      )}
       {!props.excludeIconScript && <ModusIconsScripts />}
       {!props.excludeLayoutScript && <ModusLayoutScripts />}
 

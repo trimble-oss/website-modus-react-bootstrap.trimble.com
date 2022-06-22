@@ -15,6 +15,7 @@ import { createPortal } from "react-dom"
 import classNames from "classnames"
 
 import styled from "styled-components"
+import SEO from "../../seo"
 
 import {
   ModusIconsScripts,
@@ -1260,6 +1261,9 @@ const Content = ({ title, content }) => (
 export default function ContentTreePage(props: any) {
   return (
     <div className="grid-layout">
+      {!props.excludeSEO && (
+        <SEO title={"Content Tree"} description={"Content Tree"} />
+      )}
       {!props.excludeIconScript && <ModusIconsScripts />}
       {!props.excludeLayoutScript && <ModusLayoutScripts />}
 

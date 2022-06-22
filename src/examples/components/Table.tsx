@@ -264,7 +264,7 @@ export const TableIconsControls = `
       <td>Mark</td>
       <td>Otto</td>
       <td>@mdo</td>
-      <td scope="row" className="icon-only">
+      <td className="icon-only">
         <Dropdown>
           <Dropdown.Toggle
             variant="text-dark"
@@ -284,12 +284,12 @@ export const TableIconsControls = `
     </tr>
     <tr>
       <th scope="row" className="icon-only">
-        <FormCheck custom defaultChecked id="tableCheckbox1-tb1"></FormCheck>
+        <FormCheck custom defaultChecked id="tableCheckbox1-tb1" aria-label="Select"></FormCheck>
       </th>
       <td>Jacob</td>
       <td>Thornton</td>
       <td>@fat</td>
-      <td scope="row" className="icon-only">
+      <td className="icon-only">
         <Dropdown>
           <Dropdown.Toggle
             variant="text-dark"
@@ -314,12 +314,13 @@ export const TableIconsControls = `
           custom
           defaultChecked
           id="tableradio1-tb1"
+          aria-label="Select"
         ></Form.Check>
       </th>
       <td>John</td>
       <td>Snow</td>
       <td>@jsnow</td>
-      <td scope="row" className="icon-only">
+      <td className="icon-only">
         <Dropdown>
           <Dropdown.Toggle
             variant="text-dark"
@@ -339,12 +340,12 @@ export const TableIconsControls = `
     </tr>
     <tr>
       <th scope="row" className="icon-only">
-        <Form.Switch custom defaultChecked id="tableSwitch1-tb1"></Form.Switch>
+        <Form.Switch custom defaultChecked id="tableSwitch1-tb1" aria-label="Switch"></Form.Switch>
       </th>
       <td>Larry</td>
       <td>the Bird</td>
       <td>@twitter</td>
-      <td scope="row" className="icon-only">
+      <td className="icon-only">
         <Dropdown>
           <Dropdown.Toggle
             variant="text-dark"
@@ -391,7 +392,7 @@ export const TableSmall = `
       <td>Mark</td>
       <td>Otto</td>
       <td>@mdo</td>
-      <td scope="row" className="icon-only">
+      <td className="icon-only">
         <Dropdown>
           <Dropdown.Toggle
             variant="text-dark"
@@ -416,12 +417,13 @@ export const TableSmall = `
           custom
           defaultChecked
           id="tableCheckbox1-tb2"
-          className="custom-control-sm" readOnly></FormCheck>
+          aria-label="Select"
+          className="custom-control-sm"></FormCheck>
       </th>
       <td>Jacob</td>
       <td>Thornton</td>
       <td>@fat</td>
-      <td scope="row" className="icon-only">
+      <td className="icon-only">
         <Dropdown>
           <Dropdown.Toggle
             variant="text-dark"
@@ -449,12 +451,13 @@ export const TableSmall = `
           id="tableradio1-tb2"
           size="sm"
           className="custom-control-sm"
+          aria-label="Select"
         ></Form.Check>
       </th>
       <td>John</td>
       <td>Snow</td>
       <td>@jsnow</td>
-      <td scope="row" className="icon-only">
+      <td className="icon-only">
         <Dropdown>
           <Dropdown.Toggle
             variant="text-dark"
@@ -480,12 +483,13 @@ export const TableSmall = `
           defaultChecked
           id="tableSwitch1-tb2"
           className="custom-control-sm"
+          aria-label="Switch"
         ></Form.Switch>
       </th>
       <td>Larry</td>
       <td>the Bird</td>
       <td>@twitter</td>
-      <td scope="row" className="icon-only">
+      <td className="icon-only">
         <Dropdown>
           <Dropdown.Toggle
             variant="text-dark"
@@ -1732,7 +1736,7 @@ function GlobalFilterPanel(
   setGlobalFilter
 ) {
   return (
-    <Form.Group controlId="globalFilter" className="w-50">
+    <Form.Group controlId="globalFilter1" className="w-50">
       <div className="d-flex input-with-icon-left">
         <Form.Control
           as="input"
@@ -1809,32 +1813,6 @@ function Example() {
 render(<Example />);`
 
 export const DataTableWithDragAndDrop = `
-function GlobalFilterPanel(
-  allColumns,
-  filters,
-  setFilter,
-  setAllFilters,
-  globalFilter,
-  setGlobalFilter
-) {
-  return (
-    <Form.Group controlId="globalFilter" className="w-50">
-      <div className="d-flex input-with-icon-left">
-        <Form.Control
-          as="input"
-          type="search"
-          placeholder="Search"
-          value={globalFilter || ""}
-          size="lg"
-          onChange={e => setGlobalFilter(e.target.value || undefined)}
-        ></Form.Control>
-        <div className="input-icon">
-          <i className="material-icons">search</i>
-        </div>
-      </div>
-    </Form.Group>
-  )
-}
 function Example() {
   const columns = React.useMemo(
     () => [
@@ -1899,7 +1877,6 @@ function Example() {
       resizeColumns
       multipleRowSelection
       checkBoxRowSelection
-      filterPanel={GlobalFilterPanel}
     ></DataTable>
   )
 }

@@ -9,6 +9,7 @@ import styled from "styled-components"
 import ContentTreePage from "./content-tree"
 import FileUploadDropZonePage from "./file-upload-dropzone"
 import TablePage from "./table"
+import SEO from "../../seo"
 
 const Styled = styled.div`
   * {
@@ -71,6 +72,9 @@ const Styled = styled.div`
 export default function SamplePage() {
   return (
     <Styled className="modus-layout">
+      {!props.excludeSEO && (
+        <SEO title={"Sample test page"} description={"Sample test page"} />
+      )}
       <ModusIconsScripts />
       <ModusLayoutScripts />
       <nav className="navbar navbar-expand-sm flex-nowrap modus-header">
@@ -147,6 +151,7 @@ export default function SamplePage() {
               <ContentTreePage
                 excludeIconScript={true}
                 excludeLayoutScript={true}
+                excludeSEO={true}
               />
 
               <h2
@@ -160,13 +165,18 @@ export default function SamplePage() {
               <FileUploadDropZonePage
                 excludeIconScript={true}
                 excludeLayoutScript={true}
+                excludeSEO={true}
               />
 
               <h2 id="table" role="heading" className="font-weight-bold">
                 Table
               </h2>
 
-              <TablePage excludeIconScript={true} excludeLayoutScript={true} />
+              <TablePage
+                excludeIconScript={true}
+                excludeLayoutScript={true}
+                excludeSEO={true}
+              />
             </div>
           </div>
         </div>

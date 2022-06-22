@@ -29,16 +29,19 @@ const SEO = ({ title, description, pathname }) => (
         },
       },
     }) => {
-      const seo = {
-        title: title ? `${title} | ${defaultTitle}` : defaultTitle,
-        description: description || defaultDescription,
-        url: `${siteUrl}${pathname || "/"}`,
-      }
+      const pageTitle = title ? `${title} | ${defaultTitle}` : defaultTitle
+      const pageDesc = description || defaultDescription
 
       return (
         <>
-          <Helmet title={seo.title} titleTemplate={titleTemplate}>
-            <meta name="description" content={seo.description} />
+          <Helmet
+            title={pageTitle}
+            titleTemplate={titleTemplate}
+            htmlAttributes={{
+              lang: "en",
+            }}
+          >
+            <meta name="description" content={pageDesc} />
           </Helmet>
         </>
       )

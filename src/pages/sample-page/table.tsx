@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect, useMemo } from "react"
+import React, { useState, useCallback, useMemo } from "react"
 import {
   Table,
   DataTable,
@@ -21,6 +21,7 @@ import {
   ModusIconsScripts,
   ModusLayoutScripts,
 } from "../../common/ExternalDependencyHelper"
+import SEO from "../../seo"
 // for the data generator makeData function
 const range = len => {
   const arr = []
@@ -167,7 +168,7 @@ const TableIconsControls = () => (
         <td>Mark</td>
         <td>Otto</td>
         <td>@mdo</td>
-        <td scope="row" className="icon-only">
+        <td className="icon-only">
           <Dropdown>
             <Dropdown.Toggle
               variant="text-dark"
@@ -187,12 +188,17 @@ const TableIconsControls = () => (
       </tr>
       <tr>
         <th scope="row" className="icon-only">
-          <FormCheck custom defaultChecked id="tableCheckbox1-tb1"></FormCheck>
+          <FormCheck
+            custom
+            defaultChecked
+            id="tableCheckbox1-tb1"
+            aria-label="Select"
+          ></FormCheck>
         </th>
         <td>Jacob</td>
         <td>Thornton</td>
         <td>@fat</td>
-        <td scope="row" className="icon-only">
+        <td className="icon-only">
           <Dropdown>
             <Dropdown.Toggle
               variant="text-dark"
@@ -217,12 +223,13 @@ const TableIconsControls = () => (
             custom
             defaultChecked
             id="tableradio1-tb1"
+            aria-label="Select"
           ></Form.Check>
         </th>
         <td>John</td>
         <td>Snow</td>
         <td>@jsnow</td>
-        <td scope="row" className="icon-only">
+        <td className="icon-only">
           <Dropdown>
             <Dropdown.Toggle
               variant="text-dark"
@@ -246,12 +253,13 @@ const TableIconsControls = () => (
             custom
             defaultChecked
             id="tableSwitch1-tb1"
+            aria-label="Switch"
           ></Form.Switch>
         </th>
         <td>Larry</td>
         <td>the Bird</td>
         <td>@twitter</td>
-        <td scope="row" className="icon-only">
+        <td className="icon-only">
           <Dropdown>
             <Dropdown.Toggle
               variant="text-dark"
@@ -298,7 +306,7 @@ const TableSmall = () => (
         <td>Mark</td>
         <td>Otto</td>
         <td>@mdo</td>
-        <td scope="row" className="icon-only">
+        <td className="icon-only">
           <Dropdown>
             <Dropdown.Toggle
               variant="text-dark"
@@ -323,14 +331,14 @@ const TableSmall = () => (
             custom
             defaultChecked
             id="tableCheckbox1-tb2"
+            aria-label="Select"
             className="custom-control-sm"
-            readOnly
           ></FormCheck>
         </th>
         <td>Jacob</td>
         <td>Thornton</td>
         <td>@fat</td>
-        <td scope="row" className="icon-only">
+        <td className="icon-only">
           <Dropdown>
             <Dropdown.Toggle
               variant="text-dark"
@@ -358,12 +366,13 @@ const TableSmall = () => (
             id="tableradio1-tb2"
             size="sm"
             className="custom-control-sm"
+            aria-label="Select"
           ></Form.Check>
         </th>
         <td>John</td>
         <td>Snow</td>
         <td>@jsnow</td>
-        <td scope="row" className="icon-only">
+        <td className="icon-only">
           <Dropdown>
             <Dropdown.Toggle
               variant="text-dark"
@@ -389,12 +398,13 @@ const TableSmall = () => (
             defaultChecked
             id="tableSwitch1-tb2"
             className="custom-control-sm"
+            aria-label="Switch"
           ></Form.Switch>
         </th>
         <td>Larry</td>
         <td>the Bird</td>
         <td>@twitter</td>
-        <td scope="row" className="icon-only">
+        <td className="icon-only">
           <Dropdown>
             <Dropdown.Toggle
               variant="text-dark"
@@ -1654,7 +1664,7 @@ function GlobalFilterPanel(
   setGlobalFilter
 ) {
   return (
-    <Form.Group controlId="globalFilter" className="w-50">
+    <Form.Group controlId="globalFilter1" className="w-50">
       <div className="d-flex input-with-icon-left">
         <Form.Control
           as="input"
@@ -1796,7 +1806,6 @@ function DataTableWithDragAndDrop() {
       resizeColumns
       multipleRowSelection
       checkBoxRowSelection
-      filterPanel={GlobalFilterPanel}
     ></DataTable>
   )
 }
@@ -1811,6 +1820,7 @@ const Content = ({ title, content }) => (
 export default function TablePage(props) {
   return (
     <div className="grid-layout">
+      {!props.excludeSEO && <SEO title={"Table"} description={"Table"} />}
       {!props.excludeIconScript && <ModusIconsScripts />}
       {!props.excludeLayoutScript && <ModusLayoutScripts />}
 
