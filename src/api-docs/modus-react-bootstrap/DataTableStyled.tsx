@@ -1,3 +1,10 @@
+/*!
+  Modus React Bootstrap 
+  A React-based component library developed as a common, open source platform for all of Trimble’s web applications built on React.
+  Extends React-Bootstrap v1.6.5
+  Copyright (c) 2022 Trimble Inc.
+ */
+
 import styled from 'styled-components';
 
 /**
@@ -6,16 +13,8 @@ import styled from 'styled-components';
  * due to border disappearing issue while scrolling with sticky top or sticky column
  */
 const DataTableStyled = styled.div`
-  .container {
-    :first-child {
-      padding: 0;
-      width: 100%;
-    }
-  }
-  .scrollable.container {
-    :first-child {
-      overflow-y: auto;
-    }
+  .scrollable {
+    overflow: auto;
   }
 
   >div: first-child {
