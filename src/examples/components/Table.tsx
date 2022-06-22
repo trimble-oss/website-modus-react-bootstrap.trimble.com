@@ -274,7 +274,7 @@ export const TableIconsControls = `
           >
             <i className="modus-icons">more_vertical</i>
           </Dropdown.Toggle>
-          <Dropdown.Menu>
+          <Dropdown.Menu align="right">
             <Dropdown.Item href="#/action-1">Action</Dropdown.Item>
             <Dropdown.Item href="#/action-2">Another action</Dropdown.Item>
             <Dropdown.Item href="#/action-3">Something else</Dropdown.Item>
@@ -299,7 +299,7 @@ export const TableIconsControls = `
           >
             <i className="modus-icons">more_vertical</i>
           </Dropdown.Toggle>
-          <Dropdown.Menu>
+          <Dropdown.Menu align="right">
             <Dropdown.Item href="#/action-1">Action</Dropdown.Item>
             <Dropdown.Item href="#/action-2">Another action</Dropdown.Item>
             <Dropdown.Item href="#/action-3">Something else</Dropdown.Item>
@@ -329,7 +329,7 @@ export const TableIconsControls = `
           >
             <i className="modus-icons">more_vertical</i>
           </Dropdown.Toggle>
-          <Dropdown.Menu>
+          <Dropdown.Menu align="right">
             <Dropdown.Item href="#/action-1">Action</Dropdown.Item>
             <Dropdown.Item href="#/action-2">Another action</Dropdown.Item>
             <Dropdown.Item href="#/action-3">Something else</Dropdown.Item>
@@ -354,7 +354,7 @@ export const TableIconsControls = `
           >
             <i className="modus-icons">more_vertical</i>
           </Dropdown.Toggle>
-          <Dropdown.Menu>
+          <Dropdown.Menu align="right">
             <Dropdown.Item href="#/action-1">Action</Dropdown.Item>
             <Dropdown.Item href="#/action-2">Another action</Dropdown.Item>
             <Dropdown.Item href="#/action-3">Something else</Dropdown.Item>
@@ -395,14 +395,14 @@ export const TableSmall = `
         <Dropdown>
           <Dropdown.Toggle
             variant="text-dark"
-            id="dropdown-basic1-tb1"
+            id="dropdown-basic1-tb2"
             bsPrefix
             className="btn-icon-only"
             size="sm"
           >
             <i className="modus-icons">more_vertical</i>
           </Dropdown.Toggle>
-          <Dropdown.Menu>
+          <Dropdown.Menu align="right">
             <Dropdown.Item href="#/action-1">Action</Dropdown.Item>
             <Dropdown.Item href="#/action-2">Another action</Dropdown.Item>
             <Dropdown.Item href="#/action-3">Something else</Dropdown.Item>
@@ -415,7 +415,7 @@ export const TableSmall = `
         <FormCheck
           custom
           defaultChecked
-          id="tableCheckbox1-tb1"
+          id="tableCheckbox1-tb2"
           className="custom-control-sm" readOnly></FormCheck>
       </th>
       <td>Jacob</td>
@@ -425,14 +425,14 @@ export const TableSmall = `
         <Dropdown>
           <Dropdown.Toggle
             variant="text-dark"
-            id="dropdown-basic2-tb1"
+            id="dropdown-basic2-tb2"
             bsPrefix
             className="btn-icon-only"
             size="sm"
           >
             <i className="modus-icons">more_vertical</i>
           </Dropdown.Toggle>
-          <Dropdown.Menu>
+          <Dropdown.Menu align="right">
             <Dropdown.Item href="#/action-1">Action</Dropdown.Item>
             <Dropdown.Item href="#/action-2">Another action</Dropdown.Item>
             <Dropdown.Item href="#/action-3">Something else</Dropdown.Item>
@@ -446,7 +446,7 @@ export const TableSmall = `
           type="radio"
           custom
           defaultChecked
-          id="tableradio1-tb1"
+          id="tableradio1-tb2"
           size="sm"
           className="custom-control-sm"
         ></Form.Check>
@@ -458,14 +458,14 @@ export const TableSmall = `
         <Dropdown>
           <Dropdown.Toggle
             variant="text-dark"
-            id="dropdown-basic3-tb1"
+            id="dropdown-basic3-tb2"
             bsPrefix
             className="btn-icon-only"
             size="sm"
           >
             <i className="modus-icons">more_vertical</i>
           </Dropdown.Toggle>
-          <Dropdown.Menu>
+          <Dropdown.Menu align="right">
             <Dropdown.Item href="#/action-1">Action</Dropdown.Item>
             <Dropdown.Item href="#/action-2">Another action</Dropdown.Item>
             <Dropdown.Item href="#/action-3">Something else</Dropdown.Item>
@@ -478,7 +478,7 @@ export const TableSmall = `
         <Form.Switch
           custom
           defaultChecked
-          id="tableSwitch1-tb1"
+          id="tableSwitch1-tb2"
           className="custom-control-sm"
         ></Form.Switch>
       </th>
@@ -489,14 +489,14 @@ export const TableSmall = `
         <Dropdown>
           <Dropdown.Toggle
             variant="text-dark"
-            id="dropdown-basic4-tb1"
+            id="dropdown-basic4-tb2"
             bsPrefix
             className="btn-icon-only"
             size="sm"
           >
             <i className="modus-icons">more_vertical</i>
           </Dropdown.Toggle>
-          <Dropdown.Menu>
+          <Dropdown.Menu align="right">
             <Dropdown.Item href="#/action-1">Action</Dropdown.Item>
             <Dropdown.Item href="#/action-2">Another action</Dropdown.Item>
             <Dropdown.Item href="#/action-3">Something else</Dropdown.Item>

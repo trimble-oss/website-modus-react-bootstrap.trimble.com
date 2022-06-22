@@ -13,7 +13,7 @@ function MainContent({ children, ...props }) {
         <Col xs={12} md={9} xl={8} id="rb-docs-content" className="main">
           {children}
         </Col>
-        <Col className="d-none d-xl-block menu-right" xl={2}>
+        <Col className="d-none d-xl-block menu-right pr-0" xl={2}>
           <TableOfContents></TableOfContents>
         </Col>
       </Row>
