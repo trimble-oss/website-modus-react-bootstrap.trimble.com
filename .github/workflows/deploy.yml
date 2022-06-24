@@ -6,7 +6,7 @@ on:
     # The branches below must be a subset of the branches above
     branches: [main]
 jobs:
-  build and deploy:
+  build-and-deploy:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
