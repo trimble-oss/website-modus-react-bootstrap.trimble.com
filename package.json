@@ -39,7 +39,7 @@
     "@mdx-js/mdx": "^1.6.22",
     "@mdx-js/react": "^1.6.22",
     "@netlify/plugin-gatsby": "^3.2.2",
-    "@types/react-dom": "^18.0.3",
+    "@types/react-dom": "^18.0.5",
     "@types/styled-components": "^5.1.23",
     "ast-types": "^0.14.2",
     "gatsby": "^4.17.0",
