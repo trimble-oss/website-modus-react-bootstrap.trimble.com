@@ -8,7 +8,7 @@ export const SpinnersBasic = `
         size="sm"
         role="status"
         aria-hidden="true"
-        className="mr-1"
+        className="mr-1 text-white"
       />
       <span className="sr-only">Loading...</span> Loading
     </Button>
