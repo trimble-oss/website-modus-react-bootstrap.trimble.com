@@ -14,7 +14,7 @@
     "type": "git",
     "url": "https://github.com/trimble-oss/website-modus-react-bootstrap.trimble.com.git"
   },
-  "license": "0BSD",
+  "license": "MIT",
   "author": "Trimble Inc.",
   "scripts": {
     "build": "gatsby build",
