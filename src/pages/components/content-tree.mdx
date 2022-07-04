@@ -43,24 +43,33 @@ import classNames from "classnames"
   <a href="/getting-started/">Getting Started</a> page on how to enable them.
 </div>
 
-<CodeBlock title="Tree with Icons" code={TreeViewWithItemIcon} noInline={true}>
+<CodeBlock
+  title="Tree with Icons"
+  hideCode={true}
+  code={TreeViewWithItemIcon}
+  noInline={true}
+>
   Icons can be configured both at the root level and node level. Also an
   additional icon can be added to show before the label text using the prop{" "}
   <code>itemIcon</code>. For more operations, callback functions like
   <code> onNodeToggle</code>,<code> onNodeSelect </code> are available.
 </CodeBlock>
 
-<CodeBlock title="Condensed Tree" code={TreeViewCondensed}>
+<CodeBlock title="Condensed Tree" hideCode={true} code={TreeViewCondensed}>
   Set prop <code>size</code> to <code>sm</code> to shrink the size of Tree and
   its items.
 </CodeBlock>
 
-<CodeBlock title="Borderless Tree" code={TreeViewBorderless}>
+<CodeBlock title="Borderless Tree" hideCode={true} code={TreeViewBorderless}>
   Add a class of <code>.list-group-borderless</code> to your Tree view for a
   borderless variant.
 </CodeBlock>
 
-<CodeBlock title="Multi Selection Tree" code={TreeViewMultiSelect}>
+<CodeBlock
+  title="Multi Selection Tree"
+  hideCode={true}
+  code={TreeViewMultiSelect}
+>
   Use the prop <code> multiSelectNode </code> to enable multiple selection and
   the nodes can be selected using
   <code> Shift + Arrow Up/Down </code> key or <code> Ctrl + click</code>.
@@ -86,7 +95,10 @@ import classNames from "classnames"
   scope={{ StyledIcon, findIndex, useForceUpdate }}
   noInline={true}
   hideCode={true}
-></CodeBlock>
+>
+  Below is a sample code for implementing filtering of Tree items based on text
+  search.
+</CodeBlock>
 
 <CodeBlock
   title="Tree with Drag and Drop"
@@ -102,7 +114,11 @@ import classNames from "classnames"
   }}
   noInline={true}
   hideCode={true}
-></CodeBlock>
+>
+  The example below shows a sample code for how to implement dragging and
+  dropping of Tree items as a way of reordering. Click and drag the drag icon to
+  reorder Tree items.
+</CodeBlock>
 
 <CodeBlock
   title="Accessibility"

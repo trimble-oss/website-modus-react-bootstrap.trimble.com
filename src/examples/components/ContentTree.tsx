@@ -185,7 +185,6 @@ function TreeViewWithIcon() {
           nodeId={1}
           label="Inbox"
           itemIcon={<i className="material-icons">folder</i>}
-          className={isExpanded(1) ? "font-weight-bold" : ""}
         >
           <CustomTreeViewItem nodeId={4} label="Personal" />
           <CustomTreeViewItem nodeId={5} label="Work" />
@@ -786,16 +785,33 @@ const CustomTreeViewItem = ({
   draggable: draggableProp,
   ...props
 }) => {
-  const [draggableOnHover, setDraggableOnHover] = useState(false)
-  const ref = useRef(null)
-  const isDisabled = disabledNodes.includes(nodeId)
+  const showDragIcon = useRef(false);
+  const ref = useRef(null);
+  const forceUpdate = useForceUpdate();
+  const isDisabled = disabledNodes.includes(nodeId);
 
-  const handleMouseEnter = useCallback(e => {
-    setDraggableOnHover(true)
-  }, [])
-  const handleMouseLeave = useCallback(e => {
-    setDraggableOnHover(false)
-  }, [])
+  const handleMouseEnter = useCallback(
+    (e) => {
+      showDragIcon.current = true;
+      forceUpdate();
+    },
+    [showDragIcon],
+  );
+  const handleMouseLeave = useCallback(
+    (e) => {
+      showDragIcon.current = false;
+      forceUpdate();
+    },
+    [showDragIcon],
+  );
+
+  useEffect(() => {
+    if (ref.current) {
+      const treeItemDiv = ref.current.firstChild;
+      treeItemDiv.addEventListener('mouseenter', handleMouseEnter);
+      treeItemDiv.addEventListener('mouseleave', handleMouseLeave);
+    }
+  }, [ref, handleMouseEnter, handleMouseLeave]);
 
   useEffect(() => {
     registerTreeItem(
@@ -806,52 +822,48 @@ const CustomTreeViewItem = ({
         droppable: !isDisabled,
         parentIds,
       },
-      ref.current
-    )
+      ref.current,
+    );
     return () => {
-      unRegisterTreeItem(nodeId)
-    }
-  }, [nodeId, label, draggableProp, isDisabled, ref.current])
+      unRegisterTreeItem(nodeId);
+    };
+  }, [nodeId, label, draggableProp, isDisabled, ref.current]);
 
   return (
-    <>
-      <TreeViewItem
-        nodeId={nodeId}
-        label={label}
-        {...props}
-        ref={ref}
-        disabled={isDisabled}
-        dragIcon={
-          !isDisabled && (draggableProp || draggableOnHover) ? (
-            <i
-              className="material-icons"
-              onMouseDown={e => handleMouseDown(e, { nodeId, label })}
-            >
-              drag_indicator
-            </i>
-          ) : undefined
-        }
-        onMouseEnter={handleMouseEnter}
-        onMouseLeave={handleMouseLeave}
-      >
-        {children &&
-          children.map(item => (
-            <CustomTreeViewItem
-              nodeId={item.nodeId}
-              children={item.children}
-              parentIds={[...(parentIds || []), nodeId]}
-              label={item.label}
-              key={item.nodeId}
-              registerTreeItem={registerTreeItem}
-              unRegisterTreeItem={unRegisterTreeItem}
-              handleMouseDown={handleMouseDown}
-              draggable={draggableProp}
-            />
-          ))}
-      </TreeViewItem>
-    </>
-  )
-}
+    <TreeViewItem
+      nodeId={nodeId}
+      label={label}
+      {...props}
+      ref={ref}
+      disabled={isDisabled}
+      dragIcon={
+        !isDisabled && (draggableProp || showDragIcon.current) ? (
+          <i
+            className="material-icons"
+            onMouseDown={(e) => handleMouseDown(e, { nodeId, label })}
+          >
+            drag_indicator
+          </i>
+        ) : undefined
+      }
+    >
+      {children &&
+        children.map((item) => (
+          <CustomTreeViewItem
+            nodeId={item.nodeId}
+            children={item.children}
+            parentIds={[...(parentIds || []), nodeId]}
+            label={item.label}
+            key={item.nodeId}
+            registerTreeItem={registerTreeItem}
+            unRegisterTreeItem={unRegisterTreeItem}
+            handleMouseDown={handleMouseDown}
+            draggable={draggableProp}
+          />
+        ))}
+    </TreeViewItem>
+  );
+};
 
 const ActionBarButton = ({ icon, tooltip, disabled, onClick, ...props }) => {
   return (
@@ -1209,7 +1221,6 @@ export const StyledDragItem = styled.div`
 `
 export const StyledCustomTreeViewItem = styled.div`
   li {
-    padding: 5px 16px 5px 0 !important;
     &.drop-allow {
       border-top: 2px solid #0063a3 !important;
     }
