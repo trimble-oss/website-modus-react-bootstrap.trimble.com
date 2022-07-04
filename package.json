@@ -27,7 +27,7 @@
     "start": "gatsby develop"
   },
   "dependencies": {
-    "@trimbleinc/modus-react-bootstrap": "^1.1.0",
+    "@trimbleinc/modus-react-bootstrap": "file:trimbleinc-modus-react-bootstrap-1.1.0.tgz",
     "classnames": "^2.3.1",
     "prop-types": "^15.8.1",
     "react-live": "^2.4.1",

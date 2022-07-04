@@ -16,6 +16,8 @@ import {
   StyledDragItem,
   StyledCustomTreeViewItem,
   TreeViewWithDragDrop,
+  StyledTreeItem,
+  TreeViewWithIndicator,
 } from "../../examples/components/ContentTree"
 import findIndex from "lodash/findIndex"
 import useForceUpdate from "@restart/hooks/useForceUpdate"
@@ -102,6 +104,13 @@ import classNames from "classnames"
   }}
   noInline={true}
   hideCode={true}
+></CodeBlock>
+
+<CodeBlock
+  title="Tree with indicator for expand"
+  noInline={true}
+  code={TreeViewWithIndicator}
+  scope={{ StyledTreeItem }}
 ></CodeBlock>
 
 <CodeBlock
