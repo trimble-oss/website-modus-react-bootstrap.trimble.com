@@ -10,7 +10,7 @@ export const PaginationBasic = `
 
     <Pagination.Item>{3}</Pagination.Item>
     <Pagination.Item>{4}</Pagination.Item>
-    <Pagination.Item active>{5}</Pagination.Item>
+    <Pagination.Item active aria-current="page">{5}</Pagination.Item>
     <Pagination.Item>{6}</Pagination.Item>
     <Pagination.Item>{7}</Pagination.Item>
 
@@ -29,7 +29,7 @@ export const PaginationDisabledActiveStates = `
   <Pagination>
     <Pagination.Item disabled aria-disabled="true">Disabled</Pagination.Item>
     <Pagination.Item>1</Pagination.Item>
-    <Pagination.Item active aria-selected="true">2 (active)</Pagination.Item>
+    <Pagination.Item active aria-selected="true" aria-current="page">2 (active)</Pagination.Item>
     <Pagination.Item>3</Pagination.Item>
     <Pagination.Item>4</Pagination.Item>
   </Pagination>
@@ -48,7 +48,7 @@ export const PaginationSizing = `
         <i className="modus-icons" aria-hidden="true">more_horizontal</i>
       </Pagination.Item>
       <Pagination.Item>{3}</Pagination.Item>
-      <Pagination.Item active>{4}</Pagination.Item>
+      <Pagination.Item active aria-current="page">{4}</Pagination.Item>
       <Pagination.Item>{5}</Pagination.Item>
       <Pagination.Item aria-label="Go to next pages">
         <i className="modus-icons" aria-hidden="true">more_horizontal</i>
@@ -70,7 +70,7 @@ export const PaginationSizing = `
         <i className="modus-icons" aria-hidden="true">more_horizontal</i>
       </Pagination.Item>
       <Pagination.Item>{3}</Pagination.Item>
-      <Pagination.Item active>{4}</Pagination.Item>
+      <Pagination.Item active aria-current="page">{4}</Pagination.Item>
       <Pagination.Item>{5}</Pagination.Item>
       <Pagination.Item aria-label="Go to next pages">
         <i className="modus-icons" aria-hidden="true">more_horizontal</i>

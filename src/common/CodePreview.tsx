@@ -5,6 +5,7 @@ import React, {
   useState,
   useCallback,
   useMemo,
+  createContext,
 } from "react"
 import ReactDOM from "react-dom"
 import { LiveProvider, LiveEditor, LiveError, LivePreview } from "react-live"
@@ -26,6 +27,7 @@ const CodePreview = props => {
     useState,
     useContext,
     useCallback,
+    createContext,
     useMemo,
     ...ReactBootstrap,
     ...props.scope,
