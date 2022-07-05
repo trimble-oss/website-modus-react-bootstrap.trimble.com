@@ -35,7 +35,7 @@ export const ModalsLiveExample = `function Example() {
             Close
           </Button>
           <Button variant="primary" onClick={handleClose}>
-            Save Changes
+            Save changes
           </Button>
         </Modal.Footer>
       </Modal>

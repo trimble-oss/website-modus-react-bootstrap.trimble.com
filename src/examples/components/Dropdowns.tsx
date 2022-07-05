@@ -2,7 +2,7 @@ export const DropdownsBasic = `
 <div className="d-flex">
   <Dropdown>
     <Dropdown.Toggle variant="primary" id="dropdown-basic">
-      Dropdown Button 1
+      Dropdown button 1
     </Dropdown.Toggle>
     <Dropdown.Menu>
       <Dropdown.Item href="#/action-1">Action</Dropdown.Item>
@@ -25,7 +25,7 @@ export const DropdownsBasic = `
   <DropdownButton
     variant="primary"
     id="dropdown-basic-button"
-    title="Anchor Tag"
+    title="Anchor tag"
     className="ml-3"
     href="#"
   >
@@ -139,7 +139,7 @@ export const DropdownsColorVariants = `
 
 export const DropdownsSplitButton = `
 <Dropdown as={ButtonGroup}>
-  <Button variant="primary">Split Button</Button>
+  <Button variant="primary">Split button</Button>
   <Dropdown.Toggle split variant="primary" id="dropdown-split-basic" />
   <Dropdown.Menu>
     <Dropdown.Item href="#/action-1">Action</Dropdown.Item>

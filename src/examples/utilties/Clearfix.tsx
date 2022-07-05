@@ -1,10 +1,10 @@
 export const ClearfixBasic = `
 <div class="bg-dark clearfix">
   <button class="btn btn-secondary float-left">
-    Example Button Floated Left
+    Example button floated left
   </button>
   <button class="btn btn-secondary float-right">
-    Example Button Floated Right
+    Example button floated right
   </button>
 </div>
 `

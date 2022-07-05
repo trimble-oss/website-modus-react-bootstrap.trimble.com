@@ -183,12 +183,12 @@ export const ButtonsDanger = `
 export const ButtonsYellow = `
 <div>
   <Button variant="yellow" size="sm" className="mr-2">
-    Trimble Button
+    Trimble button
   </Button>
   <Button variant="yellow" className="mr-2">
-    Trimble Button
+    Trimble button
   </Button>
   <Button variant="yellow" size="lg">
-    Trimble Button
+    Trimble button
   </Button>
 </div>`
