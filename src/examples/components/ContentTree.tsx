@@ -1273,12 +1273,12 @@ function TreeViewWithIndicator() {
   const [expanded, setExpanded] = useState(null);
 
   const handleNodeToggle = useCallback(
-    (event, nodes, nodeInFocus) => {
-      if (nodes.includes(nodeInFocus)) setExpanded(nodeInFocus);
+    (event, expandedNodes, nodeInFocus) => {
+      if (expandedNodes.includes(nodeInFocus)) setExpanded(nodeInFocus);
       else {
         const prevExpandedNode = expanded;
         setExpanded(
-          prevExpandedNode && nodes.includes(prevExpandedNode)
+          prevExpandedNode && expandedNodes.includes(prevExpandedNode)
             ? prevExpandedNode
             : null,
         );
@@ -1292,31 +1292,31 @@ function TreeViewWithIndicator() {
       <TreeViewContext.Provider value={expanded}>
         <TreeView nodeId={0} id="basic" onNodeToggle={handleNodeToggle}>
           <div>
-            <CustomTreeViewItem nodeId={7} label="Inbox">
-              <TreeViewItem nodeId={8} label="Personal"></TreeViewItem>
-              <TreeViewItem nodeId={9} label="Work"></TreeViewItem>
-              <TreeViewItem nodeId={10} label="Community"></TreeViewItem>
-              <TreeViewItem nodeId={11} label="Social"></TreeViewItem>
-              <TreeViewItem nodeId={12} label="Friends"></TreeViewItem>
-              <TreeViewItem nodeId={14} label="More ..."></TreeViewItem>
+            <CustomTreeViewItem nodeId={1} label="Inbox">
+              <TreeViewItem nodeId={2} label="Personal"></TreeViewItem>
+              <TreeViewItem nodeId={3} label="Work"></TreeViewItem>
+              <TreeViewItem nodeId={4} label="Community"></TreeViewItem>
+              <TreeViewItem nodeId={5} label="Social"></TreeViewItem>
+              <TreeViewItem nodeId={6} label="Friends"></TreeViewItem>
+              <TreeViewItem nodeId={7} label="More ..."></TreeViewItem>
             </CustomTreeViewItem>
           </div>
 
-          <CustomTreeViewItem nodeId={15} label="Sent">
-            <TreeViewItem nodeId={16} label="Mail1"></TreeViewItem>
-            <TreeViewItem nodeId={17} label="Mail2"></TreeViewItem>
-            <TreeViewItem nodeId={18} label="Mail3"></TreeViewItem>
+          <CustomTreeViewItem nodeId={8} label="Sent">
+            <TreeViewItem nodeId={9} label="Mail1"></TreeViewItem>
+            <TreeViewItem nodeId={10} label="Mail2"></TreeViewItem>
+            <TreeViewItem nodeId={11} label="Mail3"></TreeViewItem>
           </CustomTreeViewItem>
-          <CustomTreeViewItem nodeId={1} label="Archived">
-            <CustomTreeViewItem nodeId={2} label="Folder1">
-              <TreeViewItem nodeId={3} label="File1"></TreeViewItem>
-              <CustomTreeViewItem nodeId={4} label="Folder2">
-                <TreeViewItem nodeId={5} label="File2"></TreeViewItem>
+          <CustomTreeViewItem nodeId={12} label="Archived">
+            <CustomTreeViewItem nodeId={13} label="Folder1">
+              <TreeViewItem nodeId={14} label="File1"></TreeViewItem>
+              <CustomTreeViewItem nodeId={15} label="Folder2">
+                <TreeViewItem nodeId={16} label="File2"></TreeViewItem>
               </CustomTreeViewItem>
-              <TreeViewItem nodeId={6} label="File3"></TreeViewItem>
+              <TreeViewItem nodeId={17} label="File3"></TreeViewItem>
             </CustomTreeViewItem>
           </CustomTreeViewItem>
-          <TreeViewItem nodeId={19} label="Spam"></TreeViewItem>
+          <TreeViewItem nodeId={18} label="Spam"></TreeViewItem>
         </TreeView>
       </TreeViewContext.Provider>
     </div>

@@ -272,7 +272,7 @@ const componentsMenu: Menu = {
     },
     {
       key: "file-upload-dropzone",
-      title: "File Upload DropZone",
+      title: "File Upload Dropzone",
       styleguideUrl:
         "https://modus.trimble.com/components/file-upload-dropzone/",
       subtitle:
