@@ -21,15 +21,15 @@ export const UsageExample = `
             bulk of the card's content.
           </Card.Text>
           <Button variant="secondary" size="sm"  className="m-2">
-            Regular Button
+            Regular button
           </Button>
           <Button variant="tertiary" href="#" className="m-2">
-            Link Button
+            Link button
           </Button>
           <DropdownButton
             variant="primary"
             id="dropdown-basic-button"
-            title="Anchor Tag"
+            title="Anchor tag"
             href="#"
             className="m-2"
           >

@@ -1408,7 +1408,7 @@ function FilterPanel(
               ))}
           </Row>
           <Row className="d-flex justify-content-end mr-2">
-            <Button onClick={e => resetAllFilters()}>RESET</Button>
+            <Button onClick={e => resetAllFilters()}>Reset</Button>
           </Row>
         </Container>
       </Popover.Content>

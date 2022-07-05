@@ -70,7 +70,7 @@ const HomePage = props => (
                       href="/getting-started/"
                       className="btn btn-primary rounded text-center"
                     >
-                      Getting Started »
+                      Getting started »
                     </a>
                   </div>
                 </div>
