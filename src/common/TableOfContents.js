@@ -166,14 +166,14 @@ const TableOfContents = props => {
         </nav>
         {current && current.styleguideUrl && (
           <div>
-            <h5 className="pt-2 ml-3">More Information</h5>
+            <div className="h5 pt-2 ml-3">More Information</div>
             <ul className="list-unstyled pl-0 ml-0">
               <li>
                 <a
                   href={current.styleguideUrl}
                   className="nav-link text-dark text-decoration-none filter-desaturate"
                   target="_blank"
-                  rel="noreferrer"
+                  rel="noopener"
                 >
                   Modus Style Guide
                 </a>
