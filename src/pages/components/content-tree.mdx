@@ -16,8 +16,6 @@ import {
   StyledDragItem,
   StyledCustomTreeViewItem,
   TreeViewWithDragDrop,
-  StyledTreeItem,
-  TreeViewWithIndicator,
 } from "../../examples/components/ContentTree"
 import findIndex from "lodash/findIndex"
 import useForceUpdate from "@restart/hooks/useForceUpdate"
@@ -120,17 +118,6 @@ import classNames from "classnames"
   The example below shows a sample code for how to implement dragging and
   dropping of Tree items as a way of reordering. Click and drag the drag icon to
   reorder Tree items.
-</CodeBlock>
-
-<CodeBlock
-  title="Tree with indicator for expand"
-  noInline={true}
-  hideCode={true}
-  code={TreeViewWithIndicator}
-  scope={{ StyledTreeItem }}
->
-  The example here shows a blue indicator at the left side for the Tree item
-  currently expanded.
 </CodeBlock>
 
 <CodeBlock
