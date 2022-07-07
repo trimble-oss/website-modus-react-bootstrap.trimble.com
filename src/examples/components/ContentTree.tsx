@@ -403,20 +403,23 @@ function TreeViewWithActionBar() {
   }
 
   const handleDuplicateClick = () => {
-    const newNodeId = getNodeIds(data).length + 1
-    editableNode.current = newNodeId
-    setData(prevState => {
-      const nodeId = selected[0]
+    const newNodeId = getNodeIds(data).length + 1;
+    editableNode.current = newNodeId;
+    setData((prevState) => {
+      const nodeId = selected[0];
       return updateNodes([...prevState], nodeId, (nodeIndex, nodes) => {
-        let copy = nodes[nodeIndex]
+        let copy = JSON.parse(JSON.stringify(nodes[nodeIndex]));
+        if (copy.children) {
+          updateIdsForDuplicate(copy.children, newNodeId);
+        }
         nodes.splice(nodeIndex + 1, 0, {
           ...copy,
-          label: "Copy of " + copy.label,
+          label: 'Copy of ' + copy.label,
           nodeId: newNodeId,
-        })
-      })
-    })
-  }
+        });
+      });
+    });
+  };
 
   const handleEditClick = event => {
     editableNode.current = selected[0]
@@ -488,6 +491,21 @@ function TreeViewWithActionBar() {
       }
     }
     return nodes
+  }
+
+  function updateIdsForDuplicate(nodes, incrementFrom) {
+    let nextIncrementFrom = incrementFrom;
+    for (let i = 0; i < nodes.length; i++) {
+      nextIncrementFrom = nextIncrementFrom + 1;
+      nodes[i].nodeId = nextIncrementFrom;
+
+      if (nodes[i].children)
+        nextIncrementFrom = updateIdsForDuplicate(
+          nodes[i].children,
+          nextIncrementFrom,
+        );
+    }
+    return nextIncrementFrom;
   }
 
   return (
