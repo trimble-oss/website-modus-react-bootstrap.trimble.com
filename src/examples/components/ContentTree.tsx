@@ -185,7 +185,6 @@ function TreeViewWithIcon() {
           nodeId={1}
           label="Inbox"
           itemIcon={<i className="material-icons">folder</i>}
-          className={isExpanded(1) ? "font-weight-bold" : ""}
         >
           <CustomTreeViewItem nodeId={4} label="Personal" />
           <CustomTreeViewItem nodeId={5} label="Work" />
@@ -404,20 +403,23 @@ function TreeViewWithActionBar() {
   }
 
   const handleDuplicateClick = () => {
-    const newNodeId = getNodeIds(data).length + 1
-    editableNode.current = newNodeId
-    setData(prevState => {
-      const nodeId = selected[0]
+    const newNodeId = getNodeIds(data).length + 1;
+    editableNode.current = newNodeId;
+    setData((prevState) => {
+      const nodeId = selected[0];
       return updateNodes([...prevState], nodeId, (nodeIndex, nodes) => {
-        let copy = nodes[nodeIndex]
+        let copy = JSON.parse(JSON.stringify(nodes[nodeIndex]));
+        if (copy.children) {
+          updateIdsForDuplicate(copy.children, newNodeId);
+        }
         nodes.splice(nodeIndex + 1, 0, {
           ...copy,
-          label: "Copy of " + copy.label,
+          label: 'Copy of ' + copy.label,
           nodeId: newNodeId,
-        })
-      })
-    })
-  }
+        });
+      });
+    });
+  };
 
   const handleEditClick = event => {
     editableNode.current = selected[0]
@@ -491,6 +493,21 @@ function TreeViewWithActionBar() {
     return nodes
   }
 
+  function updateIdsForDuplicate(nodes, incrementFrom) {
+    let nextIncrementFrom = incrementFrom;
+    for (let i = 0; i < nodes.length; i++) {
+      nextIncrementFrom = nextIncrementFrom + 1;
+      nodes[i].nodeId = nextIncrementFrom;
+
+      if (nodes[i].children)
+        nextIncrementFrom = updateIdsForDuplicate(
+          nodes[i].children,
+          nextIncrementFrom,
+        );
+    }
+    return nextIncrementFrom;
+  }
+
   return (
     <div style={{ width: "400px" }}>
       <div className="container" ref={ref}>
@@ -521,7 +538,7 @@ function TreeViewWithActionBar() {
               <ActionBarButton
                 icon="add"
                 onClick={handleAddClick}
-                disabled={editableNode.current}
+                disabled={editableNode.current || !data || !data.length}
                 tooltip="Add"
               />
               <ActionBarButton icon="drag_indicator" disabled tooltip="Drag" />
@@ -529,6 +546,7 @@ function TreeViewWithActionBar() {
                 icon={expanded.length === 0 ? "unfold_more" : "unfold_less"}
                 tooltip={expanded.length === 0 ? "Expand" : "Collapse"}
                 onClick={handleExpandAllClick}
+                disabled={!data || !data.length}
               />
             </div>
           </div>
@@ -786,16 +804,33 @@ const CustomTreeViewItem = ({
   draggable: draggableProp,
   ...props
 }) => {
-  const [draggableOnHover, setDraggableOnHover] = useState(false)
-  const ref = useRef(null)
-  const isDisabled = disabledNodes.includes(nodeId)
+  const showDragIcon = useRef(false);
+  const ref = useRef(null);
+  const forceUpdate = useForceUpdate();
+  const isDisabled = disabledNodes.includes(nodeId);
 
-  const handleMouseEnter = useCallback(e => {
-    setDraggableOnHover(true)
-  }, [])
-  const handleMouseLeave = useCallback(e => {
-    setDraggableOnHover(false)
-  }, [])
+  const handleMouseEnter = useCallback(
+    (e) => {
+      showDragIcon.current = true;
+      forceUpdate();
+    },
+    [showDragIcon],
+  );
+  const handleMouseLeave = useCallback(
+    (e) => {
+      showDragIcon.current = false;
+      forceUpdate();
+    },
+    [showDragIcon],
+  );
+
+  useEffect(() => {
+    if (ref.current) {
+      const treeItemDiv = ref.current.firstChild;
+      treeItemDiv.addEventListener('mouseenter', handleMouseEnter);
+      treeItemDiv.addEventListener('mouseleave', handleMouseLeave);
+    }
+  }, [ref, handleMouseEnter, handleMouseLeave]);
 
   useEffect(() => {
     registerTreeItem(
@@ -806,52 +841,48 @@ const CustomTreeViewItem = ({
         droppable: !isDisabled,
         parentIds,
       },
-      ref.current
-    )
+      ref.current,
+    );
     return () => {
-      unRegisterTreeItem(nodeId)
-    }
-  }, [nodeId, label, draggableProp, isDisabled, ref.current])
+      unRegisterTreeItem(nodeId);
+    };
+  }, [nodeId, label, draggableProp, isDisabled, ref.current]);
 
   return (
-    <>
-      <TreeViewItem
-        nodeId={nodeId}
-        label={label}
-        {...props}
-        ref={ref}
-        disabled={isDisabled}
-        dragIcon={
-          !isDisabled && (draggableProp || draggableOnHover) ? (
-            <i
-              className="material-icons"
-              onMouseDown={e => handleMouseDown(e, { nodeId, label })}
-            >
-              drag_indicator
-            </i>
-          ) : undefined
-        }
-        onMouseEnter={handleMouseEnter}
-        onMouseLeave={handleMouseLeave}
-      >
-        {children &&
-          children.map(item => (
-            <CustomTreeViewItem
-              nodeId={item.nodeId}
-              children={item.children}
-              parentIds={[...(parentIds || []), nodeId]}
-              label={item.label}
-              key={item.nodeId}
-              registerTreeItem={registerTreeItem}
-              unRegisterTreeItem={unRegisterTreeItem}
-              handleMouseDown={handleMouseDown}
-              draggable={draggableProp}
-            />
-          ))}
-      </TreeViewItem>
-    </>
-  )
-}
+    <TreeViewItem
+      nodeId={nodeId}
+      label={label}
+      {...props}
+      ref={ref}
+      disabled={isDisabled}
+      dragIcon={
+        !isDisabled && (draggableProp || showDragIcon.current) ? (
+          <i
+            className="material-icons"
+            onMouseDown={(e) => handleMouseDown(e, { nodeId, label })}
+          >
+            drag_indicator
+          </i>
+        ) : undefined
+      }
+    >
+      {children &&
+        children.map((item) => (
+          <CustomTreeViewItem
+            nodeId={item.nodeId}
+            children={item.children}
+            parentIds={[...(parentIds || []), nodeId]}
+            label={item.label}
+            key={item.nodeId}
+            registerTreeItem={registerTreeItem}
+            unRegisterTreeItem={unRegisterTreeItem}
+            handleMouseDown={handleMouseDown}
+            draggable={draggableProp}
+          />
+        ))}
+    </TreeViewItem>
+  );
+};
 
 const ActionBarButton = ({ icon, tooltip, disabled, onClick, ...props }) => {
   return (
@@ -1209,7 +1240,6 @@ export const StyledDragItem = styled.div`
 `
 export const StyledCustomTreeViewItem = styled.div`
   li {
-    padding: 5px 16px 5px 0 !important;
     &.drop-allow {
       border-top: 2px solid #0063a3 !important;
     }

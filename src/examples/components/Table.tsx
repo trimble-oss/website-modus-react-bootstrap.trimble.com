@@ -179,7 +179,7 @@ export const DataTableColumnInstanceAPIInfo = [
 // for the example section
 export const TableBasic = `
 <Table bordered>
-  <thead>
+  <thead className="thead-light">
     <tr>
       <th>#</th>
       <th>First Name</th>
@@ -212,7 +212,7 @@ export const TableBasic = `
 
 export const TableHoverable = `
 <Table hover bordered>
-  <thead>
+  <thead className="thead-light">
     <tr>
       <th>#</th>
       <th>First Name</th>
@@ -245,7 +245,7 @@ export const TableHoverable = `
 
 export const TableIconsControls = `
 <Table bordered>
-  <thead>
+  <thead className="thead-light">
     <tr>
       <th scope="col" className="icon-only"></th>
       <th scope="col">First</th>
@@ -658,9 +658,9 @@ function Example() {
     <Container className="w-100 p-0">
       <TableStyled bordered hover>
         <thead className="bg-gray-light sticky-top">
-          <tr className="bg-gray-light">
+          <tr>
             {columns.map((column,index) => (
-              <th key={index} className="bg-gray-light pr-2" title="">
+              <th key={index} className="pr-2" title="">
                 <div
                   className="d-flex flex-row justify-content-center"
                   style={{ width: "100%" }}
