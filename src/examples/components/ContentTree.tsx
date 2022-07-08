@@ -538,7 +538,7 @@ function TreeViewWithActionBar() {
               <ActionBarButton
                 icon="add"
                 onClick={handleAddClick}
-                disabled={editableNode.current}
+                disabled={editableNode.current || !data || !data.length}
                 tooltip="Add"
               />
               <ActionBarButton icon="drag_indicator" disabled tooltip="Drag" />
@@ -546,6 +546,7 @@ function TreeViewWithActionBar() {
                 icon={expanded.length === 0 ? "unfold_more" : "unfold_less"}
                 tooltip={expanded.length === 0 ? "Expand" : "Collapse"}
                 onClick={handleExpandAllClick}
+                disabled={!data || !data.length}
               />
             </div>
           </div>
