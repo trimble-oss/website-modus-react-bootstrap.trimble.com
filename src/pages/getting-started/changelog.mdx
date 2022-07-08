@@ -4,6 +4,131 @@ description: View list of changes of releases.
 ---
 
 <article id="main" className="pr-3">
+  <h2 id="v111---2022-07-08" className="h1 font-weight-bold mt-5">
+    v1.1.1 - 2022-07-08
+  </h2>
+  <a
+    className="header-link text-light text-decoration-none font-weight-normal"
+    href="#v111---2022-07-08"
+    aria-label="anchor"
+  ></a>
+  <h3>Features</h3>
+  <ul>
+    <li>
+      TreeView:
+      <ul>
+        <li>
+          Callbacks <code>onNodeToggle</code> and <code>onNodeSelect</code> now
+          have a new parameter <code>nodeInFocus</code> which indicates the
+          current Tree item that triggered the event.
+        </li>
+        <li>
+          <strong>Selection Indicator:</strong> A Tree item when selected will
+          now have a blue line indicator extending to its children if it is a
+          folder.
+        </li>
+      </ul>
+    </li>
+    <li>
+      Upgraded to{" "}
+      <a href="https://www.npmjs.com/package/@trimbleinc/modus-bootstrap">
+        Modus Bootstrap v1.5.1
+      </a>
+      , check the <a href="https://bitbucket.trimble.tools/projects/TMDS/repos/modus-bootstrap/browse/CHANGELOG.md">
+        Modus Bootstrap Release notes
+      </a> for more details.
+    </li>
+  </ul>
+  <h3>Bug fixes</h3>
+  <ul>
+    <li>
+      DataTable Component - Unnecessary space for checkbox column{" "}
+      <a href="https://github.com/trimble-oss/modus-react-bootstrap/issues/76">
+        #76
+      </a>
+    </li>
+  </ul>
+  <h3>BREAKING CHANGES</h3>
+  <ul>
+    <li>
+      <strong>TreeViewItem</strong> is now wrapped around by a{" "}
+      <code>li.item-container</code> containing the label and the children.
+    </li>
+  </ul>
+  <h2 id="v110---2022-06-22" className="h1 font-weight-bold mt-5">
+    v1.1.0 - 2022-06-22
+  </h2>
+  <a
+    className="header-link text-light text-decoration-none font-weight-normal"
+    href="#v110---2022-06-22"
+    aria-label="anchor"
+  ></a>
+  <h3>Features</h3>
+  <ul>
+    <li>
+      Added new components
+      <ul>
+        <li>
+          <strong>TreeView:</strong> A content tree root component that provides
+          users with a way to navigate nested hierarchical information using a
+          parent-child relationship model.
+        </li>
+        <li>
+          <strong>TreeViewItem:</strong> A content tree item component.
+        </li>
+        <li>
+          <strong>FileUploadDropZone:</strong> A file upload drop zone component
+          that allows users to upload content from their computer or device into
+          the application by dragging a file (or files) into a target zone.
+        </li>
+      </ul>
+    </li>
+    <li>
+      Upgraded to{" "}
+      <a href="https://www.npmjs.com/package/@trimbleinc/modus-bootstrap">
+        Modus Bootstrap v1.5.0
+      </a>
+    </li>
+  </ul>
+  <h3>BREAKING CHANGES</h3>
+  <ul>
+    <li>
+      <p>Updated API</p>
+      <ul>
+        <li>
+          <strong>DataTable:</strong> A combined component containing table
+          Headers and Rows.
+        </li>
+        <li>
+          <strong>TablePagination:</strong> Removed <code>totalPages</code> and
+          added <code>count</code> and <code>size</code>.
+        </li>
+      </ul>
+    </li>
+    <li>
+      <p>Removed components</p>
+      <ul>
+        <li>
+          <strong>TableHead</strong>
+        </li>
+        <li>
+          <strong>TableHeaderCell</strong>
+        </li>
+        <li>
+          <strong>TableBody</strong>
+        </li>
+        <li>
+          <strong>TableRow</strong>
+        </li>
+        <li>
+          <strong>TableCell</strong>
+        </li>
+        <li>
+          <strong>TableContainer</strong>
+        </li>
+      </ul>
+    </li>
+  </ul>
   <h2 id="v100---2022-02-01" className="h1 font-weight-bold mt-5">
     v1.0.0 - 2022-02-01
     <a
