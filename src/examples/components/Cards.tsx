@@ -16,7 +16,7 @@ export const CardsBasic = `
 
 export const CardsWithImage = `
 <Card style={{ width: "18rem" }}>
-  <Card.Img variant="top" src="https://fakeimg.pl/286x150/" />
+  <Card.Img variant="top" src="https://fakeimg.pl/286x150/" alt="" />
   <Card.Body>
     <Card.Title as="h4">Card title</Card.Title>
     <Card.Title as="h5">Card subtitle</Card.Title>
@@ -44,7 +44,7 @@ export const CardsHeaderAndFooter = `
 
 export const CardsCustomize = `
 <Card style={{ width: "18rem" }} border="dark" className="shadow">
-  <Card.Img variant="top" src="https://fakeimg.pl/286x150/" />
+  <Card.Img variant="top" src="https://fakeimg.pl/286x150/" alt="" />
   <Card.Body>
     <Card.Title as="h3">Card Title</Card.Title>
     <Card.Text>
